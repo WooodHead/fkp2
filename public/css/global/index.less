@@ -1,0 +1,133 @@
+@px: 1px;
+
+.list-wrap{
+   position: relative;
+}
+
+
+//水平列表
+.hlist(){
+   list-style: none;
+   font: normal normal normal 14px/150% Arial,Verdana,"微软雅黑";
+   margin: 0;
+   padding: 0;
+   &.item, .item{
+       .inner{ }
+       height: auto;
+       position: relative;
+       img{
+           width: 100%;
+           border: 0;
+       }
+       p{
+           padding: 0;
+           margin: 0;
+       }
+       a{
+           text-decoration: none;
+           border: none;
+           &.caption{
+               font-size: 12*@px;
+               text-align: center;
+           }
+       }
+       em{
+           font-style: normal;
+       }
+       ul{
+           li {}
+       }
+       .hheader{
+           padding: 10px;
+           ul{
+               li{}
+           };
+       }
+       .hbody{
+           padding: 10px;
+           .caption{
+               text-align: center;
+           }
+           ul{
+               li{}
+           }
+       }
+       .hfoot{
+           padding: 10px;
+           ul{
+               li{ }
+           }
+       }
+       .dot{
+           position: absolute;
+           ul{
+               li{ }
+           }
+       }
+       .pics{}
+   }
+}
+
+//lazy loading的css3样式
+.lazyloadbar{
+    margin: 0;
+    padding: 0;
+    height: 0.1rem;
+}
+.loadtype{
+    font-size: 12px;
+    margin-top: -1.5em;
+    .loader {
+      margin: 0 auto 2em;
+      font-size: 10px;
+      position: relative;
+      text-indent: -9999em;
+      -webkit-animation-delay: -0.16s;
+      animation-delay: -0.16s;
+      &:before {
+        left: -1.5em;
+        -webkit-animation-delay: -0.32s;
+        animation-delay: -0.32s;
+      }
+      &:after {
+        left: 1.5em;
+      }
+      &:before,
+      &:after {
+        content: '';
+        position: absolute;
+        top: 0;
+      }
+    }
+}
+.loader:before,
+.loader:after,
+.loader {
+  border-radius: 50%;
+  width: 1em;
+  height: 1em;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation: loadtype 1.8s infinite ease-in-out;
+  animation: loadtype 1.8s infinite ease-in-out;
+}
+@-webkit-keyframes loadtype {
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 1em 0 -1em #f18f43;
+  }
+  40% {
+    box-shadow: 0 1em 0 0 #f18f43;
+  }
+}
+@keyframes loadtype {
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 1em 0 -1em #f18f43;
+  }
+  40% {
+    box-shadow: 0 1em 0 0 #f18f43;
+  }
+}
