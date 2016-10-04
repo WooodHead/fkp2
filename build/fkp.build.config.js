@@ -1,26 +1,27 @@
 var fs = require('fs'),
+    del = require('del'),
+    _ = require('lodash'),
     path = require('path'),
     gulp = require('gulp'),
-    _ = require('lodash'),
     marked = require('marked'),
-    through = require('through2'),
     gutil = require('gulp-util'),
-    del = require('del'),
     webpack = require('webpack'),
-    configs = require('./config'),
-    alias = require('./webpack.alias.js'),
+    through = require('through2'),
+    base = require('./common/base'),
+    configs = require('./out_config'),
+    alias = require('./webpack.alias'),
     $ = require('gulp-load-plugins')();
 
-var base = require('./common/base')
 
 function chkType(type) {
-  var staticType
+  if (type.indexOf('.')===0) type = type.replace('.', '')
   var all = {
     style: ['css', 'scss', 'sass', 'less', 'stylus', 'styl'],
     templet: ['hbs', 'swig', 'htm', 'html', 'php', 'jsp'],
     script: ['js', 'jsx', 'coffee', 'cjsx', 'ts', 'tsx']
   }
 
+  var staticType = 'script'
   for (var item in all) {
     var arys = all[item];
     if (_.indexOf(arys, type) > -1) staticType = item;
@@ -28,72 +29,84 @@ function chkType(type) {
   return staticType;
 }
 
+var util = {
+  fs: fs,
+  $: $,
+  _: _,
+  del: del,
+  path: path,
+  gulp: gulp,
+  gutil: gutil,
+  alias: alias,
+  marked: marked,
+  through: through,
+  webpack: webpack,
+  configs: configs,
+  chkType: chkType
+}
+
 
 function initDir(aryDir, fatherDirName, isPack, depth) {
-  var entrys = {},
-      package_ary = [];
-  // make directory json
-  function readPageDir(subDir, isPack, depth) {
-      package_ary = [];
+  var entrys = {};
+  function readPageDir(subDir, isPack, depth) {     // make directory json
+    package_ary = [];
+    var dirs = (subDir && subDir.fs) || aryDir;
+    var dirsPath = (subDir && subDir.path) || fatherDirName;
 
-      var dirs = (subDir && subDir.fs) || aryDir;
-      // var dirsPath = (subDir && subDir.path) || config.pages;
-      var dirsPath = (subDir && subDir.path) || fatherDirName;
+    var sameName = false;   //同名文件
+    dirs.forEach(function(item) {
+      var _filename = (subDir && subDir.filename) || item;
+      var name = (subDir && subDir.name) || item;
 
-      var sameName = false;
-      dirs.forEach(function(item) {
+      //目录，忽略下划线目录，如_test, _xxx及隐藏目录
+      if (depth &&
+        fs.statSync(dirsPath + '/' + item).isDirectory() &&
+        item.indexOf('_') !== 0 &&
+        item.indexOf('.') !==0
+      ) {
+        var data = {
+          name: item,
+          path: dirsPath + '/' + item,
+          fs: fs.readdirSync(dirsPath + '/' + item),
+          filename: (subDir && subDir.filename + "-" + item) || item
+        };
+        readPageDir(data, isPack, depth);
+      }
 
-          var _filename = (subDir && subDir.filename) || item;
-          var name = (subDir && subDir.name) || item;
-
-          // if(fs.statSync(dirsPath + '/' + _filename) && fs.statSync(dirsPath + '/' + _filename).isFile()){
-          //     _filename = path.parse(_filename).name;
-          // }
-
-          //如果是目录
-          // 忽略下划线目录，如_test, _xxx
-          if (depth && fs.statSync(dirsPath + '/' + item).isDirectory() && item.indexOf('_') != 0) {
-              //获取目录里的脚本合并
-              var data = {
-                  name: item,
-                  path: dirsPath + '/' + item,
-                  fs: fs.readdirSync(dirsPath + '/' + item),
-                  filename: (subDir && subDir.filename + "-" + item) || item
-              };
-              readPageDir(data, isPack, depth);
-          } else
-          if (fs.statSync(dirsPath + '/' + item).isFile()) {
-              var ext = path.extname(dirsPath + '/' + item);
-              if (chkType(ext.replace('.', '')) || ext === '.md') {
-                  // 如果存在同名js
-                  if (!sameName) {
-                      if (name == item.replace(ext, '')) {
-                          entrys[_filename] = [dirsPath + '/' + item];
-                          sameName = true;
-                      } else {
-                          entrys[_filename] = entrys[_filename] || [];
-                          entrys[_filename].push(dirsPath + '/' + item);
-                      }
-                  }
-              }
+      //文件，忽略下划线文件，如_test, _xxx及隐藏文件
+      else if (
+        fs.statSync(dirsPath + '/' + item).isFile() &&
+        item.indexOf('_') !== 0 &&
+        item.indexOf('.') !==0
+      ) {
+        var ext = path.extname(dirsPath + '/' + item);
+        if (chkType(ext) || ext === '.md') {
+          // 如果存在同名js
+          if (!sameName) {
+            if (name === item.replace(ext, '')) {
+              entrys[_filename] = [dirsPath + '/' + item];
+              sameName = true;
+            } else {
+              entrys[_filename] = entrys[_filename] || [];
+              entrys[_filename].push(dirsPath + '/' + item);
+            }
           }
+        }
+      }
+    })
+  }
+
+  readPageDir(null, isPack, depth);
+  var package_ary = [];
+  for (var name in entrys) {
+      entrys[name].map(function(item, i) {
+        item = item.replace('//', '/')
+        entrys[name][i] = item
+        package_ary.push(item)
       });
   }
 
-  readPageDir(null, isPack, opts.depth);
-
-  if (isPack) {
-      for (var name in entrys) {
-          // package_ary.concat(clone(entrys[name]));
-          if (entrys[name].length) {
-              entrys[name].map(function(item, i) {
-                  package_ary.push(item);
-              });
-          }
-      }
-      entrys = {};
-      entrys[package_name] = package_ary;
-  }
+  if (isPack) return package_ary
   return entrys
 }
 
@@ -131,7 +144,7 @@ FkpBuild.prototype = {
         prepend: [],
         append: [],
         depth: true,
-        isPack: false
+        pack: false
       };
 
       // 合并配置文件
@@ -147,7 +160,7 @@ FkpBuild.prototype = {
 
         rename  = opts.rename,
         type    = opts.type,
-        isPack  = opts.isPack;
+        isPack  = opts.pack;
 
 
       //configs.dirs中预定义目录
@@ -187,20 +200,18 @@ FkpBuild.prototype = {
 
       // 生成entry
       var staticType = chkType(type),
-        entry = initDir(pagesDir, preDefineDir, isPack, opts.depth)   // 分析目录并返回JSON
+        _entry = initDir(pagesDir, preDefineDir, isPack, opts.depth),   // 分析目录并返回JSON/Array
+        entry={}
 
       if (isPack) {   // 打包成一个文件
         var ext = staticType === 'script' ? 'js' : type,
           _ultimates = ultimates = [],
-          styleType = (staticType === 'style'&& type!=='sass')
-            ? true
-            : false
+          styleType = (staticType === 'style'&& type!=='sass') ? true : false
 
-        //merge prepend or append
         package_name = dirname;
-        for (var item in entry) {
-          _ultimates = _.concat([], entry[item])   //合并所有文件到数组
-        }
+        // entry[package_name] = _entry
+
+        _ultimates = _entry
         ultimates = _.concat(opts.prepend, _ultimates, opts.append)
 
         // 有时候需要将目录打包输出成一个文件
@@ -211,85 +222,21 @@ FkpBuild.prototype = {
           package_name = rename
         }
 
-        // 处理样式文件
-        // ====================
-        var requireListFile
-        if (staticType === 'style') {
-          for (var i = 0; i < ultimates.length; i++) {
-            ultimates[i] = ultimates[i].replace('//', '/')
-
-            //放弃webpack打包
-            staticType === 'style'
-              ? requireListFile += '@import "' + ultimates[i] + '";\n'     // gulp 模式
-              : requireListFile += 'require("' + ultimates[i] + '");\n';   // webpack模式
-          }
-
-          var tmpFile = _.uniqueId('build-'),
-            tmpDir = configs.dirs.dist + '/_tmp',
-            tmpFile = configs.dirs.dist + '/_tmp/' + tmpFile + '.' + ext;
-
-
-          // 清理临时目录
-          gulp.task('cleantmp', function(cb) {
-            del([ tmpDir + '/*.*' ], cb);
-          })
-
-
-          // 如果临时目录不存在则创建
-          if (!fs.existsSync(tmpDir)) {
-              fs.mkdirSync(tmpDir);
-              fs.writeFileSync(tmpFile, requireListFile);
-          }
-          // 启动清理并写入新的文件
-          else {
-              gulp.start('cleantmp')
-              fs.writeFileSync(tmpFile, requireListFile);
-          }
-
-          entry = {};
-          entry[package_name] = [tmpFile];
-          entry['key'] = package_name;
-          entry['value'] = [tmpFile];
-        }
-
-        else {
-          entry = {};
-          entry[package_name] = ultimates;
-          entry['key'] = package_name;
-          entry['value'] = ultimates;
-        }
-        this.package_name = package_name;
-
+        entry[package_name] = ultimates
+        this.package_name = package_name
+        // entry['key'] = package_name;
+        // entry['value'] = ultimates;
       }
 
       else{  // isPack is false 打包成多个文件
-
+        entry = _entry
       }
 
       return entry;
   }
 }
 
-var CssBuild = base.inherits( FkpBuild, {
-  css: function(dir, opts, cb){
-    var defaults = {
-        reanme: undefined,
-        type: undefined,
-        prepend: [],
-        append: [],
-        depth: true,
-        env: 'dev'
-    }
-
-    // 合并配置文件
-    if (opts) {
-      opts = _.extend(defaults, opts)
-    }
-
-    this.env = opts.env
-    this.readDirs(dir, opts)
-  }
-})
+var CssBuild = base.inherits( FkpBuild, require('./common/cssbuild')(util))
 
 
 var JsBuild = base.inherits( CssBuild, {
@@ -298,11 +245,7 @@ var JsBuild = base.inherits( CssBuild, {
   }
 })
 
-var HtmlBuild = base.inherits( JsBuild, {
-  html: function(dir, opts, cb){
-
-  }
-})
+var HtmlBuild = base.inherits( JsBuild, require('./common/htmlbuild')(util))
 
 
 var Build = base.inherits( HtmlBuild, {
@@ -311,7 +254,7 @@ var Build = base.inherits( HtmlBuild, {
 
 
 function build(){
-  return new Build(arguments)
+  return new Build()
 }
 
 module.exports = build()

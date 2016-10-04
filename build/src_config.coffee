@@ -8,7 +8,7 @@ module.exports = {
     babel: false
     version: cfg.version
     description: "FKP-REST FRONT-END PART"
-    port: {
+    ports: {
         demo: 9000
         dev: 8070
     }

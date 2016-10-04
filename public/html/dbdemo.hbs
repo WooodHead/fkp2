@@ -1,0 +1,42 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <title>{{title}}</title>
+    <meta name="subtitle" content="个人博客"/>
+    @@include('./_common/header/h5_scale_1.html')
+    <link rel="stylesheet" href="/css/t/markdown.css">
+    <!-- <base href="http://www.agzgz.com" /> -->
+  </head>
+  <body>
+
+        <div class="index-container">
+            <div class="logo">
+                <a class="logo-img" href="https://www.agzgz.com">
+                    <img src="/images/logo128.png"/>
+                </a>
+                <div class="poptips chattip">
+                    <a href="/chat" class='wsmsg'>聊天室有动静啊</a>
+                    <span class="tips-in">▶</span>
+                </div>
+            </div>
+            <div class="topper">
+                <!-- 登录 -->
+                {{{topper}}}
+                <small style="color:#bbb">github第三方登陆</small>
+                <small style="color:#bbb">登陆后尝试左右拖动一条博客</small>
+                <small style="color:#00de02">QQ群:21336736</small>
+                <small style="color:#bbb"><a href="https://github.com/webkixi/FKP-REST" target="_blank">Github</a></small>
+            </div>
+        </div>
+
+        <div class="index-container">
+
+            <!-- 文章列表/内容部分 -->
+            @@include('./_index/topic.html')
+
+            <!-- 页面底部模板 -->
+            @@include('./_common/footer/foot.html')
+        </div>
+    <script type="text/javascript" src='http://www.agzgz.com/js/t/prettfy.js'></script>
+  </body>
+</html>

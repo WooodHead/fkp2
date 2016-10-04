@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title> {{mdcontent.title}}-FKPJS全栈框架</title>
+    @@include('./_common/docs/header.html')
+</head>
+
+<body>
+    <div class="page" data-module="">
+        @@include('./_demoindex/top.html')
+
+        <div class="doc-container">
+            <div class="left">
+                <!-- handbarls menutree -->  
+            </div>
+                <div class="right">
+                  @@include('./_demoindex/detail.html')
+                  <div class="hheader demo">
+                      <div class="home-start u-clearfix">
+                          @@include('./_demoindex/homeStart.html')
+                      </div>
+
+                      <div class="show">
+                        <h2 style="margin-left:0.2em;margin-bottom:0.6em;">
+                          Demo
+                        </h2>
+                        <ol>
+                          {{#each demoindex.root.list}}
+                          <li class="item">
+                            <div class="hheader">
+                              {{# if img}}
+                              <a href="{{img}}" target="_blank">
+                                <img src="{{img}}"/>
+                              </a>
+                              {{/if}}
+                            </div>
+                            <div class="hbody">
+                              <a href="{{url}}" class="title">{{title}}</a>
+                              {{#if des}}
+                              <a class="descript" target="_blank" href="{{group}}/{{mdname}}">说明</a>
+                              {{/if}}
+                            </div>
+                          </li>
+                          {{/each}}
+                        </ol>
+                      </div>  <!-- show end -->
+                  </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="footer">
+        <div class="footer-content">
+            <p>老板，JS现在才应该是中小企业的互联网项目的最佳切入姿势。。。</p>
+            <p class="copyright">
+            ©2016 FKP
+            </p>
+        </div>
+        @@include('./_common/footer/foot_markdown.html')
+    </div>
+
+</body>
+
+</html>

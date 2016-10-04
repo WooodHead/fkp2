@@ -72,7 +72,7 @@ gulp.task "pro", ['ie:pro','fonts:pro','pagecss:pro','copyThirdJsToDist:pro','bu
 # ----
 # 对静态页面进行编译
 gulp.task 'html', getTask('html')  #webpack解析
-gulp.task 'html:dev', getTask('html','dev') #交由服务器端解析
+gulp.task 'html:dev', getTask('html','dev')   #交由服务器端解析
 gulp.task 'html:build', getTask('html','pro') #交由服务器端解析
 
 # ----
@@ -104,8 +104,6 @@ gulp.task 'commoncss:pro', getTask('css-common', 'pro')
 # 对图像资源复制至dist
 gulp.task 'images:dev', getTask('images-dev')
 gulp.task 'images:pro', getTask('images-dev', 'pro')
-gulp.task 'images:build', ['pagecss:dev'], getTask('images-build')
-
 
 
 #----
@@ -119,7 +117,7 @@ gulp.task 'copyThirdCssToDist:dev', getTask('css-copy2-dev')
 gulp.task 'copyThirdCssToDist:pro', getTask('css-copy2-build')
 
 #----
-# 构建任务，生成未压缩版
+# 构建任务，生成未压缩
 gulp.task 'buildCommon:dev',['wp:dev'], getTask('concat-common-js')
 gulp.task 'buildCommon:dev:ng',['wp:dev'], getTask('concat-common-js','ng')
 gulp.task 'buildCommon:dev:bb',['wp:dev'], getTask('concat-common-js','bb')

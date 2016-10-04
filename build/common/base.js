@@ -1,4 +1,5 @@
-var _ = lodash
+var _ = require('lodash')
+
 /**
  * 创建一个类，自动执行init的方法
  * var rt = Class.create();
@@ -115,7 +116,7 @@ function inherits( Super, protos, staticProtos ) {
     }
 
     // 复制静态方法
-    _.extend( {}, child, Super, staticProtos || {} );
+    _.extend( child, Super, staticProtos || {} );
 
     /* jshint camelcase: false */
 
@@ -124,8 +125,9 @@ function inherits( Super, protos, staticProtos ) {
 
     // 构建原型，添加原型方法或属性。
     // 暂时用Object.create实现。
-    child.prototype = _.cloneDeep( Super.prototype );
-    protos && _.extend( {}, child.prototype, protos );
+    child.prototype = Super.prototype
+    // child.prototype = _.create( Super.prototype );
+    protos && _.extend( child.prototype, protos );
 
     return child;
 }
