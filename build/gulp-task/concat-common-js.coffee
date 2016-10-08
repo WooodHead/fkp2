@@ -11,8 +11,8 @@ config = require '../out_config.coffee';
 # 我们可以把修正的内容卸载 global/config.js文件下
 # 该文件作为全局运行
 getFileMap = (env) ->
-		if (env == 'ng') then return config.vendorList_ng.concat(config.globalList)
-		if (env == 'bb') then return config.vendorList_bb.concat(config.globalList)
+		# if (env indexOf 'ng') then return config.vendorList_ng.concat(config.globalList)
+		# if (env indexOf 'bb') then return config.vendorList_bb.concat(config.globalList)
 		_vlist = config.vendorList_adv[0]
 		if (env == 'pro') then _vlist = config.vendorList_adv[1]
 		return _vlist.concat(config.globalList)  # for advance browser
@@ -21,27 +21,12 @@ getFileMap = (env) ->
 module.exports = (gulp, $, slime, env)->
 		return () ->
 			_commonPath = config.jsDevPath + '_common.js'
-			_globalPath = config.jsDevPath + 'global.js'
 			if (env == 'pro')
 				_commonPath = config.jsBuildPath + '_common.js'
-				_globalPath = config.jsBuildPath + 'global.js'
 
-			# slime是FKPJS的核心编译方法
-			# 该方法支持多种打包方式
-			# 接受{Object}, {Array}, {File@String}, {Directory@String} 等类型参数
-
-			# slime 指定数组编译
-			slime.build(getFileMap(env), true, {
-				rename: 'common',
-				# prepend: [ _globalPath ],
-				append: [ _commonPath ],
+			slime.js getFileMap(env), {
+				pack: true
+				rename: 'common'
+				# append: [ _commonPath ]
 				env: env
-			})
-
-			# slime指定目录编译
-			# slime.build(config.dirs.src + '/js/vendor_custom',true,{
-			# 		rename: 'common',
-			# 		prepend: getFileMap(env)
-			# 		append: [_commonPath],
-			# 		env: env
-			# })
+			}

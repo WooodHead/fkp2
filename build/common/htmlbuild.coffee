@@ -9,6 +9,7 @@ module.exports = (util) ->
   gutil = util.gutil
   chkType = util.chkType
   marked = util.marked
+  del = util.del
 
   # 获取markdown文件的内容
   getMd = (opts) ->
@@ -108,19 +109,20 @@ module.exports = (util) ->
       # 合并配置文件
       opts = if opts then _.extend(defaults, opts) else defaults
       this.env = opts.env
+      opts.pack = true
 
       _files = this.readDirs(dir, opts)
 
-      __files = []
-      if _.isObject(_files)
+      __files = _files
+      if _.isObject(_files) and opts.pack
+        __files = []
         for item of _files
-          if _.isArray _files[item]
-            __files = __files.concat _files[item]
+          __files = __files.concat _files[item]
 
-      this.gulpBuild(__files, opts)
+      this.gulpHtmlBuild(__files, opts)
 
 
-    gulpBuild: (files, opts) ->
+    gulpHtmlBuild: (files, opts) ->
       list = {}
       indexList = {}
       tmpObj = {}
@@ -135,7 +137,18 @@ module.exports = (util) ->
         if this.env == 'pro'
           _htmlDistPath = configs.htmlBuildPath
 
+
+      # del [ _htmlDistPath ]
+
+
+      errrHandler = ( e ) ->
+          # 控制台发声,错误时beep一下
+          gutil.beep()
+          gutil.log( e )
+
+
       gulp.src files, { base: baseHtmlPath }
+      .pipe $.plumber({ errorHandler: errrHandler })
       .pipe( do () ->
         return through.obj (file, enc, cb) ->
           ext_name = path.parse(file.path).ext.replace('.', '')

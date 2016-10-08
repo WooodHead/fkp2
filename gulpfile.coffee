@@ -4,7 +4,9 @@ gulp = require('gulp')
 gutil = require('gulp-util')
 minimist = require('minimist')
 configs = require './config'
-slime = require('./build/fkp.build.config')
+slime = require('./build/fkp.build.config')({
+  gulp: gulp
+})
 
 env = 'dev'
 args = process.argv.splice(2);
@@ -53,8 +55,8 @@ gulp.task 'watch', ()->
         gulp.start 'watch:dev'
 
 #----
-gulp.task 'watch:dev', getTask('watch')
-gulp.task 'watch:dev:port', getTask('watch', undefined, options.port)
+gulp.task 'watch:dev', getTask('watch', 'dev')
+gulp.task 'watch:dev:port', getTask('watch', 'dev', options.port)
 gulp.task 'watch:pro', getTask('watch','pro')
 gulp.task 'watch:bb', getTask('watch','bb')
 gulp.task 'watch:ng', getTask('watch','ng')
@@ -62,8 +64,8 @@ gulp.task 'watch:ng', getTask('watch','ng')
 #----
 #本地资源静态DEMO服务器/代理动态(koajs)服务器
 gulp.task "server", ['html','ie:dev','fonts:dev','pagecss:dev','copyThirdJsToDist:dev','buildCommon:dev'] , getTask('server')  # for demo
-gulp.task "dev", ['ie:dev','fonts:dev','pagecss:dev','copyThirdJsToDist:dev','buildCommon:dev'] , getTask('server','dev')  # for dev
-gulp.task "pro", ['ie:pro','fonts:pro','pagecss:pro','copyThirdJsToDist:pro','buildCommon:pro'] , getTask('server','pro')  # for dev
+gulp.task "dev", ['clean:dev', 'ie:dev','fonts:dev','pagecss:dev','copyThirdJsToDist:dev','buildCommon:dev'] , getTask('server','dev')  # for dev
+gulp.task "pro", ['clean:build','ie:pro','fonts:pro','pagecss:pro','copyThirdJsToDist:pro','buildCommon:pro'] , getTask('server','pro')  # for dev
 # gulp.task "ngdev", ['buildCommon:dev:ng','ie:dev','fonts:dev','pagecss:dev','copyThirdJsToDist:dev'] , getTask('server','ngpro')  # for angular dev and pro
 # gulp.task "ng", ['buildCommon:dev:ng','ie:dev','fonts:dev','pagecss:dev','copyThirdJsToDist:dev'] , getTask('server','ng')  # for demo and angular
 # gulp.task "bbdev", ['buildCommon:dev:bb','html','ie:dev','fonts:dev','pagecss:dev','copyThirdJsToDist:dev'] , getTask('server','bbpro')  # for backbone dev and pro
@@ -77,7 +79,7 @@ gulp.task 'html:build', getTask('html','pro') #交由服务器端解析
 
 # ----
 # 合并ie8需要的脚本依赖
-gulp.task 'ie:dev', getTask('ie')
+gulp.task 'ie:dev', getTask('ie', 'dev')
 gulp.task 'ie:pro', getTask('ie', 'pro')
 
 #----
@@ -116,21 +118,30 @@ gulp.task 'copyThirdJsToDist:pro', ['copyThirdCssToDist:pro'], getTask('js-copy2
 gulp.task 'copyThirdCssToDist:dev', getTask('css-copy2-dev')
 gulp.task 'copyThirdCssToDist:pro', getTask('css-copy2-build')
 
+
+#----
+gulp.task 'commonjs:dev', getTask('concat-common-js', 'dev')
+gulp.task 'commonjs:pro', getTask('concat-common-js', 'pro')
+
 #----
 # 构建任务，生成未压缩
-gulp.task 'buildCommon:dev',['wp:dev'], getTask('concat-common-js')
-gulp.task 'buildCommon:dev:ng',['wp:dev'], getTask('concat-common-js','ng')
-gulp.task 'buildCommon:dev:bb',['wp:dev'], getTask('concat-common-js','bb')
-# pro
-gulp.task 'buildCommon:pro',['wp:pro'], getTask('concat-common-js', 'pro')
-gulp.task 'buildCommon:pro:ng',['wp:pro'], getTask('concat-common-js','ng')
-gulp.task 'buildCommon:pro:bb',['wp:pro'], getTask('concat-common-js','bb')
+# gulp.task 'buildCommon:dev',['wp:dev'], getTask('concat-common-js', 'dev')
+# gulp.task 'buildCommon:dev:ng',['wp:dev'], getTask('concat-common-js','ng')
+# gulp.task 'buildCommon:dev:bb',['wp:dev'], getTask('concat-common-js','bb')
+# # pro
+# gulp.task 'buildCommon:pro',['wp:pro'], getTask('concat-common-js', 'pro')
+# gulp.task 'buildCommon:pro:ng',['wp:pro'], getTask('concat-common-js','ng')
+# gulp.task 'buildCommon:pro:bb',['wp:pro'], getTask('concat-common-js','bb')
+
+gulp.task 'buildCommon:dev',['commonjs:dev', 'wp:dev']
+gulp.task 'buildCommon:pro',['commonjs:pro', 'wp:pro']
+
 
 #----
 # js/pages编译并生成_common.js
 # gulp.task 'wp:dev', ['g:dev'], getTask('wp')
 # gulp.task 'wp:pro', ['g:pro'], getTask('wp', 'pro')
-gulp.task 'wp:dev', getTask('wp')
+gulp.task 'wp:dev', getTask('wp', 'dev')
 gulp.task 'wp:pro', getTask('wp', 'pro')
 
 #----#----

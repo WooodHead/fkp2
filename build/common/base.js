@@ -132,7 +132,24 @@ function inherits( Super, protos, staticProtos ) {
     return child;
 }
 
+function chkType(type) {
+  if (type.indexOf('.')===0) type = type.replace('.', '')
+  var all = {
+    style: ['css', 'scss', 'sass', 'less', 'stylus', 'styl'],
+    templet: ['hbs', 'swig', 'htm', 'html', 'php', 'jsp'],
+    script: ['js', 'jsx', 'coffee', 'cjsx', 'ts', 'tsx']
+  }
+
+  var staticType = 'script'
+  for (var item in all) {
+    var arys = all[item];
+    if (_.indexOf(arys, type) > -1) staticType = item;
+  }
+  return staticType;
+}
+
 module.exports = {
   class: Class,
+  chkType: chkType,
   inherits: inherits
 }

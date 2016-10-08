@@ -1,10 +1,9 @@
 config = require '../out_config';
 
 module.exports = (gulp, $, slime, env, port)->
-    return (cb) ->
-        slime.build ['pages'], false, {
-          env: env
-          noCommon: false
-          source: 'dir'
-          port: port
-        }, cb
+    return (done) ->
+      slime.js ['pages'], {
+        env: env
+        source: 'dir'
+        port: port
+      }, done
