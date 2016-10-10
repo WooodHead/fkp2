@@ -11,16 +11,18 @@ ignore_file="$ignore_file2  $ignore_file3"
 nodemon_ignore="$ignore_file --ignore public/ --ignore dist/ --ignore .git/ --ignore node_modules/"
 nodemon_ext="-e js,jsx,css,html"
 nodemon_file="index.js"
-nodemon_harmony="--harmony server/index.js"
+nodemon_harmony="--harmony index.js"
 nodemon_watch=""
 nodemon_param="$nodemon_ext $nodemon_ignore $nodemon_harmony"
 
 # dev
 dev(){
     if [ $1 ]; then
-        nodemon $nodemon_param dev $1 &
+        node index.js dev &
+        # nodemon $nodemon_param dev $1 &
     else
-        nodemon $nodemon_param dev &
+        node index.js dev &
+        # nodemon $nodemon_param dev &
     fi
 
     gulp dev

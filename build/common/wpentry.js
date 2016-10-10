@@ -18,18 +18,15 @@ module.exports = function(dirname, opts, files, util){
 
   //make webpack plugins
   var wpPlugins = function(dirname, opts) {
-    var commonName = opts.env !== 'pro' ? '_common.js' : '_common_[hash].js'
+    var commonName = opts.env !== 'pro' ? 'common.js' : 'common_[hash].js'
     var venders,
         common_trunk_config = {
-          name: '_common',
+          name: 'common',
           filename: commonName,
-          minChunks: 3, //Infinity
+          minChunks: 1, //Infinity
           async: false,
-          children: true
+          children: false
         }
-        // new webpack.ResolverPlugin([
-        //   new webpack.ResolverPlugin.FileAppendPlugin(['/dist/common.js'])
-        // ])
 
     var ret_plugins = [
       new webpack.optimize.OccurenceOrderPlugin(),
@@ -40,39 +37,28 @@ module.exports = function(dirname, opts, files, util){
         allChunks: opts.isPack === true ? true : false
       }),
       new webpack.optimize.CommonsChunkPlugin(common_trunk_config),
-      // new webpack.ProvidePlugin({
-      //     libs: "libs",
-      //     api: "api"
-      // })
     ]
 
     if (opts.env !== 'pro'){
-      ret_plugins.concat([
+      ret_plugins = [
+        new webpack.optimize.OccurenceOrderPlugin(),
+        new webpack.IgnorePlugin(/vertx/), // https://github.com/webpack/webpack/issues/353
+        new ExtractTextPlugin("../css/js_[name]_[contenthash].css", {
+          allChunks: opts.isPack === true ? true : false
+        }),
+        new webpack.optimize.CommonsChunkPlugin(common_trunk_config),
         new webpack.HotModuleReplacementPlugin(),
         new webpack.DefinePlugin({
           'process.env': {
               NODE_ENV: "dev"
           }
         })
-      ])
-    }
-
-    // 由gulp watch传过来的编译，直接返回
-    var _watch = opts.watch
-    if (_watch) {
-      return ret_plugins;
+      ]
     }
 
     if ( _.isString(dirname) && dirname !== 'pages' ) {
       common_trunk_config.filename = "./otherCommon/_" + dirname + ".js";
     }
-
-    // if ( _.isObject(dirname) && _.isArray(dirname) ) {
-    //   venders = dirname
-    //   for (var _v in venders) {
-    //     ret_plugins.push( new webpack.optimize.CommonsChunkPlugin(_v, _v + '.js', 3) )
-    //   }
-    // }
 
     return ret_plugins;
   }
@@ -137,11 +123,7 @@ module.exports = function(dirname, opts, files, util){
           // 只去解析运行目录下的 public 文件夹
           path.join(__dirname, '../../public'),
         ],
-        // exclude: function(path) {
-        //   // 路径中含有 node_modules 的就不去解析。
-        //   var isNpmModule = !!path.match(/node_modules/);
-        //   return isNpmModule;
-        // },
+        // exclude: 
       })
     } else {
       module.loaders.push({
@@ -171,32 +153,32 @@ module.exports = function(dirname, opts, files, util){
     var _watch = ( opts.env && opts.env.indexOf('pro')>-1 ? false : true )
 
     return {
-        cache: true,
-        debug: true,
-        progress: true,
-        colors: true,
-        recursive: true,
-        entry: files,
-        watch: _watch,
-        output: {
-          path: out2path,
-          publicPath: '/js/',
-          filename: filename,
-          chunkFilename: chunkFilename,
-          libraryTarget:'var',
-        },
-        externals: _externals,
-        plugins: _plugins,
-        resolve: {
-          root: path.resolve(__dirname, '../../node_modules'),
-          alias: alias,
-          extensions: ['', '.js', '.jsx', '.ts', '.tsx', '.coffee', '.html', '.css', '.styl', '.less', '.hbs', '.rt', '.md'],
-          modulesDirectories: ["node_modules"],
-        },
-        module: custom_modules(opts),
-        ts: {
-          compiler: 'ntypescript'
-        }
+      cache: true,
+      debug: true,
+      progress: true,
+      colors: true,
+      recursive: true,
+      entry: files,
+      watch: _watch,
+      output: {
+        path: out2path,
+        publicPath: '/js/',
+        filename: filename,
+        chunkFilename: chunkFilename,
+        libraryTarget:'var',
+      },
+      externals: _externals,
+      plugins: _plugins,
+      resolve: {
+        root: path.resolve(__dirname, '../../node_modules'),
+        alias: alias,
+        extensions: ['', '.js', '.jsx', '.ts', '.tsx', '.coffee', '.html', '.css', '.styl', '.less', '.hbs', '.rt', '.md'],
+        modulesDirectories: ["node_modules"],
+      },
+      module: custom_modules(opts),
+      ts: {
+        compiler: 'ntypescript'
+      }
     }
   }
 

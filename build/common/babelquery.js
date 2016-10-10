@@ -11,22 +11,19 @@ var babelrcObject = {
         "transform-decorators-legacy",
         "transform-react-display-name"
     ],
-    
+
     "cacheDirectory": true,
 
     "env": {
         "development": {
             "plugins": [
-                "typecheck", ["react-transform", {
-                    "transforms": [{
-                        "transform": "react-transform-catch-errors",
-                        "imports": ["react", "redbox-react"]
-                    }]
-                }]
+                // "react-hot-loader/babel",   for 3
+                "typecheck"
             ]
         },
         "dev": {
             "plugins": [
+                "react-hot-loader/babel",
                 "typecheck", ["react-transform", {
                     "transforms": [{
                         "transform": "react-transform-catch-errors",
@@ -49,27 +46,27 @@ var babelLoaderQuery = Object.assign({}, babelrcObjectDevelopment, babelrcObject
 
 // make sure react-transform is enabled
 babelLoaderQuery.plugins = babelLoaderQuery.plugins || [];
-var reactTransform = null;
-for (var i = 0; i < babelLoaderQuery.plugins.length; ++i) {
-    var plugin = babelLoaderQuery.plugins[i];
-    if (Array.isArray(plugin) && plugin[0] === 'react-transform') {
-        reactTransform = plugin;
-    }
-}
-if (!reactTransform) {
-    reactTransform = ['react-transform', { transforms: [] }];
-    babelLoaderQuery.plugins.push(reactTransform);
-}
-if (!reactTransform[1] || !reactTransform[1].transforms) {
-    reactTransform[1] = Object.assign({}, reactTransform[1], { transforms: [] });
-}
-
-// make sure react-transform-hmr is enabled
-reactTransform[1].transforms.push({
-  transform: 'react-transform-hmr',
-  imports: ['react'],
-  locals: ['module']
-})
+// var reactTransform = null;
+// for (var i = 0; i < babelLoaderQuery.plugins.length; ++i) {
+//     var plugin = babelLoaderQuery.plugins[i];
+//     if (Array.isArray(plugin) && plugin[0] === 'react-transform') {
+//         reactTransform = plugin;
+//     }
+// }
+// if (!reactTransform) {
+//     reactTransform = ['react-transform', { transforms: [] }];
+//     babelLoaderQuery.plugins.push(reactTransform);
+// }
+// if (!reactTransform[1] || !reactTransform[1].transforms) {
+//     reactTransform[1] = Object.assign({}, reactTransform[1], { transforms: [] });
+// }
+//
+// // make sure react-transform-hmr is enabled
+// reactTransform[1].transforms.push({
+//   transform: 'react-transform-hmr',
+//   imports: ['react'],
+//   locals: ['module']
+// })
 
 // for development
 module.exports = babelLoaderQuery
