@@ -42,9 +42,6 @@ gulp.task 'clean:build', getTask('clean-build')
 # 清理dist/dev目录
 gulp.task 'clean:dev', getTask('clean-dev')
 
-# 生成API文档，有待改良
-gulp.task 'doc', getTask('doc')
-
 # 构建任务，生成压缩版与未压缩版
 gulp.task 'build',['clean:dev','clean:build'], () ->
     process.env.WATCH_FILE = 'false'
@@ -84,6 +81,7 @@ gulp.task "pro", ['clean:build','ie:pro','fonts:pro','pagecss:pro','copyThirdJsT
 # 对静态页面进行编译
 gulp.task 'html', getTask('html')  #webpack解析
 gulp.task 'html:dev', getTask('html','dev')   #交由服务器端解析
+gulp.task 'html:pro', getTask('html','pro') #交由服务器端解析
 gulp.task 'html:build', getTask('html','pro') #交由服务器端解析
 
 # ----

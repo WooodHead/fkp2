@@ -2,6 +2,7 @@ WebpackDevServer = require 'webpack-dev-server'
 Attachment2commonPlugin = require('./plugins/attachment2common-webpack-plugin')
 WriteMemoryFilePlugin = require('./plugins/writememoryfile-webpack-plugin')
 ExtractTextPlugin = require('extract-text-webpack-plugin')
+BrowserSyncPlugin = require('browser-sync-webpack-plugin')
 
 module.exports = (util) ->
   _ = util._
@@ -188,6 +189,18 @@ module.exports = (util) ->
 
           if process.env.WATCH_FILE == 'true'
             _wpcfg.watch = true
+            _wpcfg.plugins.push new BrowserSyncPlugin(
+                # BrowserSync options
+                {
+                  host: 'localhost'
+                  port: configs.ports.dev
+                  proxy: 'http://localhost:8060/'
+                },
+                # plugin options
+                {
+                  reload: false
+                }
+              )               
             webpack _wpcfg, (err, stats) ->
               if err then throw new gutil.PluginError '[webpack]', err
               gutil.log '[webpack]', stats.toString { colors: true }
@@ -224,7 +237,19 @@ module.exports = (util) ->
             }),
             new webpack.optimize.CommonsChunkPlugin( this.jsruntime.params.wpCommonTrunk ),
             new webpack.HotModuleReplacementPlugin(),
-            new Attachment2commonPlugin( path.join _dist, '/precommon.js' )
+            new Attachment2commonPlugin( path.join _dist, '/precommon.js' ),
+            new BrowserSyncPlugin(
+              # BrowserSync options
+              {
+                host: 'localhost'
+                port: configs.ports.dev
+                proxy: 'http://localhost:8060/'
+              },
+              # plugin options
+              {
+                reload: false
+              }
+            )
           ]
 
           # webpack _wpcfg, (err, stats) ->
