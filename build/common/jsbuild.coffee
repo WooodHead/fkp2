@@ -1,5 +1,7 @@
 WebpackDevServer = require 'webpack-dev-server'
 Attachment2commonPlugin = require('./plugins/attachment2common-webpack-plugin')
+WriteMemoryFilePlugin = require('./plugins/writememoryfile-webpack-plugin')
+ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 module.exports = (util) ->
   _ = util._
@@ -31,77 +33,77 @@ module.exports = (util) ->
           opts = if opts then _.extend(defaults, opts) else defaults
           this.env = opts.env
 
-          _files = this.readDirs(dir, opts)
-          __files = _files
-
           if opts.env == 'pro'
             opts.md5 = true
           else
             opts.md5 = false
 
-          _config = this.initEntry __files, opts, cb
-          if __files.precommon or __files.ie
-            this.gulpJsBuild __files, opts
+          if opts.env is 'pro'
+            _dist = path.join( configs.dirs.dist + '/' + configs.version + '/js/')
           else
-            # this.wpJsBuild _config, opts, cb
-            this.wpDevBuild _config, opts, cb
+            _dist = path.join( configs.dirs.dist + '/' + configs.version + '/dev/js/')
+
+          _files = this.readDirs(dir, opts)
+          _wpconfig = this.initEntry _files, opts, cb
+
+          this.jsruntime = {
+            dist: _dist
+            files: _files
+            webpackConfig: _wpconfig
+            callback: cb
+            md5: opts.md5
+            opts: opts
+          }
+
+          return this
+
+          # if _files.precommon or _files.ie
+          #   this.gulpJsBuild opts
+          # else
+          #   # this.wpJsBuild opts
+          #   this.wpDevBuild opts
 
 
       # gulp build js
-      gulpJsBuild: (files, opts, cb) ->
-          nEntry = {}
-          nowp = {}
+      gulpJsBuild: () ->
           that = this
+          _dist = this.jsruntime.dist
+          _md5 = this.jsruntime.md5
+          _files = this.jsruntime.files
+          _cb = this.jsruntime.callback
+          _wpcfg = this.jsruntime.webpackConfig
+          _opts = this.jsruntime.opts
 
-          nEntry = files
-
-          if nEntry.hasOwnProperty('ie')
-            nowp.ie = _.clone(nEntry.ie)
-            delete nEntry.ie
-
-          if nEntry.hasOwnProperty('precommon')
-            nowp.precommon = _.cloneDeep(nEntry.precommon)
-            delete nEntry.precommon
-
-          if opts.method is 'gulp'
-            nowp = nEntry
-
-          # _md5 = true opts.env is 'pro'
-          if opts.env == 'pro' then _md5 = true else _md5 = false
-          if opts.method is 'gulp' or nowp.ie or nowp.precommon
-
-            _dist = path.join( configs.dirs.dist + '/' + configs.version + '/dev/js/')
-            if opts.env is 'pro'
-              _dist = path.join( configs.dirs.dist + '/' + configs.version + '/js/')
-
-            for file of nowp
-              if nowp[file].length
-                do (file) ->
-                  gulp.src(nowp[file])
-                  .pipe $.plumber()
-                  .pipe $.concat file + '.js'
-                  .pipe $.if opts.md5, $.uglify()
-                  .pipe $.if opts.md5, $.md5({ size: 10, separator: '__' })
-                  .pipe gulp.dest(_dist)
-                  # .pipe $.map (item) ->
-                  #   _filename = path.basename(item.path).toString()
-                  #   if file.indexOf "common">-1 || file.indexOf "ie">-1
-                  #       that.mapper['commonDependencies']['js'][file] = _filename
-                  #   else
-                  #       that.mapper['dependencies']['js'][file] = _filename
-                  #   return
-
-
+          for file of _files
+            if _files[file].length
+              do (file) ->
+                gulp.src(_files[file])
+                .pipe $.plumber()
+                .pipe $.concat file + '.js'
+                .pipe $.if _md5, $.uglify()
+                .pipe $.if _md5, $.md5({ size: 10, separator: '__' })
+                .pipe gulp.dest(_dist)
+                # .pipe $.map (item) ->
+                #   _filename = path.basename(item.path).toString()
+                #   if file.indexOf "common">-1 || file.indexOf "ie">-1
+                #       that.mapper['commonDependencies']['js'][file] = _filename
+                #   else
+                #       that.mapper['dependencies']['js'][file] = _filename
+                #   return
 
 
       # webpack dll to make common.js
-      wpDllBuildCommon: (files, opts, cb) ->
-          _dist = path.join( configs.dirs.dist + '/' + configs.version + '/dev/js/')
-          if opts.env is 'pro'
-            _dist = path.join( configs.dirs.dist + '/' + configs.version + '/js/')
+      wpDllBuildCommon: () ->
+          that = this
+          _dist = this.jsruntime.dist
+          _md5 = this.jsruntime.md5
+          _files = this.jsruntime.files
+          _cb = this.jsruntime.callback
+          _wpcfg = this.jsruntime.webpackConfig
+          _opts = this.jsruntime.opts
 
           cfg = {
-            entry: files
+            entry: _files
             output: {
               path: _dist
               filename: '[name].dll.js'
@@ -111,7 +113,7 @@ module.exports = (util) ->
               library: '[name]_library'
             }
             plugins: [
-              new webpack.DllPlugin({
+              new webpack.DllPlugin(
                 # path
                 # 定义 manifest 文件生成的位置
                 # [name]的部分由entry的名字替换
@@ -121,58 +123,128 @@ module.exports = (util) ->
                 # dll bundle 输出到那个全局变量上
                 # 和 output.library 一样即可。
                 name: '[name]_library'
-              })
+              )
             ]
           }
 
+      wpJsBuild: () ->
+          that = this
+          _dist = this.jsruntime.dist
+          _md5 = this.jsruntime.md5
+          _files = this.jsruntime.files
+          _cb = this.jsruntime.callback
+          _wpcfg = this.jsruntime.webpackConfig
+          _opts = this.jsruntime.opts
 
+          commonFileName = if _md5 then 'common__[hash].js' else 'common.js'
+          paramsForCommonsChunk =
+            name: 'common'
+            filename: commonFileName
+            minChunks: 1, # //Infinity
+            async: false
+            children: false
+
+          this.jsruntime.params = {
+            wpCommonTrunk: paramsForCommonsChunk
+          }
+
+          if _md5
+            this.wpProBuild()
+          else
+            this.wpDevBuild()
 
       # webpack build js
-      wpJsBuild: (cfg, opts, cb) ->
+      wpProBuild: () ->
           that = this
-          _dist = path.join( configs.dirs.dist + '/' + configs.version + '/dev/js/')
-          if opts.env is 'pro'
-            _dist = path.join( configs.dirs.dist + '/' + configs.version + '/js/')
+          _dist = this.jsruntime.dist
+          _md5 = this.jsruntime.md5
+          _files = this.jsruntime.files
+          _cb = this.jsruntime.callback
+          _wpcfg = this.jsruntime.webpackConfig
+          _opts = this.jsruntime.opts
 
-          cfg.plugins.push new Attachment2commonPlugin(_dist + '/precommon.js')
+          _wpcfg.plugins = [
+            new webpack.DefinePlugin({
+              'process.env': {
+                  NODE_ENV: "production"
+              }
+            }),
+            new webpack.optimize.OccurenceOrderPlugin(),
+            new webpack.IgnorePlugin(/vertx/), # // https://github.com/webpack/webpack/issues/353
+            new webpack.NoErrorsPlugin(),
+            new webpack.optimize.DedupePlugin(),
+            new ExtractTextPlugin("../css/js_[name]_[contenthash].css", {
+              allChunks: true
+            }),
+            new webpack.optimize.CommonsChunkPlugin( this.jsruntime.params.wpCommonTrunk ),
+            new Attachment2commonPlugin( path.join _dist, '/precommon.js' ),
+            new webpack.optimize.UglifyJsPlugin { compress: { warnings: false } }
+          ]
 
-          if (opts.md5)
-            cfg.plugins.push new webpack.optimize.UglifyJsPlugin { compress: { warnings: false } }
-
-          _webpackDevCompiler = webpack(cfg)
-          _webpackDevCompiler.run (err, stats) ->
-              if err then throw new gutil.PluginError '[webpack]', err
-              gutil.log '[webpack]', stats.toString { colors: true }
-              cb()
-
-          # webpack cfg, (err, stats) ->
-          #   if (err) then throw new gutil.PluginError '[webpack]', err
-          #   gutil.log '[webpack]', stats.toString { colors: true }
-          #   that.watch().css()
-          #   # cb()
-
-          # cfg.plugins.push new webpack.DllReferencePlugin({
+          # _wpcfg.plugins.push new webpack.DllReferencePlugin({
           #   context: _dist,
           #   manifest: require('./common-manifest.json')
           # })
 
+          if process.env.WATCH_FILE == 'true'
+            _wpcfg.watch = true
+            webpack _wpcfg, (err, stats) ->
+              if err then throw new gutil.PluginError '[webpack]', err
+              gutil.log '[webpack]', stats.toString { colors: true }
+              _cb()
+          else
+            _webpackDevCompiler = webpack(_wpcfg)
+            _webpackDevCompiler.run (err, stats) ->
+                if err then throw new gutil.PluginError '[webpack]', err
+                gutil.log '[webpack]', stats.toString { colors: true }
+                _cb()
 
 
-
-      wpDevBuild: (cfg, opts, cb) ->
+      # devServer
+      # watch
+      wpDevBuild: () ->
           that = this
-          _dist = path.join( configs.dirs.dist + '/' + configs.version + '/dev/js/')
-          cfg.plugins.push new Attachment2commonPlugin(_dist + '/precommon.js')
+          _dist = this.jsruntime.dist
+          _md5 = this.jsruntime.md5
+          _files = this.jsruntime.files
+          _cb = this.jsruntime.callback
+          _wpcfg = this.jsruntime.webpackConfig
+          _opts = this.jsruntime.opts
 
-          for item of cfg.entry
-            cfg.entry[item].unshift(
+          _wpcfg.plugins = [
+            new webpack.DefinePlugin({
+              'process.env': {
+                  NODE_ENV: "development"
+              }
+            }),
+            new webpack.optimize.OccurenceOrderPlugin(),
+            new webpack.IgnorePlugin(/vertx/), # // https://github.com/webpack/webpack/issues/353
+            new ExtractTextPlugin("../css/js_[name]_[contenthash].css", {
+              allChunks: true
+            }),
+            new webpack.optimize.CommonsChunkPlugin( this.jsruntime.params.wpCommonTrunk ),
+            new webpack.HotModuleReplacementPlugin(),
+            new Attachment2commonPlugin( path.join _dist, '/precommon.js' )
+          ]
+
+          # webpack _wpcfg, (err, stats) ->
+          #     if err then throw new gutil.PluginError '[webpack]', err
+          #     gutil.log '[webpack]', stats.toString { colors: true }
+          #     that.watch().css()
+          #     _cb()
+
+          for item of _wpcfg.entry
+            _wpcfg.entry[item].unshift(
               # "react-hot-loader/patch", for 3
               "webpack-dev-server/client?http://localhost:"+configs.ports.dev+"/",
               "webpack/hot/only-dev-server"
             )
 
+          _wpcfg.plugins.push(
+            new WriteMemoryFilePlugin()
+          )
 
-          new WebpackDevServer webpack(cfg), {
+          new WebpackDevServer webpack(_wpcfg), {
             headers: {
               'Access-Control-Allow-Origin': '*',
               'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
@@ -210,4 +282,5 @@ module.exports = (util) ->
             if err then throw new gutil.PluginError("webpack-dev-server", err)
             gutil.log("[webpack-dev-server]", "http://localhost:8070/webpack-dev-server/index.html")
             that.watch().css()
+            _cb()
   }

@@ -137,15 +137,10 @@ module.exports = (util) ->
         if this.env == 'pro'
           _htmlDistPath = configs.htmlBuildPath
 
-
-      # del [ _htmlDistPath ]
-
-
       errrHandler = ( e ) ->
           # 控制台发声,错误时beep一下
           gutil.beep()
           gutil.log( e )
-
 
       gulp.src files, { base: baseHtmlPath }
       .pipe $.plumber({ errorHandler: errrHandler })

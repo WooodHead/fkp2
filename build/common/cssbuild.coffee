@@ -23,18 +23,33 @@ module.exports = (util) ->
 
       _files = this.readDirs(dir, opts)
 
+      if opts.env == 'pro'
+        opts.md5 = true
+      else
+        opts.md5 = false
+
+      _cssDistPath = configs.cssDevPath
+      _imgDistPath = configs.imagesDevPath
+      if this.env == 'pro'
+        _cssDistPath = configs.cssBuildPath
+        _imgDistPath = configs.imagesBuildPath
+
+      this.cssruntime = {
+        cssDistPath: _cssDistPath
+        imgDistPath: _imgDistPath
+        files: _files
+        callback: cb
+        md5: opts.md5
+        opts: opts
+      }
+
       this.gulpCssBuild(_files, opts)
 
     # gulp build css
     gulpCssBuild: (files, opts) ->
-      _cssDistPath = configs.cssDevPath
-      _imgDistPath = configs.imagesDevPath
-
-      _md5 = false
-      if this.env == 'pro'
-        _md5 = true
-        _cssDistPath = configs.cssBuildPath
-        _imgDistPath = configs.imagesBuildPath
+      _cssDistPath = this.cssruntime.cssDistPath
+      _imgDistPath = this.cssruntime.imgDistPath
+      _md5 = this.cssruntime.md5       
 
       switch opts.type
         when "less"   then cssstyle = $.less || $.empty
@@ -43,9 +58,6 @@ module.exports = (util) ->
         when "sass"   then cssstyle = $.sass || $.empty
         when "scss"   then cssstyle = $.sass || $.empty
         else cssstyle = $.less || $.empty
-
-
-      # del [ _cssDistPath, _imgDistPath ]
 
       errrHandler = ( e ) ->
           # 控制台发声,错误时beep一下

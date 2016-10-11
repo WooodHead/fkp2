@@ -41,18 +41,18 @@ module.exports = function(dirname, opts, files, util){
 
     if (opts.env !== 'pro'){
       ret_plugins = [
+        new webpack.DefinePlugin({
+          'process.env': {
+              NODE_ENV: "development"
+          }
+        }),
         new webpack.optimize.OccurenceOrderPlugin(),
         new webpack.IgnorePlugin(/vertx/), // https://github.com/webpack/webpack/issues/353
         new ExtractTextPlugin("../css/js_[name]_[contenthash].css", {
           allChunks: opts.isPack === true ? true : false
         }),
         new webpack.optimize.CommonsChunkPlugin(common_trunk_config),
-        new webpack.HotModuleReplacementPlugin(),
-        new webpack.DefinePlugin({
-          'process.env': {
-              NODE_ENV: "dev"
-          }
-        })
+        new webpack.HotModuleReplacementPlugin()
       ]
     }
 
@@ -111,19 +111,15 @@ module.exports = function(dirname, opts, files, util){
 
     if (configs.babel) {
       require('babel-polyfill');
-      var _babel = 'babel'
-      if (opts.env !== 'pro') {
-        _babel = 'babel?' + JSON.stringify(babelQuery)
-      }
       module.loaders.push({
         test: /\.js(x)?$/,
         exclude: /(node_modules|bower_components|_builder|dist)/,
-        loader: _babel,
+        loader: 'babel?' + JSON.stringify(babelQuery),
         include: [
           // 只去解析运行目录下的 public 文件夹
           path.join(__dirname, '../../public'),
         ],
-        // exclude: 
+        // exclude:
       })
     } else {
       module.loaders.push({
@@ -140,7 +136,7 @@ module.exports = function(dirname, opts, files, util){
         filename = configs.hash ? '[name]__[hash].js' : '[name].js'
         chunkFilename = configs.hash ? '[id]_[name]_[hash].js' : '[id]_[name].js'
     if (opts.env === 'pro') {
-      out2path = path.join(__dirname, '../../', configs.dirs.dist + '/' + configs.version + '/js/');
+      out2path = path.join(configs.dirs.dist + '/' + configs.version + '/js/');
       filename = '[name]__[hash].js'
       chunkFilename = '[id]_[name]_[hash].js'
     }
@@ -168,7 +164,7 @@ module.exports = function(dirname, opts, files, util){
         libraryTarget:'var',
       },
       externals: _externals,
-      plugins: _plugins,
+      plugins: [],
       resolve: {
         root: path.resolve(__dirname, '../../node_modules'),
         alias: alias,

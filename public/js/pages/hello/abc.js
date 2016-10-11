@@ -1,5 +1,5 @@
-import api from 'api'
-import libs from 'libs'
+// import api from 'api'
+// import libs from 'libs'
 require('./_common/xyz')
 libs.msgtips('abc')
 

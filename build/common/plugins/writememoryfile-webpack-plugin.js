@@ -1,4 +1,4 @@
-// attachment2common.plugin.js
+// writeMemoryfile.plugin.js
 
 var fs = require('fs');
 var path = require('path');
@@ -6,43 +6,22 @@ var md5 = require('md5');
 var _ = require('lodash')
 var ConcatSource = require("webpack-core/lib/ConcatSource");
 
-function Attachment2commonPlugin(_file, type) {
-  this.attachFile = _file
-  if (!type) type = 'prepend'
-  this.attachType = type
+function WriteMemoryFilePlugin(_file, type) { }
+
+module.exports = WriteMemoryFilePlugin;
+
+WriteMemoryFilePlugin.prototype.apply = function(compiler) {
+  compiler.plugin('done', function(stats) {
+    var assets = stats.compilation.assets
+    Object.keys(assets).forEach(function(fileName) {
+      if(process.env.NODE_ENV === 'development'){
+        var file = assets[fileName]
+        var contents = file.source()
+        fs.writeFileSync(file.existsAt, contents, 'utf-8')
+      }
+    })
+  })
 }
-
-module.exports = Attachment2commonPlugin;
-
-Attachment2commonPlugin.prototype.apply = function(compiler) {
-  var attachFile = this.attachFile
-  var attachType = this.attachType
-  var parseJson = path.parse(attachFile)
-
-  compiler.plugin("compilation", function(compilation, params) {
-    compilation.plugin("optimize-chunk-assets", function(chunks, callback) {
-      chunks.forEach(function(chunk) {
-        chunk.files.forEach(function(file) {
-          if(!chunk.parents.length && chunk.filenameTemplate){
-            if(process.env.NODE_ENV === 'production'){
-              // parseJson.dir
-              // parseJson.ext
-              // parseJson.name
-              var _files = fs.readdirSync(parseJson.dir)
-              _files.map(function(item){
-                if( fs.statSync( path.join( parseJson.dir, item ) ).isFile() && item.indexOf(parseJson.name)>-1){
-                  attachFile = path.join( parseJson.dir, item)
-                }
-              })
-            }
-            var _attachFileContent = fs.readFileSync(attachFile).toString()
-            compilation.assets[file] = new ConcatSource(_attachFileContent, "\n", "\/**attachment2common**\/", "\n", compilation.assets[file]);
-          }
-        });
-      });
-      callback();
-    });
-  });
 
   // compiler.plugin('done', function(stats) {
 
@@ -100,4 +79,3 @@ Attachment2commonPlugin.prototype.apply = function(compiler) {
     // });
 
   // });
-};

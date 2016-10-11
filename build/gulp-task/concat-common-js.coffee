@@ -20,8 +20,5 @@ getFileMap = (env) ->
 
 module.exports = (gulp, $, slime, env)->
 		return () ->
-				slime.js getFileMap(env), {
-					pack: true
-					rename: 'precommon'
-					env: env
-				}
+				slime.js getFileMap(env), { pack: true, rename: 'precommon', env: env }
+				.gulpJsBuild()

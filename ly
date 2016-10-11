@@ -42,37 +42,16 @@ bbdev(){
 }
 
 pro(){
-    cd public
-    gulp build
 
-    cd ..
     if [ $1 ]; then
-        nodemon $nodemon_param pro $1 &
+        node index.js pro &
+        # nodemon $nodemon_param pro $1 &
     else
-        nodemon $nodemon_param pro &
-    fi
-    sleep 2
-
-    cd public
-    if [ $1='test' ]; then
-        gulp watch:pro
-    else
-        if [ $1 ]; then
-            gulp watch:pro --port $1
-        else
-            gulp watch:pro
-        fi
+        node index.js pro &
+        # nodemon $nodemon_param pro &
     fi
 
-    # cd public
-    # gulp build
-    #
-    # cd ..
-    # nodemon -e js,jsx,css,html --ignore public/ --harmony index.js &
-    # sleep 2
-    #
-    # cd public
-    # gulp watch:pro
+    gulp pro
 }
 
 demo(){
@@ -149,9 +128,8 @@ server(){
 }
 
 build(){
-    cd public
     gulp build
-    pm2 restart all
+    # pm2 restart all
 }
 
 case $1 in

@@ -12,6 +12,13 @@ env = 'dev'
 args = process.argv.splice(2);
 options = minimist(args)
 
+process.env.WATCH_FILE = 'true'
+switch args[0]
+  when 'dev' then process.env.NODE_ENV = 'development'
+  when 'build' then process.env.NODE_ENV = 'production'
+  when 'pro' then process.env.NODE_ENV = 'production'
+  else process.env.NODE_ENV = 'development'
+
 # Load plugins
 $ = require('gulp-load-plugins')()
 
@@ -25,7 +32,6 @@ if !fs.existsSync('./dist')
 getTask = (task,env,port)->
     if !env
         env = 'dev'
-    process.env.NODE_ENV = env
     require('./build/gulp-task/'+task)(gulp, $, slime, env, port)
 
 
@@ -40,13 +46,14 @@ gulp.task 'clean:dev', getTask('clean-dev')
 gulp.task 'doc', getTask('doc')
 
 # 构建任务，生成压缩版与未压缩版
-# gulp.task 'build',['clean:dev','clean:build'], getTask('map','pro')
 gulp.task 'build',['clean:dev','clean:build'], () ->
+    process.env.WATCH_FILE = 'false'
     gulp.start 'pro'
 
 # 默认启动本地DEMO服务器
 gulp.task 'default',['clean:dev'], ->
     gulp.start 'server'
+
 
 gulp.task 'watch', ()->
     if options.port
@@ -54,22 +61,24 @@ gulp.task 'watch', ()->
     else
         gulp.start 'watch:dev'
 
+gulp.task 'watch:pro', ()->
+    if options.port
+        gulp.start 'watch:pro:port'
+    else
+        gulp.start 'watch:pro'
+
 #----
 gulp.task 'watch:dev', getTask('watch', 'dev')
 gulp.task 'watch:dev:port', getTask('watch', 'dev', options.port)
 gulp.task 'watch:pro', getTask('watch','pro')
-gulp.task 'watch:bb', getTask('watch','bb')
-gulp.task 'watch:ng', getTask('watch','ng')
+gulp.task 'watch:pro:port', getTask('watch', 'pro', options.port)
+
 
 #----
 #本地资源静态DEMO服务器/代理动态(koajs)服务器
 gulp.task "server", ['html','ie:dev','fonts:dev','pagecss:dev','copyThirdJsToDist:dev','buildCommon:dev'] , getTask('server')  # for demo
 gulp.task "dev", ['clean:dev', 'ie:dev','fonts:dev','pagecss:dev','copyThirdJsToDist:dev','buildCommon:dev'] , getTask('server','dev')  # for dev
 gulp.task "pro", ['clean:build','ie:pro','fonts:pro','pagecss:pro','copyThirdJsToDist:pro','buildCommon:pro'] , getTask('server','pro')  # for dev
-# gulp.task "ngdev", ['buildCommon:dev:ng','ie:dev','fonts:dev','pagecss:dev','copyThirdJsToDist:dev'] , getTask('server','ngpro')  # for angular dev and pro
-# gulp.task "ng", ['buildCommon:dev:ng','ie:dev','fonts:dev','pagecss:dev','copyThirdJsToDist:dev'] , getTask('server','ng')  # for demo and angular
-# gulp.task "bbdev", ['buildCommon:dev:bb','html','ie:dev','fonts:dev','pagecss:dev','copyThirdJsToDist:dev'] , getTask('server','bbpro')  # for backbone dev and pro
-# gulp.task "bb", ['buildCommon:dev:bb','html','ie:dev','fonts:dev','pagecss:dev','copyThirdJsToDist:dev'] , getTask('server','bb')  # for demo and backbone
 
 # ----
 # 对静态页面进行编译
@@ -84,7 +93,7 @@ gulp.task 'ie:pro', getTask('ie', 'pro')
 
 #----
 # 对字体图标资源复制至dist
-gulp.task 'fonts:dev', getTask('fonts-dev')
+gulp.task 'fonts:dev', getTask('fonts-dev', 'dev')
 gulp.task 'fonts:pro', getTask('fonts-dev', 'pro')
 gulp.task 'fonts:build', getTask('fonts-build')
 

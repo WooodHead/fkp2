@@ -25,8 +25,8 @@ module.exports = (gulp,$,slime,env)->
 
     _md5 = false;
     _src = {
-        js: [config.staticPath + '/dev/js/**/*.js','!'+config.jsDevPath+'/_common.js'],
-        css: [config.staticPath + '/dev/css/**/*.css'],
+        js: [config.staticPath + '/dev/js/*.js','!'+config.jsDevPath+'/precommon.js'],
+        css: [config.staticPath + '/dev/css/*.css'],
         mapj: config.staticPath + '/dev/map.json'
     }
 
@@ -96,6 +96,7 @@ module.exports = (gulp,$,slime,env)->
             # if encounter 'Error: watch ENOSPC': if in linux you must do this : https://github.com/gulpjs/gulp/issues/217
             # means edit max_user_watches number
             gulp.watch [config.dirs.src + '/css/**/*.?(less|scss|css)',config.dirs.src + '/images/slice/*.png'], ['pagecss:dev']
+
             #js
             gulp.watch config.dirs.src + '/js/?(modules|pages|widgets|mixins|libs)/**/*.?(coffee|js|jsx|cjsx)', [buildCommon]
             gulp.watch config.dirs.react + '/?(modules|widgets|mixins)/**/*.?(coffee|js|jsx|cjsx)', [buildCommon]
@@ -111,14 +112,15 @@ module.exports = (gulp,$,slime,env)->
             gulp.watch config.dirs.src + '/html/**/*.*', (file) ->
                 slime.build(file.path, {type: 'hbs', 'env': env});
 
-        gulp.start 'sync'
+        # watch
+        # gulp.start 'sync'
 
     return (cb)->
         if (env == 'pro')
             _md5 = true
             _src = {
-                js: [config.staticPath + '/js/**/*.js','!'+config.staticPath+'/js/_common.js'],
-                css : [config.staticPath + '/css/**/*.css'],
+                js: [config.staticPath + '/js/*.js','!'+config.staticPath+'/js/precommon.js'],
+                css : [config.staticPath + '/css/*.css'],
                 mapj: config.staticPath + '/map.json'
             }
 
