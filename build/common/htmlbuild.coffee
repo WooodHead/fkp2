@@ -108,8 +108,16 @@ module.exports = (util) ->
 
       # 合并配置文件
       opts = if opts then _.extend(defaults, opts) else defaults
-      this.env = opts.env
       opts.pack = true
+      this.htmlruntime = {}
+
+      if opts.env == 'demo'
+        this.env = 'dev'
+        opts.env = 'dev'
+        this.htmlruntime.demo = true
+      else
+        this.env = opts.env
+        this.htmlruntime.demo = false
 
       _files = this.readDirs(dir, opts)
 
@@ -123,52 +131,56 @@ module.exports = (util) ->
 
 
     gulpHtmlBuild: (files, opts) ->
-      list = {}
-      indexList = {}
-      tmpObj = {}
-      baseHtmlPath = path.join configs.dirs.src, 'html/'
+        that = this
+        parseTemplet = true
+        baseHtmlPath = path.join configs.dirs.src, 'html/'
+        _htmlDistPath = configs.htmlDevPath
 
-      parseTemplet = true
-      _htmlDistPath = configs.htmlDevPath
+        # clog('parse hbs:' + options.env)
+        if ['pro', 'dev'].indexOf(this.env) > -1
+          parseTemplet = false
+          if this.htmlruntime.demo
+            parseTemplet = true
+          if this.env == 'pro'
+            _htmlDistPath = configs.htmlBuildPath
 
-      # clog('parse hbs:' + options.env)
-      if ['pro', 'dev'].indexOf(this.env) > -1
-        parseTemplet = false
-        if this.env == 'pro'
-          _htmlDistPath = configs.htmlBuildPath
+        errrHandler = ( e ) ->
+            gutil.beep()
+            gutil.log( e )
 
-      errrHandler = ( e ) ->
-          # 控制台发声,错误时beep一下
-          gutil.beep()
-          gutil.log( e )
-
-      gulp.src files, { base: baseHtmlPath }
-      .pipe $.plumber({ errorHandler: errrHandler })
-      .pipe( do () ->
-        return through.obj (file, enc, cb) ->
-          ext_name = path.parse(file.path).ext.replace('.', '')
-          if (chkType(ext_name) || ext_name == 'md')
-            this.push(file)
-          cb()
-      )
-      .pipe $.newer(configs.htmlDevPath)
-      .pipe $.plumber()
-      .pipe $.if('*.md', getMd(opts))
-      .pipe $.fileInclude {
-          prefix: '@@'
-          basepath: '@file'
-          test: '123456'
-          context:
-            dev: !gutil.env.production
-        }
-      .pipe $.size()
-      .pipe getHtmlData(baseHtmlPath, opts)
-      .pipe $.if(parseTemplet, $.compileHandlebars())
-      .pipe $.rename( (path) ->
-          if (path.extname != '.php' || path.extname != '.jsp')
-            path.extname = '.html'
-            if (path.extname == '.md') then path.extname = '.md.html'
+        htmlCompiler = $.compileHandlebars
+        gulp.src files, { base: baseHtmlPath }
+        .pipe $.plumber({ errorHandler: errrHandler })
+        .pipe( do () ->
+          return through.obj (file, enc, cb) ->
+            ext_name = path.parse(file.path).ext.replace('.', '')
+            if (chkType(ext_name) || ext_name == 'md')
+              switch ext_name
+                when 'ejs' then htmlCompiler = $.ejs
+                when 'pug' then htmlCompiler = $.pug
+                when 'jade' then htmlCompiler = $.pug
+                else htmlCompiler = $.compileHandlebars
+              this.push(file)
+            cb()
         )
-      .pipe gulp.dest(_htmlDistPath)
+        .pipe $.newer(configs.htmlDevPath)
+        .pipe $.plumber()
+        .pipe $.if('*.md', getMd(opts))
+        .pipe $.fileInclude {
+            prefix: '@@'
+            basepath: '@file'
+            test: '123456'
+            context:
+              dev: !gutil.env.production
+          }
+        .pipe $.size()
+        .pipe getHtmlData(baseHtmlPath, opts)
+        .pipe $.if(parseTemplet, htmlCompiler())
+        .pipe $.rename( (path) ->
+            if (path.extname != '.php' || path.extname != '.jsp')
+              path.extname = '.html'
+              if (path.extname == '.md') then path.extname = '.md.html'
+          )
+        .pipe gulp.dest(_htmlDistPath)
 
   } # end return

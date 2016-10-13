@@ -1,4 +1,2 @@
-var libs = require('libs');
+let libs = require('libs');
 libs.msgtips('xyz')
-
-module.exports = {}

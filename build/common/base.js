@@ -135,8 +135,8 @@ function inherits( Super, protos, staticProtos ) {
 function chkType(type) {
   if (type.indexOf('.')===0) type = type.replace('.', '')
   var all = {
-    style: ['css', 'scss', 'sass', 'less', 'stylus', 'styl'],
-    templet: ['hbs', 'swig', 'htm', 'html', 'php', 'jsp'],
+    style: ['css', 'less', 'stylus', 'styl'],
+    templet: ['hbs', 'ejs', 'jade', 'pug', 'htm', 'html', 'php', 'jsp'],
     script: ['js', 'jsx', 'coffee', 'cjsx', 'ts', 'tsx']
   }
 

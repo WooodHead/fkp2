@@ -1,9 +1,7 @@
 fs = require('fs')
 path = require('path')
 gulp = require('gulp')
-gutil = require('gulp-util')
 minimist = require('minimist')
-configs = require './config'
 slime = require('./build/fkp.build.config')({
   gulp: gulp
 })
@@ -12,7 +10,7 @@ env = 'dev'
 args = process.argv.splice(2);
 options = minimist(args)
 
-process.env.WATCH_FILE = 'true'
+process.env.WATCH_FILE = 'true'   # build时不需要watch
 switch args[0]
   when 'dev' then process.env.NODE_ENV = 'development'
   when 'build' then process.env.NODE_ENV = 'production'
@@ -34,54 +32,44 @@ getTask = (task,env,port)->
         env = 'dev'
     require('./build/gulp-task/'+task)(gulp, $, slime, env, port)
 
-
-
 # 清理dist/目录
 gulp.task 'clean:build', getTask('clean-build')
 
 # 清理dist/dev目录
 gulp.task 'clean:dev', getTask('clean-dev')
 
-# 构建任务，生成压缩版与未压缩版
-gulp.task 'build',['clean:dev','clean:build'], () ->
-    process.env.WATCH_FILE = 'false'
-    gulp.start 'pro'
-
-# 默认启动本地DEMO服务器
-gulp.task 'default',['clean:dev'], ->
-    gulp.start 'server'
-
 
 gulp.task 'watch', ()->
-    if options.port
-        gulp.start 'watch:dev:port'
-    else
-        gulp.start 'watch:dev'
+  if options.port
+    getTask('watch', 'dev', options.port)
+  else
+    getTask('watch', 'dev')
 
 gulp.task 'watch:pro', ()->
-    if options.port
-        gulp.start 'watch:pro:port'
-    else
-        gulp.start 'watch:pro'
+  if options.port
+    getTask('watch', 'pro', options.port)
+  else
+    getTask('watch','pro')
 
 #----
-gulp.task 'watch:dev', getTask('watch', 'dev')
-gulp.task 'watch:dev:port', getTask('watch', 'dev', options.port)
-gulp.task 'watch:pro', getTask('watch','pro')
-gulp.task 'watch:pro:port', getTask('watch', 'pro', options.port)
-
-
-#----
-#本地资源静态DEMO服务器/代理动态(koajs)服务器
-gulp.task "server", ['html','ie:dev','fonts:dev','pagecss:dev','copyThirdJsToDist:dev','buildCommon:dev'] , getTask('server')  # for demo
+# ly demo   // watch  启动DEMO服务器， watch性能较好，用于静态开发环境
+# ly dev    // watch  启动node服务器   watch性能较好，用于node开发环境
+# ly pro    // watch  启动node服务器   watch性能较差，用于node/生产文件是否有问题
+# ly build  // no watch 构建任务，生成压缩版  不启动服务器
+gulp.task "demo", ['clean:dev', 'html', 'ie:dev', 'fonts:dev', 'pagecss:dev', 'copyThirdJsToDist:dev', 'buildCommon:demo'] , getTask('server', 'demo')  # for demo
 gulp.task "dev", ['clean:dev', 'ie:dev','fonts:dev','pagecss:dev','copyThirdJsToDist:dev','buildCommon:dev'] , getTask('server','dev')  # for dev
 gulp.task "pro", ['clean:build','ie:pro','fonts:pro','pagecss:pro','copyThirdJsToDist:pro','buildCommon:pro'] , getTask('server','pro')  # for dev
+gulp.task 'build',['clean:dev','clean:build'], () ->
+  process.env.WATCH_FILE = 'false'
+  gulp.start 'pro'
+gulp.task 'default',['clean:dev'], ->
+  gulp.start 'demo'
 
 # ----
 # 对静态页面进行编译
-gulp.task 'html', getTask('html')  #webpack解析
+gulp.task 'html', getTask('html', 'demo')     #webpack解析
 gulp.task 'html:dev', getTask('html','dev')   #交由服务器端解析
-gulp.task 'html:pro', getTask('html','pro') #交由服务器端解析
+gulp.task 'html:pro', getTask('html','pro')   #交由服务器端解析
 gulp.task 'html:build', getTask('html','pro') #交由服务器端解析
 
 # ----
@@ -132,14 +120,7 @@ gulp.task 'commonjs:pro', getTask('concat-common-js', 'pro')
 
 #----
 # 构建任务，生成未压缩
-# gulp.task 'buildCommon:dev',['wp:dev'], getTask('concat-common-js', 'dev')
-# gulp.task 'buildCommon:dev:ng',['wp:dev'], getTask('concat-common-js','ng')
-# gulp.task 'buildCommon:dev:bb',['wp:dev'], getTask('concat-common-js','bb')
-# # pro
-# gulp.task 'buildCommon:pro',['wp:pro'], getTask('concat-common-js', 'pro')
-# gulp.task 'buildCommon:pro:ng',['wp:pro'], getTask('concat-common-js','ng')
-# gulp.task 'buildCommon:pro:bb',['wp:pro'], getTask('concat-common-js','bb')
-
+gulp.task 'buildCommon:demo',['commonjs:dev', 'wp:demo']
 gulp.task 'buildCommon:dev',['commonjs:dev', 'wp:dev']
 gulp.task 'buildCommon:pro',['commonjs:pro', 'wp:pro']
 
@@ -148,6 +129,7 @@ gulp.task 'buildCommon:pro',['commonjs:pro', 'wp:pro']
 # js/pages编译并生成_common.js
 # gulp.task 'wp:dev', ['g:dev'], getTask('wp')
 # gulp.task 'wp:pro', ['g:pro'], getTask('wp', 'pro')
+gulp.task 'wp:demo', getTask('wp', 'demo')
 gulp.task 'wp:dev', getTask('wp', 'dev')
 gulp.task 'wp:pro', getTask('wp', 'pro')
 

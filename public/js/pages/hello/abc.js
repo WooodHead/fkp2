@@ -1,18 +1,12 @@
 // import api from 'api'
-// import libs from 'libs'
-require('./_common/xyz')
-libs.msgtips('abc')
+import * as libs from 'libs'
+import './_common/xyz'
 
-setTimeout(function(){
-    console.log(libs);
-    // api.get('/hello', function(data){
-    //     libs.msgtips(data.pdata)
-    // })
+setTimeout( () => {
+  console.log(libs)
+  libs.msgtips('abc')
 },500)
 
-setTimeout(function(){
+setTimeout( () => {
   console.log('======= ggg');
-    // api.req('/hello', function(data){
-    //     libs.msgtips(data.pdata)
-    // })
 },1000)

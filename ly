@@ -29,20 +29,7 @@ dev(){
 
 }
 
-bbdev(){
-    cd public
-    gulp bbdev
-
-    cd ..
-    nodemon $nodemon_param dev &
-    sleep 2
-
-    cd public
-    gulp watch
-}
-
 pro(){
-
     if [ $1 ]; then
         node index.js pro &
         # nodemon $nodemon_param pro $1 &
@@ -55,33 +42,10 @@ pro(){
 }
 
 demo(){
-    cd public
     gulp
 }
 
-ngdemo(){
-    cd public
-    gulp ng
-}
-
-ngdev(){
-    cd public
-    gulp ngdev
-    cd ..
-    nodemon $nodemon_param ngdev &
-}
-
-bbdemo(){
-    cd public
-    gulp bb
-}
-
-bbdemo(){
-    cd public
-    gulp bb
-}
-
-install2(){
+install(){
     # read -s -p "请输入sudo密码: " psd
     # echo $psd | sudo npm install nrm -g
     # nrm use cnpm
@@ -96,35 +60,8 @@ install2(){
     sudo npm install gulp -g
     sudo npm install nodemon -g
     sudo npm install node-gyp -g
-}
 
-install3(){
-    npm install nrm -g
-    nrm use cnpm
-    sleep 3
-    npm install gulp -g
-    npm install nodemon -g
-    npm install node-gyp -g
     npm install
-
-    cd public
-    npm install
-
-    cd ..
-}
-
-install(){
-    install2
-    npm install
-
-    cd public
-    npm install
-
-    cd ..
-}
-
-server(){
-	nodemon $nodemon_param dev
 }
 
 build(){
@@ -133,17 +70,11 @@ build(){
 }
 
 case $1 in
-  install)
+  i)
       install
       ;;
-  install2)
-      install2
-      ;;
-  install3)
-      install3
-      ;;
-  server)
-      server
+  install)
+      install
       ;;
   dev)
       dev $2
@@ -153,15 +84,6 @@ case $1 in
       ;;
   demo)
       demo
-      ;;
-  ngdemo)
-      ngdemo
-      ;;
-  ngdev)
-      ngdev
-      ;;
-  bbdemo)
-      bbdemo
       ;;
   build)
       build

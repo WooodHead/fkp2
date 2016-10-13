@@ -261,7 +261,7 @@ module.exports = (gulp, $, slime, env, _path)->
               makeHtmlListData()
               datas = { demoindex: list }
 
-            # console.log JSON.stringify(list)
+
             # 生成分页并生成列表页
             slime.html config.dirs.src + '/html/', {
               type: 'hbs'

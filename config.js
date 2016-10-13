@@ -1,8 +1,8 @@
 var path = require('path');
 var fs = require('fs');
-
 var static_dir = './public'
-var version = '2.15.14'
+var version = require('./package.json').version
+
 var config = {
     version: version,
 
@@ -24,11 +24,6 @@ var config = {
      */
     upload: './upload',
     upload_root: './upload',
-
-    // 用户头像目录
-    avatar: './upload',
-    avatar_root: './upload/avatar',
-
 
     /*
      * 允许editor编辑器上传图片
@@ -122,17 +117,13 @@ var config = {
 
 function _config(target){
     var _cfg = config;
-
     if (typeof target!=='string'){
-        target = false;
+      target = false;
     }
-
     if (target && fs.existsSync('./configs/'+target+'.js')){
-        _cfg = require('./configs/'+target+'.js');
-        _cfg = _.extend(config, _cfg);
+      _cfg = require('./configs/'+target+'.js');
+      _cfg = _.extend(config, _cfg);
     }
-
-
     return _cfg;
 }
 

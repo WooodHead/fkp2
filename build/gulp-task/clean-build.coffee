@@ -14,5 +14,3 @@ module.exports = (gulp,$) ->
     ], {
       force: true
     }
-    # gulp.src( [config.htmlDevPath, config.jsDevPath, config.cssDevPath, config.imagesDevPath, config.fontsDevPath,config.tmpPath])
-    # .pipe($.rimraf())
