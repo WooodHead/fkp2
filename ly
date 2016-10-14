@@ -42,7 +42,7 @@ pro(){
 }
 
 demo(){
-    gulp
+    gulp demo
 }
 
 install(){

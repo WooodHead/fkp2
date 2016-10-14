@@ -58,13 +58,6 @@ module.exports = (util) ->
 
           return this
 
-          # if _files.precommon or _files.ie
-          #   this.gulpJsBuild opts
-          # else
-          #   # this.wpJsBuild opts
-          #   this.wpDevBuild opts
-
-
       # gulp build js
       gulpJsBuild: () ->
           that = this
@@ -84,13 +77,6 @@ module.exports = (util) ->
                 .pipe $.if _md5, $.uglify()
                 .pipe $.if _md5, $.md5({ size: 10, separator: '__' })
                 .pipe gulp.dest(_dist)
-                # .pipe $.map (item) ->
-                #   _filename = path.basename(item.path).toString()
-                #   if file.indexOf "common">-1 || file.indexOf "ie">-1
-                #       that.mapper['commonDependencies']['js'][file] = _filename
-                #   else
-                #       that.mapper['dependencies']['js'][file] = _filename
-                #   return
 
 
       # webpack dll to make common.js
@@ -128,7 +114,7 @@ module.exports = (util) ->
             ]
           }
 
-      wpJsBuild: () ->
+      wpJsBuild: (demo) ->
           that = this
           _dist = this.jsruntime.dist
           _md5 = this.jsruntime.md5
@@ -145,6 +131,7 @@ module.exports = (util) ->
             async: false
             children: false
 
+          this.jsruntime.demo = demo
           this.jsruntime.params = {
             wpCommonTrunk: paramsForCommonsChunk
           }
@@ -154,7 +141,11 @@ module.exports = (util) ->
           else
             this.wpDevBuild()
 
+          return this
+
+
       # webpack build js
+      # watch or not
       wpProBuild: () ->
           that = this
           _dist = this.jsruntime.dist
@@ -163,12 +154,12 @@ module.exports = (util) ->
           _cb = this.jsruntime.callback
           _wpcfg = this.jsruntime.webpackConfig
           _opts = this.jsruntime.opts
+          _demo = this.jsruntime.demo
 
           _wpcfg.plugins = [
             new webpack.DefinePlugin({
-              'process.env': {
-                  NODE_ENV: "production"
-              }
+              'process.env':
+                  NODE_ENV: JSON.stringify "production"
             }),
             new webpack.optimize.OccurenceOrderPlugin(),
             new webpack.IgnorePlugin(/vertx/), # // https://github.com/webpack/webpack/issues/353
@@ -187,24 +178,16 @@ module.exports = (util) ->
           #   manifest: require('./common-manifest.json')
           # })
 
+          # pro
           if process.env.WATCH_FILE == 'true'
             _wpcfg.watch = true
-            _wpcfg.plugins.push new BrowserSyncPlugin(
-                # BrowserSync options
-                {
-                  host: 'localhost'
-                  port: configs.ports.dev
-                  proxy: 'http://localhost:8060/'
-                },
-                # plugin options
-                {
-                  reload: false
-                }
-              )               
+            _wpcfg.plugins.push new BrowserSyncPlugin { proxy: 'http://localhost:'+configs.ports.node }, { reload: false }
             webpack _wpcfg, (err, stats) ->
               if err then throw new gutil.PluginError '[webpack]', err
               gutil.log '[webpack]', stats.toString { colors: true }
               _cb()
+
+          # build
           else
             _webpackDevCompiler = webpack(_wpcfg)
             _webpackDevCompiler.run (err, stats) ->
@@ -223,11 +206,12 @@ module.exports = (util) ->
           _cb = this.jsruntime.callback
           _wpcfg = this.jsruntime.webpackConfig
           _opts = this.jsruntime.opts
+          _demo = this.jsruntime.demo
 
           _wpcfg.plugins = [
             new webpack.DefinePlugin({
-              'process.env': {
-                  NODE_ENV: "development"
+              "process.env": {
+                NODE_ENV: JSON.stringify "development"
               }
             }),
             new webpack.optimize.OccurenceOrderPlugin(),
@@ -237,31 +221,34 @@ module.exports = (util) ->
             }),
             new webpack.optimize.CommonsChunkPlugin( this.jsruntime.params.wpCommonTrunk ),
             new webpack.HotModuleReplacementPlugin(),
-            new Attachment2commonPlugin( path.join _dist, '/precommon.js' ),
-            new BrowserSyncPlugin(
-              # BrowserSync options
-              {
-                host: 'localhost'
-                port: configs.ports.dev
-                proxy: 'http://localhost:8060/'
-              },
-              # plugin options
-              {
-                reload: false
-              }
-            )
+            new Attachment2commonPlugin( path.join _dist, '/precommon.js' )
           ]
 
-          # webpack _wpcfg, (err, stats) ->
-          #     if err then throw new gutil.PluginError '[webpack]', err
-          #     gutil.log '[webpack]', stats.toString { colors: true }
-          #     that.watch().css()
-          #     _cb()
+          # demo
+          if _demo
+            _wpcfg.plugins.push(new BrowserSyncPlugin {
+              server:
+                baseDir: [ configs.htmlDevPath, configs.staticPath + '/dev']
+                index: "hello.html"
+              files: [configs.staticPath+ '/**']
+              logFileChanges: false
+              notify: true
+              injectChanges: true
+            }, { reload: true })
+
+          # dev
+          else
+            _wpcfg.plugins.push(new BrowserSyncPlugin {
+              proxy: 'http://localhost:' + configs.ports.dev+'/'
+              files: [configs.staticPath+ '/**']
+              logFileChanges: false
+            }, { reload: false } )
+
 
           for item of _wpcfg.entry
             _wpcfg.entry[item].unshift(
               # "react-hot-loader/patch", for 3
-              "webpack-dev-server/client?http://localhost:"+configs.ports.dev+"/",
+              "webpack-dev-server/client?http://localhost:"+configs.ports.dev+'/',
               "webpack/hot/only-dev-server"
             )
 
@@ -283,17 +270,16 @@ module.exports = (util) ->
             progress: true
             hot: true
             inline: true
-            progress: true
             watchOptions: {
               aggregateTimeout: 300
               poll: 1000
             }
             host: '0.0.0.0'
-            port: configs.ports.dev
+            port: configs.ports.node
             # publicPath: cfg.output.publicPath,
             proxy: {
               '*': {
-                target: 'http://localhost:' + configs.ports.dev
+                target: 'http://localhost:' + configs.ports.node
                 secure: false
                 ws: false
                 # bypass: (req, res, opt) ->
@@ -303,9 +289,8 @@ module.exports = (util) ->
               }
             }
           }
-          .listen 8060, "localhost", (err) ->
+          .listen configs.ports.dev, "localhost", (err) ->
             if err then throw new gutil.PluginError("webpack-dev-server", err)
             gutil.log("[webpack-dev-server]", "http://localhost:8070/webpack-dev-server/index.html")
-            that.watch().css()
             _cb()
   }

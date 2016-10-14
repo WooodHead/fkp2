@@ -245,27 +245,24 @@ makeHtmlListData = (_path, _capt) ->
     mklist(_path, _capt)
 
 module.exports = (gulp, $, slime, env, _path)->
-        return () ->
-          if env == 'REST'  # 请求来自node
-            port = config.ports.dev
-            if _path
-              rootDir = _path
-              makeHtmlListData(_path)
-              datas = { demoindex: list } # index html模板名称    list: 模板数据
-              return datas
-            else
-              return
-          else
-            if ['pro', 'dev'].indexOf(env)>-1
-              port = config.ports.demo
-              makeHtmlListData()
-              datas = { demoindex: list }
+    return () ->
+      if env == 'REST'  # 请求来自node
+        if _path
+          rootDir = _path
+          makeHtmlListData(_path)
+          datas = { demoindex: list } # index html模板名称    list: 模板数据
+          return datas
+        else
+          return
+      else
+        if ['pro', 'dev'].indexOf(env)>-1
+          makeHtmlListData()
+          datas = { demoindex: list }
 
-
-            # 生成分页并生成列表页
-            slime.html config.dirs.src + '/html/', {
-              type: 'hbs'
-              data: datas
-              env: env
-              pack: true
-            }
+        # 生成分页并生成列表页
+        slime.html config.dirs.src + '/html/', {
+          type: 'hbs'
+          data: datas
+          env: env
+          pack: true
+        }

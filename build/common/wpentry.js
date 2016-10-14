@@ -41,11 +41,11 @@ module.exports = function(dirname, opts, files, util){
 
     if (opts.env !== 'pro'){
       ret_plugins = [
-        new webpack.DefinePlugin({
-          'process.env': {
-              NODE_ENV: "development"
-          }
-        }),
+        // new webpack.DefinePlugin({
+        //   'process.env': {
+        //       NODE_ENV: "development"
+        //   }
+        // }),
         new webpack.optimize.OccurenceOrderPlugin(),
         new webpack.IgnorePlugin(/vertx/), // https://github.com/webpack/webpack/issues/353
         new ExtractTextPlugin("../css/js_[name]_[contenthash].css", {
@@ -75,7 +75,7 @@ module.exports = function(dirname, opts, files, util){
         path.join(nodeModulesPath, '/react/dist/react.min'),
         path.join(nodeModulesPath, '/react-dom/dist/react-dom.min'),
         path.join(nodeModulesPath, '/redux/dist/redux.min'),
-        { test: /[\/\\]js[\/\\](vendor|vendor_custom|global)[\/\\]/ }, //http://stackoverflow.com/questions/28969861/managing-jquery-plugin-dependency-in-webpack
+        // { test: /[\/\\]js[\/\\](vendor|vendor_custom|global)[\/\\]/ }, //http://stackoverflow.com/questions/28969861/managing-jquery-plugin-dependency-in-webpack
       ],
 
       loaders: [
@@ -110,15 +110,15 @@ module.exports = function(dirname, opts, files, util){
     }
 
     if (configs.babel) {
-      require('babel-polyfill');
+      require('babel-polyfill')
       module.loaders.push({
         test: /\.js(x)?$/,
         exclude: /(node_modules|bower_components|_builder|dist)/,
         loader: 'babel?' + JSON.stringify(babelQuery),
-        include: [
-          // 只去解析运行目录下的 public 文件夹
-          path.join(__dirname, '../../public'),
-        ],
+        // include: [
+        //   // 只去解析运行目录下的 public 文件夹
+        //   path.join(__dirname, '../../public/js'),
+        // ],
         // exclude:
       })
     } else {
@@ -128,7 +128,7 @@ module.exports = function(dirname, opts, files, util){
         loader: "jsx-loader"
       })
     }
-    return { module }
+    return module
   }
 
   wpEntry = function(dirname, opts){

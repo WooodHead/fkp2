@@ -13,15 +13,20 @@ module.exports = (util) ->
   webpack = util.webpack
 
   return {
-    # watch: (type) ->
-    #   this.gulp.start('watch')
-    #
-    # clean: (type) ->
-    #   switch type
-    #     when 'dir' then ''
-    #     when 'file' then ''
+
+    clean: (type) ->
+      switch type
+        when 'dir' then ''
+        when 'file' then ''
 
     mapfile: () ->
+      that = this
+      setTimeout(()->
+        that._mapfile()
+      , 17)
+      return this
+      
+    _mapfile: () ->
       mapPath = configs.staticPath+'/dev'
       if this.env == 'pro'
         mapPath = configs.staticPath
@@ -57,6 +62,7 @@ module.exports = (util) ->
               mapJson['commonDependencies']['js'][filename] = _filename;
           else
               mapJson['dependencies']['js'][filename] = _filename
+          return
 
       this.gulp.task 'map:cssdev',['map:jsdev'],()->
         gulp.src _src.css
@@ -75,7 +81,6 @@ module.exports = (util) ->
 
           fs.writeFileSync( _src.mapj,  JSON.stringify(mapJson))
 
-      this.gulp.start 'map:cssdev', ()->
-        console.log '======= ok'
+      this.gulp.start 'map:cssdev'
 
   }
