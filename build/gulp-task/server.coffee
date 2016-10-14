@@ -1,3 +1,4 @@
+# 最后被执行的方法，在这里启动css/images/third/html的watch及生成静态资源镜像文件
 # demo: slime will server it
 # dev: node will server
 # pro: node will server
