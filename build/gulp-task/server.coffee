@@ -7,5 +7,6 @@
 module.exports = (gulp, $, slime, env)->
     return (cb)->
       slime.mapfile()
+      .openBrowse()
       if process.env.WATCH_FILE is 'true'
         slime.watch()

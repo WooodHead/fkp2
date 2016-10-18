@@ -1,3 +1,5 @@
+os = require 'os'
+
 module.exports = (util) ->
   _ = util._
   $ = util.$
@@ -13,11 +15,40 @@ module.exports = (util) ->
   webpack = util.webpack
 
   return {
-
     clean: (type) ->
       switch type
         when 'dir' then ''
         when 'file' then ''
+
+    ipAddress: () ->
+        address = {}
+        ipIsGlobal = false
+        ifaces = os.networkInterfaces()
+        Object.keys(ifaces).forEach (ifname) ->
+          alias = 0
+          ifaces[ifname].forEach (iface) ->
+            if ('IPv4' != iface.family || iface.internal != false)
+              # skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
+              return;
+
+            if (alias >= 1)
+              # this single interface has multiple ipv4 addresses
+              address[ifname] = iface.address
+              console.log(ifname + ':' + alias, iface.address);
+            else
+              # this interface has only one ipv4 adress
+              address[ifname] = iface.address
+              if iface.address.indexOf('192.168') > -1 or iface.address.indexOf('172.16') > -1 or iface.address.indexOf('10.') == 0
+                ipIsGlobal = false
+                console.log '私网ip'
+                console.log(ifname, iface.address);
+              else
+                ipIsGlobal = true
+                console.log '公网ip'
+                console.log(ifname, iface.address);
+
+        # console.log address
+        return [address[Object.keys(address)[0]], ipIsGlobal]
 
     mapfile: () ->
       that = this
@@ -25,7 +56,7 @@ module.exports = (util) ->
         that._mapfile()
       , 17)
       return this
-      
+
     _mapfile: () ->
       mapPath = configs.staticPath+'/dev'
       if this.env == 'pro'
@@ -82,5 +113,6 @@ module.exports = (util) ->
           fs.writeFileSync( _src.mapj,  JSON.stringify(mapJson))
 
       this.gulp.start 'map:cssdev'
+      return this
 
   }

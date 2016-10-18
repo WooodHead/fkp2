@@ -181,7 +181,8 @@ module.exports = (util) ->
           # pro
           if process.env.WATCH_FILE == 'true'
             _wpcfg.watch = true
-            _wpcfg.plugins.push new BrowserSyncPlugin { proxy: 'http://localhost:'+configs.ports.node }, { reload: false }
+            _wpcfg.plugins.push new webpack.HotModuleReplacementPlugin()
+            # _wpcfg.plugins.push new BrowserSyncPlugin { proxy: 'http://localhost:'+configs.ports.node }, { reload: false }
             webpack _wpcfg, (err, stats) ->
               if err then throw new gutil.PluginError '[webpack]', err
               gutil.log '[webpack]', stats.toString { colors: true }
@@ -229,7 +230,7 @@ module.exports = (util) ->
             _wpcfg.plugins.push(new BrowserSyncPlugin {
               server:
                 baseDir: [ configs.htmlDevPath, configs.staticPath + '/dev']
-                index: "hello.html"
+                index: ["hello.html"]
               files: [configs.staticPath+ '/**']
               logFileChanges: false
               notify: true
@@ -238,11 +239,11 @@ module.exports = (util) ->
 
           # dev
           else
-            _wpcfg.plugins.push(new BrowserSyncPlugin {
-              proxy: 'http://localhost:' + configs.ports.dev+'/'
-              files: [configs.staticPath+ '/**']
-              logFileChanges: false
-            }, { reload: false } )
+            # _wpcfg.plugins.push(new BrowserSyncPlugin {
+            #   proxy: 'http://localhost:' + configs.ports.dev+'/'
+            #   files: [configs.staticPath+ '/**']
+            #   logFileChanges: false
+            # }, { reload: false } )
 
 
           for item of _wpcfg.entry

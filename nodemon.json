@@ -1,0 +1,31 @@
+{
+  "restartable": "rs",
+  "verbose": true,
+  "ignore": [
+    "libs/_component/forapp.js",
+    "libs/_component/clipborder.js",
+    "libs/_component/doc.js",
+    "libs/_component/tips.js",
+    "libs/vendor/",
+    "libs/vendor_custom/",
+    "libs/libs_client.js",
+    "libs/pages.jsx",
+    "libs/router.jsx",
+    "libs/api.js",
+    "public/*",
+    "dist/*",
+    ".git/*",
+    "node_modules/*"
+  ],
+  "watch": [
+    "server/*",
+    "libs/libs_server.js",
+    "libs/_component/time.js",
+    "libs/_component/base.js",
+    "libs/errors.js"
+  ],
+  "execMap": {
+    "js": "node --harmony"
+  },
+  "ext": "js jsx css html"
+}

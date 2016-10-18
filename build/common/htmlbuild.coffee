@@ -10,6 +10,154 @@ module.exports = (util) ->
   chkType = util.chkType
   marked = util.marked
   del = util.del
+  grabString = util.base.grabString
+
+  # 首页列表数据
+  makeHtmlListData = (_path, _capt) ->
+    port = 8070
+    rootDir = configs.dirs.src + '/html'
+    ipaddress = this.ipAddress()
+    docDir = _path || ''
+    list = {}
+    tmp = {};
+    tip = ipaddress[0]
+    if ipaddress[1]
+      tip = 'www.agzgz.com'
+      port = 0
+    ipport = if port then ':'+port else ''
+    depth=1
+
+    mklist = (htmlPath, caption, parent) ->
+        depth++
+        htmlDirPath = htmlPath || rootDir
+        htmlDir = fs.readdirSync( htmlDirPath );
+        depthDir = htmlDirPath.replace('public/html/','')
+        _caption = caption || 'root'
+
+        list[ _caption ] = list[ _caption ] || {}
+        list[ _caption ].group = list[ _caption ].group || _caption
+        list[ _caption ].caption = _caption
+        list[ _caption ].list = list[ _caption ].list || []
+        list[ _caption ]['parent'] = parent||'root'
+        list[ _caption ]['children'] =[]
+
+        dirJson = path.parse(htmlDirPath)
+        if dirJson.base != 'html' && dirJson.dir != './html' && dirJson.dir != rootDir
+          list[ _caption ].subtree = true
+
+        htmlDir.map (filename)->
+            firstPath = htmlDirPath + '/' + filename
+            firstStat = fs.statSync(firstPath);
+
+            if firstStat.isFile() and filename.indexOf('_')!=0 and filename!='demoindex'
+                ext = path.extname(filename)
+                depthFile = filename.replace(ext, '.html')
+                if chkType(ext) == 'templet'
+                  content = fs.readFileSync(firstPath,'utf8')
+
+                  getTitle = () ->
+                    title = content.match(/<title>([\s\S]*?)<\/title>/ig)
+                    if (title && title[0].indexOf("{{title}}")>-1 )
+                      title = [/<meta name="subtitle" content=(.*?)\/>/.exec(content)[1].replace(/["|']/g, '')]
+                    return title
+
+                  _url = '/'
+                  getUrl = () ->
+                    _url = filename.replace(ext,'.html')
+                    if caption then _url = caption + '/' + _url
+                    return '/'+_url
+
+                  getIPUrl = () ->
+                    _ipurl = 'http://'+ tip + ipport + '/' + _url
+                    return _ipurl.replace(/\/\//g,'/').replace(':/','://')
+
+                  title = getTitle()
+                  if (!title) then console.log 'hbs 没有标题'
+
+                  if(title && title[0])
+                    fileprofile ={
+                      url: getUrl()
+                      ipurl: getIPUrl(this.url)
+                      group: _caption
+                      title: title[0].replace(/\<(\/?)title\>/g,'').replace(/ \{(.*)\}/g, '')
+                      stat: ''
+                      fileName: filename.replace(ext,'.html')
+                      fullpath: firstPath
+                      des: ''
+                      mdname: ''
+                      ctime: firstStat.ctime
+                      birthtime: firstStat.birthtime
+                    }
+
+                    # html同名的md说明文件
+                    firstMd = firstPath.replace(ext,'.md')
+                    filenameMd = filename.replace(ext, '.md')
+                    if(fs.existsSync(firstMd))
+                      tmp[filenameMd] = true;
+                      desContent = fs.readFileSync(firstMd,'utf8')
+                      fileprofile.des = grabString(desContent,200,true)
+                      fileprofile.mdname = gutil.replaceExtension(filename, '_md.html')
+
+                    list[ _caption ].list.push(fileprofile)
+
+                if ext == '.md'
+                  fileStat = ''  # 文件title在列表中的状态，如推荐，热门等等，通过title的头字符描述
+                  getTitle = (cnt)->
+                    title = cnt.match(/#([\s\S]*?)\n/)||''
+                    if title then title = _.trim title[1].replace(/ \{(.*)\}/g, '')  # 清除自定义属性，如{"id":"xxx"}
+                    if title.indexOf('@')==0
+                      title = title.substring(1)
+                      fileStat = 'recommend'
+                    return title
+
+                  getDescript = (cnt)->
+                    return cnt.match(/>([\s\S]*?)\n/)
+
+                  getUrl = ()->
+                    _filenameMd = filename.replace(ext, '_md.html')
+                    _url = if caption then depthFile.replace('.html','_md.html') else ( (caption || '') + '/' + _filenameMd )
+                    if docDir and firstPath.indexOf docDir > -1
+                      if _url.indexOf('/')==0 then _url = _url.substring(1)
+                      _append_url = _url.replace('_md.html', '').replace(/\//g,'_')
+                      return '?md='+_append_url
+
+                  if !tmp[filename]
+                    content = fs.readFileSync firstPath,'utf8'
+                    descript = getDescript content
+                    title = getTitle content
+                    _url = getUrl()
+                    _ipurl = 'http://'+ tip + ipport + '/' + _url
+                    _ipurl = _ipurl.replace(/\/\//g,'/').replace(':/','://')
+
+                    if docDir and firstPath.indexOf docDir == -1
+                      filename = filename.replace(ext,'_md.html')
+
+                    if title
+                      fileprofile = {
+                        url: _url
+                        ipurl: _ipurl
+                        group: _caption
+                        title: title
+                        stat: fileStat
+                        fileName: filename
+                        fullpath: firstPath
+                        des: descript
+                        mdname: ''
+                        ctime: firstStat.ctime
+                        birthtime: firstStat.birthtime
+                      }
+                      list[ _caption ].list.push(fileprofile)
+
+            if firstStat.isDirectory() and filename.indexOf('_') != 0
+              list[ _caption ]['children'].push(filename)
+              list[ _caption ].subtree = firstPath
+              mklist(firstPath, filename, _caption)
+
+    mklist(_path, _capt)
+    return list
+
+# =============================
+# 运行时处理模板需要的数据
 
   # 获取markdown文件的内容
   getMd = (opts) ->
@@ -76,7 +224,7 @@ module.exports = (util) ->
       data.pagejs = _filePath + '.js'
 
       if opts and opts.data
-        data = opts.data
+        data = _.extend data, opts.data
 
       if opts and opts.api
         api = _.clone(options.api)
@@ -92,8 +240,11 @@ module.exports = (util) ->
       cb(null, file)
 
 # ============================
+# 返回slime的模板处理方法
 
   return {
+    makeHtmlListData: makeHtmlListData
+
     html: (dir, opts, cb) ->
       defaults =
         reanme: undefined
@@ -154,7 +305,7 @@ module.exports = (util) ->
         .pipe( do () ->
           return through.obj (file, enc, cb) ->
             ext_name = path.parse(file.path).ext.replace('.', '')
-            if (chkType(ext_name) || ext_name == 'md')
+            if (chkType(ext_name) == 'templet' || ext_name == 'md')
               switch ext_name
                 when 'ejs' then htmlCompiler = $.ejs
                 when 'pug' then htmlCompiler = $.pug

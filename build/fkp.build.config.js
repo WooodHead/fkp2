@@ -13,6 +13,8 @@ var fs = require('fs'),
     alias = require('./webpack.alias'),
     $ = require('gulp-load-plugins')(),
     babelQuery = require('./common/babelquery'),
+    browserSync = require('browser-sync').create(),
+    reload  = browserSync.reload,
     wpEntry = require('./common/wpentry'),
     chkType = base.chkType,
     nodeModulesPath = path.join(__dirname, '../node_modules')
@@ -104,11 +106,28 @@ var Build = base.inherits( UtilBuild, {
         this.env = 'dev'
         break;
     }
+    return this
   },
 
-  finish: function(){
-    // ...
-  }
+  openBrowse: function(){
+    if (process.env.WATCH_FILE == 'true' && !this.jsruntime.demo) {
+      let that = this
+      let port = that.env==='pro' ? configs.ports.node : configs.ports.dev
+      fs.writeFileSync(configs.dirs.server+'/tmp.js', 'console.log("临时文件，触发nodemon重启，生产环境无此文件")')
+      setTimeout(function(){
+        del([configs.dirs.server+'/tmp.js']).then(function(){
+          browserSync.init({
+            proxy: 'http://localhost:' + port+'/',
+            files: [configs.staticPath+ '/**/*.*'],
+            logFileChanges: false
+          })
+        })
+      }, 7000)
+    }
+    return this
+  },
+
+  finish: function(){ }
 })
 
 function build(opts){

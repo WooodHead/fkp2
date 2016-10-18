@@ -15,6 +15,7 @@ module.exports = {
   dirs: {
     src: src_dir
     dist: path.join __dirname, '../dist'
+    server: path.join __dirname, '../server'
     pages: src_dir + "/js/pages"
     global: src_dir + "/js/global"
     vendor: "../libs/vendor"

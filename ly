@@ -18,24 +18,23 @@ nodemon_param="$nodemon_ext $nodemon_ignore $nodemon_harmony"
 # dev
 dev(){
     if [ $1 ]; then
-        node index.js dev &
         # nodemon $nodemon_param dev $1 &
+        nodemon index.js dev $1 &
     else
-        node index.js dev &
         # nodemon $nodemon_param dev &
+        nodemon index.js dev &
     fi
 
     gulp dev
-
 }
 
 pro(){
     if [ $1 ]; then
-        node index.js pro &
         # nodemon $nodemon_param pro $1 &
+        nodemon index.js pro $1 &
     else
-        node index.js pro &
         # nodemon $nodemon_param pro &
+        nodemon index.js pro &
     fi
 
     gulp pro
