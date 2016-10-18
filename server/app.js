@@ -1,8 +1,13 @@
-import koa from 'koa'
-let app = koa()
+import init from './init'
+let app = init()
 
-app.use( function *(){
-  this.body = 'Hello World';
-});
+// import Koa from 'koa'
+// const app = new Koa()
 
-app.listen(8070);
+// app.use( async function (ctx, next){
+//   // ctx.body = 'Hello World'
+//   console.log(ctx.render);
+//   return await ctx.render('hello',{})
+// })
+
+app.listen(8070)

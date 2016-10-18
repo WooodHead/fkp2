@@ -170,35 +170,36 @@ var os = (function( ua ) {
  * // 子类的__super__属性指向父类
  * console.log( Manager.__super__ === Person );    // => true
  */
-function inherits( Super, protos, staticProtos ) {
-    var child;
+ function inherits( Super, protos, staticProtos ) {
+     var child;
 
-    if ( typeof protos === 'function' ) {
-        child = protos;
-        protos = null;
-    } else if ( protos && protos.hasOwnProperty('constructor') ) {
-        child = protos.constructor;
-    } else {
-        child = function() {
-            return Super.apply( this, arguments );
-        };
-    }
+     if ( typeof protos === 'function' ) {
+         child = protos;
+         protos = null;
+     } else if ( protos && protos.hasOwnProperty('constructor') ) {
+         child = protos.constructor;
+     } else {
+         child = function() {
+             return Super.apply( this, arguments );
+         };
+     }
 
-    // 复制静态方法
-    _.extend( {}, child, Super, staticProtos || {} );
+     // 复制静态方法
+     _.extend( child, Super, staticProtos || {} );
 
-    /* jshint camelcase: false */
+     /* jshint camelcase: false */
 
-    // 让子类的__super__属性指向父类。
-    child.__super__ = Super.prototype;
+     // 让子类的__super__属性指向父类。
+     child.__super__ = Super.prototype;
 
-    // 构建原型，添加原型方法或属性。
-    // 暂时用Object.create实现。
-    child.prototype = _.cloneDeep( Super.prototype );
-    protos && _.extend( {}, child.prototype, protos );
+     // 构建原型，添加原型方法或属性。
+     // 暂时用Object.create实现。
+     child.prototype = Super.prototype
+     // child.prototype = _.create( Super.prototype );
+     protos && _.extend( child.prototype, protos );
 
-    return child;
-}
+     return child;
+ }
 
 module.exports = {
     guid: guid,
