@@ -122,7 +122,7 @@ var Build = base.inherits( UtilBuild, {
             logFileChanges: false
           })
         })
-      }, 7000)
+      }, configs.delay.openBrowse)
     }
     return this
   },

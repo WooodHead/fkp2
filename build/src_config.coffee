@@ -7,7 +7,7 @@ module.exports = {
   name: "FCKJS"
   babel: true
   version: version
-  description: "FKP-REST FRONT-END PART"
+  description: "FKP2 SLIME SCAFFOLD"
   ports: {
       dev: 8060
       node: 8070
@@ -25,6 +25,9 @@ module.exports = {
     watch_react: './component'
   }
   hash: false
+  delay: {
+    openBrowse: 7000
+  }
 
   # 以下配置，生成common.js，全局
   # gulp-task/concat-common-js.coffee
