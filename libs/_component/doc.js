@@ -687,6 +687,27 @@ function portrait(fz, cb){
     });
 }
 
+/**
+ * @description  操作系统检查结果。
+ *
+ * * `android`  如果在android浏览器环境下，此值为对应的android版本号，否则为`undefined`。
+ * * `ios` 如果在ios浏览器环境下，此值为对应的ios版本号，否则为`undefined`。
+ * @property {Object} [os]
+ */
+var os = (function( ua ) {
+    var ret = {},
+
+        // osx = !!ua.match( /\(Macintosh\; Intel / ),
+        android = ua.match( /(?:Android);?[\s\/]+([\d.]+)?/ ),
+        ios = ua.match( /(?:iPad|iPod|iPhone).*OS\s([\d_]+)/ );
+
+    // osx && (ret.osx = true);
+    android && (ret.android = parseFloat( android[ 1 ] ));
+    ios && (ret.ios = parseFloat( ios[ 1 ].replace( /_/g, '.' ) ));
+
+    return ret;
+})( navigator.userAgent )
+
 
 module.exports = {
     DocmentView: DocmentView,
@@ -700,6 +721,7 @@ module.exports = {
     rmvEvent: rmvEvent,
     addSheet: addSheet,
     inject: inject,
+    os: os,
     ie: _IE,
     getClipboardText: getClipboardText,
     setClipboardText: setClipboardText,

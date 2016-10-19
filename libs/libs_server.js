@@ -1,16 +1,9 @@
-var url = require('url');
 var path = require('path')
-var domain = require('domain');
-var parse = require('co-body');
 var lodash = require('lodash');
 var qs = require('querystring');
 var timer = require('./_component/time')
+var base = require('./_component/base')
 
-
-//libs
-var getObjType = function(object){
-    return Object.prototype.toString.call(object).match(/^\[object\s(.*)\]$/)[1];
-}
 
 function getClientIp(req) {
     return req.headers['x-forwarded-for'] ||
@@ -51,18 +44,16 @@ var co_parse = function(ctx){
     return parse( ctx, opts )
 }
 
+
+
 module.exports = {
-    getObjType: getObjType,
+    objtypeof: base.objtype,
+    inherits: base.inherits,
     clog: clog,
     elog: elog,
     wlog: wlog,
     uri: parseQuery,
     guid: guid,
-    $url: url,
-    $path: path,
-    $domain: domain,
-    $parse: parse,
-    getClientIp: getClientIp,
     errors: require('./errors'),
     timeAgo:   timer.timeAgo      //时间过去了多久
 }

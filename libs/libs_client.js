@@ -264,8 +264,8 @@ module.exports = {
     arg2arr:        base.arg2arr,        //类数组对象转成数组
     getObjType:     base.getObjType,     //获取对象类型
     type:           base.getObjType,     //获取对象类型
-    os:             base.os,             //获取手机操作系统类型，如android或者ios
 
+    os:             doc.os,             //获取手机操作系统类型，如android或者ios
     getOffset:      doc.getOffset,      //取得元素的绝对位置
     offset:         doc.getOffset,      //取得元素的绝对位置
     DocmentView:    doc.DocmentView,    //取得当前浏览区域的宽、高

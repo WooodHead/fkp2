@@ -1,6 +1,9 @@
 require('babel-core/register')
 require("babel-polyfill")
 
+let D = require('debug')
+global.Debug = D
+
 try {
   process.env.env = 'default'
   var args = process.argv.splice(2); //取得命令行参数

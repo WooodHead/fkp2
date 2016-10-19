@@ -1,3 +1,6 @@
+
+let debug = Debug('init')
+
 import Koa from 'koa'
 import mount from 'koa-mount'
 import convert from 'koa-convert'
@@ -14,6 +17,7 @@ import route from './modules/route'
 import mapper from './modules/mapper'
 import render from './modules/render'
 import router from './modules/route'
+import fetch from 'server/modules/fetch'
 
 
 global._ = require('lodash')
@@ -21,6 +25,8 @@ global.SAX = require('fkp-sax')
 global.React = require('react')
 global.ReactDomServer = require('react-dom/server')
 global.Cache = require('./modules/cache')
+global.Fetch = fetch
+
 
 const cwd = process.cwd()
 const day5 = 5 * 24 * 60 * 60 * 1000
@@ -35,9 +41,10 @@ export default function init() {
   // 全局错误处理
   app.use(async (ctx, next) => {
     try {
+      Fetch.init(ctx)
       await next()
     } catch (err) {
-      console.log(err.stack)
+      debug(err.stack)
       ctx.body = err
       ctx.status = err.status || 500
     }
@@ -78,7 +85,7 @@ export default function init() {
 
   //路由处理
   router(app, mapper)
-	router(app, mapper, '/deep3')
+	router(app, mapper, '/deep3')  //koa-router prefix，任何prefix均带有resful三层结构 :cat:title:id
 
 	app.on('error', async (err, ctx) => {
 		logger.error('server error', err, ctx)

@@ -6,8 +6,8 @@ let app = init()
 
 // app.use( async function (ctx, next){
 //   // ctx.body = 'Hello World'
-//   console.log(ctx.render);
 //   return await ctx.render('hello',{})
 // })
+
 
 app.listen(8070)

@@ -22,4 +22,6 @@ module.exports = {
 
 
     "50001": {error: "50001", message: "markdown文件不存在"},
+
+    "60001": {error: "0001", message: "指定api不存在"},
 }
