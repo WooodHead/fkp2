@@ -172,8 +172,8 @@ async function distribute(_mapper={}, ctrlPages, prefix){
 async function controler(ctx, route, pageData, ctrlPages){
   let passAcess = false
   let ctrl = control(ctx, pageData)
-  if (ctrlPages.indexOf(ctx.route_url+'.js')>-1){
-    pageData = await require('../pages/'+ctx.route_url).getData.call(ctx, pageData, ctrl);
+  if (ctrlPages.indexOf(route+'.js')>-1){
+    pageData = await require('../pages/'+route).getData.call(ctx, pageData, ctrl)
   } else{
     libs.elog('pages/'+route+' 配置文件不存在');
     passAcess = true
