@@ -2,15 +2,11 @@ import path from 'path'
 import request from 'request'
 import {stringify} from 'querystring'
 import { inherits, objtypeof, errors } from 'libs'
-import getapis  from 'apis/apilist'
-
 let debug = Debug('modules:fetch:pulldata')
 
 export default function(){
   return {
-    getApiList: function(){
-      this.apilist = getapis()
-    },
+
 
     _parseClientForm: function(api, param={}, method='get'){
       let url = undefined

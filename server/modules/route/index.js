@@ -5,10 +5,10 @@ var fs = require('fs');
 var path = require('path')
 var url = require('url')
 var Router = require('koa-router')
-var libs = require('libs/libs')
+var libs = require('libs')
 var md5 = require('md5')
-
-import control from './control'
+import control from '../control'
+let debug = Debug('modules:route')
 
 
 /**
@@ -27,14 +27,10 @@ function filterRendeFile(pms, url){
     let tempExts = ['.html','.shtml'];
     let noPassCat = ['css','js','img','imgs','image','images'];
 
-    if(!ext)
-        rtn = true;
+    if(!ext) rtn = true;
 
-    if(_.indexOf(tempExts, ext) > -1)
-        rtn = true;
-
-    if(_.indexOf(noPassCat, cat) > -1)
-        rtn = false;
+    if(_.indexOf(tempExts, ext) > -1) rtn = true;
+    if(_.indexOf(noPassCat, cat) > -1) rtn = false;
 
     return rtn;
 }
@@ -47,40 +43,35 @@ function filterRendeFile(pms, url){
  * return   {string} route tag, like 'index' , 'h5/lazypage'
 **/
 function createTempPath2(pms, url, ctxurl){
-    let rjson = path.parse(url)
-    var params = pms;
-    var route = false;
+  let rjson = path.parse(url)
+  var params = pms;
+  var route = false;
 
-    var cat = params.cat||'', title = params.title||'', id = params.id||'';
-    var gtpy = libs.getObjType;
+  var cat = params.cat||'', title = params.title||'', id = params.id||'';
+  var gtpy = libs.objtypeof;
 
-    if(id){
-        gtpy(id)==='Number'
-        ? route = title
-            ? cat+'/'+title
-            : cat
-        : route = cat+'/'+title +'/' + id
-    }
 
-    else if(title){
-        title = title.replace(rjson.ext,'');
-        route = gtpy(title)==='Number'
-        ? cat
-        : cat+'/'+title;
-    }
+  if(id){
+    gtpy(id)==='number'
+    ? route = title
+      ? cat+'/'+title
+      : cat
+    : route = cat+'/'+title +'/' + id
+  }
 
-    else if(cat){
-        cat = cat.replace(rjson.ext,'');
-        route = gtpy(cat)==='Number'
-        ? CONFIG.root||'index'
-        : cat;
-    }
+  else if(title){
+    title = title.replace(rjson.ext,'');
+    route = gtpy(title)==='number' ? cat : cat+'/'+title
+  }
 
-    else{
-        route = CONFIG.root||'index'
-    }
-    if (ctxurl && route !== ctxurl) route = ctxurl
-    return route;
+  else if(cat){
+    cat = cat.replace(rjson.ext,'');
+    route = gtpy(cat)==='number' ? CONFIG.root||'index' : cat
+  }
+
+  route = CONFIG.root||'index'
+  if (ctxurl && route !== ctxurl) route = ctxurl
+  return route
 }
 
 function controlPages() {
@@ -126,13 +117,13 @@ async function init(app, mapper, prefix='') {
   app.use(router.routes())
   app.use(router.allowedMethods())
 
-
   async function forBetter(ctx, next) {
     ctx.local = url.parse(ctx.url, true)
     let _ext = path.extname(ctx.url)
     ctx.route_url = ctx.url.slice(1).replace(_ext, '')
     if (!ctx.route_url) ctx.route_url = ''
-    return distribute.call(ctx, mapper, _controlPages, prefix)
+    // return distribute.call(ctx, mapper, _controlPages)
+    return await createRoute(ctx, mapper, _controlPages)
   }
 }
 
@@ -142,56 +133,65 @@ async function init(app, mapper, prefix='') {
  * {param2} map of static file
  * return rende pages
 **/
-async function distribute(_mapper={}, ctrlPages, prefix){
-    libs.clog('route.js/distribute');
-    if(_mapper){
-      let isRender = filterRendeFile(this.params, this.url)
-      let pageData = {
-          //静态资源
-          commonjs: _mapper.commonJs.common||'common.js',   //公共css
-          commoncss: _mapper.commonCss.common||'common.css', //公共js
-          pagejs: '',
-          pagecss: '',
-          pagedata: {}
-      }
-      let route = isRender ? createTempPath2(this.params, this.url, this.route_url) : false
-      if ( isRender && route){
-        //静态资源初始化
-        if (_mapper.pageCss[route]) pageData.pagecss = _mapper.pageCss[route];
-        if (_mapper.pageJs[route]) pageData.pagejs = _mapper.pageJs[route];
+async function createRoute(ctx, _mapper, ctrlPages){
+  debug('start createRoute');
+  let isRender = filterRendeFile(ctx.params, ctx.url)
+  let route = isRender ? createTempPath2(ctx.params, ctx.url, ctx.route_url) : false
+  if (!isRender || !route){
+    return ctx.redirect('404')
+  }
+  let pageData = createMapper(ctx, _mapper, route)
+  if (!_mapper || !pageData) return ctx.redirect('404')
+  return distribute.call(ctx, route, pageData, ctrlPages)
+}
 
-        let pdata = await controler(this, route, pageData, ctrlPages)
-        return await dealWithPageData(this, pdata[0], route, pdata[1])
-      }
-      else {
-        return this.redirect('/404')
-      }
-    }
+function createMapper(ctx, mapper, route){
+  if (!mapper) return false
+  let pageData = {
+    //静态资源
+    commonjs: mapper.commonJs.common||'common.js',   //公共css
+    commoncss: mapper.commonCss.common||'common.css', //公共js
+    pagejs: '',
+    pagecss: '',
+    pagedata: {}
+  }
+  //静态资源初始化
+  if (mapper.pageCss[route]) pageData.pagecss = mapper.pageCss[route]
+  if (mapper.pageJs[route]) pageData.pagejs = mapper.pageJs[route]
+
+  return pageData
+}
+
+async function distribute(route, pageData, ctrlPages){
+  debug('start distribute');
+  let pdata = await controler(this, route, pageData, ctrlPages)
+  return await dealWithPageData(this, pdata[0], route, pdata[1])
 }
 
 async function controler(ctx, route, pageData, ctrlPages){
-  let passAcess = false
+  let passAccess = false
   let ctrl = control(ctx, pageData)
   if (ctrlPages.indexOf(route+'.js')>-1){
-    pageData = await require('../pages/'+route).getData.call(ctx, pageData, ctrl)
+    pageData = await require('../../pages/'+route).getData.call(ctx, pageData, ctrl)
   } else{
-    libs.elog('pages/'+route+' 配置文件不存在');
-    passAcess = true
+    debug('pages/'+route+' 配置文件不存在');
+    passAccess = true
   }
-  return [pageData, passAcess]
+  return [pageData, passAccess]
 }
 
 // dealwith the data from controlPage
-async function dealWithPageData(ctx, data, route, passAcess){
+async function dealWithPageData(ctx, data, route, passAccess){
   switch (ctx.method) {
     case 'GET':
       return await ctx.render(route, data)
       break;
     case 'POST':
-      // if( passAcess ){
-      //   if( api.apiPath.dirs[route] || api.apiPath.weixin[route] || route === 'redirect' )
-      //     data = yield require('../pages/common/nopage').getData.call(that, data, control);
-      // }
+      if (passAccess) {
+        let apilist = Fetch.apilist
+        if( apilist.list[route] || apilist.weixin[route] || route === 'redirect' )
+          data = await require('./passaccess').getData.call(ctx, data, control)
+      }
       ctx.body = data
       break;
   }

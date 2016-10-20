@@ -17,7 +17,6 @@ import route from './modules/route'
 import mapper from './modules/mapper'
 import render from './modules/render'
 import router from './modules/route'
-import fetch from 'server/modules/fetch'
 
 
 global._ = require('lodash')
@@ -25,7 +24,8 @@ global.SAX = require('fkp-sax')
 global.React = require('react')
 global.ReactDomServer = require('react-dom/server')
 global.Cache = require('./modules/cache')
-global.Fetch = fetch
+global.Fetch = require('./modules/fetch').default
+global.Errors = require('libs/errors')
 
 
 const cwd = process.cwd()

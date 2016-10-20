@@ -3,7 +3,6 @@ import request from 'request'
 import {stringify} from 'querystring'
 import { inherits, objtypeof, errors } from 'libs'
 import getapis  from 'apis/apilist'
-
 let debug = Debug('modules:fetch:weixin')
 
 export default function(){

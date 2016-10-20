@@ -1,6 +1,8 @@
 module.exports = {
-    '10000': {success: '10000', message: "ok"},
+    '1000': {success: '1000', message: "ok"},
+    '1010': {success: '1010', message: "链接正确，但数据为空"},
 
+    '10000': {success: '10000', message: "ok"},
     // models/user.js
     "10001": {error: "10001", message: "user not found"},
     "10002": {error: "10002", message: "password dose not match"},
@@ -23,5 +25,6 @@ module.exports = {
 
     "50001": {error: "50001", message: "markdown文件不存在"},
 
-    "60001": {error: "0001", message: "指定api不存在"},
+    "60001": {error: "60001", message: "指定api不存在"},
+    "60002": {error: "60002", message: "java或者php返回数据错误"},
 }

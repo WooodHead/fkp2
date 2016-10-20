@@ -263,7 +263,7 @@ module.exports = {
     grabString:     base.grabString,     //截取字符串长度，包含中文
     arg2arr:        base.arg2arr,        //类数组对象转成数组
     getObjType:     base.getObjType,     //获取对象类型
-    type:           base.getObjType,     //获取对象类型
+    objtypeof:      base.getObjType,     //获取对象类型
 
     os:             doc.os,             //获取手机操作系统类型，如android或者ios
     getOffset:      doc.getOffset,      //取得元素的绝对位置

@@ -2,6 +2,7 @@ import path from 'path'
 import request from 'request'
 import {stringify} from 'querystring'
 import {inherits, $class} from 'libs'
+import getapis  from 'apis/apilist'
 let debug = Debug('modules:fetch:index')
 
 
@@ -15,6 +16,10 @@ _request.prototype = {
 }
 
 let __request = inherits(_request, {
+  getApiList: function(){
+    this.apilist = getapis()
+  },
+
   setOpts: function(api, options, method){
     let opts = {
       headers: {},
@@ -75,6 +80,7 @@ let __request = inherits(_request, {
 })
 
 let pullapi = inherits(__request, require('./pullapi').default())
-let requ = inherits(pullapi, require('./weixin').default())
+let weixin = inherits(pullapi, require('./weixin').default())
+let requ = inherits(weixin, {})
 
 export default new requ()
