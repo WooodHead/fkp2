@@ -13,3 +13,4 @@ npm-debug.log
 *.db
 baidu_verify_B7KJMQXfQu.html
 /.vscode
+/shadowserver
