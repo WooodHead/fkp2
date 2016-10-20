@@ -5,7 +5,7 @@ import { inherits, objtypeof, errors } from 'libs'
 import getapis  from 'apis/apilist'
 let debug = Debug('modules:fetch:weixin')
 
-export default function(){
+module.exports = function(){
   let date = new Date()
   let _WX = CONFIG.weixin
   return {

@@ -4,7 +4,7 @@ import {stringify} from 'querystring'
 import { inherits, objtypeof, errors } from 'libs'
 let debug = Debug('modules:fetch:pulldata')
 
-export default function(){
+module.exports = function(){
   return {
 
 

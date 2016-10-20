@@ -7,7 +7,6 @@ global.Debug = D
 try {
   process.env.env = 'default'
   var args = process.argv.splice(2); //取得命令行参数
-
   if (args.length){
     if (args[1]){
       if (['dev', 'pro'].indexOf(args[0])>-1) process.env.whichMode = args[0]

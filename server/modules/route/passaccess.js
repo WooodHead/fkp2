@@ -14,11 +14,12 @@ async function passaccess(oridata, control) {
   control.post = async function(){
     let passdata;
     let body = this.body
+    let _jss = []
     if(body){
       if( apilist.list[route] || route === 'redirect') passdata = await Fetch.post(route, body)
       // 批处理加载大量js
       if (route === 'staticjs'){
-        if (body.js) let _jss = []
+        // if (body.js) 
       }
 
       // 一般用作第三方开放api的数据请求
