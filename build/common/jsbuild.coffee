@@ -156,18 +156,13 @@ module.exports = (util) ->
           _opts = this.jsruntime.opts
           _demo = this.jsruntime.demo
 
-          _wpcfg.plugins = [
+          _wpcfg.plugins = _wpcfg.plugins.concat [
             new webpack.DefinePlugin({
               'process.env':
                   NODE_ENV: JSON.stringify "production"
             }),
-            new webpack.optimize.OccurenceOrderPlugin(),
-            new webpack.IgnorePlugin(/vertx/), # // https://github.com/webpack/webpack/issues/353
             new webpack.NoErrorsPlugin(),
             new webpack.optimize.DedupePlugin(),
-            new ExtractTextPlugin("../css/js_[name]_[contenthash].css", {
-              allChunks: true
-            }),
             new webpack.optimize.CommonsChunkPlugin( this.jsruntime.params.wpCommonTrunk ),
             new Attachment2commonPlugin( path.join _dist, '/precommon.js' ),
             new webpack.optimize.UglifyJsPlugin { compress: { warnings: false } }
@@ -209,20 +204,16 @@ module.exports = (util) ->
           _opts = this.jsruntime.opts
           _demo = this.jsruntime.demo
 
-          _wpcfg.plugins = [
+          _wpcfg.plugins = _wpcfg.plugins.concat [
             new webpack.DefinePlugin({
               "process.env": {
                 NODE_ENV: JSON.stringify "development"
               }
             }),
-            new webpack.optimize.OccurenceOrderPlugin(),
-            new webpack.IgnorePlugin(/vertx/), # // https://github.com/webpack/webpack/issues/353
-            new ExtractTextPlugin("../css/js_[name]_[contenthash].css", {
-              allChunks: true
-            }),
             new webpack.optimize.CommonsChunkPlugin( this.jsruntime.params.wpCommonTrunk ),
             new webpack.HotModuleReplacementPlugin(),
-            new Attachment2commonPlugin( path.join _dist, '/precommon.js' )
+            new Attachment2commonPlugin( path.join _dist, '/precommon.js' ),
+            new WriteMemoryFilePlugin()
           ]
 
           # demo
@@ -252,10 +243,6 @@ module.exports = (util) ->
               "webpack-dev-server/client?http://localhost:"+configs.ports.dev+'/',
               "webpack/hot/only-dev-server"
             )
-
-          _wpcfg.plugins.push(
-            new WriteMemoryFilePlugin()
-          )
 
           new WebpackDevServer webpack(_wpcfg), {
             headers: {

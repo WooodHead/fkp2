@@ -16,52 +16,6 @@ module.exports = function(dirname, opts, files, util){
 
   var nodeModulesPath = path.join(__dirname, '../../node_modules')
 
-  //make webpack plugins
-  var wpPlugins = function(dirname, opts) {
-    var commonName = opts.env !== 'pro' ? 'common.js' : 'common_[hash].js'
-    var venders,
-        common_trunk_config = {
-          name: 'common',
-          filename: commonName,
-          minChunks: 1, //Infinity
-          async: false,
-          children: false
-        }
-
-    var ret_plugins = [
-      new webpack.optimize.OccurenceOrderPlugin(),
-      new webpack.IgnorePlugin(/vertx/), // https://github.com/webpack/webpack/issues/353
-      new webpack.NoErrorsPlugin(),
-      new webpack.optimize.DedupePlugin(),
-      new ExtractTextPlugin("../css/js_[name]_[contenthash].css", {
-        allChunks: opts.isPack === true ? true : false
-      }),
-      new webpack.optimize.CommonsChunkPlugin(common_trunk_config),
-    ]
-
-    if (opts.env !== 'pro'){
-      ret_plugins = [
-        // new webpack.DefinePlugin({
-        //   'process.env': {
-        //       NODE_ENV: "development"
-        //   }
-        // }),
-        new webpack.optimize.OccurenceOrderPlugin(),
-        new webpack.IgnorePlugin(/vertx/), // https://github.com/webpack/webpack/issues/353
-        new ExtractTextPlugin("../css/js_[name]_[contenthash].css", {
-          allChunks: opts.isPack === true ? true : false
-        }),
-        new webpack.optimize.CommonsChunkPlugin(common_trunk_config),
-        new webpack.HotModuleReplacementPlugin()
-      ]
-    }
-
-    if ( _.isString(dirname) && dirname !== 'pages' ) {
-      common_trunk_config.filename = "./otherCommon/_" + dirname + ".js";
-    }
-
-    return ret_plugins;
-  }
 
 
   /**
@@ -141,13 +95,7 @@ module.exports = function(dirname, opts, files, util){
       chunkFilename = '[id]_[name]_[hash].js'
     }
 
-    var _plugins = wpPlugins(dirname, opts),
-        _externals = {
-          "fkp-sax": "SAX"
-        }
-
     var _watch = ( opts.env && opts.env.indexOf('pro')>-1 ? false : true )
-
     return {
       cache: true,
       debug: true,
@@ -163,8 +111,16 @@ module.exports = function(dirname, opts, files, util){
         chunkFilename: chunkFilename,
         libraryTarget:'var',
       },
-      externals: _externals,
-      plugins: [],
+      externals: {
+        "fkp-sax": "SAX"
+      },
+      plugins: [
+        new webpack.optimize.OccurenceOrderPlugin(),
+        new webpack.IgnorePlugin(/vertx/), // https://github.com/webpack/webpack/issues/353
+        new ExtractTextPlugin("../css/js_[name]_[contenthash].css", {
+          allChunks: true
+        })
+      ],
       resolve: {
         root: path.resolve(__dirname, '../../node_modules'),
         alias: alias,
