@@ -8,9 +8,8 @@ module.exports = (gulp,$) ->
       config.cssBuildPath,
       config.imagesBuildPath,
       config.fontsBuildPath,
-      config.fontsBuildPath,
       config.htmlBuildPath,
-      config.tmpPath
+      config.staticPath+'map.json'
     ], {
       force: true
     }

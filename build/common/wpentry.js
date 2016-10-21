@@ -119,10 +119,13 @@ module.exports = function(dirname, opts, files, util){
         new webpack.IgnorePlugin(/vertx/), // https://github.com/webpack/webpack/issues/353
         new ExtractTextPlugin("../css/js_[name]_[contenthash].css", {
           allChunks: true
+        }),
+        new webpack.ProvidePlugin({
+          ajax: "ajax"
         })
       ],
       resolve: {
-        root: path.resolve(__dirname, '../../node_modules'),
+        root: path.resolve(__dirname, '../../public'),
         alias: alias,
         extensions: ['', '.js', '.jsx', '.ts', '.tsx', '.coffee', '.html', '.css', '.styl', '.less', '.hbs', '.rt', '.md'],
         modulesDirectories: ["node_modules"],

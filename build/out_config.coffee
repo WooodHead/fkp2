@@ -5,7 +5,7 @@ devDirs = {
   ieRequireList: configs.ieRequireList,
 
   # 静态目录
-  staticPath : configs.dirs.dist + '/' + configs.version,
+  staticPath : configs.dirs.dist + '/' + configs.version + '/',
 
   # 线上
   jsBuildPath : configs.dirs.dist + '/' + configs.version + '/js/',
@@ -15,6 +15,7 @@ devDirs = {
   htmlBuildPath : configs.dirs.dist + '/' + configs.version + '/html/',
 
   # 开发
+  devPath: configs.dirs.dist + '/' + configs.version + '/dev/',
   htmlDevPath : configs.dirs.dist + '/' + configs.version + '/dev/html/',
   jsDevPath : configs.dirs.dist + '/' + configs.version + '/dev/js/',
   cssDevPath : configs.dirs.dist + '/' + configs.version + '/dev/css/',

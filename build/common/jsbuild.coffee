@@ -127,9 +127,7 @@ module.exports = (util) ->
           paramsForCommonsChunk =
             name: 'common'
             filename: commonFileName
-            minChunks: 1, # //Infinity
-            async: false
-            children: false
+            minChunks: 2, # //Infinity
 
           this.jsruntime.demo = demo
           this.jsruntime.params = {

@@ -9,7 +9,7 @@ module.exports = (gulp,$) ->
       config.cssDevPath,
       config.imagesDevPath,
       config.fontsDevPath,
-      config.tmpPath
+      config.devPath+'map.json'
     ], {
       force: true
     }
