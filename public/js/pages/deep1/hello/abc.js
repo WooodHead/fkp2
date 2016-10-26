@@ -4,7 +4,7 @@ import './_common/xyz'
 
 setTimeout( () => {
   console.log(libs)
-  libs.msgtips('abc')
+  libs.msgtips('deep1')
 },500)
 
 setTimeout( () => {
