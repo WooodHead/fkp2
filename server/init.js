@@ -5,7 +5,8 @@ import Koa from 'koa'
 import mount from 'koa-mount'
 import convert from 'koa-convert'
 import Bodyparser from 'koa-bodyparser'
-import session from 'koa-generic-session'
+// import session from 'koa-generic-session'
+import session from 'koa-session-minimal'
 import logger from 'koa-logger'
 import cors from 'kcors'
 import conditional from 'koa-conditional-get'
@@ -66,13 +67,21 @@ export default function init() {
 
   // app.use(mount('/_bc', serve(cwd + '/node_modules', staticOption())))
 
-	app.use(convert(session({
+	// app.use(convert(session({
+	// 	key: 'agzgz-',
+	//   store: new SQLite3Store('../forsession1.db', {}),
+  //   cookie: {
+  //     maxage: null
+  //   }
+	// })))
+  
+	app.use(session({
 		key: 'agzgz-',
 	  store: new SQLite3Store('../forsession1.db', {}),
     cookie: {
       maxage: null
     }
-	})))
+	}))
 
   // body解析
   app.use(Bodyparser())

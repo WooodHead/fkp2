@@ -1,7 +1,7 @@
 /*
  * lru cache
 */
-var md5 = require('md5');
+var md5 = require('blueimp-md5');
 var LRU = require('lru-cache'),
 	options = { max: 500
 		  , length: function (n, key) { return n * 2 + key.length }
