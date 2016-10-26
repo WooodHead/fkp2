@@ -257,7 +257,7 @@ function form_valide(id ,reg, cb, name) {
 
 module.exports = {
     guid:           base.guid,           //生成随机名字
-    Class:          base.class,          //创建类，并执行this.init方法
+    $class:         base.class,          //创建类，并执行this.init方法
     strLen:         base.strLen,         //获取字符串长度，包含中文
     json2url:       base.json2url,       //json转成url的query部分
     grabString:     base.grabString,     //截取字符串长度，包含中文
