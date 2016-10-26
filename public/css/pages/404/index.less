@@ -1,0 +1,101 @@
+html{
+  font: 62.5%/1.65 "Open Sans",sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body{
+  color: #3c4043;
+  font-size: 1.4rem;
+  -webkit-font-feature-settings: "kern" 1;
+  -moz-font-feature-settings: "kern" 1;
+  font-feature-settings: "kern" 1;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  overflow-x: hidden;
+  margin: 0;
+}
+
+#container{
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+}
+a{
+  background-color: transparent;
+  color: #5BA4E5;
+  text-decoration: none;
+  -webkit-transition: background .3s,color .3s;
+    transition: background .3s,color .3s;
+}
+
+h1, h2, h3, h4, h5, h6{
+  margin: 0 0 .3em;
+  line-height: 1.15em;
+  color: #242628;
+  text-rendering: optimizeLegibility;
+  -webkit-font-feature-settings: "dlig" 1,"liga" 1,"lnum" 1,"kern" 1;
+  -moz-font-feature-settings: "dlig" 1,"liga" 1,"lnum" 1,"kern" 1;
+  font-feature-settings: "dlig" 1,"liga" 1,"lnum" 1,"kern" 1;
+}
+h1{
+  font-size: 5rem;
+  letter-spacing: -2px;
+  text-indent: -3px;
+}
+h2{
+  font-size: 4.2rem;
+  letter-spacing: -1px;
+}
+.error-content{
+  max-width: 530px;
+  margin: 0 auto;
+  padding: 0;
+  display: table;
+  height: 100%;
+  .error-details{
+    display: table-cell;
+    vertical-align: middle;
+  }
+  figure{
+    margin: 1em 40px;
+  }
+  .error-image{
+    display: inline-block;
+    vertical-align: middle;
+    width: 96px;
+    height: 150px;
+    img{
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+  }
+  .error-message{
+    position: relative;
+    top: -5px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 10px;
+  }
+  .error-code{
+    margin: 0;
+    font-size: 7.8em;
+    line-height: .9em;
+    color: #979797;
+  }
+  .error-description{
+    margin: 0;
+    padding: 0;
+    font-weight: 300;
+    font-size: 1.9em;
+    color: #979797;
+    border: none;
+  }
+}
