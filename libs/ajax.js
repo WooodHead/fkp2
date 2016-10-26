@@ -1,9 +1,5 @@
-import {objtypeof, tips, doc} from 'libs'
+import {objtypeof, msgtips, urlparse} from 'libs'
 var src = "/";
-
-function objtypeof(object){
-  return Object.prototype.toString.call(object).match(/^\[object\s(.*)\]$/)[1];
-};
 
 function req( api, param, cb, method ){
   var url = api;
@@ -16,14 +12,12 @@ function req( api, param, cb, method ){
   }
 
   if( objtypeof(param)==='Function' ) cb = param
-
   if( objtypeof(param)!=='Object' ) param = {test: '123'}
-
   if( !Object.keys(param).length ) param = {test: '123'}
 
   // 有些环境不是根目录，需要添加前缀，前缀根据location来自动添加
   // 如 http://www.xxx.com/yyy/ccc/app.html
-  let uri = doc.urlparse(location.href);
+  let uri = urlparse(location.href);
   if (!uri.port){
     let _src = '/' + uri.segments.splice(0, (uri.segments.length-1)).join('/')
     url = (_src+url).replace('//', '/')
@@ -46,12 +40,12 @@ function req( api, param, cb, method ){
     url: url,
     type: method,
     data: param,
-    timeout: 3000,
-    dataType: "json",
+    timeout: 0,
+    // dataType: "json",
   })
   .done(ccb)
   .fail(function(xhr,status,statusText){
-    tips('网络不给力','center')
+    msgtips('网络不给力','center')
     console.log('错误状态码：'+xhr.status+"<br>时间："+xhr.getResponseHeader('Date'))
     dtd.reject()
   })
