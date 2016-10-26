@@ -17,9 +17,8 @@
     recalc = function () {
         var clientWidth = docEl.clientWidth;
         if (!clientWidth) return;
-        docEl.style.fontSize = 20 * (clientWidth / 320) + 'px';
+        docEl.style.fontSize = 50 * (clientWidth / 375) + 'px';   //iphone6 作为基准 fontSize=100px
     };
-    // recalc();
     docEl.setAttribute("data-dpr", radio);
     meta.setAttribute("name", "viewport")
     meta.setAttribute("content", "width=device-width,initial-scale=" + scale + ", maximum-scale=" + scale + ", minimum-scale=" + scale + ", user-scalable=no")
