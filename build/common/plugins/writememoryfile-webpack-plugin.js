@@ -1,8 +1,13 @@
-// writeMemoryfile.plugin.js
+/**
+ * writeMemoryfile.plugin.js
+ * webpack-dev-server启动时，所有的文件均在内存中，这个插件将内存中的文件写入文本，但不会影响dev-server的运行
+ * author: 天天修改
+ * site: www.agzgz.com
+ */
 
 var fs = require('fs');
 var path = require('path');
-var md5 = require('md5');
+var md5 = require('blueimp-md5');
 var _ = require('lodash')
 var ConcatSource = require("webpack-core/lib/ConcatSource");
 

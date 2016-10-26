@@ -115,4 +115,50 @@ module.exports = (util) ->
       this.gulp.start 'map:cssdev'
       return this
 
+    copy: (source, target) ->
+      that = this
+      babelconfig = {
+        presets: [
+          'es2015',
+          "react",
+          "stage-0",
+          "stage-1",
+          "stage-3"
+        ],
+        plugins: [
+          'transform-runtime',
+          "add-module-exports"
+        ]
+      }
+
+      isStyle = (file) ->
+        ext = path.extname file.path
+        return true if ext in ['.less', '.styl', '.stylus', '.css']
+
+      isStylePro = (file) ->
+        if isStyle(file)
+          return true if that.env == 'pro'
+
+      isScript = (file) ->
+        ext = path.extname file.path
+        return true if ext in ['.js']
+
+      isScriptPro = (file) ->
+        ext = path.extname file.path
+        if isScript(file)
+          return true if that.env == 'pro'
+
+      gulp.src source
+        .pipe($.plumber())
+        .pipe $.if '*.less', (if $.less then $.less() else $.empty())
+        .pipe $.if '*.styl', (if $.stylus then $.stylus() else $.empty())
+        .pipe $.if '*.stylus', (if $.stylus then $.stylus() else $.empty())
+        .pipe $.if isStyle,  $.rename {'extname': '.css'}
+        .pipe $.if isStyle,  $.autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4')
+        .pipe $.if isStylePro, $.minifyCss()
+        .pipe $.if isScriptPro, $.uglify()
+        # .pipe $.if '*.js', $.babel(babelconfig)
+        # .pipe $.if '*.jsx', $.babel(babelconfig)
+        .pipe $.size()
+        .pipe gulp.dest(target)
   }

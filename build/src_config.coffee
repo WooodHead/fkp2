@@ -33,7 +33,7 @@ module.exports = {
   # gulp-task/concat-common-js.coffee
   vendorList_adv: [
     # [0]开发
-    [ path.join(__dirname, '../libs', '/vendor/jquery3/jquery.js'),
+    [ path.join(__dirname, '../libs', '/vendor/jquery2/dist/jquery.js'),
       path.join(__dirname, '../libs', '/vendor/react15/src/react.js'),
       path.join(__dirname, '../libs', '/vendor/react15/src/react-dom.js'),
       path.join(__dirname, '../libs', '/vendor/lodash/src/lodash_full_413.js')

@@ -51,12 +51,19 @@ gulp.task 'watch:pro', ()->
 # ly dev    // watch  启动node服务器   watch性能较好，用于node开发环境
 # ly pro    // watch  启动node服务器   watch性能较差，用于node/生产文件是否有问题
 # ly build  // no watch 构建任务，生成压缩版  不启动服务器
-gulp.task "demo", ['clean:dev', 'html:demo', 'ie:dev', 'fonts:dev', 'pagecss:dev', 'copyThirdJsToDist:dev', 'buildCommon:demo'] , getTask('frontend', 'demo')  # for demo
-gulp.task "dev", ['clean:dev', 'html:dev', 'ie:dev','fonts:dev','pagecss:dev','copyThirdJsToDist:dev','buildCommon:dev'] , getTask('frontend','dev')  # for dev
-gulp.task "pro", ['clean:pro','html:pro', 'ie:pro','fonts:pro','pagecss:pro','copyThirdJsToDist:pro','buildCommon:pro'] , getTask('frontend','pro')  # for dev
+gulp.task "demo", ['clean:dev', 'html:demo', 'ie:dev', 'fonts:dev', 'pagecss:dev',
+'copyThirdCssToDist:dev', 'copyThirdJsToDist:dev', 'buildCommon:demo'] , getTask('frontend', 'demo')  # for demo
+
+gulp.task "dev", ['clean:dev', 'html:dev', 'ie:dev','fonts:dev','pagecss:dev',
+'copyThirdCssToDist:dev', 'copyThirdJsToDist:dev', 'buildCommon:dev'] , getTask('frontend','dev')  # for dev
+
+gulp.task "pro", ['clean:pro','html:pro', 'ie:pro','fonts:pro','pagecss:pro',
+'copyThirdCssToDist:pro','copyThirdJsToDist:pro','buildCommon:pro'] , getTask('frontend','pro')  # for dev
+
 gulp.task 'build',['clean:dev','clean:pro'], () ->
   process.env.WATCH_FILE = 'false'
   gulp.start 'pro'
+  
 gulp.task 'default',['clean:dev'], ->
   gulp.start 'demo'
 
@@ -99,8 +106,8 @@ gulp.task 'images:pro', getTask('images-dev', 'pro')
 
 #----
 # 拷贝如编辑器这样的无法分解的前端js
-gulp.task 'copyThirdJsToDist:dev', ['copyThirdCssToDist:dev'], getTask('js-copy2-dev')
-gulp.task 'copyThirdJsToDist:pro', ['copyThirdCssToDist:pro'], getTask('js-copy2-build')
+gulp.task 'copyThirdJsToDist:dev', getTask('js-copy2-dev')
+gulp.task 'copyThirdJsToDist:pro', getTask('js-copy2-build')
 
 #----#----
 # 拷贝如组件（JS + CSS）类似的CSS

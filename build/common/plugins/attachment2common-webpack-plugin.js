@@ -1,8 +1,13 @@
-// attachment2common.plugin.js
+/**
+ * attachment2common.plugin.js
+ * 为webpack的commontrunk添加外部的打包文件
+ * author: 天天修改
+ * site: www.agzgz.com
+ */
 
 var fs = require('fs');
 var path = require('path');
-var md5 = require('md5');
+var md5 = require('blueimp-md5');
 var _ = require('lodash')
 var ConcatSource = require("webpack-core/lib/ConcatSource");
 
@@ -23,7 +28,7 @@ Attachment2commonPlugin.prototype.apply = function(compiler) {
     compilation.plugin("optimize-chunk-assets", function(chunks, callback) {
       chunks.forEach(function(chunk) {
         chunk.files.forEach(function(file) {
-          if(!chunk.parents.length && chunk.filenameTemplate){
+          if(!chunk.parents.length && chunk.filenameTemplate){  //commontrunk
             if(process.env.NODE_ENV === 'production'){
               // parseJson.dir
               // parseJson.ext

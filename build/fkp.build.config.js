@@ -118,8 +118,10 @@ var Build = base.inherits( UtilBuild, {
         del([configs.dirs.server+'/tmp.js']).then(function(){
           browserSync.init({
             proxy: 'http://localhost:' + port+'/',
-            files: [configs.staticPath+ '/**/*.*'],
-            logFileChanges: false
+            files: [configs.staticPath+ '/**'],
+            logFileChanges: false,
+            notify: true,
+            injectChanges: true
           })
         })
       }, configs.delay.openBrowse)

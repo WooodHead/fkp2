@@ -3,7 +3,10 @@ module.exports = (util) ->
   $ = util.$
   del = util.del
   gulp = util.gulp
+  path = util.path
   configs = util.configs
+  gutil = util.gutil
+  through = util.through
 
   return {
     css: (dir, opts, cb) ->
@@ -49,7 +52,7 @@ module.exports = (util) ->
     gulpCssBuild: (files, opts) ->
       _cssDistPath = this.cssruntime.cssDistPath
       _imgDistPath = this.cssruntime.imgDistPath
-      _md5 = this.cssruntime.md5       
+      _md5 = this.cssruntime.md5
 
       switch opts.type
         when "less"   then cssstyle = $.less || $.empty
@@ -67,7 +70,11 @@ module.exports = (util) ->
       tmp = (item) ->
         gulp.src files[item]
         .pipe $.plumber({ errorHandler: errrHandler })
-        .pipe cssstyle()
+        .pipe $.if('*.less', (if $.less then $.less() else $.empty()) )
+        .pipe $.if('*.styl', (if $.stylus then $.stylus() else $.empty()) )
+        .pipe $.if('*.stylus', (if $.stylus then $.stylus() else $.empty()) )
+        .pipe $.if('*.css',  $.empty())
+        # .pipe cssstyle()
         .pipe $.autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4')
         # .pipe if (files._src || files._ary) then $.rename({ 'extname': '.css' }) else $.concat(item + ".css")
         .pipe $.concat(item + ".css")

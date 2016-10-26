@@ -14,11 +14,11 @@ module.exports = (gulp,$,slime,env,port)->
       config.dirs.watch_src + '/images/slice/*.png'], ['pagecss:'+env], () ->
 
       # 监控第三方直传文件: css
-      gulp.watch [ config.dirs.src + '/css/_copy2dist/**/*.?(less|css|styl)', config.dirs.src + '/images/slice/*.png' ], ['copyThirdCssToDist:'+env], () ->
+      gulp.watch [ config.dirs.src + '/css/_copy2dist/**/*.*', config.dirs.src + '/images/slice/*.png' ], ['copyThirdCssToDist:'+env], () ->
           console.log 'copy2css watch'
 
       # 监控第三方直传文件:js
-      gulp.watch config.dirs.src + '/js/_copy2dist/**/*.?(coffee|js|jsx|ts|tsx)', ['copyThirdJsToDist:'+env], () ->
+      gulp.watch config.dirs.src + '/js/_copy2dist/**/*.*', ['copyThirdJsToDist:'+env], () ->
           console.log 'copy2js watch'
 
       # watch图片文件
