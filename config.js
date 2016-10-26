@@ -35,10 +35,10 @@ var config = {
      * 微信端配置文件
      */
     weixin: {
-        token: '_agzgz',
-        appid: 'wxec91673b97ce1463',
-        appsecret: '2c2c9312a61cd9aa0eca16e2e8939cfb',
-        encodingAESKey: ''
+      token: '_agzgz',
+      appid: 'wxec91673b97ce1463',
+      appsecret: '2c2c9312a61cd9aa0eca16e2e8939cfb',
+      encodingAESKey: ''
     },
 
     /*

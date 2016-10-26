@@ -22,7 +22,7 @@ function setRender(){
     }
     var __map = {
       map: {
-        html: 'swig'
+        html: 'ejs'
       }
     };
 
