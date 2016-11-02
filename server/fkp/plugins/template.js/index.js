@@ -1,4 +1,4 @@
-export default function(ctx, raw, data, type=2) {
+function index(fkp, raw, data, type=2) {
   // let parseSetting = {
   //   evaluate:    /{{([\s\S]+?)}}/g,
   //   interpolate: /{{=([\s\S]+?)}}/g,
@@ -16,4 +16,8 @@ export default function(ctx, raw, data, type=2) {
   let compiled = _.template(raw)
   if (data) return compiled(data)
   return compiled
+}
+
+export default function(fkp){
+  return index
 }

@@ -7,8 +7,7 @@ let react2html = require('server/modules/parseReact')
 // 分析目录结构并格式化目录树为JSON
 // md, html
 
-module.exports = function(ctx){
-  let fkp = ctx.fkp
+module.exports = function(fkp){
 
   // a markdown directory's homefile
   // this directory maybe has some sub directory

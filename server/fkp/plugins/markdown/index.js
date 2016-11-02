@@ -3,8 +3,8 @@ import path from 'path'
 import markdown from './markdown'
 import markdownRender from './markdownrender'
 
-export default async function(ctx, md_raw, opts){
-  let render = markdownRender(ctx)
+async function index(fkp, md_raw, opts){
+  let render = markdownRender(fkp)
   let mdcnt = {
     mdcontent:{}
   }
@@ -20,11 +20,15 @@ export default async function(ctx, md_raw, opts){
   }
   if (_.isPlainObject(opts)) dft = _.extend(opts)
 
-  let fkpper = ctx.fkp()
+  let fkpper = fkp()
   let data = await fkpper.excute()
   let compiled = await fkpper.template(md_raw||this.data||'')
   md_raw = compiled(data)
 
   let  archive = await co(markdown(md_raw, mdcnt, dft))
   return archive
+}
+
+export default function(fkp){
+  return index
 }

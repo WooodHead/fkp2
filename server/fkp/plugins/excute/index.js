@@ -2,8 +2,8 @@ import co from 'co'
 import path from 'path'
 import renderfdocsSon from './fdocsson'
 
-export default async function(ctx, cmd){
-  let _data = await ctx.fkp().docs('fdocs', 'mdson')
+async function index(fkp, cmd){
+  let _data = await fkp().docs('fdocs', 'mdson')
   let _mdson = renderfdocsSon(_data.sonlist)
   let commond = {
     name: '你妹啊，真的可以吗',
@@ -16,4 +16,8 @@ export default async function(ctx, cmd){
   let cmds = _.pick(commond, cmd)
   if (_.isEmpty(cms)) return false
   return cmds
+}
+
+export default function(fkp){
+  return index
 }

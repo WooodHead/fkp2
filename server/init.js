@@ -48,8 +48,9 @@ export default function init() {
 
   // global middlewares
   app.keys = ['agzgz gogogo']
-  
-  app.use(fkp())
+
+  // app.use(fkp())
+  fkp(app)
 
   //get
   app.use(conditional())

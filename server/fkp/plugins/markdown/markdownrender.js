@@ -2,8 +2,8 @@ var marked = require('marked')
 var render = new marked.Renderer()
 var whiteListPropsAry = ['id', 'class', 'div', 'excute'];
 
-export default function(ctx){
-  
+export default function(fkp){
+
   function customParse(str, spec){
     console.log('============ modules/common/mdrender.js\n');
     var re = /[\s]?\{(.*?)\}/;    // "fjdskg  {abc: xxx} {xyz: yyy}" 取 " {....}"

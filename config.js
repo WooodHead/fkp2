@@ -117,8 +117,7 @@ var config = {
 
     route: {
       prefix: [
-        '/deep3',
-        '/docs'
+        '/deep3'
       ]
     }
 

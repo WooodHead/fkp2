@@ -2,9 +2,9 @@ import co from 'co'
 import path from 'path'
 import mddocs from './docs'
 
-async function docs(ctx, dir, type){
+async function docs(fkp, dir, type){
   if (!dir) return false
-  let Docs = mddocs(ctx)
+  let Docs = mddocs(fkp)
   let dft = {
     // parse a directory that has '.html' or '.md'
     // base data of menutree/sitemap
@@ -67,9 +67,9 @@ async function docs(ctx, dir, type){
   }
 
   if (dir == 'fdocs') {
-    let stat = await ctx.fkp.fileexist(dir)
+    let stat = await fkp.fileexist(dir)
     if (!stat) {
-      await ctx.fkp.mkdir(dir)
+      await fkp.mkdir(dir)
       return false
     }
   }
@@ -77,9 +77,7 @@ async function docs(ctx, dir, type){
   return await folderDocs(dir, dft)
 }
 
-async function init(ctx, dir, type){
-  ctx.fkp.routeprefix('/docs')
-  return docs(ctx, dir, type)
+export default function(fkp){
+  fkp.routeprefix('/docs')
+  return docs
 }
-
-export default init

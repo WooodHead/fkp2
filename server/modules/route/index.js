@@ -211,7 +211,6 @@ async function distribute(route, pageData, ctrlPages, routerInstance){
 
 async function controler(ctx, route, pageData, ctrlPages, routerInstance){
   debug('start controler');
-  let fkp = ctx.fkp
   let routerPrefix = routerInstance.opts.prefix
   if (_.isString(routerPrefix) && routerPrefix.indexOf('/')==0) routerPrefix = routerPrefix.replace('/','')
 
@@ -226,7 +225,7 @@ async function controler(ctx, route, pageData, ctrlPages, routerInstance){
         if (Array.isArray(_path)) {
           for (let _filename of _path) {
             _filename = path.resolve(__dirname, _filename+'.js')
-            let _stat = await fkp.fileexist(_filename)
+            let _stat = await ctx.fkp.fileexist(_filename)
             if (_stat && _stat.isFile()) _names.push(_filename)
           }
         }
@@ -242,7 +241,7 @@ async function controler(ctx, route, pageData, ctrlPages, routerInstance){
     let passAccess = false
     if (ctrlPages.indexOf(route+'.js')>-1){
       pageData = await getctrlData(['../../pages/'+route], route, ctx, pageData)
-      if (routerPrefix) route = routerPrefix
+      // if (routerPrefix) route = routerPrefix
     }
     // 根据prefix匹配到control文件+三层路由
     else if (routerPrefix) {
@@ -269,7 +268,7 @@ async function controler(ctx, route, pageData, ctrlPages, routerInstance){
     }
     return [pageData, route, passAccess]
   } catch (e) {
-    // console.log(e.stack);
+    console.log(e.stack);
     debug(e.stack)
   }
 }
