@@ -13,6 +13,7 @@ import conditional from 'koa-conditional-get'
 import etag from 'koa-etag'
 import SQLite3Store from 'koa-sqlite3-session'
 
+import fkp from './fkp'
 import statics from './modules/static'
 import route from './modules/route'
 import mapper from './modules/mapper'
@@ -27,6 +28,7 @@ global.ReactDomServer = require('react-dom/server')
 global.Cache = require('./modules/cache')
 global.Fetch = require('./modules/fetch').default
 global.Errors = require('libs/errors')
+global.Promise2 = require('bluebird')
 
 
 const cwd = process.cwd()
@@ -39,20 +41,15 @@ const app = new Koa()
 
 export default function init() {
 
-  // 全局错误处理
   app.use(async (ctx, next) => {
-    try {
-      Fetch.init(ctx)
-      await next()
-    } catch (err) {
-      debug(err.stack)
-      ctx.body = err
-      ctx.status = err.status || 500
-    }
+    Fetch.init(ctx)   //初始化Fetch API
+    await next()
   })
 
   // global middlewares
   app.keys = ['agzgz gogogo']
+  
+  app.use(fkp())
 
   //get
   app.use(conditional())
@@ -74,7 +71,7 @@ export default function init() {
   //     maxage: null
   //   }
 	// })))
-  
+
 	app.use(session({
 		key: 'agzgz-',
 	  store: new SQLite3Store('../forsession1.db', {}),
@@ -93,11 +90,17 @@ export default function init() {
   app.use(cors())
 
   //路由处理
+  if (_.isArray(CONFIG.route.prefix)) {  //koa-router prefix，任何prefix均带有resful三层结构 :cat:title:id
+    let prefix = CONFIG.route.prefix
+    prefix.map((item)=>{
+      if (item.indexOf('/')==0) router(app, mapper, item)
+    })
+  }
   router(app, mapper)
-	router(app, mapper, '/deep3')  //koa-router prefix，任何prefix均带有resful三层结构 :cat:title:id
 
 	app.on('error', async (err, ctx) => {
 		logger.error('server error', err, ctx)
+    debug(err.stack)
 	})
 
   return app
