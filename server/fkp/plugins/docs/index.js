@@ -78,6 +78,17 @@ async function docs(fkp, dir, type){
 }
 
 export default function(fkp){
-  fkp.routeprefix('/docs')
+  fkp.routepreset('/docs', {
+    get: [
+      '/',
+      '/:cat',
+      '/:cat/:title',
+      '/:cat/:title/:id',
+      '/:cat/:title/:id/:p1',
+      '/:cat/:title/:id/:p1/:p2',
+      '/:cat/:title/:id/:p1/:p2/:p3'
+    ],
+    post: [ '/', '/:cat', '/:cat/:title', '/:cat/:title/:id' ]
+  })
   return docs
 }

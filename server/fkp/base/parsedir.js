@@ -4,7 +4,7 @@ let bluebird = require('bluebird')
 let fs = bluebird.promisifyAll(require('fs'))
 let parseanyHtmlDirs = require('./_readhtmldir').default
 
-export default async function(fkp, url){
+async function index(fkp, url){
   try {
     let _id = 'parsedir_'+url
     return Cache.ifid(_id, ()=>{
@@ -17,4 +17,8 @@ export default async function(fkp, url){
     // console.log(e.stack);
     return false
   }
+}
+
+export default function(fkp){
+  return index
 }

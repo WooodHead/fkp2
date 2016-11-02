@@ -28,7 +28,6 @@ global.ReactDomServer = require('react-dom/server')
 global.Cache = require('./modules/cache')
 global.Fetch = require('./modules/fetch').default
 global.Errors = require('libs/errors')
-global.Promise2 = require('bluebird')
 
 
 const cwd = process.cwd()
@@ -42,6 +41,7 @@ const app = new Koa()
 export default function init() {
 
   app.use(async (ctx, next) => {
+    ctx.staticMapper = mapper  // 用于路由
     Fetch.init(ctx)   //初始化Fetch API
     await next()
   })
@@ -94,10 +94,10 @@ export default function init() {
   if (_.isArray(CONFIG.route.prefix)) {  //koa-router prefix，任何prefix均带有resful三层结构 :cat:title:id
     let prefix = CONFIG.route.prefix
     prefix.map((item)=>{
-      if (item.indexOf('/')==0) router(app, mapper, item)
+      if (item.indexOf('/')==0) router(app, item)
     })
   }
-  router(app, mapper)
+  router(app)
 
 	app.on('error', async (err, ctx) => {
 		logger.error('server error', err, ctx)

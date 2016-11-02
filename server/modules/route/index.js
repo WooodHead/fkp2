@@ -2,12 +2,12 @@
  * Module dependencies.
  */
 var fs = require('fs');
-var path = require('path')
-var url = require('url')
+var Path = require('path')
+var Url = require('url')
 var Router = require('koa-router')
 var libs = require('libs')
 var md5 = require('blueimp-md5')
-import control from '../control'
+import control from './control'
 let debug = Debug('modules:route')
 
 
@@ -18,7 +18,7 @@ let debug = Debug('modules:route')
  * return   {boleean}
 **/
 function filterRendeFile(pms, url){
-    let rjson = path.parse(url)
+    let rjson = Path.parse(url)
     let rtn = false;
     let ext = rjson.ext;
     let cat = pms.cat;
@@ -52,7 +52,7 @@ function createTempPath2(ctx){
       _url = _url.slice(0, _url.indexOf('?'))
       ctxurl = ctxurl.slice(0, ctxurl.indexOf('?'))
     }
-    let rjson = path.parse(_url)
+    let rjson = Path.parse(_url)
     let route = false
     let cat = params.cat||'', title = params.title||'', id = params.id||'';
     let gtpy = libs.objtypeof;
@@ -88,7 +88,7 @@ function createTempPath2(ctx){
 }
 
 function controlPages() {
-  const controlPagePath = path.join('server/pages/')
+  const controlPagePath = Path.join('server/pages/')
   const _id = controlPagePath
   let ctrlFiles = []
   return Cache.ifid( _id, ()=> new Promise((res,rej)=>{
@@ -96,11 +96,11 @@ function controlPages() {
         fs.readdir(dir, (err, data) => {
           if(err) throw err
           data.map( file => {
-            const _path = path.join(dir, file)
+            const _path = Path.join(dir, file)
             const stat = fs.statSync(_path)
             if (stat && stat.isDirectory()) return getCtrlFiles(_path)
             const okPath = _path.replace(controlPagePath, '')
-            ctrlFiles.push(path.join(okPath))
+            ctrlFiles.push(Path.join(okPath))
           }) // end map
           Cache.set(_id, ctrlFiles)
           res(ctrlFiles)
@@ -116,30 +116,45 @@ function controlPages() {
  * {param2} map of static file
  * return rende pages
 **/
-async function init(app, mapper, prefix='') {
-  let _controlPages = await controlPages(prefix)
+async function init(app, prefix='', options) {
+  let _controlPages = await controlPages()
   const router = prefix ? new Router({prefix: prefix}) : new Router()
-  if (prefix == '/docs') {
-    router
-    .get('/', forBetter)
-    .get('/:cat', forBetter)
-    .get('/:cat/:title', forBetter)
-    .get('/:cat/:title/:id', forBetter)
-    .get('/:cat/:title/:id/:p1', forBetter)
-    .get('/:cat/:title/:id/:p1/:p2', forBetter)
-    .get('/:cat/:title/:id/:p1/:p2/:p3', forBetter)
-    .post('/:cat', forBetter)
-    .post('/:cat/:title', forBetter)
-    .post('/:cat/:title/:id', forBetter)
+  if (options && _.isPlainObject(options)) {
+    _.map(options, (item, key) => {
+      if (typeof item == 'string') item = [item]
+      if (!Array.isArray(item)) return
+      if (_.includes(['get', 'post', 'put', 'del'], key)) {
+        item.map((rt)=>{
+          if (key!='get' && rt != '/' && rt.indexOf('p1')==-1) {
+            router[key](rt, forBetter)
+          } else {
+            router[key](rt, forBetter)
+          }
+        })
+        _.map(item, (rt)=>{
+          if (key!='get') {
+            if (rt != '/') {
+              router[key](rt, forBetter)
+            }
+          } else {
+            router[key](rt, forBetter)
+          }
+        })
+      }
+    })
   } else {
-    router
-    .get('/', forBetter)
-    .get('/:cat', forBetter)
-    .get('/:cat/:title', forBetter)
-    .get('/:cat/:title/:id', forBetter)
-    .post('/:cat', forBetter)
-    .post('/:cat/:title', forBetter)
-    .post('/:cat/:title/:id', forBetter)
+    let routeParam = [
+      '/',
+      '/:cat',
+      '/:cat/:title',
+      '/:cat/:title/:id'
+    ]
+    routeParam.map((item)=>{
+      router.get(item, forBetter)
+      if (item!='/') {
+        router.post(item, forBetter)
+      }
+    })
   }
 
   app.use(router.routes())
@@ -149,11 +164,11 @@ async function init(app, mapper, prefix='') {
     try {
       let ignoreStacic = ['/css/', '/js/', '/images/', '/img/']
       if (ignoreStacic.indexOf(ctx.url)>-1) return
-      ctx.local = url.parse(ctx.url, true)
-      let _ext = path.extname(ctx.url)
+      ctx.local = Url.parse(ctx.url, true)
+      let _ext = Path.extname(ctx.url)
       ctx.route_url = ctx.url.slice(1).replace(_ext, '')
       if (!ctx.route_url) ctx.route_url = ''
-      return await createRoute.call(router, ctx, mapper, _controlPages)
+      return await createRoute.call(router, ctx, ctx.staticMapper, _controlPages)
     } catch (e) {
       debug('forBetter: '+e.message)
       console.log(e.stack)
@@ -224,7 +239,7 @@ async function controler(ctx, route, pageData, ctrlPages, routerInstance){
         let _names = []
         if (Array.isArray(_path)) {
           for (let _filename of _path) {
-            _filename = path.resolve(__dirname, _filename+'.js')
+            _filename = Path.resolve(__dirname, _filename+'.js')
             let _stat = await ctx.fkp.fileexist(_filename)
             if (_stat && _stat.isFile()) _names.push(_filename)
           }
@@ -246,13 +261,13 @@ async function controler(ctx, route, pageData, ctrlPages, routerInstance){
     // 根据prefix匹配到control文件+三层路由
     else if (routerPrefix) {
       route = routerPrefix
-      let prefixIndexFile =  path.join('../../pages', routerPrefix, '/index')
-      let prefixCatFile =  path.join('../../pages', routerPrefix, ctx.params.cat||'')
+      let prefixIndexFile =  Path.join('../../pages', routerPrefix, '/index')
+      let prefixCatFile =  Path.join('../../pages', routerPrefix, ctx.params.cat||'')
       pageData = await getctrlData([prefixIndexFile,prefixCatFile], route, ctx, pageData)
     }
     // pages根目录+三层路由
     else if (!routerPrefix){
-      let paramsCatFile =  path.join('../../pages', ctx.params.cat)
+      let paramsCatFile =  Path.join('../../pages', ctx.params.cat)
       route = ctx.params.cat
       pageData = await getctrlData([paramsCatFile], route, ctx, pageData)
     }
