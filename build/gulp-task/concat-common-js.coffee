@@ -1,6 +1,6 @@
 fs = require 'fs'
 path = require 'path';
-config = require '../out_config.coffee';
+config = require '../out_config';
 
 # 组装数组，用来打包成common.js
 # 不能调换顺序

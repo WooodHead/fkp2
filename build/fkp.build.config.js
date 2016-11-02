@@ -45,7 +45,7 @@ FkpBuild.prototype = {
     this.env = ''
     this.root = path.resolve('../')
 
-    if (opts.gulp)  // gulpfile.coffee传递
+    if (opts && opts.gulp)  // gulpfile.coffee传递
       this.gulp = opts.gulp
   },
 
