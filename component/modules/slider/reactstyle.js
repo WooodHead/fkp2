@@ -145,8 +145,7 @@ class _Sliderer {
         itemMethod={dft.itemMethod}
         listMethod={dft.listMethod}
         itemClass={dft.itemClass}
-        listClass={dft.listClass}
-      />
+        listClass={dft.listClass} />
     )
     if (dft.container){
       let _container
