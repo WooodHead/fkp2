@@ -4,7 +4,7 @@
 */
 var marked = require('marked')
 var render = new marked.Renderer();
-var libs = require('../../libs/libs');
+var libs = require('libs');
 var co = require('co')
 
 var whiteListPropsAry = ['id', 'class', 'div', 'excute'];

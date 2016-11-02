@@ -63,12 +63,14 @@ var config = {
     	js:   path.join('./dist/'+version+'/js'),
     	css:  path.join('./dist/'+version+'/css'),
     	img:  path.join('./dist/'+version+'/images'),
+      doc:  path.join(static_dir,'../fdocs'),
           dev: {
               dft:  path.join('./dist/'+version+'/dev'),
               html: path.join('./dist/'+version+'/dev/html'),
               js:   path.join('./dist/'+version+'/dev/js'),
               css:  path.join('./dist/'+version+'/dev/css'),
-              img:  path.join('./dist/'+version+'/dev/images')
+              img:  path.join('./dist/'+version+'/dev/images'),
+              doc:  path.join(static_dir,'../fdocs'),
           }
   	},
 
@@ -97,7 +99,6 @@ var config = {
   	mapDevJson:   path.join('./dist/'+version+'/dev/map.json'),
 
 
-    //
     /*
      * markdown解析白名单
      * markdown扩展语法中的自定义变量，一般用于数据库存储
@@ -112,7 +113,15 @@ var config = {
         'author',
         {'分类': 'cats'},   //支持中文 key
         {'作者': 'author'}
-    ]
+    ],
+
+    route: {
+      prefix: [
+        '/deep3',
+        '/docs'
+      ]
+    }
+
 }
 
 function _config(target){

@@ -31,7 +31,7 @@ let getMapper = () => {
       _mapper.pageCss = _mapper.dependencies.css
       _mapper.length = Object.keys(_mapper).length
     }
-
+    CONFIG.mapper = _mapper
     return _mapper
 }
 

@@ -3,10 +3,16 @@
     <head>
         <title>Hello World</title>
         @@include('./_common/header/head.html')
+        <link rel="stylesheet" href="/css/t/markdown.css" />
     </head>
     <body>
         <div class="box">
           <div id='slider'> </div>
+          <div class="markdown-body u-clearfix">
+            <div class="showbooks">
+              {{{home.cnt}}}               
+            </div>
+          </div>
         </div>
         @@include('./_common/footer/foot.html')
     </body>

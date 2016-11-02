@@ -3,8 +3,8 @@ let fs = require('fs')
 let co = require('co');
 let path = require('path');
 let markdown = require('./markdown')
-let parseDirs = require('../public/_builder/gulp-task/html')
-let publicConfig = require('../public/config');
+let parseDirs = require('build/gulp-task/html')
+let publicConfig = require('build/src_config');
 let react2html = require('./parseReact')
 
 // 分析目录结构并格式化目录树为JSON
@@ -110,19 +110,21 @@ function *_getDocsData(doc_dir, options){
 
     let opts = _.extend({}, defaults, options||{});
 
-    function getSiteMap(url){
+    function *getSiteMap(url){
         try {
-            let _sitemap = _readdirs(path.join('./public', publicConfig.dirs.src, 'html'));
+            let _sitemap = _readdirs(path.join(publicConfig.dirs.src, 'html'));
 
             let _htmlImages = [];
-            let htmlImages = fs.readdirSync( path.join(__dirname, '../public/src/pc/images/html') );
-
-            if (htmlImages.length){
+            let _imgstat = yield fileExsist(path.join(publicConfig.dirs.src, 'images/html'))
+            if (_imgstat) {
+              let htmlImages = fs.readdirSync( path.join(publicConfig.dirs.src, 'images/html') );
+              if (htmlImages && htmlImages.length){
                 _htmlImages = [];
                 htmlImages.map((item, i)=>{
-                    let imgName = path.parse(htmlImages[i]).name;
-                    _htmlImages.push(imgName)
+                  let imgName = path.parse(htmlImages[i]).name;
+                  _htmlImages.push(imgName)
                 })
+              }
             }
 
             let htmlFiles = _sitemap.demoindex.root.list;
@@ -141,7 +143,7 @@ function *_getDocsData(doc_dir, options){
 
     // html docs
     if (opts.sitemap){
-        sitemap = getSiteMap();
+        sitemap = yield getSiteMap();
     }
 
     // start docs
@@ -178,7 +180,7 @@ function *_getDocsData(doc_dir, options){
         let _props = {
             data: docs.docs
         }
-        let reactHtml = yield react2html('react/modules/menutree/index', _props);
+        let reactHtml = yield react2html('component/modules/menutree/index', _props);
         docsData.menutree = reactHtml[0];
     }
 
@@ -197,7 +199,7 @@ function *_getDocsData(doc_dir, options){
     return docsData;
 }
 
-function *getDocsData(url, opts, sess){
+function *getDocsData(url, opts){
     let id = url;
     let tmp;
 
@@ -208,7 +210,7 @@ function *getDocsData(url, opts, sess){
       return Cache.get(id);
     }
     else {
-      tmp = yield _getDocsData.call(sess, url, opts);
+      tmp = yield _getDocsData(url, opts);
       Cache.set(id, tmp)
       return tmp;
     }

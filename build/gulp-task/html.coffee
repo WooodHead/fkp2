@@ -1,13 +1,14 @@
 fs = require 'fs'
 path = require 'path'
 config = require '../out_config'
+slime2 = require('../fkp.build.config')()
 
 module.exports = (gulp, $, slime, env, _path)->
   return () ->
     if env == 'REST'  # 请求来自node
       if _path
         rootDir = _path
-        list = slime.makeHtmlListData(_path)
+        list = slime2.makeHtmlListData(_path)
         datas = { demoindex: list } # index html模板名称    list: 模板数据
         return datas
       else

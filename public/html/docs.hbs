@@ -1,0 +1,38 @@
+<!doctype html>
+<html class="no-js" lang="en">
+    <head>
+        <title>Hello World</title>
+        @@include('./_common/header/head.html')
+        <link rel="stylesheet" href="/css/t/markdown.css" />
+    </head>
+    <body>
+      <div class="container-fluid">
+        <div class="row">
+          {{#if docs.docindex }}
+            <div class="col-xs col-sm col-md col-lg">
+              {{{docs.docindex.cnt}}}
+            </div>
+          {{else}}
+            <div class="col-xs col-sm-4 col-md-4 col-lg-4">
+              {{{docs.menutree}}}
+            </div>
+            <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+              <div class="markdown-body u-clearfix">
+                {{# if docs.home}}
+                  <p>
+                    {{{docs.home.cnt}}}
+                  </p>
+                {{/if}}
+                {{# if docs.mdcontent}}
+                  <p>
+                    {{{docs.mdcontent.cnt}}}
+                  </p>
+                {{/if}}
+              </div>
+            </div>
+          {{/if}}
+        </div>
+      </div>
+        @@include('./_common/footer/foot.html')
+    </body>
+</html>

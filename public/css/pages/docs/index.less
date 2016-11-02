@@ -1,0 +1,112 @@
+html{
+    font: 16px/1 Roboto-Light,roboto,'Microsoft Yahei',sans-serif,Arial,Verdana;
+}
+body{
+    background-color: #fff;
+}
+a{
+    text-decoration: none;
+}
+
+// menutree
+.page-ui-kits{
+    font-family: "Helvetica Neue", "Luxi Sans", "DejaVu Sans", Tahoma, "Hiragino Sans GB", STHeiti, "Microsoft YaHei";
+    width: auto;
+    padding: 0;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    &.docmenu{
+        ul, ol{
+            list-style-type: none;
+            display: block;
+            li{
+              list-style: none;
+              &.selected{
+                // background-color: #f6f6f6;
+                background-color: #595959;
+                a{
+                  // color: #1d1e30;
+                  color: #fff;
+                  font-weight: 500;
+                }
+              }
+              &.category, .category{
+                margin-bottom: 1.5em;
+                list-style: none;
+              }
+              .hheader{
+                padding: 0;
+              }
+              .nextLevel2{
+                margin-left: 2.3em;
+                padding: 0;
+              }
+              .hlist, .hheader, .hbody, .nextLevel2{
+                h4{
+                  font-size: 1.1em;
+                  font-weight: 600;
+                  color: #52708b;
+                  cursor: pointer;
+                  margin: 0.2em 0;
+                  i{
+                    font-size: 0.4em;
+                    vertical-align: middle;
+                    color: #9e9e9e;
+                    margin-right: 0.3em;
+                  }
+                  span{
+                    vertical-align: middle;
+                  }
+                }
+              }
+
+              ul, ol{
+                display: block;
+                margin: 0;
+                padding: 0;
+                li{
+                  list-style: none;
+                  h4{
+                    font-size: 1em;
+                    margin: 0.2em 0;
+                  }
+                  &:hover{
+                      // background-color: #f6f7fa;
+                  }
+                      font-size: 1em;
+                      padding: 0.3em 0 0.3em 1em;
+                      a{
+                        font-size: 0.8em;
+                          display: block;
+                          width: 100%;
+                          height: 100%;
+                          color: #9a9dae;
+                          &.descript{
+                              color: #ccc;
+                          }
+                          &:hover{
+                              text-decoration: underline;
+                          }
+                          i{
+                            margin-left: 0.2em;
+                          }
+                          &.recommend{    // 列表项，推荐
+                            font-weight: bold;
+                            color: #009e06;
+                          }
+                      }
+                      .hheader{
+                          .title{ }
+                          .descript{
+                              a{
+                                  color: #ccc;
+                              }
+                          }
+                      }
+                  }
+              }
+            }
+        }
+    }
+}
