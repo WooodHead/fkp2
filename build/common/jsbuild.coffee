@@ -237,9 +237,9 @@ module.exports = (util) ->
 
           for item of _wpcfg.entry
             _wpcfg.entry[item].unshift(
-              # "react-hot-loader/patch", for 3
+              "react-hot-loader/patch", #for 3
               "webpack-dev-server/client?http://localhost:"+configs.ports.dev+'/',
-              "webpack/hot/only-dev-server"
+              # "webpack/hot/only-dev-server"
             )
 
           new WebpackDevServer webpack(_wpcfg), {
@@ -248,10 +248,8 @@ module.exports = (util) ->
               'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
             }
             historyApiFallback: true
-            stats: {
-              colors: true
-              # "errors-only": true
-            }
+            clientLogLevel: "info"
+            stats: { colors: true }
             # noInfo: true
             progress: true
             hot: true
@@ -262,12 +260,13 @@ module.exports = (util) ->
             }
             host: '0.0.0.0'
             port: configs.ports.node
-            # publicPath: cfg.output.publicPath,
+            publicPath: '/'
             proxy: {
               '*': {
                 target: 'http://localhost:' + configs.ports.node
                 secure: false
-                ws: false
+                changeOrigin: true
+                # ws: false
                 # bypass: (req, res, opt) ->
                   # if /(\.json|\.jpg|\.png|\.css)$/.test(req.path) || /\.bundle\.js/.test(req.path)
                   #   console.log('bypass', req.path)

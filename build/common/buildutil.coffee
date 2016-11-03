@@ -115,6 +115,19 @@ module.exports = (util) ->
       this.gulp.start 'map:cssdev'
       return this
 
+    fileexist: (src) ->
+      stat = fs.statSync src
+      if !stat then return false
+      return stat
+
+    readdir: (src) ->
+      stat = this.fileexist src
+      if stat and stat.isDirectory()
+        return fs.readdirSync(src)
+
+    writefile: (source, target) ->
+      fs.writeFileSync target, source
+
     copy: (source, target) ->
       that = this
       babelconfig = {
