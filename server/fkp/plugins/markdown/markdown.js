@@ -1,5 +1,5 @@
 let marked = require('marked')
-let render = require('server/modules/common/mdrender')
+let render = require('./markdownrender')
 
 // 自定义变量白名单
 let accessVar = CONFIG.markdownVariable;

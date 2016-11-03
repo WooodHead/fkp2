@@ -1,10 +1,16 @@
 let co = require('co')
 let Path = require('path')
+let through2 = require('through2')
 let bluebird = require('bluebird')
+let stream = require('stream')
+let request = require('request')
 let fs = bluebird.promisifyAll(require('fs'))
-let router = require('server/modules/route')
 let parseanyHtmlDirs = require('./base/_readhtmldir').default
 let debug = Debug('fkp')
+let mapper = require('./modules/mapper')
+let Fetch = require('./modules/fetch').default
+let router = require('./route')
+global.Fetch = Fetch
 
 export default async function(app) {
 
@@ -15,6 +21,7 @@ export default async function(app) {
     }
 
     let fns = [
+      save2file,
       routepreset,
       fileexist,
       filetype,
@@ -31,6 +38,7 @@ export default async function(app) {
     let fkp = function(ctx, opts){
       return new _fkp(ctx, opts)
     }
+    fkp.staticMapper = mapper
     fkp.innerData = innerData
     fkp.config = CONFIG
     fkp.root = Path.join(__dirname, '../../')
@@ -75,7 +83,27 @@ export default async function(app) {
     // ============ 内联助手方法 ==============
 
     function copy(src, dist){
-      fs.createReadStream(src).pipe(fs.createWriteStream(dist));
+      // fs.createReadStream(src).pipe(fs.createWriteStream(dist))
+      fs.createReadStream(src)
+      .pipe(through2({ objectMode: true, allowHalfOpen: false },
+        function (chunk, enc, cb) {
+          cb(null, chunk)
+        }
+      ))
+      .pipe(fs.createWriteStream(dist))
+    }
+
+    async function save2file(str, dist){
+      if (str && str.indexOf('http')==0) {
+        request.get(str).pipe(fs.createWriteStream(dist))
+      }
+
+      if (str && str.length>20) {
+        fs.writeFileAsync(dist, str).then( sss=>sss).catch(e=>{
+          debug('fileexist: ' + e.message)
+          return false
+        })
+      }
     }
 
     // 动态设置路由的prefix
@@ -135,9 +163,17 @@ export default async function(app) {
     // =========== 注册fkp中间件 =============
 
     app.use(async (ctx, next)=>{
+      Fetch.init(ctx)   //初始化Fetch API
       ctx.fkp = fkp
       await next()
     })
 
-
+    //路由处理
+    if (_.isArray(CONFIG.route.prefix)) {  //koa-router prefix，任何prefix均带有resful三层结构 :cat:title:id
+      let prefix = CONFIG.route.prefix
+      prefix.map((item)=>{
+        if (item.indexOf('/')==0) router(app, item)
+      })
+    }
+    router(app)
 }

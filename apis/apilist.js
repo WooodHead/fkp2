@@ -1,6 +1,6 @@
 let src = CONFIG.apis.apiip + CONFIG.apis.port;
 
-function getApiPath(ctx) {
+function getApiPath() {
   return {
     base: src,
     dirs: {

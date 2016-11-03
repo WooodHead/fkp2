@@ -168,7 +168,7 @@ async function init(app, prefix='', options) {
       let _ext = Path.extname(ctx.url)
       ctx.route_url = ctx.url.slice(1).replace(_ext, '')
       if (!ctx.route_url) ctx.route_url = ''
-      return await createRoute.call(router, ctx, ctx.staticMapper, _controlPages)
+      return await createRoute.call(router, ctx, ctx.fkp.staticMapper, _controlPages)
     } catch (e) {
       debug('forBetter: '+e.message)
       console.log(e.stack)

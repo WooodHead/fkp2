@@ -15,10 +15,7 @@ import SQLite3Store from 'koa-sqlite3-session'
 
 import fkp from './fkp'
 import statics from './modules/static'
-import route from './modules/route'
-import mapper from './modules/mapper'
 import render from './modules/render'
-import router from './modules/route'
 
 
 global._ = require('lodash')
@@ -26,7 +23,6 @@ global.SAX = require('fkp-sax')
 global.React = require('react')
 global.ReactDomServer = require('react-dom/server')
 global.Cache = require('./modules/cache')
-global.Fetch = require('./modules/fetch').default
 global.Errors = require('libs/errors')
 
 
@@ -40,17 +36,9 @@ const app = new Koa()
 
 export default function init() {
 
-  app.use(async (ctx, next) => {
-    ctx.staticMapper = mapper  // 用于路由
-    Fetch.init(ctx)   //初始化Fetch API
-    await next()
-  })
-
   // global middlewares
   app.keys = ['agzgz gogogo']
 
-  // app.use(fkp())
-  fkp(app)
 
   //get
   app.use(conditional())
@@ -90,14 +78,9 @@ export default function init() {
   // 设置跨域
   app.use(cors())
 
-  //路由处理
-  if (_.isArray(CONFIG.route.prefix)) {  //koa-router prefix，任何prefix均带有resful三层结构 :cat:title:id
-    let prefix = CONFIG.route.prefix
-    prefix.map((item)=>{
-      if (item.indexOf('/')==0) router(app, item)
-    })
-  }
-  router(app)
+
+  // fkp/router模块
+  fkp(app)
 
 	app.on('error', async (err, ctx) => {
 		logger.error('server error', err, ctx)

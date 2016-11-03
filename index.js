@@ -18,6 +18,7 @@ try {
       if (['dev', 'pro'].indexOf(args[0])>-1) process.env.whichMode = args[0]
       else {
         if (args[0].indexOf('env_')>-1){
+          process.env.NODE_ENV = 'production'
           process.env.whichMode = 'pro'
           process.env.env = args[0]
         }

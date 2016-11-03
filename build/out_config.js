@@ -1,7 +1,7 @@
 let _ = require ('lodash')
 let configs = require ('./src_config')
 
-devDirs = {
+let devDirs = {
   ieRequireList: configs.ieRequireList,
 
   // 静态目录
