@@ -6,6 +6,7 @@ function Control(ctx, oridata){
   this.post = undefined
   this.data = oridata
   this.opts = {}
+  this.store = {}
   this.initStat = false
 }
 
@@ -41,6 +42,10 @@ Control.prototype = {
     } catch (e) {
       console.log(e);
     }
+  },
+  set: function(name, data){
+    if (!name || !data) return
+    this.store[name] = data
   }
 }
 

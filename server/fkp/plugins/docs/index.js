@@ -24,11 +24,11 @@ async function docs(fkp, dir, type){
   }
 
   async function folderDocs(dir, opts) {
-    return await co(Docs.getDocsData(dir, opts))
+    return await Docs.getDocsData(dir, opts)
   }
 
   async function mdfileDoc(_path) {
-    return await co(Docs.loadmdFile(dir))
+    return await Docs.loadmdFile(dir)
   }
 
   if (!type) return await mdfileDoc(dir)
@@ -73,7 +73,6 @@ async function docs(fkp, dir, type){
       return false
     }
   }
-
   return await folderDocs(dir, dft)
 }
 

@@ -161,7 +161,7 @@ export default async function(app) {
     }
 
     // =========== 注册fkp中间件 =============
-
+    app.fkp = fkp
     app.use(async (ctx, next)=>{
       Fetch.init(ctx)   //初始化Fetch API
       ctx.fkp = fkp

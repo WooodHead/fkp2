@@ -119,36 +119,38 @@ function controlPages() {
 async function init(app, prefix='', options) {
   let _controlPages = await controlPages()
   const router = prefix ? new Router({prefix: prefix}) : new Router()
+  const routeParam = [
+    '/',
+    '/:cat',
+    '/:cat/:title',
+    '/:cat/:title/:id'
+  ]
   if (options && _.isPlainObject(options)) {
+    let customControl = false
+    if (options.customControl) {
+      customControl = options.customControl
+    }
     _.map(options, (item, key) => {
       if (typeof item == 'string') item = [item]
       if (!Array.isArray(item)) return
       if (_.includes(['get', 'post', 'put', 'del'], key)) {
         item.map((rt)=>{
           if (key!='get' && rt != '/' && rt.indexOf('p1')==-1) {
-            router[key](rt, forBetter)
+            router[key](rt, customControl||forBetter)
           } else {
-            router[key](rt, forBetter)
+            router[key](rt, customControl||forBetter)
           }
         })
-        _.map(item, (rt)=>{
-          if (key!='get') {
-            if (rt != '/') {
-              router[key](rt, forBetter)
-            }
-          } else {
-            router[key](rt, forBetter)
+      } else {
+        routeParam.map((item)=>{
+          router.get(item, customControl||forBetter)
+          if (item!='/') {
+            router.post(item, customControl||forBetter)
           }
         })
       }
     })
   } else {
-    let routeParam = [
-      '/',
-      '/:cat',
-      '/:cat/:title',
-      '/:cat/:title/:id'
-    ]
     routeParam.map((item)=>{
       router.get(item, forBetter)
       if (item!='/') {
@@ -211,17 +213,23 @@ function createMapper(ctx, mapper, route, routerInstance){
     pagedata: {}
   }
   //静态资源初始化
+  if(mapper.pageCss[route]) pageData.pagecss = mapper.pageCss[route]
+  if (mapper.pageJs[route]) pageData.pagejs = mapper.pageJs[route]
+
   let _route = route
-  if (routerPrefix) _route = routerPrefix
-  if (mapper.pageCss[_route]) pageData.pagecss = mapper.pageCss[_route]
-  if (mapper.pageJs[_route]) pageData.pagejs = mapper.pageJs[_route]
+  if (routerPrefix) {
+    _route = routerPrefix
+    if (mapper.pageCss[_route]) pageData.pagecss = mapper.pageCss[_route]
+    if (mapper.pageJs[_route]) pageData.pagejs = mapper.pageJs[_route]
+  }
+
   return pageData
 }
 
 async function distribute(route, pageData, ctrlPages, routerInstance){
   debug('start distribute');
   let pdata = await controler(this, route, pageData, ctrlPages, routerInstance)
-  return await dealWithPageData(this, pdata[0], pdata[1], pdata[2])
+  return await dealWithPageData(this, pdata[0], pdata[1])
 }
 
 async function controler(ctx, route, pageData, ctrlPages, routerInstance){
@@ -230,13 +238,16 @@ async function controler(ctx, route, pageData, ctrlPages, routerInstance){
   if (_.isString(routerPrefix) && routerPrefix.indexOf('/')==0) routerPrefix = routerPrefix.replace('/','')
 
   try {
-    // match的control文件，并返回数据
-    async function getctrlData(_path, route, ctx, _pageData){
-      let ctrl = control(route, ctx, _pageData)
-      if (ctrl.initStat){
-        _pageData = await ctrl.run(ctx)
-      } else {
+    let ctrl = control(route, ctx, pageData)
+    let passAccess = false
+    if (ctrl.initStat){
+      pageData = await ctrl.run(ctx)
+      route = ctrl.store.route || route
+    } else {
+      // match的control文件，并返回数据
+      async function getctrlData(_path, route, ctx, _pageData){
         let _names = []
+        ctrl.set('route', route)
         if (Array.isArray(_path)) {
           for (let _filename of _path) {
             _filename = Path.resolve(__dirname, _filename+'.js')
@@ -247,41 +258,44 @@ async function controler(ctx, route, pageData, ctrlPages, routerInstance){
         if (_names.length) {
           let controlConfig = require(_names[0]).getData.call(ctx, _pageData)
           _pageData = await ctrl.run(ctx, controlConfig)
+        } else {
+          _pageData = false
+        }
+        return _pageData
+      }
+
+      let xData = false
+      // 根据route匹配到control文件+三层路由
+      if (ctrlPages.indexOf(route+'.js')>-1){
+        xData = await getctrlData(['../../pages/'+route], route, ctx, pageData)
+      }
+      // 根据prefix匹配到control文件+三层路由
+      else if (routerPrefix) {
+        route = routerPrefix
+        let prefixIndexFile =  Path.join('../../pages', routerPrefix, '/index')
+        let prefixCatFile =  Path.join('../../pages', routerPrefix, ctx.params.cat||'')
+        xData = await getctrlData([prefixIndexFile,prefixCatFile], route, ctx, pageData)
+      }
+      // pages根目录+三层路由
+      else {
+        let paramsCatFile =  Path.join('../../pages', ctx.params.cat)
+        route = ctx.params.cat
+        xData = await getctrlData([paramsCatFile], route, ctx, pageData)
+      }
+      // 根据 Fetch.apilist 匹配到api接口，从远程借口拿去数据
+      if (!xData) {
+        debug('pages/'+route+' 配置文件不存在')
+        let apilist = Fetch.apilist
+        if( apilist.list[route] || apilist.weixin[route] || route === 'redirect' ){
+          passAccess = true
+          xData = await getctrlData(['./passaccess'], route, ctx, pageData)
+        } else {
+          xData = {nomatch: true}
         }
       }
-      return _pageData
+      pageData = xData
     }
-
-    // 根据route匹配到control文件+三层路由
-    let passAccess = false
-    if (ctrlPages.indexOf(route+'.js')>-1){
-      pageData = await getctrlData(['../../pages/'+route], route, ctx, pageData)
-      // if (routerPrefix) route = routerPrefix
-    }
-    // 根据prefix匹配到control文件+三层路由
-    else if (routerPrefix) {
-      route = routerPrefix
-      let prefixIndexFile =  Path.join('../../pages', routerPrefix, '/index')
-      let prefixCatFile =  Path.join('../../pages', routerPrefix, ctx.params.cat||'')
-      pageData = await getctrlData([prefixIndexFile,prefixCatFile], route, ctx, pageData)
-    }
-    // pages根目录+三层路由
-    else if (!routerPrefix){
-      let paramsCatFile =  Path.join('../../pages', ctx.params.cat)
-      route = ctx.params.cat
-      pageData = await getctrlData([paramsCatFile], route, ctx, pageData)
-    }
-    // 根据 Fetch.apilist 匹配到api接口，从远程借口拿去数据
-    else{
-      debug('pages/'+route+' 配置文件不存在');
-      passAccess = true
-      let apilist = Fetch.apilist
-      if( apilist.list[route] || apilist.weixin[route] || route === 'redirect' ){
-        pageData = {}
-        pageData = await getctrlData(['./passaccess'], route, ctx, pageData)
-      }
-    }
-    return [pageData, route, passAccess]
+    return [pageData, route]
   } catch (e) {
     console.log(e.stack);
     debug(e.stack)
@@ -289,7 +303,7 @@ async function controler(ctx, route, pageData, ctrlPages, routerInstance){
 }
 
 // dealwith the data from controlPage
-async function dealWithPageData(ctx, data, route, passAccess){
+async function dealWithPageData(ctx, data, route){
   debug('start dealWithPageData -- render');
   try {
     switch (ctx.method) {
@@ -297,8 +311,10 @@ async function dealWithPageData(ctx, data, route, passAccess){
         try {
           let getStat = ctx.local.query._stat_
           if (getStat && getStat === 'DATA' ) return ctx.body = data
+          if (data && data.nomatch) throw new Error('你访问的页面/api不存在')
           return await ctx.render(route, data)
         } catch (e) {
+          debug(e)
           return await ctx.render('404')
         }
       break;

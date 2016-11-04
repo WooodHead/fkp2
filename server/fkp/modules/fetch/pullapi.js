@@ -6,10 +6,9 @@ let debug = Debug('modules:fetch:pulldata')
 
 module.exports = function(){
   return {
-
-
     _parseClientForm: function(api, param={}, method='get'){
       let url = undefined
+      this.fetchRemote = false
       if(objtypeof(param)!=='object') return [null, { message: 'pullApiData === 请指定正确的参数'}]
 
       /**
@@ -77,6 +76,7 @@ module.exports = function(){
       */
 
       else if (api.indexOf('http')===0) {
+        this.fetchRemote = true
         method = 'get'
         url = api
         if (param && param.method) {
@@ -105,14 +105,21 @@ module.exports = function(){
       debug('get:'+ api)
       let [_api, _param] = this._parseClientForm(api, param, 'get')
       if (!_api) return errors['60001']
-      return await this._get(_api, _param)
+      if (_param && _param.json && _param.json.test && _param.json.test == '123') delete _param.json.test
+      if (_param && _param.json && _param.json._stat_ ) delete _param.json._stat_
+      let _data = await this._get(_api, _param)
+      // if (this.fetchRemote) _data = {data: _data}
+      return {data: _data}
     },
 
     post: async function(api, param){
       debug('post:'+ api);
       let [_api, _param] = this._parseClientForm(api, param, 'post')
       if (!_api) return errors['60001']
-      return await this._post(_api, _param)
+      if (_param && _param.form && _param.form.test && _param.form.test == '123') delete _param.form.test
+      let _data = await this._post(_api, _param)
+      // if (this.fetchRemote) _data = {data: _data}
+      return {data: _data}
     }
   }
 }

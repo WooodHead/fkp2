@@ -117,7 +117,7 @@ var config = {
 
     route: {
       prefix: [
-        '/deep3'
+        '/deep3/level'
       ]
     }
 

@@ -3,6 +3,15 @@ import * as libs from 'libs'
 import './_common/xyz'
 import { Slider } from 'component/modules/slider'
 
+// websocket
+var ws = require('libs/wsocket')
+ws.emit('hello', 'hi')
+ws.on('hello', function(val){
+  setTimeout(function(){
+    libs.msgtips(val.message)
+  },2000)
+})
+
 let Xslider = Slider(
 [
   <div className="row">
@@ -61,7 +70,7 @@ setTimeout( () => {
   // .then( (data) => {
   //   libs.msgtips('get baidu首页数据over')
   // })
-  // libs.msgtips('get data')
+  libs.msgtips('get data')
 },500)
 
 setTimeout( () => {

@@ -15,20 +15,19 @@
 // require('coffee-script/register');
 import init from './init'
 import request from 'request'
-console.log(request);
-async function server(){
+async function startServer(){
   try {
     let app = await init()
     app.listen(CONFIG.port, function(){
-      if (process.env.whichMode!='dev') {
+      if (process.env.whichMode!='pro') {
         request('http://localhost:3000/__browser_sync__?method=reload',
         function (error, response, body) {
           if (error) console.log('yes, i know that');
-        })         
+        })
       }
     })
   } catch (e) {
     console.error(e.stack)
   }
 }
-server()
+startServer()

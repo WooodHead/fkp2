@@ -3,10 +3,13 @@ import * as libs from 'libs'
 import './_common/xyz'
 
 setTimeout( () => {
-  console.log(libs)
   libs.msgtips('deep3')
 },500)
 
 setTimeout( () => {
-  console.log('======= ggg');
+  ajax.post('/deep3/level/level1/hello')
+  .then( (data) => {
+    console.log(data);
+    libs.msgtips('get post data')
+  })
 },1000)

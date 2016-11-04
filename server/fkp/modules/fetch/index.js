@@ -18,6 +18,7 @@ _request.prototype = {
 let __request = inherits(_request, {
   getApiList: function(){
     this.apilist = getapis()
+    this.fetchRemote = false
   },
 
   setOpts: function(api, options, method){

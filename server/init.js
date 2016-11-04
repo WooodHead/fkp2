@@ -14,6 +14,7 @@ import etag from 'koa-etag'
 import SQLite3Store from 'koa-sqlite3-session'
 
 import fkp from './fkp'
+import socketio from './modules/wsocket'   //websocket
 import statics from './modules/static'
 import render from './modules/render'
 
@@ -80,12 +81,14 @@ export default function init() {
 
 
   // fkp/router模块
+  let server = socketio.init(app)
   fkp(app)
+  socketio.run()
 
 	app.on('error', async (err, ctx) => {
 		logger.error('server error', err, ctx)
     debug(err.stack)
 	})
 
-  return app
+  return server
 }
