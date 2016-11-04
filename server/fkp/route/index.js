@@ -203,7 +203,7 @@ async function createRoute(ctx, _mapper, ctrlPages){
 function createMapper(ctx, mapper, route, routerInstance){
   let tmpletStatic = (src, type) => {
     if (type == 'js') {
-      return '<script type="text/javascript" src="'+src+'" /></script>'
+      return '<script type="text/javascript" src="/js/'+src+'" ></script>'
     }
     if (type == 'css') {
       return '<link rel="stylesheet" href="/css/'+src+'" />'
