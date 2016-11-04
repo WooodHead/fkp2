@@ -201,26 +201,35 @@ async function createRoute(ctx, _mapper, ctrlPages){
 }
 
 function createMapper(ctx, mapper, route, routerInstance){
+  let tmpletStatic = (src, type) => {
+    if (type == 'js') {
+      return '<script type="text/javascript" src="'+src+'" /></script>'
+    }
+    if (type == 'css') {
+      return '<link rel="stylesheet" href="/css/'+src+'" />'
+    }
+  }
+
   let routerPrefix = routerInstance.opts.prefix
   if (_.isString(routerPrefix) && routerPrefix.indexOf('/')==0) routerPrefix = routerPrefix.replace('/','')
   if (!mapper) return false
   let pageData = {
     //静态资源
-    commonjs: mapper.commonJs.common||'common.js',   //公共css
-    commoncss: mapper.commonCss.common||'common.css', //公共js
+    commonjs: tmpletStatic((mapper.commonJs.common||'common.js'), 'js'),   //公共css
+    commoncss: tmpletStatic((mapper.commonCss.common||'common.css'), 'css'), //公共js
     pagejs: '',
     pagecss: '',
     pagedata: {}
   }
   //静态资源初始化
-  if(mapper.pageCss[route]) pageData.pagecss = mapper.pageCss[route]
-  if (mapper.pageJs[route]) pageData.pagejs = mapper.pageJs[route]
+  if(mapper.pageCss[route]) pageData.pagecss = tmpletStatic(mapper.pageCss[route], 'css')
+  if (mapper.pageJs[route]) pageData.pagejs = tmpletStatic(mapper.pageJs[route], 'js')
 
   let _route = route
   if (routerPrefix) {
     _route = routerPrefix
-    if (mapper.pageCss[_route]) pageData.pagecss = mapper.pageCss[_route]
-    if (mapper.pageJs[_route]) pageData.pagejs = mapper.pageJs[_route]
+    if (mapper.pageCss[_route]) pageData.pagecss = tmpletStatic(mapper.pageCss[_route], 'css')
+    if (mapper.pageJs[_route]) pageData.pagejs = tmpletStatic(mapper.pageJs[_route], 'js')
   }
 
   return pageData
