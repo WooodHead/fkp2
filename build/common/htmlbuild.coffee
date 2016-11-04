@@ -218,10 +218,14 @@ module.exports = (util) ->
       else
         _filePath = _filePath.replace(/[\\|\/]/g, '-')
 
-      data.commoncss = 'common.css'
-      data.commonjs = 'common.js'
-      data.pagecss = _filePath + '.css'
-      data.pagejs = _filePath + '.js'
+      data.commoncss = '<link rel="stylesheet" href="/css/common.css">'
+      data.commonjs = '<script type="text/javascript" src="/js/common.js"></script>'
+      data.pagecss = '<link rel="stylesheet" href="/css/'+_filePath+'.css">'
+      data.pagejs = '<script type="text/javascript" src="/js/'+_filePath+'.js"></script>'
+      # data.commoncss = 'common.css'
+      # data.commonjs = 'common.js'
+      # data.pagecss = _filePath + '.css'
+      # data.pagejs = _filePath + '.js'
 
       if opts and opts.data
         data = _.extend data, opts.data
