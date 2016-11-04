@@ -1,6 +1,7 @@
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 module.exports = function(dirname, opts, files, util){
+  var that = this
   var _ = util._,
   $ = util.$,
   fs = util.fs,
@@ -68,7 +69,7 @@ module.exports = function(dirname, opts, files, util){
       module.loaders.push({
         test: /\.js(x)?$/,
         exclude: /(node_modules|bower_components|_builder|dist)/,
-        loader: 'babel?' + JSON.stringify(babelQuery),
+        loader: 'babel?' + JSON.stringify(babelQuery(that.env)),
         // include: [
         //   // 只去解析运行目录下的 public 文件夹
         //   path.join(__dirname, '../../public/js'),

@@ -9,21 +9,21 @@ var babelrcObject = {
         "transform-runtime",
         "add-module-exports",
         "transform-decorators-legacy",
-        "transform-react-display-name"
+        "transform-react-display-name",
+        "typecheck"
     ],
 
-    "cacheDirectory": true,
+    // "cacheDirectory": true,
 
     "env": {
         "development": {
             "plugins": [
-                // "react-hot-loader/babel",   for 3
-                "typecheck"
+                "react-hot-loader/babel",   //for 3
             ]
         },
         "dev": {
             "plugins": [
-                "react-hot-loader/babel",
+                "react-hot-loader/babel", //for 3
                 "typecheck", ["react-transform", {
                     "transforms": [{
                         "transform": "react-transform-catch-errors",
@@ -69,4 +69,10 @@ babelLoaderQuery.plugins = babelLoaderQuery.plugins || [];
 // })
 
 // for development
-module.exports = babelLoaderQuery
+module.exports = function(env){
+  if (env=='pro') {
+    delete babelrcObject.env
+    return babelrcObject
+  }
+  return babelLoaderQuery
+}
