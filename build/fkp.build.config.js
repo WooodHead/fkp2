@@ -44,11 +44,8 @@ FkpBuild.prototype = {
     this.package_name = ''
     this.env = ''
     this.root = path.resolve('./')
-
-    if (opts && opts.gulp)  // gulpfile.coffee传递
-      this.gulp = opts.gulp
+    if (opts && opts.gulp) this.gulp = opts.gulp  // gulpfile.coffee传递
   },
-
 
   // generate webpack entry
   initEntry: function(files, opts){

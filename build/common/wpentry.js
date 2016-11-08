@@ -118,7 +118,7 @@ module.exports = function(dirname, opts, files, util){
       plugins: [
         new webpack.optimize.OccurenceOrderPlugin(),
         new webpack.IgnorePlugin(/vertx/), // https://github.com/webpack/webpack/issues/353
-        new ExtractTextPlugin("../css/js_[name]_[contenthash].css", {
+        new ExtractTextPlugin("../css/js_[name]_[id]_[contenthash].css", {
           allChunks: true
         }),
         new webpack.ProvidePlugin({

@@ -10,8 +10,11 @@ module.exports = (gulp,$,slime,env,port)->
       if env == 'demo' then env = 'dev'
 
       # 监控css文件
-      gulp.watch [config.dirs.src + '/css/?(global|pages)/**/*.?(less|css|styl)',
+      gulp.watch [config.dirs.src + '/css/?(modules|pages)/**/*.?(less|css|styl)',
       config.dirs.watch_src + '/images/slice/*.png'], ['pagecss:'+env], () ->
+
+      # 监控css文件
+      gulp.watch [config.dirs.src + '/css/global/**/*.?(less|css|styl)'], ['commoncss:'+env], () ->
 
       # 监控第三方直传文件: css
       gulp.watch [ config.dirs.src + '/css/_copy2dist/**/*.*', config.dirs.src + '/images/slice/*.png' ], ['copyThirdCssToDist:'+env], () ->

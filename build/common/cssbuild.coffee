@@ -18,7 +18,8 @@ module.exports = (util) ->
         depth: true
         env: 'dev'
         pack: false,
-        method: false
+        method: false,
+        dist: ''
 
       # 合并配置文件
       opts = if opts then _.extend(defaults, opts) else defaults
@@ -31,10 +32,10 @@ module.exports = (util) ->
       else
         opts.md5 = false
 
-      _cssDistPath = configs.cssDevPath
+      _cssDistPath = path.join configs.cssDevPath, opts.dist
       _imgDistPath = configs.imagesDevPath
       if this.env == 'pro'
-        _cssDistPath = configs.cssBuildPath
+        _cssDistPath = path.join configs.cssBuildPath, opts.dist
         _imgDistPath = configs.imagesBuildPath
 
       this.cssruntime = {

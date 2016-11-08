@@ -222,7 +222,7 @@ module.exports = (util) ->
                 index: ["hello.html"]
               files: [configs.staticPath+ '/**']
               logFileChanges: false
-              notify: true
+              notify: false
               injectChanges: true
             }, { reload: true })
 

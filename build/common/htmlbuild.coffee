@@ -212,20 +212,12 @@ module.exports = (util) ->
       _filename = _fileParse.name
       _filePath = file.path.replace(path.resolve(baseHtmlPath), '').substring(1).replace(_fileParse.ext, '')
       _fileTmp = path.parse(_filePath)
-
-      if _fileTmp.dir == _fileTmp.name
-        _filePath = _fileTmp.dir
-      else
-        _filePath = _filePath.replace(/[\\|\/]/g, '-')
+      _filePath = if _fileTmp.dir == _fileTmp.name then _fileTmp.dir else _filePath.replace(/[\\|\/]/g, '-')
 
       data.commoncss = '<link rel="stylesheet" href="/css/common.css">'
       data.commonjs = '<script type="text/javascript" src="/js/common.js"></script>'
       data.pagecss = '<link rel="stylesheet" href="/css/'+_filePath+'.css">'
       data.pagejs = '<script type="text/javascript" src="/js/'+_filePath+'.js"></script>'
-      # data.commoncss = 'common.css'
-      # data.commonjs = 'common.js'
-      # data.pagecss = _filePath + '.css'
-      # data.pagejs = _filePath + '.js'
 
       if opts and opts.data
         data = _.extend data, opts.data

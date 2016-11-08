@@ -6,4 +6,4 @@ config = require '../out_config';
 
 module.exports = (gulp, $, slime, env)->
     return ()->
-      slime.copy([config.dirs.src + '/css/_copy2dist/**/*.*', config.dirs.src + '/css/modules/**/*.*'], config.cssBuildPath+'/t/')
+      slime.copy([config.dirs.src + '/css/_copy2dist/**/*.*'], config.cssBuildPath+'/t/')
