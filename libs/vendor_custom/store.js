@@ -216,7 +216,7 @@
         };
     }
 
-    this._stock = {}
+    var _stock = {}   // 数据存储容器
 
     //like flux
     var storeAct = {
@@ -462,6 +462,8 @@
                         }
                     }
                 }
+            } else {
+              return save[name].dataer(null);
             }
         },
 

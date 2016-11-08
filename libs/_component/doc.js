@@ -467,6 +467,7 @@ function dealInject(doc){
         src = undefined
       }
     }
+    if (typeof src == 'string') src = [src]
     if (Array.isArray(src)) args = src
     if (args){
       var did = md5(args[0]).slice(22)
@@ -483,7 +484,7 @@ function dealInject(doc){
           }
         }
       }
-      
+
       // 注入js文件
       _thirdPartJs[did] = 'loadding';
       SAX.append('thirdPartJs', _thirdPartJs);
