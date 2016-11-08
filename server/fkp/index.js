@@ -4,8 +4,10 @@ let through2 = require('through2')
 let bluebird = require('bluebird')
 let stream = require('stream')
 let request = require('request')
+let cheerio = require('cheerio')
 let fs = bluebird.promisifyAll(require('fs'))
-let parseanyHtmlDirs = require('./base/_readhtmldir').default
+// let parseanyHtmlDirs = require('./base/_readhtmldir').default
+
 let debug = Debug('fkp')
 let mapper = require('./modules/mapper')
 let Fetch = require('./modules/fetch').default
@@ -21,6 +23,7 @@ export default async function(app) {
     }
 
     let fns = [
+      $,
       save2file,
       routepreset,
       fileexist,
@@ -42,16 +45,20 @@ export default async function(app) {
     fkp.innerData = innerData
     fkp.config = CONFIG
     fkp.root = Path.join(__dirname, '../../')
+
+    // register inner utile
     for (let item of fns){
       fkp[item.name] = item
     }
 
+    // register plugins
     fkp.plugins = function(name, fn){
       _fkp.prototype[name] = function() {
         return fn.apply(this, [fkp, ...arguments])
       }
     }
 
+    // register other utile
     fkp.utileHand = function(name, fn){
       fkp[name] = function() {
         return fn.apply(null, [fkp, ...arguments])
@@ -81,6 +88,19 @@ export default async function(app) {
     }
 
     // ============ 内联助手方法 ==============
+    function injectCss(){
+
+    }
+
+    function injectJs(){
+
+    }
+
+    // node端jq
+    function $(str){
+      let $$ = cheerio.load(str)
+      return $$
+    }
 
     function copy(src, dist){
       // fs.createReadStream(src).pipe(fs.createWriteStream(dist))

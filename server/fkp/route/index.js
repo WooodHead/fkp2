@@ -302,7 +302,11 @@ async function controler(ctx, route, pageData, ctrlPages, routerInstance){
           xData = {nomatch: true}
         }
       }
-      pageData = xData
+      console.log('========= route');
+      console.log('========= route');
+      console.log('========= route');
+      console.log(route);
+      if (passAccess) pageData = xData
     }
     return [pageData, route]
   } catch (e) {
