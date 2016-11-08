@@ -216,8 +216,6 @@ class _poperMessage {
 		cb.call(this, this)
 		return this
 	}
-
-
 }
 
 export default function poperMessage(type){
@@ -227,8 +225,7 @@ export default function poperMessage(type){
 		msgContainerInstance.setAttribute("id", 'message-poper-container');
 		document.body.appendChild(msgContainerInstance)
 		return new _poperMessage(type)
-	}
-	else {
+	} else {
 		return new _poperMessage(type)
 	}
 }
