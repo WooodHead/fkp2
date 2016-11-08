@@ -1,12 +1,12 @@
-// @gutter-width: 16px;     // 1rem
-// @outer-margin: 32px;     // 2rem
-// @screen-xlt-min: 320px;  //20em
-// @screen-lt-min: 375px;   //23.4375em
-// @screen-xxs-min: 414px;  //25.875em
-// @screen-xs-min: 480px;   //30em
-// @screen-sm-min: 768px;   //48em
-// @screen-md-min: 1024px;  //64em
-// @screen-lg-min: 1200px;  //75em
+@gutter-width: 16px;     // 1rem
+@outer-margin: 32px;     // 2rem
+@screen-xlt-min: 320px;  //20em
+@screen-lt-min: 375px;   //23.4375em
+@screen-xxs-min: 414px;  //25.875em
+@screen-xs-min: 480px;   //30em
+@screen-sm-min: 768px;   //48em
+@screen-md-min: 1024px;  //64em
+@screen-lg-min: 1200px;  //75em
 
 // ip6为基准 font-size=100px
 // 320*588   fz=85.333    ip5 dpr=2
@@ -18,40 +18,52 @@
 
 // @media (min-width: 401px) and (max-width: 800px){}
 
+html{
+  width: 100%;
+  height: 100%;
+}
+body{
+  width: 100%;
+  height: 100%;
+}
+
 @media screen{
   @media (max-width: @screen-xlt-min) {
     html,img {
-      font-size: 85.333px
+      font-size: 100px;
+      // font-size: 85.333px
     }
   }
-  @media (max-width: @screen-lt-min) {
+  @media (min-width: @screen-lt-min) and (max-width: @screen-xxs-min) {
     html,img {
-      font-size: 100px
+      font-size: 100px;
     }
   }
-  @media (max-width: @screen-xxs-min) {
+  @media (min-width: @screen-xxs-min) and (max-width: @screen-xs-min) {
     html,img {
-      font-size: 110.4px
+      font-size: 110.4px;
     }
   }
-  @media (max-width: @screen-xxs-min) {
+  @media (min-width: @screen-xs-min) and (max-width: @screen-sm-min) {
     html,img {
-      font-size: 128px
+      font-size: 128px;
     }
   }
-  @media (max-width: @screen-sm-min) {
+  @media (min-width: @screen-sm-min) and (max-width: @screen-md-min) {
     html,img {
-      font-size: 204px
+      font-size: 128px;
+      // font-size: 204px
     }
   }
-  @media (max-width: @screen-md-min) {
+  @media (min-width: @screen-md-min) and (max-width: @screen-lg-min) {
     html,img {
-      font-size: 136px
+      font-size: 128px;
     }
   }
-  @media (max-width: @screen-lg-min) {
+  @media (min-width: @screen-lg-min) {
     html,img {
-      font-size: 160px
+      font-size: 128px;
+      // font-size: 160px
     }
   }
 }
