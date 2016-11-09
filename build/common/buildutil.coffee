@@ -63,8 +63,8 @@ module.exports = (util) ->
         mapPath = configs.staticPath
 
       _src =
-        js: [mapPath + '/js/*.js', '!'+mapPath+'/js/precommon.js']
-        css: [mapPath + '/css/*.css']
+        js: [mapPath + '/js/*.js', mapPath + '/js/t/*.js', '!'+mapPath+'/js/precommon.js']
+        css: [mapPath + '/css/*.css', mapPath + '/css/m/*.css', mapPath + '/css/t/*.css']
         mapj: mapPath + '/map.json'
 
       mapJson =
@@ -90,9 +90,12 @@ module.exports = (util) ->
           if (filename.indexOf('__'))
               filename = filename.split('__')[0]
           if filename.indexOf("common")>-1 || filename.indexOf("ie")>-1
-              mapJson['commonDependencies']['js'][filename] = _filename;
+            mapJson['commonDependencies']['js'][filename] = _filename;
           else
-              mapJson['dependencies']['js'][filename] = _filename
+            if _.endsWith(_fileparse.dir, '/t')
+              _filename = 't/'+_filename
+              filename = 't/'+filename
+            mapJson['dependencies']['js'][filename] = _filename
           return
 
       this.gulp.task 'map:cssdev',['map:jsdev'],()->
@@ -106,9 +109,15 @@ module.exports = (util) ->
           if (filename.indexOf('__'))
               filename = filename.split('__')[0]
           if(filename == "common" || filename == "ie")
-              mapJson['commonDependencies']['css'][filename] = _filename;
+            mapJson['commonDependencies']['css'][filename] = _filename;
           else
-              mapJson['dependencies']['css'][filename] = _filename;
+            if _.endsWith(_fileparse.dir, '/m')
+              _filename = 'm/'+_filename
+              filename = 'm/'+filename
+            if _.endsWith(_fileparse.dir, '/t')
+              _filename = 't/'+_filename
+              filename = 't/'+filename
+            mapJson['dependencies']['css'][filename] = _filename;
 
           fs.writeFileSync( _src.mapj,  JSON.stringify(mapJson))
 
