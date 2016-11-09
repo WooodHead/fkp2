@@ -5,6 +5,7 @@ let bluebird = require('bluebird')
 let stream = require('stream')
 let request = require('request')
 let cheerio = require('cheerio')
+let Util = require('util')
 let fs = bluebird.promisifyAll(require('fs'))
 // let parseanyHtmlDirs = require('./base/_readhtmldir').default
 
@@ -28,6 +29,7 @@ export default async function(app) {
       routepreset,
       fileexist,
       filetype,
+      readfile,
       readdir,
       mkdir,
       copy
@@ -37,25 +39,19 @@ export default async function(app) {
       this.ctx = ctx
       this.opts = opts
     }
-
     let fkp = function(ctx, opts){
       return new _fkp(ctx, opts)
     }
+
+    // 绑定资源
+    fkp.env = process.env.whichMode
     fkp.staticMapper = mapper
-    fkp.innerData = innerData
     fkp.config = CONFIG
     fkp.root = Path.join(__dirname, '../../')
 
-    // register inner utile
+    // register inner base utile
     for (let item of fns){
       fkp[item.name] = item
-    }
-
-    // register plugins
-    fkp.plugins = function(name, fn){
-      _fkp.prototype[name] = function() {
-        return fn.apply(this, [fkp, ...arguments])
-      }
     }
 
     // register other utile
@@ -65,7 +61,15 @@ export default async function(app) {
       }
     }
 
-    // register 助手方法
+    // register plugins
+    fkp.plugins = function(name, fn){
+      _fkp.prototype[name] = function() {
+        return fn.apply(this, [fkp, ...arguments])
+      }
+    }
+
+
+    // start register utile function
     let _utilesFiles = fs.readdirSync(Path.resolve(__dirname, './base'))
     if (_utilesFiles && _utilesFiles.length) {
       for (let utileFile of _utilesFiles) {
@@ -76,7 +80,7 @@ export default async function(app) {
       }
     }
 
-    // // register 插件
+    // start register plugins
     let _pluginFiles = fs.readdirSync(Path.resolve(__dirname, './plugins'))
     if (_pluginFiles && _pluginFiles.length) {
       for (let pluginFile of _pluginFiles) {
@@ -88,13 +92,6 @@ export default async function(app) {
     }
 
     // ============ 内联助手方法 ==============
-    function injectCss(){
-
-    }
-
-    function injectJs(){
-
-    }
 
     // node端jq
     function $(str){
@@ -138,6 +135,13 @@ export default async function(app) {
 
     async function fileexist(_path){
       return fs.statAsync(_path).then( sss => sss ).catch( e => {
+        debug('fileexist: ' + e.message)
+        return false
+      })
+    }
+
+    async function readfile(_path){
+      return fs.readFileAsync(_path).then( sss => sss ).catch( e => {
         debug('fileexist: ' + e.message)
         return false
       })

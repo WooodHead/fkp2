@@ -19,6 +19,7 @@ function hello(oridata) {
     get: async function(ctx){
       // let xxx = await Fetch.get('163')
       // console.log(xxx);
+      // let xxx = await ctx.fkp.injectjs(['t/test'])   // node 端注入js
 
       let fdocsHome = await ctx.fkp().docs('fdocs', 'mdhome')
       oridata = _.extend(oridata, fdocsHome)

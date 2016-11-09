@@ -241,6 +241,27 @@ async function distribute(route, pageData, ctrlPages, routerInstance){
   return await dealWithPageData(this, pdata[0], pdata[1])
 }
 
+
+// match的control文件，并返回数据
+async function getctrlData(_path, route, ctx, _pageData, ctrl){
+  let _names = []
+  ctrl.set('route', route)
+  if (Array.isArray(_path)) {
+    for (let _filename of _path) {
+      _filename = Path.resolve(__dirname, _filename+'.js')
+      let _stat = await ctx.fkp.fileexist(_filename)
+      if (_stat && _stat.isFile()) _names.push(_filename)
+    }
+  }
+  if (_names.length) {
+    let controlConfig = require(_names[0]).getData.call(ctx, _pageData)
+    _pageData = await ctrl.run(ctx, controlConfig)
+  } else {
+    _pageData = false
+  }
+  return _pageData
+}
+
 async function controler(ctx, route, pageData, ctrlPages, routerInstance){
   debug('start controler');
   let routerPrefix = routerInstance.opts.prefix
@@ -253,43 +274,24 @@ async function controler(ctx, route, pageData, ctrlPages, routerInstance){
       pageData = await ctrl.run(ctx)
       route = ctrl.store.route || route
     } else {
-      // match的control文件，并返回数据
-      async function getctrlData(_path, route, ctx, _pageData){
-        let _names = []
-        ctrl.set('route', route)
-        if (Array.isArray(_path)) {
-          for (let _filename of _path) {
-            _filename = Path.resolve(__dirname, _filename+'.js')
-            let _stat = await ctx.fkp.fileexist(_filename)
-            if (_stat && _stat.isFile()) _names.push(_filename)
-          }
-        }
-        if (_names.length) {
-          let controlConfig = require(_names[0]).getData.call(ctx, _pageData)
-          _pageData = await ctrl.run(ctx, controlConfig)
-        } else {
-          _pageData = false
-        }
-        return _pageData
-      }
 
       let xData = false
       // 根据route匹配到control文件+三层路由
       if (ctrlPages.indexOf(route+'.js')>-1){
-        xData = await getctrlData(['../../pages/'+route], route, ctx, pageData)
+        xData = await getctrlData(['../../pages/'+route], route, ctx, pageData, ctrl)
       }
       // 根据prefix匹配到control文件+三层路由
       else if (routerPrefix) {
         route = routerPrefix
         let prefixIndexFile =  Path.join('../../pages', routerPrefix, '/index')
         let prefixCatFile =  Path.join('../../pages', routerPrefix, ctx.params.cat||'')
-        xData = await getctrlData([prefixIndexFile,prefixCatFile], route, ctx, pageData)
+        xData = await getctrlData([prefixIndexFile,prefixCatFile], route, ctx, pageData, ctrl)
       }
       // pages根目录+三层路由
       else {
         let paramsCatFile =  Path.join('../../pages', ctx.params.cat)
         route = ctx.params.cat
-        xData = await getctrlData([paramsCatFile], route, ctx, pageData)
+        xData = await getctrlData([paramsCatFile], route, ctx, pageData, ctrl)
       }
       // 根据 Fetch.apilist 匹配到api接口，从远程借口拿去数据
       if (!xData) {
@@ -297,17 +299,14 @@ async function controler(ctx, route, pageData, ctrlPages, routerInstance){
         let apilist = Fetch.apilist
         if( apilist.list[route] || apilist.weixin[route] || route === 'redirect' ){
           passAccess = true
-          xData = await getctrlData(['./passaccess'], route, ctx, pageData)
+          xData = await getctrlData(['./passaccess'], route, ctx, pageData, ctrl)
         } else {
           xData = {nomatch: true}
         }
       }
-      console.log('========= route');
-      console.log('========= route');
-      console.log('========= route');
-      console.log(route);
       if (passAccess) pageData = xData
     }
+    pageData = SAX.emit('pageData', pageData)
     return [pageData, route]
   } catch (e) {
     console.log(e.stack);
@@ -330,10 +329,8 @@ async function dealWithPageData(ctx, data, route){
           debug(e)
           return await ctx.render('404')
         }
-      break;
       case 'POST':
         return ctx.body = data
-      break;
     }
   } catch (e) {
     debug('dealWithPageData: '+e)
