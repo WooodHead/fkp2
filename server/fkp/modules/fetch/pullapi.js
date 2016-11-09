@@ -107,9 +107,12 @@ module.exports = function(){
       if (!_api) return errors['60001']
       if (_param && _param.json && _param.json.test && _param.json.test == '123') delete _param.json.test
       if (_param && _param.json && _param.json._stat_ ) delete _param.json._stat_
-      let _data = await this._get(_api, _param)
-      // if (this.fetchRemote) _data = {data: _data}
-      return {data: _data}
+      if (CONFIG.apis.mock) {
+        return await this.mock(api, _param)
+      } else {
+        let _data = await this._get(_api, _param)
+        return {data: _data}
+      }
     },
 
     post: async function(api, param){
@@ -117,9 +120,12 @@ module.exports = function(){
       let [_api, _param] = this._parseClientForm(api, param, 'post')
       if (!_api) return errors['60001']
       if (_param && _param.form && _param.form.test && _param.form.test == '123') delete _param.form.test
-      let _data = await this._post(_api, _param)
-      // if (this.fetchRemote) _data = {data: _data}
-      return {data: _data}
+      if (CONFIG.apis.mock) {
+        return await this.mock(api, _param)
+      } else {
+        let _data = await this._post(_api, _param)
+        return {data: _data}
+      }
     }
   }
 }

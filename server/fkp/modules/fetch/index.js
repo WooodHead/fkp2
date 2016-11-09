@@ -82,6 +82,7 @@ let __request = inherits(_request, {
 
 let pullapi = inherits(__request, require('./pullapi')())
 let weixin = inherits(pullapi, require('./weixin')())
-let requ = inherits(weixin, {})
+let mocks = inherits(weixin, require('./mockapi')())
+let requ = inherits(mocks, {})
 
 export default new requ()

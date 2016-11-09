@@ -68,6 +68,7 @@ let Xslider = Slider(
 setTimeout( () => {
   // ajax.get('163')
   // .then( (data) => {
+  //   console.log(data);
   //   libs.msgtips('get baidu首页数据over')
   // })
   libs.msgtips('get data')

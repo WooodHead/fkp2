@@ -21,6 +21,9 @@ function hello(oridata) {
       // console.log(xxx);
       // let xxx = await ctx.fkp.injectjs(['t/test'])   // node 端注入js
 
+      // let xxx = await Fetch.mock('163')
+      // console.log(xxx);
+
       let fdocsHome = await ctx.fkp().docs('fdocs', 'mdhome')
       oridata = _.extend(oridata, fdocsHome)
       oridata.fkp = 'FKP2'

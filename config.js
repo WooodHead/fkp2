@@ -50,6 +50,7 @@ var config = {
       apiip: "http://120.25.xxx.xxx",    //  api src 参考  根目录/pages/common/apilist.js
       port: ":8080/v1/",                 //  api src port 参考 根目录/pages/common/apilist.js
       domain: 'agzgz.com',
+      mock: false   // numerical or false, numerical将启动 mock 数据
     },
 
     /*

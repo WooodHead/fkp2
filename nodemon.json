@@ -18,6 +18,7 @@
     "node_modules/*"
   ],
   "watch": [
+    "apis/*",
     "server/*",
     "libs/libs_server.js",
     "libs/_component/time.js",
