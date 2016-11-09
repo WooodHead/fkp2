@@ -50,10 +50,10 @@ let __request = inherits(_request, {
     }
     return new Promise( (res, rej) => {
       request.get(_api, _opts, (err, rep, body)=>{
-        if(err) throw new Error("async search: no respons data");
+        if(err) { return rej("async search: no respons data")}
         if (rep.statusCode == 200){
           debug(body)
-          res(body)
+          return res(body)
         }
       })
     })
@@ -70,10 +70,10 @@ let __request = inherits(_request, {
     debug(_opts)
     return new Promise( (res, rej) => {
       request.post(_api, _opts, (err, rep, body)=>{
-        if(err) throw new Error("async search: no respons data");
+        if(err) {return rej("async search: no respons data")}
         if (rep.statusCode == 200){
           debug(body)
-          res(body)
+          return res(body)
         }
       })
     })

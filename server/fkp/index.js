@@ -68,27 +68,30 @@ export default async function(app) {
       }
     }
 
-
-    // start register utile function
-    let _utilesFiles = fs.readdirSync(Path.resolve(__dirname, './base'))
-    if (_utilesFiles && _utilesFiles.length) {
-      for (let utileFile of _utilesFiles) {
-        if (utileFile.indexOf('_')!=0) {
-          let utileFun = require('./base/'+utileFile).default()
-          fkp.utileHand(Path.parse(utileFile).name, utileFun)
+    try {
+      // start register utile function
+      let _utilesFiles = fs.readdirSync(Path.resolve(__dirname, './base'))
+      if (_utilesFiles && _utilesFiles.length) {
+        for (let utileFile of _utilesFiles) {
+          if (utileFile.indexOf('_')!=0) {
+            let utileFun = require('./base/'+utileFile).default()
+            fkp.utileHand(Path.parse(utileFile).name, utileFun)
+          }
         }
       }
-    }
 
-    // start register plugins
-    let _pluginFiles = fs.readdirSync(Path.resolve(__dirname, './plugins'))
-    if (_pluginFiles && _pluginFiles.length) {
-      for (let pluginFile of _pluginFiles) {
-        if (pluginFile.indexOf('_')!=0) {
-          let plugin = require('./plugins/'+pluginFile).default(fkp)
-          fkp.plugins(Path.parse(pluginFile).name, plugin)
+      // start register plugins
+      let _pluginFiles = fs.readdirSync(Path.resolve(__dirname, './plugins'))
+      if (_pluginFiles && _pluginFiles.length) {
+        for (let pluginFile of _pluginFiles) {
+          if (pluginFile.indexOf('_')!=0) {
+            let plugin = require('./plugins/'+pluginFile).default(fkp)
+            fkp.plugins(Path.parse(pluginFile).name, plugin)
+          }
         }
       }
+    } catch (e) {
+      console.log(e);
     }
 
     // ============ 内联助手方法 ==============

@@ -9,7 +9,7 @@ var libs = require('libs')
 var md5 = require('blueimp-md5')
 import control from './control'
 let debug = Debug('modules:route')
-
+let makeRoute = require('./makeroute').default
 
 /**
  * 过滤渲染文件
@@ -35,57 +35,6 @@ function filterRendeFile(pms, url){
     return rtn;
 }
 
-
-/**
- * 生成路由标签
- * {param1} {json}   this.params
- * {param2} {json}   json of parse this.path
- * return   {string} route tag, like 'index' , 'h5/lazypage'
-**/
-function createTempPath2(ctx){
-  try {
-    let params = ctx.params
-    let _url = ctx.url
-    let ctxurl = ctx.route_url
-
-    if (_url.indexOf('?')>-1){
-      _url = _url.slice(0, _url.indexOf('?'))
-      ctxurl = ctxurl.slice(0, ctxurl.indexOf('?'))
-    }
-    let rjson = Path.parse(_url)
-    let route = false
-    let cat = params.cat||'', title = params.title||'', id = params.id||'';
-    let gtpy = libs.objtypeof;
-
-    if(id){
-      gtpy(id)==='number'
-      ? route = title
-        ? cat+'/'+title
-        : cat
-      : route = cat+'/'+title +'/' + id
-    }
-
-    else if(title){
-      title = title.replace(rjson.ext,'');
-      route = gtpy(title)==='number' ? cat : cat+'/'+title
-    }
-
-    else if(cat){
-      cat = cat.replace(rjson.ext,'');
-      route = gtpy(cat)==='number' ? CONFIG.root||'index' : cat
-    }
-
-    else{
-      route = CONFIG.root||'index'
-    }
-
-    if (ctxurl && route !== ctxurl) route = ctxurl
-    return route
-
-  } catch (e) {
-    debug('createTempPath2: '+e)
-  }
-}
 
 function controlPages() {
   const controlPagePath = Path.join('server/pages/')
@@ -131,9 +80,9 @@ async function init(app, prefix='', options) {
       customControl = options.customControl
     }
     _.map(options, (item, key) => {
-      if (typeof item == 'string') item = [item]
-      if (!Array.isArray(item)) return
       if (_.includes(['get', 'post', 'put', 'del'], key)) {
+        if (typeof item == 'string') item = [item]
+        if (!Array.isArray(item)) return
         item.map((rt)=>{
           if (key!='get' && rt != '/' && rt.indexOf('p1')==-1) {
             router[key](rt, customControl||forBetter)
@@ -142,10 +91,10 @@ async function init(app, prefix='', options) {
           }
         })
       } else {
-        routeParam.map((item)=>{
-          router.get(item, customControl||forBetter)
-          if (item!='/') {
-            router.post(item, customControl||forBetter)
+        routeParam.map((_path)=>{
+          router.get(_path, customControl||forBetter)
+          if (_path!='/') {
+            router.post(_path, customControl||forBetter)
           }
         })
       }
@@ -188,15 +137,17 @@ async function createRoute(ctx, _mapper, ctrlPages){
   debug('start createRoute');
   try {
     let isRender = filterRendeFile(ctx.params, ctx.url)
-    let route = isRender ? createTempPath2(ctx) : false
-    if (!isRender || !route) return ctx.redirect('404')
+    let route = isRender ? makeRoute(ctx) : false
+    if (!isRender || !route) throw 'route配置不正确'
     ctx.fkproute = route
     let pageData = createMapper(ctx, _mapper, route, this)
-    if (!_mapper || !pageData) return ctx.redirect('404')
+    if (!_mapper || !pageData) throw 'mapper数据不正确'
     return distribute.call(ctx, route, pageData, ctrlPages, this)
 
   } catch (e) {
     debug('createRoute: '+ e)
+    console.log(e);
+    return ctx.redirect('404')
   }
 }
 
