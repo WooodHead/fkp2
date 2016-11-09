@@ -10,7 +10,7 @@ var api = require('../../apis/javaapi');
 // var rct = require('../../modules/parseReact');
 
 function *demoIndexData(oridata){
-    libs.wlog('pages/weixin/signature')
+    // libs.wlog('pages/weixin/signature')
     var mtd = this.method;
     var _this_sess = this.sess;
 

@@ -24,7 +24,7 @@ function *returnJson( data ){
 }
 
 function *weixin(){
-    libs.clog('weixin')
+    // libs.clog('weixin')
 
     var _WX = fkpConfig.weixin;
     var _WX_domain = fkpConfig.domain

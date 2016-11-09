@@ -8,7 +8,7 @@ var api = require('../apis/javaapi');
 
 
 function *github(){
-    libs.clog('github第三方登陆： '+__filename)
+    // libs.clog('github第三方登陆： '+__filename)
     var github = fkpConfig.auth.github;
     var jump_url = fkpConfig.auth.github.successUrl
     var query = this.local.query

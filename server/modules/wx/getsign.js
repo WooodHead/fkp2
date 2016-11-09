@@ -11,7 +11,7 @@ var getticket = require('./_component/getticket').getData
 // var rct = require('../../modules/parseReact');
 
 function *demoIndexData(url){
-    libs.wlog('pages/weixin/signature')
+    // libs.wlog('pages/weixin/signature')
     var mtd = this.method;
     var _this = this;
     var _WX = fkpConfig.weixin
@@ -25,7 +25,7 @@ function *demoIndexData(url){
 
     function *getSignature(tckt){
         var signature = yield sign(tckt, url)
-        libs.clog('微信签名')
+        // libs.clog('微信签名')
         signature.appId = _WX.appid
         // signature.jsApiList = []
 

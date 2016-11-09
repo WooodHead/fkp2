@@ -8,7 +8,7 @@ var api = require('../../apis/javaapi');
 // var rct = require('../../modules/parseReact');
 
 function *demoIndexData(oridata){
-    libs.wlog('pages/weixin/userinfo')
+    // libs.wlog('pages/weixin/userinfo')
     var mtd = this.method;
     var _this_sess = this.sess;
 
@@ -26,7 +26,7 @@ function *demoIndexData(oridata){
             // console.log(postdata);
             var web_userinfo = yield api.pullWxData.call(_this, 'userinfo_web', postdata)
             web_userinfo = web_userinfo[0].body
-            libs.clog('============  从微信拉取用户信息')
+            // libs.clog('============  从微信拉取用户信息')
             console.log(web_userinfo);
             return web_userinfo;
         }

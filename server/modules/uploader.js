@@ -15,7 +15,7 @@ var filterPicture = ['.jpg','.jpeg','.png','.gif']
 
 //上传到本地，支持ie8，支持多图上传
 function *upLoaderService(path2save){
-    lib.clog('upload local '+__filename)
+    // lib.clog('upload local '+__filename)
 
     if(!path2save){
        var err = new Error('请输入写入文件路径')
