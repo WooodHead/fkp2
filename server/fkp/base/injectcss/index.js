@@ -8,18 +8,11 @@ import path from 'path'
  * @return {Promise}
  */
 
-function injectJs(){}
-function injectCss(fkp, src){
-  return async ()=>{
-    let mapper = fkp.staticMapper.pageCss
-  }
-}
-
 async function getContent(fkp, mapper, src){
   if (src.indexOf('http')==0) return '<link rel="stylesheet" href="'+src+'">'
   if (mapper[src]) {
     let content = await fkp.readfile(path.join(fkp.root, '/dist/', fkp.config.version, (fkp.env=='dev'?'/dev':''), '/css/'+mapper[src]))
-    if (content) return content
+    if (content) return content.toString()
   }
 }
 
@@ -41,7 +34,7 @@ async function index(fkp, key, src){
     console.log('control pageData will attach css file, pageData.attachCss');
     let tmp = {}
     if (!key) key = 'attachCss'
-    tmp[key] = '<style>'+content.toString()+'</style>'
+    tmp[key] = '<style>'+content+'</style>'
     SAX.set('pageData', tmp)  //挂在变量attachCss到pageData
     return true
   }
