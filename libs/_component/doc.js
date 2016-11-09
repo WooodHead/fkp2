@@ -674,6 +674,14 @@ var os = (function( ua ) {
     return ret;
 })( navigator.userAgent )
 
+function preventDefault(event) {
+    if (event.preventDefault) {
+        event.preventDefault();
+    } else {
+        event.returnValue = false;
+    }
+}
+
 
 module.exports = {
     DocmentView: DocmentView,
@@ -694,5 +702,6 @@ module.exports = {
     currentStyle: currentStyle,
     insertCaret: insertHtmlAtCaret,
     replaceState: replaceState,
-    portrait: portrait
+    portrait: portrait,
+    preventDefault: preventDefault
 }

@@ -27,4 +27,5 @@ module.exports = {
 
     "60001": {error: "60001", message: "指定api不存在"},
     "60002": {error: "60002", message: "java或者php返回数据错误"},
+    "60003": {error: "60003", message: "mock api 不存在"},
 }

@@ -12,23 +12,6 @@ function getClientIp(req) {
     req.connection.socket.remoteAddress;
 };
 
-var clog = function(msg){
-    console.log('====================='+msg);
-    console.log('-');
-    console.log('-');
-    console.log('-');
-}
-
-var elog = function(msg){
-    console.log('============'+msg);
-}
-
-var wlog = function(msg){
-    console.log('+++++++++++');
-    console.log('+++++++++++');
-    console.log(msg);
-}
-
 var parseQuery = function(uri){
     var q = url.parse(uri);
     return qs.parse(q.query);
@@ -44,16 +27,15 @@ var co_parse = function(ctx){
     return parse( ctx, opts )
 }
 
-
-
 module.exports = {
-    objtypeof: base.objtype,
-    inherits: base.inherits,
-    clog: clog,
-    elog: elog,
-    wlog: wlog,
-    uri: parseQuery,
-    guid: guid,
-    errors: require('./errors'),
-    timeAgo:   timer.timeAgo      //时间过去了多久
+  objtypeof: base.objtype,
+  inherits: base.inherits,
+  strLen: base.strLen,
+  grabString: base.grabString,
+  // clog: clog,
+  // elog: elog,
+  // wlog: wlog,
+  uri: parseQuery,
+  guid: guid,
+  timeAgo:   timer.timeAgo      //时间过去了多久
 }

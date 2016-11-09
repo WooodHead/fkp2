@@ -105,14 +105,6 @@ function getObjType(object){
   return Object.prototype.toString.call(object).match(/^\[object\s(.*)\]$/)[1].toLowerCase();
 };
 
-function preventDefault(event) {
-    if (event.preventDefault) {
-        event.preventDefault();
-    } else {
-        event.returnValue = false;
-    }
-}
-
 
 /**
  * 实现类与类之间的继承。
@@ -185,10 +177,10 @@ module.exports = {
     $class: Class,
     arg2arr: arg2arr,
     strLen: strLen,
+    grabString: grabString,
     json2url: json2url,
     getObjType: getObjType,
     type: getObjType,
     objtype: getObjType,
-    preventDefault: preventDefault,
     inherits: inherits
 }

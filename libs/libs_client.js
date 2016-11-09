@@ -276,6 +276,7 @@ module.exports = {
     rmvEvent:       doc.rmvEvent,       //兼容性删除方法
     getElementsByClassName: doc.getElementsByClassName,
     replaceState:   doc.replaceState,   // 替换location.href并不切换页面
+    preventDefault: doc.preventDefault,
 
     inject:         doc.inject,          // 注入css和js
     addSheet:       doc.addSheet,        // 动态注入 CSS---兼容旧版语法方法
