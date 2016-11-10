@@ -3,25 +3,15 @@
  * ComposedComponent  {React-Element}   [被包围的子组件]
  */
 export default (ComposedComponent) => {
-  if (React.isValidElement(ComposedComponent)){
-    let _props = _.cloneDeep(ComposedComponent.props)
-    ComposedComponent = React.createElement(ComposedComponent.type, _props, _props.children)
-  }
-
-  return class extends React.Component {
-
+  return class extends ComposedComponent {
     constructor(props) {
       super(props);
 			this.intent = this.props.intent || [];
     }
 
-    componentWillMount() {
-      this.state = this.props
-    }
-
-		componentDidMount(){
+    componentDidMount(){
 			let self = this
-			let that = React.findDOMNode(this.refs.child);
+			let that = React.findDOMNode(this);
 
 			if( this.props.itemDefaultMethod ){
 				if (this.props.itemMethod) this.props.itemMethod.call(self, that, self.intent)
@@ -31,10 +21,8 @@ export default (ComposedComponent) => {
 			} else if (this.props.itemMethod){
 				this.props.itemMethod.call(self, that, self.intent)
 			}
-		}
 
-    render() {
-      return <ComposedComponent ref='child' {...this.state} />
-    }
+      super.componentDidMount()
+		}
   }
 }
