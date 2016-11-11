@@ -15,7 +15,6 @@ global.Fetch = fetch
 
 let debug = Debug('fkp')
 export default async function(app) {
-
     let innerData = {
       route: {
         prefix: []
@@ -38,7 +37,7 @@ export default async function(app) {
       this.ctx = ctx
       this.opts = opts
     }
-    let fkp = function(ctx, opts){
+    function fkp(ctx, opts){
       let fkpInstanc = new _fkp(ctx, opts)
       for (let property of Object.entries(fkp)) {
         let [_name, _value] = property
@@ -47,18 +46,18 @@ export default async function(app) {
       return fkpInstanc
     }
 
-    // 绑定资源
+    // manual set static property or fun or some resource
     fkp.env = process.env.whichMode
     fkp.staticMapper = mapper
     fkp.config = CONFIG
     fkp.root = Path.join(__dirname, '../../')
 
-    // register inner base utile
+    // Register inner utile fun
     for (let item of fns){
       fkp[item.name] = item
     }
 
-    // register other utile
+    // Register other utile fun
     fkp.utileHand = function(name, fn){
       if (typeof fn == 'function') {
         fkp[name] = function() {
@@ -67,7 +66,7 @@ export default async function(app) {
       }
     }
 
-    // register plugins
+    // Register plugins fun
     fkp.plugins = function(name, fn){
       if (typeof fn == 'function') {
         _fkp.prototype[name] = function() {
@@ -76,22 +75,27 @@ export default async function(app) {
       }
     }
 
+    // as plugins, it look nice
     fkp.use = function(name, fn){
       _fkp.prototype[name] = function() {
         return fn.apply(this, [this.ctx, ...arguments])
       }
     }
 
-    // ============ 内联助手方法 ==============
+    /*
+      ============ 内联助手方法 ==============
+      下面的方法为fkp的内部静态方法，外部静态方法存放在base目录中，通过自动注册的方式挂载，所有方法通过fkp.xxx的方式调用，
+      the flow fun is fkp's inner static fun, the other static fun in './base', will be auto register to fkp
+      all static fun, u can use it like fkp.xxx
+      =======================================
+    */
 
-    // node端jq
     function $(str){
       let $$ = cheerio.load(str)
       return $$
     }
 
     function copy(src, dist){
-      // fs.createReadStream(src).pipe(fs.createWriteStream(dist))
       fs.createReadStream(src)
       .pipe(through2({ objectMode: true, allowHalfOpen: false },
         function (chunk, enc, cb) {
@@ -114,7 +118,13 @@ export default async function(app) {
       }
     }
 
-    // 动态设置路由的prefix
+    /**
+     * 预动态设置路由, 在plugins方法中使用
+     * Predifine koa-router's prefix and route before default route set
+     * we use it in plugins fun
+     * @param  {String}  prefix        koa-router's prefix
+     * @param  {JSON}  routerOptions   koa-router's route
+    */
     async function routepreset(prefix, routerOptions) {
       if (!prefix) return
       if (prefix.indexOf('/')==-1) return
@@ -175,11 +185,24 @@ export default async function(app) {
       })
     }
 
-    // =============== 注册助手方法及plugins =============
-
+    /*
+    =============== 注册助手方法及plugins =============
+    1、助手方法为一般的静态方法，第一个参数fkp，通过fkp.xxx调用，助手方法不能调用plugins方法
+      utile fun is common fun, first arguments is 'fkp', in utile u can not call plugins fun
+    2、插件方法为new fkp后的对象方法，带有this的上下文，第一个参数ctx，为koa环境对象，插件方法挂载在fkp上，调用方法同样为fkp.xxx
+      plugins fun is one fun of a instance of 'new fkp'，first arguments is ctx that is context of koa, ctx.fkp include all fkp's static fun
+      and all plugins fun, u can call every fun in control(control file in server/pages/..., or u define it in plugins)
+    =================================================*/
 
     try {
-      // 手动模块，注册 api 的 router prefix
+      /**
+       * 手动启用api模块，提升预定义api接口的访问效率，预定义api接口放置在 /apis/apilist.js文件中
+       * 前端通过 ajax.get('/api/xxx')，访问接口，返回数据
+       * 不启用该模块，前端通过 ajax.get('/xxx')访问接口，返回数据
+       * Start this module to increasing efficiency of request data from API, All API define in /apis/apilist.js file
+       * FED pass ajax.get('/api/xxx') to request data
+       * if not, FED pass ajax.get('/xxx') to request data
+       */
       require('./modules/api').default(fkp)
 
       // start register utile function
@@ -211,7 +234,7 @@ export default async function(app) {
     app.fkp = fkp
     app.use(async (ctx, next)=>{
       ctx.fkp = fkp(ctx)
-      Fetch.init(ctx)   //初始化Fetch API
+      Fetch.init(ctx)   //init Fetch, Fetch is global function
       await next()
     })
 
