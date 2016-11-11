@@ -116,6 +116,10 @@ var config = {
         {'作者': 'author'}
     ],
 
+    db: {
+      select: 'mongo'    // false or 'mongo', 'mysql'
+    },
+
     route: {
       prefix: [
         '/deep3/level'

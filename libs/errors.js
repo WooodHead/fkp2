@@ -3,6 +3,7 @@ module.exports = {
     '1010': {success: '1010', message: "链接正确，但数据为空"},
 
     '10000': {success: '10000', message: "ok"},
+    'success': {success: '10000', message: "ok"},
     // models/user.js
     "10001": {error: "10001", message: "user not found"},
     "10002": {error: "10002", message: "password dose not match"},
