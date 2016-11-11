@@ -1,39 +1,21 @@
 import co from 'co'
 import path from 'path'
-import mddocs from './docs'
 
-async function docs(fkp, dir, type){
+async function docs(ctx, dir, type){
   if (!dir) return false
-  let Docs = mddocs(fkp)
+  let fkp = ctx.fkp
   let dft = {
-    // parse a directory that has '.html' or '.md'
-    // base data of menutree/sitemap
-    // return a Json obj
     docs: false,
-
-    // one markdown directory
     start: false,
     menutree: false,
     sonlist: false,
-
-    // public/html/**
     sitemap: false,
-
-    // append some json
     append: {}
   }
 
-  async function folderDocs(dir, opts) {
-    return await Docs.getDocsData(dir, opts)
-  }
+  if (!type) return await fkp.parsedocs('file')(dir)
 
-  async function mdfileDoc(_path) {
-    return await Docs.loadmdFile(dir)
-  }
-
-  if (!type) return await mdfileDoc(dir)
-
-
+  // 返回文件内容
   function setOptions(_type){
     switch (_type) {
       case 'mdmenu':
@@ -73,7 +55,7 @@ async function docs(fkp, dir, type){
       return false
     }
   }
-  return await folderDocs(dir, dft)
+  return await fkp.parsedocs('folder')(dir, dft)
 }
 
 export default function(fkp){

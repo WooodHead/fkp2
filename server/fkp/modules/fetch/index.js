@@ -83,7 +83,7 @@ let __request = inherits(_request, {
 let pullapi = inherits(__request, require('./pullapi')())
 let weixin = inherits(pullapi, require('./weixin')())
 let mocks = inherits(weixin, require('./mockapi')())
-let database = inherits(mocks, require('./dbapi')())
-let requ = inherits(database, {})
+// let database = inherits(mocks, require('./dbapi')())
+let requ = inherits(mocks, {})
 
 export default new requ()

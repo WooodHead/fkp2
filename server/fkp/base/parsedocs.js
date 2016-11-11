@@ -7,8 +7,7 @@ let react2html = require('server/modules/parseReact')
 // 分析目录结构并格式化目录树为JSON
 // md, html
 
-module.exports = function(fkp){
-
+function index(fkp, type){
   // a markdown directory's homefile
   // this directory maybe has some sub directory
   // every directory maybe has homefile like _home.md/_home.json/_home.jpg/_home.png
@@ -60,7 +59,7 @@ module.exports = function(fkp){
           let mdcnt = {mdcontent:{}};
           let md_raw = fs.readFileSync( url, 'utf8' );
           if (!md_raw || !md_raw.length) return false
-          return await fkp().markdown(md_raw);
+          return await fkp.markdown(md_raw);
         }
         return false
       })
@@ -97,7 +96,6 @@ module.exports = function(fkp){
         return _sitemap
       })
     } catch (e) {
-      console.log('========== modules=staticdocs: getSiteMap error');
       console.log(e);
     }
   }
@@ -138,17 +136,11 @@ module.exports = function(fkp){
       let docsData = _.extend({}, opts.append, sitemap, docs, start);
 
       if (opts.menutree){
-        let _props = {
-          data: _docs
-        }
+        let _props = { data: _docs }
         let reactHtml = await react2html('component/modules/menutree/index', _props)
         docsData.menutree = reactHtml[0]
       }
-
-      if (opts.sonlist) {
-        docsData.sonlist = await sonsHomeFiles(doc_dir)
-      }
-
+      if (opts.sonlist) docsData.sonlist = await sonsHomeFiles(doc_dir)
       if (!opts.docs) delete docsData.docs
       if (!opts.sitemap) delete docsData.demoindex
       if (!opts.start) delete docsData.home
@@ -171,9 +163,14 @@ module.exports = function(fkp){
     }
   }
 
-  return {
-    getDocsData: getDocsData,
-    loadmdFile: loadmdFile,
-    sonsHomeFiles: sonsHomeFiles
+  switch (type) {
+    case 'folder':
+      return getDocsData
+    case 'file':
+      return loadmdFile
   }
+}
+
+export default function(fkp){
+  return index
 }

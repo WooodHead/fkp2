@@ -5,7 +5,7 @@ import path from 'path'
 function hello(oridata) {
   return {
     get: async function(ctx){
-      let fkper = ctx.fkp()
+      // let fkper = ctx.fkp()
       let cat = ctx.params.cat
       let title = ctx.params.title
       let id = ctx.params.id
@@ -17,17 +17,17 @@ function hello(oridata) {
 
       if (cat) {
         let _path = 'fdocs/'+cat
-        let fdocs = await fkper.docs(_path, 'mdindex, mdmenu')
+        let fdocs = await ctx.fkp.docs(_path, 'mdindex, mdmenu')
         oridata.docs = _.extend({}, fdocs)
       } else {
-        let fdocs = await ctx.fkp().docs('fdocs', 'mdhome')
+        let fdocs = await ctx.fkp.docs('fdocs', 'mdhome')
         oridata.docs.docindex = fdocs.home
       }
 
       if (id || title) {
         let mdpath = cat+'/'+title
         if (id) mdpath = path.join(cat+'/'+title +'/'+id, (p1||''), (p2||''), (p3||''))
-        let mdfile = await fkper.docs('fdocs/'+mdpath+'.md')
+        let mdfile = await ctx.fkp.docs('fdocs/'+mdpath+'.md')
         delete oridata.docs.home
         if (mdfile) oridata.docs = _.extend(oridata.docs, mdfile)
       }

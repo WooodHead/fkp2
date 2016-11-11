@@ -8,12 +8,12 @@ let cheerio = require('cheerio')
 let Util = require('util')
 let fs = bluebird.promisifyAll(require('fs'))
 
-let debug = Debug('fkp')
 let mapper = require('./modules/mapper')
 let fetch = require('./modules/fetch').default
 let router = require('./route')
 global.Fetch = fetch
 
+let debug = Debug('fkp')
 export default async function(app) {
 
     let innerData = {
@@ -39,7 +39,12 @@ export default async function(app) {
       this.opts = opts
     }
     let fkp = function(ctx, opts){
-      return new _fkp(ctx, opts)
+      let fkpInstanc = new _fkp(ctx, opts)
+      for (let property of Object.entries(fkp)) {
+        let [_name, _value] = property
+        fkpInstanc[_name] = _value
+      }
+      return fkpInstanc
     }
 
     // 绑定资源
@@ -66,14 +71,14 @@ export default async function(app) {
     fkp.plugins = function(name, fn){
       if (typeof fn == 'function') {
         _fkp.prototype[name] = function() {
-          return fn.apply(this, [fkp, ...arguments])
+          return fn.apply(this, [this.ctx, ...arguments])
         }
       }
     }
 
     fkp.use = function(name, fn){
       _fkp.prototype[name] = function() {
-        return fn.apply(this, [fkp, ...arguments])
+        return fn.apply(this, [this.ctx, ...arguments])
       }
     }
 
@@ -205,7 +210,7 @@ export default async function(app) {
     // =========== 注册fkp中间件 =============
     app.fkp = fkp
     app.use(async (ctx, next)=>{
-      ctx.fkp = fkp
+      ctx.fkp = fkp(ctx)
       Fetch.init(ctx)   //初始化Fetch API
       await next()
     })
