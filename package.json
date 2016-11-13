@@ -33,7 +33,7 @@
     "lodash": "^4.6.1",
     "lru-cache": "^4.0.1",
     "marked": "^0.3.5",
-    "mongoose": "^4.3.7",
+    "mongoose": "^4.6.7",
     "nedb": "git+ssh://git@github.com/webkixi/nedb.git",
     "react": "^15.3.2",
     "react-dom": "^15.1.0",

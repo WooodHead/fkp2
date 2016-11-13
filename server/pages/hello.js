@@ -24,6 +24,9 @@ function hello(oridata) {
       // let xxx = await Fetch.mock('163')
       // console.log(xxx);
 
+      // let blog = await ctx.fkp.blog()
+      // let xxx = await blog.listtopic({page:1})
+
       let fdocsHome = await ctx.fkp.docs('fdocs', 'mdhome')
       oridata = _.extend(oridata, fdocsHome)
       oridata.fkp = 'FKP2'

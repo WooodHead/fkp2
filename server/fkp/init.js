@@ -11,6 +11,7 @@ let fs = bluebird.promisifyAll(require('fs'))
 let mapper = require('./modules/mapper')
 let fetch = require('./modules/fetch').default
 let router = require('./route')
+let initdb = require('../db').default
 global.Fetch = fetch
 
 let debug = Debug('fkp')
@@ -36,6 +37,9 @@ export default async function(app) {
     function _fkp(ctx, opts){
       this.ctx = ctx
       this.opts = opts
+      this.database = async (folder) => {
+        return await new initdb(this.ctx, folder)
+      }
     }
     function fkp(ctx, opts){
       let fkpInstanc = new _fkp(ctx, opts)
@@ -51,6 +55,7 @@ export default async function(app) {
     fkp.staticMapper = mapper
     fkp.config = CONFIG
     fkp.root = Path.join(__dirname, '../../')
+
 
     // Register inner utile fun
     for (let item of fns){

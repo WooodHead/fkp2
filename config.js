@@ -117,7 +117,21 @@ var config = {
     ],
 
     db: {
-      select: 'mongo'    // false or 'mongo', 'mysql'
+      select: 'mongo',    //  false or 'mongo/mysql', mongo 采用 mongoose ORM
+      requiredFolder: {   //  自动注册数据库时，会检测注册目录下是否包含control目录和model目录，目录名在此指定
+        control: 'pages', //  control目录名/ control directory key
+        model: 'models'   //  model目录名/   model directory key
+      },
+      mongo: {
+        url: "mongodb://127.0.0.1:27017/fkp",
+        // url: "mongodb://58.96.191.90:27017/fkp",
+        options: {
+          db: { native_parser: true },
+          server: { poolSize: 3 },
+          replset: { rs_name: 'myReplicaSetName' },
+        },
+        pageSize: 10
+      },
     },
 
     route: {
