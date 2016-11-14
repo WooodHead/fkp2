@@ -9,8 +9,6 @@ var libs = require('libs')
 var md5 = require('blueimp-md5')
 import control from './control'
 let debug = Debug('modules:route')
-let makeRoute = require('./makeroute').default
-
 /**
  * 过滤渲染文件
  * {param1} {json}   this.params
@@ -85,25 +83,25 @@ async function init(app, prefix='', options) {
         if (!Array.isArray(item)) return
         item.map((rt)=>{
           if (key!='get' && rt != '/' && rt.indexOf('p1')==-1) {
-            router[key](rt, customControl||forBetter)
+            router[key](rt, router::(customControl||forBetter))
           } else {
-            router[key](rt, customControl||forBetter)
+            router[key](rt, router::(customControl||forBetter))
           }
         })
       } else {
         routeParam.map((_path)=>{
-          router.get(_path, customControl||forBetter)
+          router.get(_path, router::(customControl||forBetter))
           if (_path!='/') {
-            router.post(_path, customControl||forBetter)
+            router.post(_path, router::(customControl||forBetter))
           }
         })
       }
     })
   } else {
     routeParam.map((item)=>{
-      router.get(item, forBetter)
+      router.get(item, router::forBetter)
       if (item!='/') {
-        router.post(item, forBetter)
+        router.post(item, router::forBetter)
       }
     })
   }
@@ -115,11 +113,7 @@ async function init(app, prefix='', options) {
     try {
       let ignoreStacic = ['/css/', '/js/', '/images/', '/img/']
       if (ignoreStacic.indexOf(ctx.url)>-1) return
-      ctx.local = Url.parse(ctx.url, true)
-      let _ext = Path.extname(ctx.url)
-      ctx.route_url = ctx.url.slice(1).replace(_ext, '')
-      if (!ctx.route_url) ctx.route_url = ''
-      return await createRoute.call(router, ctx, ctx.fkp.staticMapper, _controlPages)
+      return await this::dealwithRoute(ctx, ctx.fkp.staticMapper, _controlPages)
     } catch (e) {
       debug('forBetter: '+e.message)
       console.log(e.stack)
@@ -127,31 +121,78 @@ async function init(app, prefix='', options) {
   }
 }
 
+init.makeRoute = makeRoute
+init.staticMapper = staticMapper
+init.renderPage = renderPage
+
 /**
  * 路由配置
  * {param1} koa implement
  * {param2} map of static file
  * return rende pages
 **/
-async function createRoute(ctx, _mapper, ctrlPages){
-  debug('start createRoute');
+async function dealwithRoute(ctx, _mapper, ctrlPages){
+  debug('start dealwithRoute');
   try {
     let isRender = filterRendeFile(ctx.params, ctx.url)
     let route = isRender ? makeRoute(ctx) : false
     if (!isRender || !route) throw 'route配置不正确'
     ctx.fkproute = route
-    let pageData = createMapper(ctx, _mapper, route, this)
+    let routerPrefix = this.opts.prefix
+    let pageData = staticMapper(ctx, _mapper, route, routerPrefix)
     if (!_mapper || !pageData) throw 'mapper数据不正确'
-    return distribute.call(ctx, route, pageData, ctrlPages, this)
-
+    return ctx::distribute(route, pageData, ctrlPages, this)
   } catch (e) {
-    debug('createRoute: '+ e)
+    debug('dealwithRoute: '+ e)
     console.log(e);
     return ctx.redirect('404')
   }
 }
 
-function createMapper(ctx, mapper, route, routerInstance){
+function makeRoute(ctx){
+  let params = ctx.params
+  let _url = ctx.url
+  ctx.local = Url.parse(ctx.url, true)
+
+
+  let _ext = Path.extname(ctx.url)
+  let ctxurl = ctx.url.slice(1).replace(_ext, '') || ''
+
+  if (_url.indexOf('?')>-1){
+    _url = _url.slice(0, _url.indexOf('?'))
+    ctxurl = ctxurl.slice(0, ctxurl.indexOf('?'))
+  }
+  let rjson = Path.parse(_url)
+  let route = false
+  let cat = params.cat||'', title = params.title||'', id = params.id||'';
+  let gtpy = libs.objtypeof;
+
+  if(id){
+    gtpy(id)==='number'
+    ? route = title
+      ? cat+'/'+title
+      : cat
+    : route = cat+'/'+title +'/' + id
+  }
+
+  else if(title){
+    title = title.replace(rjson.ext,'');
+    route = gtpy(title)==='number' ? cat : cat+'/'+title
+  }
+
+  else if(cat){
+    cat = cat.replace(rjson.ext,'');
+    route = gtpy(cat)==='number' ? CONFIG.root||'index' : cat
+  }
+
+  else{
+    route = CONFIG.root||'index'
+  }
+  if (ctxurl && route !== ctxurl) route = ctxurl
+  return route
+}
+
+function staticMapper(ctx, mapper, route, routerPrefix){
   let tmpletStatic = (src, type) => {
     if (type == 'js') {
       return '<script type="text/javascript" src="/js/'+src+'" ></script>'
@@ -161,7 +202,6 @@ function createMapper(ctx, mapper, route, routerInstance){
     }
   }
 
-  let routerPrefix = routerInstance.opts.prefix
   if (_.isString(routerPrefix) && routerPrefix.indexOf('/')==0) routerPrefix = routerPrefix.replace('/','')
   if (!mapper) return false
   let pageData = {
@@ -189,7 +229,7 @@ function createMapper(ctx, mapper, route, routerInstance){
 async function distribute(route, pageData, ctrlPages, routerInstance){
   debug('start distribute');
   let pdata = await controler(this, route, pageData, ctrlPages, routerInstance)
-  return await dealWithPageData(this, pdata[0], pdata[1])
+  return await renderPage(this, pdata[0], pdata[1])
 }
 
 
@@ -250,7 +290,7 @@ async function controler(ctx, route, pageData, ctrlPages, routerInstance){
         let apilist = Fetch.apilist
         if( apilist.list[route] || apilist.weixin[route] || route === 'redirect' ){
           passAccess = true
-          xData = await getctrlData(['./passaccess'], route, ctx, pageData, ctrl)
+          xData = await getctrlData(['./passaccesscontrol'], route, ctx, pageData, ctrl)
         } else {
           xData = {nomatch: true}
         }
@@ -266,25 +306,21 @@ async function controler(ctx, route, pageData, ctrlPages, routerInstance){
 }
 
 // dealwith the data from controlPage
-async function dealWithPageData(ctx, data, route){
-  debug('start dealWithPageData -- render');
+async function renderPage(ctx, data, route){
+  debug('start renderPage -- render');
   try {
     switch (ctx.method) {
       case 'GET':
-        try {
-          let getStat = ctx.local.query._stat_
-          if (getStat && getStat === 'DATA' ) return ctx.body = data
-          if (data && data.nomatch) throw new Error('你访问的页面/api不存在')
-          return await ctx.render(route, data)
-        } catch (e) {
-          debug(e)
-          return await ctx.render('404')
-        }
+        let getStat = ctx.local.query._stat_
+        if (getStat && getStat === 'DATA' ) return ctx.body = data
+        if (data && data.nomatch) throw new Error('你访问的页面/api不存在')
+        return await ctx.render(route, data)
       case 'POST':
         return ctx.body = data
     }
   } catch (e) {
-    debug('dealWithPageData: '+e)
+    debug('renderPage: '+e)
+    return await ctx.render('404')
   }
 }
 
