@@ -1,10 +1,13 @@
 import path from 'path'
+import blogcontrol from './blogcontrol'
 
 // mongo blog
+let _db
 async function blog(ctx, cmd){
   let fkp = ctx.fkp
+  if (_db) return _db
   if (CONFIG.db.select=='mongo') {
-    let _db = await fkp.database(path.join(__dirname, './common'))
+    _db = await fkp.database(path.join(__dirname, './common'))
     if (_db && cmd) {
       // do something
     }
@@ -12,7 +15,12 @@ async function blog(ctx, cmd){
   }
 }
 
-
 export default function(fkp){
+  fkp.routepreset('/blog', {
+    customControl: blogcontrol
+  })
+  fkp.routepreset('/logs', {
+    customControl: blogcontrol
+  })
   return blog
 }

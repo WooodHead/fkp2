@@ -1,6 +1,13 @@
 let mongoose = require("mongoose");
 let Topic = mongoose.model('Topic')
 
+export default async function(param) {
+  if (!param._id) return
+  let fkp = this.fkp
+  return await Topic.topicMatchesId(param._id)
+}
+
+
 async function detailTopic(ctx, param) {
   try {
     if (param.topic){
@@ -35,6 +42,6 @@ async function getDtail(ttt, user){
   }
 }
 
-module.exports = {
-    getData : detailTopic
-}
+// module.exports = {
+//     getData : detailTopic
+// }

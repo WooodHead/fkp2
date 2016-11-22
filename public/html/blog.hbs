@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+<head>
+  <title>博客</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta content="telephone=no" name="format-detection" />
+  <link rel="shortcut icon" href="/images/favicon.ico">
+  {{{commoncss}}}
+  {{{pagecss}}}
+  {{{attachCss}}}
+  <meta name="description" content="">
+  <style>
+    html{
+      height: 100%;
+    }
+    .height100{
+      height: 100%;
+      overflow: hidden;
+    }
+    .height100s{
+      height: 100%;
+      overflow-y: scroll;
+    }
+    .detail h1:first-child{
+      font-size: 0.2em;
+    }
+    .detail h1:first-child::after{
+      content: "的详情"
+    }
+    .left{
+      position: relative;
+    }
+    .bg{
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: url(/images/bg/ghost2.jpg);
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+    .bg .add{
+      position: absolute;
+      bottom: 1em;
+      right: 0.7em;
+    }
+    .bg .add i{
+      font-size: 2em;
+    }
+    .box{
+      position: relative;
+    }
+    .box .navb{
+      position: fixed;
+      z-index: 1;
+      width: 70%;
+      height: 2.8em;
+      margin-left: -1em;
+      padding-left: 1em;
+      padding-right: 1em;
+      padding: 0.3em 1em 0.3em 1em;
+      background-color: #fff;
+      border-bottom: 1px solid #d9d9d9;
+      box-shadow: rgb(157, 165, 171) 0px 0px 0.5em;
+    }
+    .blogs{
+      margin-top: 2.8em;
+    }
+
+  </style>
+</head>
+<body class="height100">
+  <div class="container-full height100">
+      <!-- 文章内容页 -->
+      {{# if blog.mdcontent}}
+        <div class="row height100s">
+          <div class="col-sm-offset-1 col-sm-11 markdown-body">
+            <div class="row height100s">
+              <div class="col-sm-8" >
+                <h1>{{blog.mdcontent.title}}</h1>
+                <small>作者：{{blog.mdcontent.author}}</small>
+                <div class="detail">
+                  {{{blog.mdcontent.cnt}}}
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div id="side-menu" class="side-menu">
+                  <h4>文章目录</h4>
+                  <ul>
+                    {{{blog.mdcontent.mdmenu}}}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {{else}}
+        <div class="row height100">
+          <!-- 文章列表页 -->
+          <div class="col-xs-12 col-sm-4 left">
+            <div class="bg">
+              <div class="btn-toolbar add">
+                <div class="btn-group btn-group-xs">
+                  <span class="btn btn-success" href="#"><i class="iconfont icon-jia1"></i></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-8">
+            <div class="box height100s">
+              <div class="navb row">
+                <div class="col-sm-2">
+                  <img src="/images/logo32.png" alt="" />
+                </div>
+              </div>
+              <div id="blog" class='blogs'>{{{blog.list}}}</div>
+            </div>
+          </div>
+        </div>
+      {{/if}}
+  </div>
+</body>
+{{{commonjs}}}
+{{{pagejs}}}
+{{{attachJs}}}
+</html>

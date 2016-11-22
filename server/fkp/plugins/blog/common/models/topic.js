@@ -46,10 +46,11 @@ BaseTopicSchema.statics.topicList = async function (start, end, tag, cat) {
     let query = {}
     let pageSize = config.mongo.pageSize
     if (!start) start = 0;
-    if (!end) end = pageSize
+    end = pageSize
+    // if (!end) end = pageSize
     if (tag && typeof tag==='string') query.tags = decodeURI(tag)
     if (cat && typeof cat==='string') query.cats = cat
-    return await this.find(query,'title _id tags create_at update_at img user visit_count',{skip:start, limit: end, sort: [{update_at: -1, create_at: -1}] }).exec()
+    return await this.find(query,'title _id tags create_at update_at img user visit_count',{skip:start, limit:end, sort: {update_at: -1, create_at: -1} }).exec()
 }
 
 //获取topic
@@ -61,7 +62,7 @@ BaseTopicSchema.statics.topicMatchesId = async function (topic_id) {
 
 //topic的count
 BaseTopicSchema.statics.topicCount = async function (topic_id) {
-  console.log('文章统计计数-----------');
+  console.log('文章浏览计数-----------');
   var topic = await this.findOne({ _id: topic_id }).exec();
   if (!topic) return Errors['20004']
   var _count = topic.visit_count
