@@ -160,7 +160,7 @@ function dealWithData(){
            if(typeof item==='string'|| typeof item==='number'){
              bodys.push(<div data-pid={i} key={'body'+i}>{item}</div>)
            }
-           if(_.isObject(item)){
+           if(_.isPlainObject(item)){
              var cls = item.caption?'hb-item caption':'hb-item';
              if(!React.isValidElement(item)){
                var title = item.title||item.caption||item.text;
@@ -181,10 +181,6 @@ function dealWithData(){
                    }
 
                    if (item.li){  //li结构
-                       //var lis = []
-                       //item.li.map(function(li_item, li_i){
-                       //   lis.push(<li key={'lis-'+li_i}>{li_item}</li>)
-                       //})
                        var lis = dealWithLi(item.li)
                        return <div key={'bodyul-'+i} className={cls}>{title}{lis}</div>
                    }

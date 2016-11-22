@@ -1,9 +1,9 @@
 var MenuTree = require('./_menutree/index');
-var render = React.render;
 
 function menuTree(data, opts ){}
-menuTree.pure = function(){
-    return MenuTree()
+menuTree.pure = function(props){
+  let Component =  MenuTree()
+  return <Component {...props} />
 };
 
 module.exports = menuTree

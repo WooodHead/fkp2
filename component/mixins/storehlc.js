@@ -15,7 +15,7 @@ export default (id, ComposedComponent) => {
       }
 
       componentWillMount() {
-        SAX.setter( id, null, this._act )
+        SAX.bind(id, this)
         super.componentWillMount()
       }
     }

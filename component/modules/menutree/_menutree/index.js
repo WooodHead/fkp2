@@ -1,4 +1,4 @@
-var List = require('component/widgets/listView/list');
+var List = require('component/widgets/listView');
 var libs = require('libs');
 
 function adapter(data){
@@ -88,15 +88,37 @@ function adapter(data){
 	return _data;
 }
 
-let menutree = {
-	//插入真实 DOM之前
-	componentWillMount:function(){
+// let menutree = {
+// 	//插入真实 DOM之前
+// 	componentWillMount:function(){
+// 		this.setState({
+// 			data: adapter(this.props.data)
+// 		})
+// 	},
+// 	render:function(){
+//     return (
+//       <div className="page-ui-kits docmenu">
+//         {
+// 					<List
+// 						data = { this.state.data }
+// 						itemClass = "category"
+// 						listMethod = { this.props.listMethod }
+// 						itemMethod = { this.props.itemMethod }
+// 					/>
+// 				}
+//       </div>
+//     )
+// 	}
+// }
+
+class Menutree extends React.Component {
+	componentWillMount() {
 		this.setState({
 			data: adapter(this.props.data)
 		})
-	},
-	render:function(){
-    return (
+	}
+	render(){
+		return (
       <div className="page-ui-kits docmenu">
         {
 					<List
@@ -111,8 +133,6 @@ let menutree = {
 	}
 }
 
-function actRct( storeName ){
-  return require('component/util')(storeName, menutree)
+module.exports = function(){
+	return Menutree
 }
-
-module.exports = actRct;

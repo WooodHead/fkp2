@@ -2,7 +2,7 @@
 * list 通用组件
 * 返回 div > (ul > li)*n
 */
-var Fox = require('../itemView/f_li');
+var Fox = require('../itemView/f_li')
 
 var tmpApp = React.createClass({
 	getDefaultProps: function() {
@@ -13,7 +13,7 @@ var tmpApp = React.createClass({
 
 	getInitialState: function() {
 		return {
-        	data: []
+      	data: this.props.data||[],
 	    };
 	},
 
@@ -26,7 +26,7 @@ var tmpApp = React.createClass({
 			}
 			this.setState({
 				data: pdata
-			});
+			})
 		}
 	},
 
@@ -41,14 +41,14 @@ var tmpApp = React.createClass({
 				data: pdata
 			});
 		}
-		this.listMethod(nextProps);
+		// this.listMethod(nextProps);
 	},
 
 	_dealWithItemView: function(opts){
 		var that = this;
 		var props = _.cloneDeep(that.props);
 		props.idf = opts.i;
-		props.key = 'view'+opts.i;
+		props.key = 'fox'+opts.i;
 		props.data = opts.item;
 
 		//删除多余的属性
@@ -61,9 +61,9 @@ var tmpApp = React.createClass({
 			var view = that.props.itemView;
 			return React.createElement(view, props, that.props.children);
 		}else{
-			var _props = _.merge({data: opts.item, key: ('fox'+opts.i), idf: opts.i }, props)
-			return React.createElement(Fox, _props, that.props.children)
-			// return <Fox idf={opts.i} key={'fox'+opts.i} {...props} data={opts.item} />;
+			// var _props = _.extend({data: opts.item, key: ('fox'+opts.i), idf: opts.i }, props)
+			// return React.createElement(Fox, _props, that.props.children)
+			return <Fox idf={opts.i} key={opts.i} {...props} data={opts.item} />;
 		}
 	},
 
@@ -81,23 +81,18 @@ var tmpApp = React.createClass({
 			var items = [];
 			record.map(function(item,list_i){
 				if (Array.isArray(item)){
-
 					//inline 将数组元素放置在一个li中
 					if(that.props.inline){
 						var it = that._dealWithItemView({i: list_i, item: item})
 						items.push(it);
-					}
-					else
-						itemCollection.push(organizeData(item));
-				}
-				else {
+					} else itemCollection.push(organizeData(item));
+				} else {
 					var it = that._dealWithItemView({i: list_i, item: item})
 					items.push(it);
 				}
 			});
 			if(items.length){
-				// var group = _.uniqueId('group-')
-				var group = 'group-ul'
+				var group = _.uniqueId('group-')
 				return (
 					<ul key={group} className={cls} style={sty}>
 						{items}
@@ -113,17 +108,7 @@ var tmpApp = React.createClass({
 	},
 
 	loopRender: function(){
-		var items = [];
-		var sty = this.props.itemStyle ? this.props.itemStyle : false;
-		var cls = this.props.itemClass ? this.props.itemClass : false;
-
-		if(this.state.data){
-			// React.Children.map(this.state.data, function (item,i) {
-			var data = this.state.data
-			items = this._dealWithData(data);
-		}
-
-		return items;
+		return this._dealWithData(this.state.data);
 	},
 
 
@@ -139,9 +124,9 @@ var tmpApp = React.createClass({
 			var that = React.findDOMNode(this);
 			if(typeof mtd==='function'){
 				var the = this;
-				setTimeout(function(){
-					mtd.call(that,the.props.store);
-				},600);
+				mtd.call(that,the.props.store);
+				// setTimeout(function(){
+				// },600);
 			}
 		}
 	},
