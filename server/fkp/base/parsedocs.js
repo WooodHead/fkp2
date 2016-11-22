@@ -2,11 +2,9 @@ let fs = require('fs')
 let co = require('co');
 let path = require('path');
 let publicConfig = require('build/src_config');
-let react2html = require('server/modules/parseReact')
 
 // 分析目录结构并格式化目录树为JSON
 // md, html
-
 function index(fkp, type){
   // a markdown directory's homefile
   // this directory maybe has some sub directory
@@ -137,7 +135,7 @@ function index(fkp, type){
 
       if (opts.menutree){
         let _props = { data: _docs }
-        let reactHtml = await react2html('component/modules/menutree/index', _props)
+        let reactHtml = await fkp.parsereact('component/modules/menutree/index', _props)
         docsData.menutree = reactHtml[0]
       }
       if (opts.sonlist) docsData.sonlist = await sonsHomeFiles(doc_dir)

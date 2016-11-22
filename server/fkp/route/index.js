@@ -145,11 +145,11 @@ async function dealwithRoute(ctx, _mapper, ctrlPages){
   } catch (e) {
     debug('dealwithRoute: '+ e)
     console.log(e);
-    return ctx.redirect('404')
+    // return ctx.redirect('404')
   }
 }
 
-function makeRoute(ctx){
+function makeRoute(ctx, prefix){
   let params = ctx.params
   let _url = ctx.url
   ctx.local = Url.parse(ctx.url, true)
@@ -189,6 +189,7 @@ function makeRoute(ctx){
     route = CONFIG.root||'index'
   }
   if (ctxurl && route !== ctxurl) route = ctxurl
+  if (prefix) route = prefix.indexOf('/')==0 ? prefix.substring(1) : prefix
   return route
 }
 
@@ -228,8 +229,8 @@ function staticMapper(ctx, mapper, route, routerPrefix){
 
 async function distribute(route, pageData, ctrlPages, routerInstance){
   debug('start distribute');
-  let pdata = await controler(this, route, pageData, ctrlPages, routerInstance)
-  return await renderPage(this, pdata[0], pdata[1])
+  let [pdata, rt] = await controler(this, route, pageData, ctrlPages, routerInstance)
+  return await renderPage(this, rt, pdata)
 }
 
 
@@ -297,7 +298,7 @@ async function controler(ctx, route, pageData, ctrlPages, routerInstance){
       }
       if (passAccess) pageData = xData
     }
-    pageData = SAX.emit('pageData', pageData)
+    pageData = SAX.roll('pageData', pageData)
     return [pageData, route]
   } catch (e) {
     console.log(e.stack);
@@ -306,13 +307,13 @@ async function controler(ctx, route, pageData, ctrlPages, routerInstance){
 }
 
 // dealwith the data from controlPage
-async function renderPage(ctx, data, route){
+async function renderPage(ctx, route, data, isAjax){
   debug('start renderPage -- render');
   try {
     switch (ctx.method) {
       case 'GET':
         let getStat = ctx.local.query._stat_
-        if (getStat && getStat === 'DATA' ) return ctx.body = data
+        if ((getStat && getStat === 'DATA') || isAjax ) return ctx.body = data
         if (data && data.nomatch) throw new Error('你访问的页面/api不存在')
         return await ctx.render(route, data)
       case 'POST':

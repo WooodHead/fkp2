@@ -11,7 +11,6 @@ let fs = bluebird.promisifyAll(require('fs'))
 let mapper = require('./modules/mapper')
 let fetch = require('./modules/fetch').default
 let router = require('./route')
-let initdb = require('../db').default
 global.Fetch = fetch
 
 let debug = Debug('fkp')
@@ -38,7 +37,7 @@ export default async function(app) {
       this.ctx = ctx
       this.opts = opts
       this.database = async (folder) => {
-        return await new initdb(this.ctx, folder)
+        return await require('../db').default(this.ctx, folder)
       }
     }
     function fkp(ctx, opts){

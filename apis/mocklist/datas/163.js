@@ -1,3 +1,4 @@
+// mock数据模板
 
 let content = [{
   aaa: "{{=string}}",

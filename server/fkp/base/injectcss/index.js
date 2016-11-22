@@ -1,4 +1,4 @@
-import co from 'co'
+import {objtypeof} from 'libs'
 import path from 'path'
 
 /**
@@ -8,35 +8,40 @@ import path from 'path'
  * @return {Promise}
  */
 
-async function getContent(fkp, mapper, src){
-  if (src.indexOf('http')==0) return '<link rel="stylesheet" href="'+src+'">'
+async function getContent(fkp, mapper, src, opts){
+  let $src = ''
+  if (src.indexOf('http')==0 || src.indexOf('/')== 0) return '<link rel="stylesheet" type="text/css" href="'+src+'">\n'
+  if (src.indexOf('~')==0) {
+    $src = src
+    src = src.substring(1)
+  }
   if (mapper[src]) {
-    let content = await fkp.readfile(path.join(fkp.root, '/dist/', fkp.config.version, (fkp.env=='dev'?'/dev':''), '/css/'+mapper[src]))
-    if (content) return content.toString()
+    if (opts.inline || $src) {
+      let content = await fkp.readfile(path.join(fkp.root, '/dist/', fkp.config.version, (fkp.env=='dev'?'/dev':''), '/css/'+mapper[src]))
+      if (content) return '<style>'+content.toString()+'</style>\n'
+    } else {
+      let _src = mapper[src]
+      return '<link rel="stylesheet" type="text/css" href="/css/'+_src+'">\n'
+    }
   }
 }
 
-async function index(fkp, key, src){
-  if (Array.isArray(key)) {
-    src = key
-    key = 'attachJs'
-  }
+async function index(fkp, src, opts={}){
+  let key = opts.key||'attachCss'
   let content, contents, mapper = fkp.staticMapper.pageCss
-  if (_.isString(src)) content = await getContent(fkp, mapper, src)
+  if (_.isString(src)) src = [src]
   if (Array.isArray(src)) {
     let contents = []
     for (let item of src) {
-      contents.push(await getContent(fkp, mapper, item))
+      contents.push(await getContent(fkp, mapper, item, opts))
     }
-    content = contents && contents.join('')
+    content = contents.join('')
   }
   if (content) {
-    console.log('control pageData will attach css file, pageData.attachCss');
+    // console.log('control pageData will attach css file, pageData.attachCss');
     let tmp = {}
-    if (!key) key = 'attachCss'
-    tmp[key] = '<style>'+content+'</style>'
-    SAX.set('pageData', tmp)  //挂在变量attachCss到pageData
-    return true
+    tmp[key] = content
+    return tmp
   }
 }
 

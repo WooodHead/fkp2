@@ -8,35 +8,40 @@ import path from 'path'
  * @return {Promise}
  */
 
-async function getContent(fkp, mapper, src){
-  if (src.indexOf('http')==0) return '<script src="'+src+'"></script>'
+async function getContent(fkp, mapper, src, opts){
+  let $src = ''
+  if (src.indexOf('http')==0 || src.indexOf('/')== 0) return '<script src="'+src+'"></script>\n'
+  if (src.indexOf('~')==0) {
+    $src = src
+    src = src.substring(1)
+  }
   if (mapper[src]) {
-    let content = await fkp.readfile(path.join(fkp.root, '/dist/', fkp.config.version, (fkp.env=='dev'?'/dev':''), '/js/'+mapper[src]))
-    if (content) return content.toString()
+    if (opts.inline || $src) {
+      let content = await fkp.readfile(path.join(fkp.root, '/dist/', fkp.config.version, (fkp.env=='dev'?'/dev':''), '/js/'+mapper[src]))
+      if (content) return '<script>'+content.toString()+'</script>\n'
+    } else {
+      let _src = mapper[src]
+      return '<script src="/js/'+_src+'"></script>\n'
+    }
   }
 }
 
-async function index(fkp, key, src){
-  if (Array.isArray(key)) {
-    src = key
-    key = 'attachJs'
-  }
+async function index(fkp, src, opts={}){
+  let key = opts.key||'attachJs'
   let content, contents, mapper = fkp.staticMapper.pageJs
-  if (_.isString(src)) content = await getContent(fkp, mapper, src)
+  if (_.isString(src)) content = await getContent(fkp, mapper, src, opts)
   if (Array.isArray(src)) {
     let contents = []
     for (let item of src) {
-      contents.push(await getContent(fkp, mapper, item))
+      contents.push(await getContent(fkp, mapper, item, opts))
     }
-    content = contents.join('')
+    content = contents && contents.join('')
   }
   if (content) {
-    console.log('control pageData will attach js file, pageData.attachJs');
+    // console.log('control pageData will attach js file, pageData.attachJs');
     let tmp = {}
-    if (!key) key = 'attachJs'     
-    tmp[key] = '<script>'+content+'</script>'
-    SAX.set('pageData', tmp)  //挂在变量attachJs到pageData
-    return true
+    tmp[key] = content
+    return tmp
   }
 }
 
