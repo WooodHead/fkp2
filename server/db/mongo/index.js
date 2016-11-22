@@ -7,7 +7,7 @@ function _db(fkp){
 }
 
 export default async function(fkp, folder, requiredFolder){
-  let connectState = await require('./common/connect').default()
+  let connectState = await require('./common/connect').default(folder)
   try {
     if (!connectState) throw '数据库没有连接'
     let $folder = await fkp.fileexist(folder)
