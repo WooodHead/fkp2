@@ -283,6 +283,7 @@ module.exports = {
     urlparse:       doc.urlparse,        // url地址解析
     _IE:            doc.ie,              // 输出IE版本
     queryString:    doc.queryString,
+    queryParams:    doc.queryParams,
     currentStyle:   doc.currentStyle,    //获取dom属性，兼容写法
     insertCaret:    doc.insertCaret,     //一般用在编辑器中的iframe插入数据
     portrait:       doc.portrait,         // 强制竖屏

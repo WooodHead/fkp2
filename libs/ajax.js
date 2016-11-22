@@ -5,14 +5,14 @@ function req( api, param, cb, method ){
   var url = api;
   if (!method) method = 'POST'
   if (url.indexOf('http://')===0){
-    if (objtypeof(param) === 'Object') param._redirect = url
+    if (objtypeof(param) === 'object') param._redirect = url
     else if (typeof param === 'function'){ cb = param; param = {_redirect: url} }
     else param = {_redirect: url}
     url = '/redirect'
   }
 
-  if( objtypeof(param)==='Function' ) cb = param
-  if( objtypeof(param)!=='Object' ) param = {test: '123'}
+  if( objtypeof(param)==='function' ) cb = param
+  if( objtypeof(param)!=='object' ) param = {test: '123'}
   if( !Object.keys(param).length ) param = {test: '123'}
 
   // 有些环境不是根目录，需要添加前缀，前缀根据location来自动添加

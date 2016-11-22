@@ -1,0 +1,114 @@
+@import "../hlist";
+@import "../loading";
+@import "../../../_copy2dist/iconfont";
+
+@px: 1px;
+@gray70: lighten(#000000, 70%);
+@wh: 50*@px;
+@border: 1px solid lighten(#000000,95%);
+
+.like_lagou{
+  position: relative;
+  overflow: hidden;
+  .hlist{
+    .hlist();
+    .item{  //li
+      list-style: none;
+      color: #666;
+      background: #fff;
+      border-bottom: @border;
+      width: auto;
+      height: auto;
+      padding: 2% 1%;
+      a{
+        width: auto;
+        color: #04b48b;
+        font-size: 1.36em;
+        &:visited{
+          color: #04b48b;
+        }
+        &:hover{
+          color: red;
+        }
+      }
+      .hheader{
+        padding: 0;
+        padding-left: 0;
+        .title_header{
+          line-height: 2em;
+          vertical-align: middle;
+          font-size: 14px;
+          img{
+            width: 2em;
+            vertical-align: top;
+            border-radius: 0.1em;
+          }
+          span{
+            vertical-align:  baseline;;
+          }
+          a{
+            vertical-align: middle;
+          }
+          abbr{
+            margin-left: 0.3em;
+            color: #c1c1c1;
+            vertical-align: middle;
+          }
+        }
+      }
+      .hbody{
+        padding: 0;
+        margin-top: 0;
+        .hb-item{
+          display: inline-block;
+          padding: 0.1em 1em 0.2em 0;
+          margin-left: 0;
+          border-radius: 0.4em;
+          // background-color: #fbfbfb;
+          color: #c1c1c1;
+          font-size: 0.5em;
+          span{
+            color: #c1c1c1;
+            font-size: 0.5em;
+          }
+          a{
+            margin-left: 0.8em;
+            font-size: 0.5em;
+            color: rgb(252, 147, 8);
+            &:visited{
+              color: rgb(252, 147, 8);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media screen{
+   @media (max-width: 1023px){
+      .like_lagou {
+        .item{
+          .hheader{
+            .title_header{
+              font-size: 12px;
+            }
+          }
+         .hbody{
+           .hb-item{
+             font-size: 1em;
+             span{
+               font-size: 1em;
+             }
+             a{
+               font-size: 1em;
+             }
+           }
+         }
+       }
+     }
+   }
+   @media (min-width: 1023px){
+
+   }
+}

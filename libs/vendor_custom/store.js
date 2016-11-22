@@ -77,7 +77,8 @@
     var store = function(name, data, act) {
         this.name = name || '';
         this.sdata = data || null;
-        this.sact = act || [];
+        this.sact = act||{};
+        this.ctx = {"null":null};
         var me = this;
 
         this.dataer = function(data, key) {
@@ -99,8 +100,14 @@
                             }
                         } else {
                             if (typeof fun === 'function') {
-                                var _tmp = fun(data);
+                                var _tmp = fun.call(me.ctx[me.name||'null'], data);
                                 _resault.push(_tmp);
+                            }
+                            if (getObjType(fun)=='Object') {
+                              Object.keys(fun).map(function(item){
+                                var _tmp = fun[item].call(me.ctx[me.name||'null'], data)
+                                _resault.push(_tmp)
+                              })
                             }
                         }
                     })
@@ -120,7 +127,7 @@
                                     return fun.apply(fun.args[0], [fun.args[0], data])
                             } else {
                                 if (typeof fun === 'function')
-                                    return fun(data);
+                                    return fun.call(me.ctx[me.name||'null'], data);
                             }
                         }
                     } else {
@@ -136,7 +143,7 @@
                                         return fun.apply(fun.args[0], [fun.args[0], data])
                                 } else {
                                     if (typeof fun === 'function')
-                                        return fun(data);
+                                        return fun.call(me.ctx[me.name||'null'], data);
                                 }
                             }
                         }
@@ -152,11 +159,16 @@
                                 var _tmp = fun.apply(fun.args[0], fun.args);
                                 _resault.push(_tmp);
                             }
-
                         } else {
                             if (typeof fun === 'function') {
-                                var _tmp = fun();
+                                var _tmp = fun.call(me.ctx[me.name||'null']);
                                 _resault.push(_tmp);
+                            }
+                            if (getObjType(fun)=='Object') {
+                              Object.keys(fun).map(function(item){
+                                var _tmp = fun[item].call(me.ctx[me.name||'null'])
+                                _resault.push(_tmp)
+                              })
                             }
                         }
                     })
@@ -168,12 +180,11 @@
                         if (sacts[key]) {
                             var fun = sacts[key]
                             if (getObjType(fun.args) === 'Array') {
-                                fun.args.push(data)
                                 if (typeof fun === 'function')
                                     return fun.apply(fun.args[0], fun.args)
                             } else {
                                 if (typeof fun === 'function')
-                                    return fun(data);
+                                    return fun.call(me.ctx[me.name||'null']);
                             }
                         }
                     } else {
@@ -185,7 +196,7 @@
                                         return fun.apply(fun.args[0], fun.args)
                                 } else {
                                     if (typeof fun === 'function')
-                                        return fun();
+                                        return fun.call(me.ctx[me.name||'null']);
                                 }
                             }
                         }
@@ -195,8 +206,33 @@
         }
 
         this.acter = function(act) {
-            if (act)
-                this.sact.push(act);
+          if (act) {
+            var sactType = getObjType(this.sact)
+            switch (sactType) {
+              case 'Array':
+                this.sact = this.sact.concat(act);
+                break;
+              case 'Object':
+                var that = this
+                var actType = getObjType(act)
+                switch (actType) {
+                  case 'Array':
+                    act.map(function(item){
+                      var randomId = (new Date()).getTime().toString().substring(3)
+                      that.sact['random_'+randomId] = item
+                    })
+                    break;
+                  case 'Object':
+                    this.sact =  extend(this.sact, act)
+                    break;
+                  case 'Function':
+                    var randomId = (new Date()).getTime().toString().substring(3)
+                    this.sact[randomId] = act
+                    break;
+                }
+                break;
+            }
+          }
         }
 
         this.setter = function(data, act) {
@@ -214,6 +250,10 @@
             if (type === 'data')
                 return this.sdata;
         };
+
+        this.binder = function(ctx) {
+          this.ctx[this.name] = ctx
+        }
     }
 
     var _stock = {}   // 数据存储容器
@@ -231,7 +271,7 @@
             var target;
             if (getObjType(dataOrAct) === 'Object') {
                 if (getObjType(save[name].sdata) === 'Object') {
-                    target = extend(true, save[name].sdata, dataOrAct)
+                    target = extend(true, {}, save[name].sdata, dataOrAct)
                     save[name].setter(target);
                 }
 
@@ -328,7 +368,8 @@
                                         }
                                     })
                                 }
-                                save[name].sact = dataOrAct;
+                                save[name].acter(dataOrAct);
+                                // save[name].sact = dataOrAct;
                             } else {
                                 save[name].setter(dataOrAct); //存储array数据
                             }
@@ -347,28 +388,12 @@
                         isFuns = false;
                 })
                 if (isFuns) {
-                    save[name].sact = fun;
+                  save[name].acter(fun);
                 }
             }
 
             if (getObjType(fun) === 'Object') {
-                if (save[name].sact) {
-                    var sact = save[name].sact
-                    if (getObjType(sact) === 'Array') {
-                        if (!sact.length)
-                            sact = {}
-                        else {
-                            console.log('SAX set error, fun is array ');
-                            return false;
-                        }
-                    }
-                    if (getObjType(sact) === 'Object') {
-                        var target = extend(sact, fun)
-                        save[name].sact = target;
-                    }
-                } else {
-                    save[name].sact = fun;
-                }
+              save[name].acter(fun)
             }
         },
 
@@ -425,14 +450,25 @@
           var save = _stock
           if (save[name]) {
             var that = save[name]
+
             function _runner(data, key) {
               return that.dataer(data, key)
             }
+
             var _data = that.getter('data')
-            if (_data && ddd && getObjType(ddd) === 'Object') {
-              _data = extend(true, _data, ddd)
+            if (getObjType(_data)== 'Object' && getObjType(ddd) == 'Object') {
+              if (ddd.key) key = ddd.key
+              delete ddd.key
+              _data = extend(true, {}, _data, ddd)
+            } else {
+              _data = ddd
             }
-            if (that.sact.length) return _runner(_data, key)
+
+            if (getObjType(ddd) == 'String') {
+              key = ddd;
+              ddd = undefined;
+            }
+            if (that.sact) return _runner(_data, key)
             return _data
           } else {
             if (ddd) return ddd
@@ -453,10 +489,23 @@
 
         lister: function() {
             return Object.keys(_stock);
+        },
+
+        bind: function(name, ctx) {
+          if (!name || name == '') return;
+          var save = _stock;
+          if (!save[name]) save[name] = new store(name)
+          save[name].binder(ctx||null)
+        },
+
+        setActions: function(name, acts){
+          var save = _stock;
+          if (!save[name]) save[name] = new store(name)
+          save[name].acter(acts)
         }
     }
 
-    storeAct.emit = storeAct.runner
+    storeAct.roll = storeAct.runner
     storeAct.trigger = storeAct.setter
 
     window.SAX = storeAct;
