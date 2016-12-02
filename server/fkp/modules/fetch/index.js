@@ -27,7 +27,12 @@ let __request = inherits(_request, {
       json: {},
       timeout: 10000
     }
-    if (options && _.isPlainObject(options)) opts = _.extend(opts, options)
+    if (options && _.isPlainObject(options)) opts = _.merge(opts, options)
+    if (opts.json && opts.json.headers) {
+      const _headers = _.extend({}, opts.json.headers)
+      delete opts.json.headers
+      opts.headers = _headers
+    }
     if (opts.fttype){
       delete opts.fttype;
     }
@@ -49,7 +54,7 @@ let __request = inherits(_request, {
       delete _opts.json
     }
     return new Promise( (res, rej) => {
-      request.get(_api, _opts, (err, rep, body)=>{
+      request.get(api, _opts, (err, rep, body)=>{
         if(err) { return rej("async search: no respons data")}
         if (rep.statusCode == 200){
           debug(body)

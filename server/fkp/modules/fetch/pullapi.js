@@ -1,7 +1,7 @@
 import path from 'path'
 import request from 'request'
 import {stringify} from 'querystring'
-import { inherits, objtypeof, errors } from 'libs'
+import { inherits, objtypeof } from 'libs'
 let debug = Debug('modules:fetch:pulldata')
 
 module.exports = function(){
@@ -9,7 +9,9 @@ module.exports = function(){
     _parseClientForm: function(api, param={}, method='get'){
       let url = undefined
       this.fetchRemote = false
-      if(objtypeof(param)!=='object') return [null, { message: 'pullApiData === 请指定正确的参数'}]
+      // if(objtypeof(param)!=='object') return [null, { message: 'pullApiData === 请指定正确的参数'}]
+      if(!api) return [null, { message: 'pullApiData === 请指定正确的参数'}]
+      if(objtypeof(param)!=='object') param = {}
 
       /**
        前端通过api.requ('http://www.xxx.com/api')获取外部远程数据
@@ -104,7 +106,7 @@ module.exports = function(){
     get: async function(api, param){
       debug('get:'+ api)
       let [_api, _param] = this._parseClientForm(api, param, 'get')
-      if (!_api) return errors['60001']
+      if (!_api) return Errors['60001']
       if (_param && _param.json && _param.json.test && _param.json.test == '123') delete _param.json.test
       if (_param && _param.json && _param.json._stat_ ) delete _param.json._stat_
       if (CONFIG.apis.mock) {
@@ -118,7 +120,7 @@ module.exports = function(){
     post: async function(api, param){
       debug('post:'+ api);
       let [_api, _param] = this._parseClientForm(api, param, 'post')
-      if (!_api) return errors['60001']
+      if (!_api) return Errors['60001']
       if (_param && _param.form && _param.form.test && _param.form.test == '123') delete _param.form.test
       if (CONFIG.apis.mock) {
         return await this.mock(api, _param)
