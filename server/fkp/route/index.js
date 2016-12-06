@@ -82,7 +82,7 @@ async function init(app, prefix='', options) {
         if (typeof item == 'string') item = [item]
         if (!Array.isArray(item)) return
         item.map((rt)=>{
-          if (key!='get' && rt != '/' && rt.indexOf('p1')==-1) {
+          if (key!='get' && rt.indexOf('p1')==-1) {
             router[key](rt, router::(customControl||forBetter))
           } else {
             router[key](rt, router::(customControl||forBetter))
@@ -91,9 +91,7 @@ async function init(app, prefix='', options) {
       } else {
         routeParam.map((_path)=>{
           router.get(_path, router::(customControl||forBetter))
-          if (_path!='/') {
-            router.post(_path, router::(customControl||forBetter))
-          }
+          router.post(_path, router::(customControl||forBetter))
         })
       }
     })
