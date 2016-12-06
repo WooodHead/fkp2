@@ -1,5 +1,5 @@
 import libs from 'libs'
-
+import {isLogin} from './user'
 /**
  * 返回分页列表数据
  * @param  {[type]}  ctx    [description]
@@ -12,12 +12,29 @@ export async function forList(ctx, blog, isAjax){
   return {total, lists: lists}
 }
 
+export async function forSave(ctx, blog, isAjax){
+  if (!await isLogin(ctx)) return Errors['10005']
+  return await blog.addtopic(ctx)
+}
+
 export async function forDetail(ctx, blog, isAjax){
   let fkp = ctx.fkp
   let detail = await blog.detailtopic({_id: (ctx.params.title||ctx.query.topic)})
   if (!detail.error) {
     let mdcontent = await fkp.markdown(detail.content)
-    // console.log(mdcontent.mdcontent.cnt);
+    mdcontent.mdcontent.user = detail.user
+    mdcontent.mdcontent.profile = {
+      _id: detail._id,
+      last_reply_at: detail.last_reply_at,
+      collect_count: detail.collect_count,
+      visit_count: detail.visit_count,
+      reply_count: detail.reply_count,
+      lock: detail.lock,
+      good: detail.good,
+      top: detail.top,
+      update_at: detail.update_at,
+      create_at: detail.create_at
+    }
     return mdcontent
   }
 }

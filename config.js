@@ -1,9 +1,10 @@
-var path = require('path');
-var fs = require('fs');
-var static_dir = './public'
-var version = require('./package.json').version
+import {merge} from 'lodash'
+const path = require('path');
+const fs = require('fs');
+const static_dir = './public'
+const version = require('./package.json').version
 
-var config = {
+const config = {
     version: version,
 
     /*
@@ -22,8 +23,9 @@ var config = {
     /*
      * 本地上传路径
      */
-    upload: './upload',
-    upload_root: './upload',
+    upload: {
+      root: './uploads',
+    },
 
     /*
      * 允许editor编辑器上传图片
@@ -80,14 +82,14 @@ var config = {
      * 配置自己的第三方登陆
      */
     auth: {
-        github:{  //第三方github登陆
-            clientID: 'd65a863ee074f62231c5',
-            clientSecret: '9f4a6a2f93c7c23405378c70bb2ae1c618734985',
-            callbackURL: 'http://www.agzgz.com/github/callback',
-            successUrl: '/dbdemo',
-            userKey: 'githubuser',    //save this key to session
-            headers: {"user-agent": "love_gz"}
-        }
+      github:{  //第三方github登陆
+        clientID: 'd65a863ee074f62231c5',
+        clientSecret: '9f4a6a2f93c7c23405378c70bb2ae1c618734985',
+        callbackURL: 'http://www.agzgz.com/github/callback',
+        successUrl: '/',
+        userKey: 'githubuser',    //save this key to session
+        headers: {"user-agent": "love_gz"}
+      }
     },
 
     /*
@@ -143,17 +145,11 @@ var config = {
 }
 
 function _config(target){
-    var _cfg = config;
-    if (typeof target!=='string'){
-      target = false;
-    }
-    if (target && fs.existsSync('./configs/'+target+'.js')){
-      _cfg = require('./configs/'+target+'.js');
-      _cfg = _.extend(config, _cfg);
-    }
-    return _cfg;
+  var _cfg = config;
+  if (typeof target == 'string' && fs.existsSync('./configs/'+target+'.js')) {
+    _cfg = merge(config, require('./configs/'+target+'.js'))
+  }
+  return _cfg;
 }
 
 module.exports = _config
-
-// 数据库配置见db/config.js

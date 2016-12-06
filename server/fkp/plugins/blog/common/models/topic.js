@@ -57,7 +57,7 @@ BaseTopicSchema.statics.topicList = async function (start, end, tag, cat) {
 BaseTopicSchema.statics.topicMatchesId = async function (topic_id) {
   console.log('匹配文章id-----------');
   var topic = await this.findOne({ _id: topic_id }).exec();
-  return topic ? topic : Errors['20004']
+  return (topic||Errors['20004'])
 }
 
 //topic的count

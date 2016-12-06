@@ -1,7 +1,7 @@
 import router from '../../route'
 import libs from 'libs'
 import adapter from 'component/adapter/mgbloglist'
-import {forList, forDetail} from './handle/topic'
+import {forList, forDetail, forSave} from './handle/topic'
 
 function forDelete(){}
 function forUpdate(){}
@@ -14,9 +14,10 @@ export default async function(ctx, next){
   let route = router.makeRoute(ctx, routePrefix)
   let pageData = router.staticMapper(ctx, fkp.staticMapper, route, routePrefix)
 
-  let xData, xDetail
+  let xData, xDetail, xAdd, xSave
   let [cat, title, id] = Object.values(ctx.params)
-  let isAjax = (~['update', 'delete', 'add', 'get'].indexOf(cat)) ? true : false
+  // let isAjax = (~['update', 'delete', 'get'].indexOf(cat)) ? true : false
+  let isAjax = fkp.isAjax()
   switch (cat) {
     case 'update':
       forUpdate()
@@ -25,7 +26,13 @@ export default async function(ctx, next){
       forDelete()
       break;
     case 'add':
-      forAdd()
+      xAdd = true
+      break;
+    case 'save':
+      xSave = await forSave(ctx, blog, isAjax)
+      break;
+    case 'checkLogin':
+      // xAdd = true
       break;
     case 'get':
       if (ctx.query.topic) xDetail = await await forDetail(ctx, blog, isAjax)
@@ -42,7 +49,7 @@ export default async function(ctx, next){
   }
 
   if (isAjax) {
-    pageData =  xData||xDetail
+    pageData =  xData||xDetail||xSave
   } else {
     // blog list
     if (xData) {
@@ -60,15 +67,15 @@ export default async function(ctx, next){
       // node 端注入js和css
       let attachjs
       let attachcss = await fkp.injectcss([
-        '~m/boot_button',
-        'm/list/lagou',
-        'm/list/pagination']
+        '~/css/m/boot_button',
+        '/css/m/list/lagou',
+        '/css/m/list/pagination']
       )
       if (routePrefix=='/logs') {
         route = 'blog'
-        attachjs = await fkp.injectjs(['blog/pagilist'])   // node端注入js return {attachCss: resource...} 分页按钮
+        attachjs = await fkp.injectjs(['/js/blog/pagilist'])   // node端注入js return {attachCss: resource...} 分页按钮
       } else {
-        attachjs = await fkp.injectjs(['blog/loadlist'])   // node端注入js {attachCss: resource...} 自动加载
+        attachjs = await fkp.injectjs(['/js/blog/loadlist'])   // node端注入js {attachCss: resource...} 自动加载
       }
       pageData = _.assign(pageData, attachcss, attachjs, {blog:{list: listStr}} )
     }
@@ -78,6 +85,15 @@ export default async function(ctx, next){
       let attachcss = await fkp.injectcss(['/css/t/markdown.css'])   // node端注入css {attachCss: resource...}
       let attachjs = await fkp.injectjs(['/js/t/prettfy.js'])   // node端注入js {attachCss: resource...}
       pageData = _.assign(pageData, attachcss, attachjs, {blog:{mdcontent: xDetail.mdcontent}} )
+    }
+
+    // 添加文章
+    if (xAdd) {
+      pageData.xAdd = true
+    }
+
+    if (xSave) {
+      pageData = _.assign(pageData, xSave )
     }
 
   }
