@@ -33,13 +33,29 @@ export default async function(app) {
       copy
     ]
 
+    // 实例
     function _fkp(ctx, opts){
       this.ctx = ctx
       this.opts = opts
+      // this.isAjax = ctx.header('X-Requested-With') === 'XMLHttpRequest';
       this.database = async (folder) => {
         return await require('../db').default(this.ctx, folder)
       }
+
+      this.isAjax = function() {
+        return header('X-Requested-With') === 'XMLHttpRequest';
+      }
+
+      function header(name, value) {
+        if (value != undefined) {
+            ctx.request.set(name, value);
+        } else {
+            return ctx.request.get(name);
+        }
+      }
     }
+
+    // 静态, fkp()返回实例
     function fkp(ctx, opts){
       let fkpInstanc = new _fkp(ctx, opts)
       for (let property of Object.entries(fkp)) {
@@ -56,6 +72,7 @@ export default async function(app) {
     fkp.root = Path.join(__dirname, '../../')
 
 
+
     // Register inner utile fun
     for (let item of fns){
       fkp[item.name] = item
@@ -65,7 +82,7 @@ export default async function(app) {
     fkp.utileHand = function(name, fn){
       if (typeof fn == 'function') {
         fkp[name] = function() {
-          return fn.apply(null, [fkp, ...arguments])
+          if (fn && typeof fn=='function') { return fn.apply(null, [fkp, ...arguments]) }
         }
       }
     }
@@ -74,7 +91,7 @@ export default async function(app) {
     fkp.plugins = function(name, fn){
       if (typeof fn == 'function') {
         _fkp.prototype[name] = function() {
-          return fn.apply(this, [this.ctx, ...arguments])
+          if (fn && typeof fn=='function') { return fn.apply(this, [this.ctx, ...arguments]) }
         }
       }
     }
@@ -82,7 +99,7 @@ export default async function(app) {
     // as plugins, it look nice
     fkp.use = function(name, fn){
       _fkp.prototype[name] = function() {
-        return fn.apply(this, [this.ctx, ...arguments])
+        if (fn && typeof fn=='function') return fn.apply(this, [this.ctx, ...arguments])
       }
     }
 

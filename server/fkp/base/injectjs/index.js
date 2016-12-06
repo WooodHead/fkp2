@@ -10,17 +10,21 @@ import path from 'path'
 
 async function getContent(fkp, mapper, src, opts){
   let $src = ''
-  if (src.indexOf('http')==0 || src.indexOf('/')== 0) return '<script src="'+src+'"></script>\n'
+  if (src.indexOf('http')==0) return '<script src="'+src+'"></script>\n'
   if (src.indexOf('~')==0) {
     $src = src
     src = src.substring(1)
   }
+  if (src.indexOf('/')== 0) {
+    if (src.indexOf('/js/t/')>-1) return '<script src="'+src+'"></script>\n'
+    src = src.replace('/js/', '').replace('.js', '')
+  }
   if (mapper[src]) {
+    let _src = mapper[src]
     if (opts.inline || $src) {
-      let content = await fkp.readfile(path.join(fkp.root, '/dist/', fkp.config.version, (fkp.env=='dev'?'/dev':''), '/js/'+mapper[src]))
+      let content = await fkp.readfile(path.join(fkp.root, '/dist/', fkp.config.version, (fkp.env=='dev'?'/dev':''), '/js/'+_src))
       if (content) return '<script>'+content.toString()+'</script>\n'
     } else {
-      let _src = mapper[src]
       return '<script src="/js/'+_src+'"></script>\n'
     }
   }
@@ -28,7 +32,7 @@ async function getContent(fkp, mapper, src, opts){
 
 async function index(fkp, src, opts={}){
   let key = opts.key||'attachJs'
-  let content, contents, mapper = fkp.staticMapper.pageJs
+  let content, contents, mapper = _.extend({}, fkp.staticMapper.pageJs, fkp.staticMapper.commonJs)
   if (_.isString(src)) content = await getContent(fkp, mapper, src, opts)
   if (Array.isArray(src)) {
     let contents = []

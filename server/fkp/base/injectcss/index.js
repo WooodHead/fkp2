@@ -10,17 +10,21 @@ import path from 'path'
 
 async function getContent(fkp, mapper, src, opts){
   let $src = ''
-  if (src.indexOf('http')==0 || src.indexOf('/')== 0) return '<link rel="stylesheet" type="text/css" href="'+src+'">\n'
+  if (src.indexOf('http')==0) return '<link rel="stylesheet" type="text/css" href="'+src+'">\n'
   if (src.indexOf('~')==0) {
     $src = src
     src = src.substring(1)
   }
+  if (src.indexOf('/')== 0) {
+    if (src.indexOf('/css/t/')>-1) return '<link rel="stylesheet" type="text/css" href="'+src+'">\n'
+    src = src.replace('/css/', '').replace('.css', '')
+  }
   if (mapper[src]) {
+    let _src = mapper[src]
     if (opts.inline || $src) {
-      let content = await fkp.readfile(path.join(fkp.root, '/dist/', fkp.config.version, (fkp.env=='dev'?'/dev':''), '/css/'+mapper[src]))
+      let content = await fkp.readfile(path.join(fkp.root, '/dist/', fkp.config.version, (fkp.env=='dev'?'/dev':''), '/css/'+_src))
       if (content) return '<style>'+content.toString()+'</style>\n'
     } else {
-      let _src = mapper[src]
       return '<link rel="stylesheet" type="text/css" href="/css/'+_src+'">\n'
     }
   }
@@ -28,7 +32,7 @@ async function getContent(fkp, mapper, src, opts){
 
 async function index(fkp, src, opts={}){
   let key = opts.key||'attachCss'
-  let content, contents, mapper = fkp.staticMapper.pageCss
+  let content, contents, mapper = _.extend({}, fkp.staticMapper.pageCss, fkp.staticMapper.commonCss)
   if (_.isString(src)) src = [src]
   if (Array.isArray(src)) {
     let contents = []

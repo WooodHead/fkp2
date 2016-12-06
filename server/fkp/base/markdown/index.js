@@ -24,7 +24,8 @@ async function index(fkp, md_raw, opts){
   let compiled = await fkp.template(md_raw||this.data||'')
   md_raw = compiled(data)
 
-  let  archive = await co(markdown(md_raw, mdcnt, dft))
+  // let  archive = await co(markdown(md_raw, mdcnt, dft))
+  let  archive = await markdown(md_raw, mdcnt, dft)
   return archive
 }
 
