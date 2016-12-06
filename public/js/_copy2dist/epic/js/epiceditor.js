@@ -355,6 +355,7 @@
           , bar: "auto"
           }
         }
+      , defaultEditType='always'
       , defaultStorage
       , autogrowDefaults = { minHeight: 80
         , maxHeight: false
@@ -475,6 +476,7 @@
     // This needs to replace the use of classes to check the state of EE
     self._eeState = {
       fullscreen: false
+    , always: false
     , preview: false
     , edit: false
     , loaded: false
@@ -540,25 +542,124 @@
       nativeFsWebkit = false;
     }
 
-    // It opens edit mode by default (for now);
-    if (!self.is('edit') && !self.is('preview')) {
+    // It opens always mode by default (for now);
+    if (self.settings.defaultEditType === 'edit') {
+      _isInEdit = "edit";
       self._eeState.edit = true;
+    }
+    else if (self.settings.defaultEditType === 'preview') {
+      _isInEdit = "preview";
+      self._eeState.preview = true;
+    }else{
+      _isInEdit = "always";
+      self._eeState.always = true;
     }
 
     callback = callback || function () {};
 
     // The editor HTML
+    // 超链接对话框
+    var dialogLink = '<div id="js-dialog-link" class="dialog dialog-fixed">'
+                     +' <div class="dialog-box">'
+                     +'     <div class="dialog-content">'
+                     +'         <div class="dialog-header">'
+                     +'             <button type="button" class="close">×</button>'
+                     +'             <h4 class="dialog-title">插入链接</h4>'
+                     +'         </div>'
+                     +'         <div class="dialog-body">'
+                     +'             <input id="js-aml-ipt" type="text" value="" placeholder="请输入链接">'
+                     +'         </div>'
+                     +'         <div class="dialog-footer">'
+                     +'             <button type="button" class="btn btn-normal-btn">取消</button>'
+                     +'             <button id="dialogAmlBtn" class="btn dialog-aml-btn" type="button">插入</button>'
+                     +'         </div>'
+                     +'     </div>'
+                     +' </div>'
+                  +'</div>';
+
+    // 图片上传对话框
+    var dialogImage = '<div id="js-dialog-image" class="dialog dialog-fixed upload-image">'
+                     +' <div class="dialog-box">'
+                     +'     <div class="dialog-content">'
+                     +'         <div class="dialog-header">'
+                     +'             <button type="button" class="close">×</button>'
+                     +'             <h4 class="dialog-title">插入图片</h4>'
+                     +'         </div>'
+                     +'          <div class="image-uploader-tab">'
+                     +'             <a href="javascript:;" class="tab-upload">上传图片</a>'
+                     +'              或 '
+                     +'              <a href="javascript:;" class="tab-link">引用站外图片</a>'
+                     +'           </div>'
+                     +'         <div class="dialog-body selected">'
+                     +'             <input id="selectImage" class="upload-btn" type="button" value="选择图片" >'
+                     +'         </div>'
+                     +'         <div class="dialog-body inline">'
+                     +'             <input class="image-url" id="imageUrl" type="text" value="" placeholder="请输入链接">'
+                     +'             <input class="submit-btn" type="button" value="确认">'
+                     +'         </div>'
+                     +'         <div class="dialog-footer">'
+                     +'         </div>'
+                     +'     </div>'
+                     +' </div>'
+                  +'</div>';
+    // 工具栏
+    var toolbarsHtml = {
+      'heading':  '<li class="md-icon md-heading" title="标题">'+
+                  '    <div class="hide_panel">'+
+                  '      <h1 class="item-select ent-toolbar-heading1">#标题1</h1>'+
+                  '      <h2 class="item-select ent-toolbar-heading2">##标题2</h2>'+
+                  '      <h3 class="item-select ent-toolbar-heading3">###标题3</h3>'+
+                  '      <h4 class="item-select ent-toolbar-heading4">####标题4</h4>'+
+                  '      <h5 class="item-select ent-toolbar-heading5">#####标题5</h5>'+
+                  '    </div>'+
+                  '</li>',
+      'bold'    :  '<li class="md-icon ent-toolbar-bold md-bold" title="粗体"></li>',
+      'italic'  :  '<li class="md-icon ent-toolbar-italic md-italic" title="斜体"></li>',
+      'underline':  '<li class="md-icon ent-toolbar-underline md-underline" title="特别提示"></li>',
+      'quote'    :  '<li class="md-icon ent-toolbar-quote md-quote" title="引用"></li>',
+      'code'    :  '<li class="md-icon ent-toolbar-code md-code" title="代码"></li>',
+      'link'    :  '<li class="md-icon md-url" title="超链接"></li>',
+      'image'    :  '<li class="md-icon md-image" title="插入图片"></li>',
+      'ol'    :  '<li class="md-icon ent-toolbar-list-ol md-list-ol" title="有序列表"></li>',
+      'ul'    :  '<li class="md-icon ent-toolbar-list-ul md-list-ul" title="无序列表"></li>',
+      'edType'    :  '<li class="md-icon md-editor-full" title="模式">'+
+                      '    <div class="hide_panel">'+
+                      '      <div class="item-select toggle-edit">编辑模式</div>'+
+                      '      <div class="item-select toggle-always">实时预览</div>'+
+                      '      <div class="item-select toggle-preview">预览模式</div>'+
+                      '    </div>'+
+                      '</li>',
+      'fullscreen'      :'<li class="md-icon md-view-full" title="最大化"></li>',
+      'clear': '<li class="iconfont icon-lajitong md-empty" title="清空"></li>',
+      'save': '<li class="iconfont icon-jia md-save" title="保存"></li>'
+
+    };
+
+    var toolbars = '';
+    if (self.settings.toolbars) {
+      for (var i = 0; i < self.settings.toolbars.length; i++) {
+        toolbars += toolbarsHtml[self.settings.toolbars[i]];
+      }
+    }else{
+      for (x in toolbarsHtml)
+        {
+        toolbars += toolbarsHtml[x];
+        }
+    }
+
     // TODO: edit-mode class should be dynamically added
     _HtmlTemplates = {
       // This is wrapping iframe element. It contains the other two iframes and the utilbar
-      chrome:   '<div id="epiceditor-wrapper" class="epiceditor-edit-mode">' +
-                  '<iframe frameborder="0" id="epiceditor-editor-frame"></iframe>' +
-                  '<iframe frameborder="0" id="epiceditor-previewer-frame"></iframe>' +
-                  '<div id="epiceditor-utilbar">' +
+      chrome:   '<div id="epiceditor-wrapper" class="epiceditor-edit-mode">' +dialogLink+dialogImage+
+                  '<div id="epiceditor-utilbar">'+
+                    '<ul class="md-button">' +toolbars+
+                    '</ul>'+
                     (self._previewEnabled ? '<button title="' + this.settings.string.togglePreview + '" class="epiceditor-toggle-btn epiceditor-toggle-preview-btn"></button> ' : '') +
                     (self._editEnabled ? '<button title="' + this.settings.string.toggleEdit + '" class="epiceditor-toggle-btn epiceditor-toggle-edit-btn"></button> ' : '') +
                     (self._fullscreenEnabled ? '<button title="' + this.settings.string.toggleFullscreen + '" class="epiceditor-fullscreen-btn"></button>' : '') +
                   '</div>' +
+                  '<iframe frameborder="0" id="epiceditor-editor-frame"></iframe>' +
+                  '<iframe frameborder="0" id="epiceditor-previewer-frame"></iframe>' +
                 '</div>'
 
     // The previewer is just an empty box for the generated HTML to go into
@@ -567,13 +668,13 @@
     };
 
     // Write an iframe and then select it for the editor
-    self.element.innerHTML = '<iframe scrolling="no" frameborder="0" id= "' + self._instanceId + '"></iframe>';
+    self.element.innerHTML = '<iframe scrolling="no" frameborder="0" class="epiceditor-box" id= "' + self._instanceId + '"></iframe>';
 
     // Because browsers add things like invisible padding and margins and stuff
     // to iframes, we need to set manually set the height so that the height
     // doesn't keep increasing (by 2px?) every time reflow() is called.
     // FIXME: Figure out how to fix this without setting this
-    self.element.style.height = self.element.offsetHeight + 'px';
+    // self.element.style.height = self.element.offsetHeight + 'px';
 
     iframeElement = document.getElementById(self._instanceId);
 
@@ -587,6 +688,7 @@
     self.iframe.write(_HtmlTemplates.chrome);
 
     // Now that we got the innards of the iframe, we can grab the other iframes
+    self.utilbar = self.iframe.getElementById('epiceditor-utilbar')
     self.editorIframe = self.iframe.getElementById('epiceditor-editor-frame')
     self.previewerIframe = self.iframe.getElementById('epiceditor-previewer-frame');
 
@@ -609,7 +711,6 @@
 
     self.previewerIframeDocument.close();
 
-    self.reflow();
 
     // Insert Base Stylesheet
     _insertCSSLink(self.settings.theme.base, self.iframe, 'theme');
@@ -622,10 +723,15 @@
 
     // Add a relative style to the overall wrapper to keep CSS relative to the editor
     self.iframe.getElementById('epiceditor-wrapper').style.position = 'relative';
+    if (self.settings.button.bar) {
+      self.utilbar.style.display = 'block';
+    }
+
+    self.reflow();
 
     // Set the position to relative so we hide them with left: -999999px
-    self.editorIframe.style.position = 'absolute';
-    self.previewerIframe.style.position = 'absolute';
+    // self.editorIframe.style.position = 'absolute';
+    // self.previewerIframe.style.position = 'absolute';
 
     // Now grab the editor and previewer for later use
     self.editor = self.editorIframeDocument.body;
@@ -634,10 +740,10 @@
     self.editor.contentEditable = true;
 
     // Firefox's <body> gets all fucked up so, to be sure, we need to hardcode it
-    self.iframe.body.style.height = this.element.offsetHeight + 'px';
+    // self.iframe.body.style.height = this.element.offsetHeight + 'px';
 
     // Should actually check what mode it's in!
-    self.previewerIframe.style.left = '-999999px';
+    // self.previewerIframe.style.left = '-999999px';
 
     // Keep long lines from being longer than the editor
     this.editorIframeDocument.body.style.wordWrap = 'break-word';
@@ -686,7 +792,6 @@
     _elementStates = {}
     self._goFullscreen = function (el) {
       this._fixScrollbars('auto');
-
       if (self.is('fullscreen')) {
         self._exitFullscreen(el);
         return;
@@ -704,7 +809,7 @@
         }
       }
 
-      _isInEdit = self.is('edit');
+      // _isInEdit = self.is('edit');
 
       // Set the state of EE in fullscreen
       // We set edit and preview to true also because they're visible
@@ -717,18 +822,19 @@
       var windowInnerWidth = window.innerWidth
         , windowInnerHeight = window.innerHeight
         , windowOuterWidth = window.outerWidth
-        , windowOuterHeight = window.outerHeight;
+        , windowOuterHeight = window.outerHeight
+        , widthDiff = _outerWidth(self.element)
+        , heightDiff = _outerHeight(self.element);
 
-      // Without this the scrollbars will get hidden when scrolled to the bottom in faux fullscreen (see #66)
+      // 没有这个滚动条会隐藏在滚动到下方的仿全屏 (see #66)
       if (!nativeFs) {
         windowOuterHeight = window.innerHeight;
       }
-
       // This MUST come first because the editor is 100% width so if we change the width of the iframe or wrapper
       // the editor's width wont be the same as before
       _elementStates.editorIframe = _saveStyleState(self.editorIframe, 'save', {
-        'width': windowOuterWidth / 2 + 'px'
-      , 'height': windowOuterHeight + 'px'
+        'width': widthDiff / 2 + 'px'
+      , 'height': heightDiff + 'px'
       , 'float': 'left' // Most browsers
       , 'cssFloat': 'left' // FF
       , 'styleFloat': 'left' // Older IEs
@@ -739,8 +845,8 @@
 
       // the previewer
       _elementStates.previewerIframe = _saveStyleState(self.previewerIframe, 'save', {
-        'width': windowOuterWidth / 2 + 'px'
-      , 'height': windowOuterHeight + 'px'
+        'width': widthDiff / 2 + 'px'
+      , 'height': heightDiff  + 'px'
       , 'float': 'right' // Most browsers
       , 'cssFloat': 'right' // FF
       , 'styleFloat': 'right' // Older IEs
@@ -761,17 +867,17 @@
       , 'margin': '0'
       // Should use the base styles background!
       , 'background': _getStyle(self.editor, 'background-color') // Try to hide the site below
-      , 'height': windowInnerHeight + 'px'
+      , 'height': '100% '
       });
 
       // The iframe element
-      _elementStates.iframeElement = _saveStyleState(self.iframeElement, 'save', {
-        'width': windowOuterWidth + 'px'
-      , 'height': windowInnerHeight + 'px'
-      });
+      // _elementStates.iframeElement = _saveStyleState(self.iframeElement, 'save', {
+      //   'width': widthDiff + 'px'
+      // , 'height': heightDiff + 'px'
+      // });
 
-      // ...Oh, and hide the buttons and prevent scrolling
-      utilBtns.style.visibility = 'hidden';
+      // ...Oh, 隐藏按钮，防止滚动
+      // utilBtns.style.visibility = 'hidden';
 
       if (!nativeFs) {
         document.body.style.overflow = 'hidden';
@@ -798,7 +904,7 @@
       self.element.style.width = self._eeState.reflowWidth ? self._eeState.reflowWidth : '';
       self.element.style.height = self._eeState.reflowHeight ? self._eeState.reflowHeight : '';
 
-      utilBtns.style.visibility = 'visible';
+      // utilBtns.style.visibility = 'visible';
 
       // Put the editor back in the right state
       // TODO: This is ugly... how do we make this nicer?
@@ -821,28 +927,76 @@
         }
       }
 
-      if (_isInEdit) {
+      if (_isInEdit === "edit") {
         self.edit();
       }
-      else {
+      else if (_isInEdit === "preview") {
         self.preview();
       }
-
+      else {
+        self.alwaysPreview();
+      }
       self.reflow();
 
       self.emit('fullscreenexit');
     };
 
     // This setups up live previews by triggering preview() IF in fullscreen on keyup
-    self.editor.addEventListener('keyup', function () {
+    self.editor.addEventListener('keyup', function (e) {
+      // enter
+      if (e.keyCode == 13 && !!self._eeState.enterType) {
+        self.autoEnter();
+      }
+      // delete
+      if (e.keyCode == 8 && !!self._eeState.enterType) {
+          var win = self.editorIframe.contentWindow;
+          var sel = win.getSelection();
+          if (!sel.baseNode.data) {
+            self._eeState.enterType = "";
+          }
+      }
+        self._eeState.selectText = "";
       if (keypressTimer) {
         window.clearTimeout(keypressTimer);
       }
       keypressTimer = window.setTimeout(function () {
-        if (self.is('fullscreen')) {
-          self.preview();
+        if (self.is('fullscreen') || self.is('always')) {
+
+          self.save(true);
+          self.previewer.innerHTML = self.exportFile(null, 'html', true);
         }
       }, 250);
+    });
+
+    // 获取选中内容
+    self.editor.addEventListener('mouseup', function (e) {
+      // console.log(e)
+      var selectText = self.editorIframeDocument.getSelection();
+        self._eeState.selectText = selectText.toString();
+
+
+        var win = self.editorIframe.contentWindow;
+        var sel = win.getSelection();
+        if (!!sel.baseNode.data) {
+
+          var txt = sel.baseNode.data.replace(/(^\s*)|(\s*$)/g, "");
+          // console.log(txt)
+          // 当前行代码类型
+          if (txt.substr(0,1) === ">") {
+            self._eeState.enterType = "blockquote";
+          }
+          else if (txt.substr(0,1) == parseInt(txt.substr(0,1))) {
+            self._eeState.enterType = "list-ol";
+          }
+          else if (txt.slice(-5) === "-") {
+            self._eeState.enterType = "list-ul";
+          }else{
+            self._eeState.enterType = "";
+          }
+        }else{
+          self._eeState.enterType = "";
+        }
+
     });
 
     fsElement = self.iframeElement;
@@ -850,14 +1004,32 @@
     // Sets up the onclick event on utility buttons
     utilBtns.addEventListener('click', function (e) {
       var targetClass = e.target.className;
-      if (targetClass.indexOf('epiceditor-toggle-preview-btn') > -1) {
+      if (targetClass.indexOf('toggle-preview') > -1) {
         self.preview();
       }
-      else if (targetClass.indexOf('epiceditor-toggle-edit-btn') > -1) {
+      else if (targetClass.indexOf('toggle-edit') > -1) {
         self.edit();
+      }
+      else if (targetClass.indexOf('md-empty') > -1) {
+        self.open(' ')
       }
       else if (targetClass.indexOf('epiceditor-fullscreen-btn') > -1) {
         self._goFullscreen(fsElement);
+      }
+      else if (targetClass.indexOf('md-view-full') > -1) {
+        self.maxEditor(e.target);
+      }
+      else if (targetClass.indexOf('ent-toolbar') > -1) {
+        self.enterContent(e.target);
+      }
+      else if (targetClass.indexOf('md-url') > -1) {
+        self.iframe.getElementById("js-dialog-link").style.display = "block";
+      }
+      else if (targetClass.indexOf('md-image') > -1) {
+        self.iframe.getElementById("js-dialog-image").style.display = "block";
+      }
+      else if (targetClass.indexOf('toggle-always') > -1) {
+        self.alwaysPreview(fsElement);
       }
     });
 
@@ -895,6 +1067,40 @@
     utilBar.addEventListener('mouseover', function () {
       if (utilBarTimer) {
         clearTimeout(utilBarTimer);
+      }
+    });
+
+    // 超链接对话框
+    var dialogLink = self.iframe.getElementById("js-dialog-link");
+    dialogLink.addEventListener('click',function(e){
+      // 关闭
+      if (e.target.className === "close" || e.target.className === "btn btn-normal-btn") {
+        dialogLink.style.display = "none";
+      }
+      // 插入链接
+      if (e.target.className === "btn dialog-aml-btn") {
+        dialogLink.style.display = "none";
+        self.enterContent(e.target);
+      }
+    });
+    // 上传图片对话框
+    var dialogImage = self.iframe.getElementById("js-dialog-image");
+    dialogImage.addEventListener('click',function(e){
+      if (e.target.className === "close" || e.target.className === "btn btn-normal-btn") {
+        dialogImage.style.display = "none";
+      }
+      else if (e.target.className === "tab-upload") {
+        _replaceClass(dialogImage,"inline-image","upload-image");
+      }
+      else if (e.target.className === "tab-link") {
+        _replaceClass(dialogImage,"upload-image","inline-image");
+      }
+      // 添加网络图片
+      else if (e.target.className === "submit-btn") {
+        var imgUrl = self.iframe.getElementById("imageUrl").value;
+        self.iframe.getElementById("imageUrl").value = "";
+        // 插入图片
+        self.enterImage(imgUrl);
       }
     });
 
@@ -1040,7 +1246,7 @@
       // we don't care about webkit because you can't resize in webkit's fullscreen
       if (self.is('fullscreen')) {
         _applyStyles(self.iframeElement, {
-          'width': window.outerWidth + 'px'
+          'width': window.outerWidth/2 + 'px'
         , 'height': window.innerHeight + 'px'
         });
 
@@ -1071,8 +1277,11 @@
     if (self.is('preview')) {
       self.preview();
     }
-    else {
+    else if (self.is('edit')) {
       self.edit();
+    }
+    else {
+      self.alwaysPreview();
     }
 
     self.iframe.close();
@@ -1239,43 +1448,51 @@
    * Will return the width / height in an obj as the first param of the callback.
    * @returns {object} EpicEditor will be returned
    */
-  EpicEditor.prototype.reflow = function (kind, callback) {
-    var self = this
-      , widthDiff = _outerWidth(self.element) - self.element.offsetWidth
-      , heightDiff = _outerHeight(self.element) - self.element.offsetHeight
-      , elements = [self.iframeElement, self.editorIframe, self.previewerIframe]
-      , eventData = {}
-      , newWidth
-      , newHeight;
+  // EpicEditor.prototype.reflow = function (kind, callback) {
+  //   this.iframeElement.style.width = "100%";
+  //   this.iframeElement.style.height = "100%";
+  //   if (self.settings.button.bar !== true) {
+  //   return ;
+  //   // 不再使用该方法 --bill
+  //   var self = this
+  //     , widthDiff = _outerWidth(self.element) - self.element.offsetWidth
+  //     , heightDiff = _outerHeight(self.element) - self.element.offsetHeight
+  //     , elements = [self.iframeElement, self.editorIframe, self.previewerIframe]
+  //     , eventData = {}
+  //     , newWidth
+  //     , newHeight;
 
-    if (typeof kind == 'function') {
-      callback = kind;
-      kind = null;
-    }
+  //   if (typeof kind == 'function') {
+  //     callback = kind;
+  //     kind = null;
+  //   }
 
-    if (!callback) {
-      callback = function () {};
-    }
+  //   if (!callback) {
+  //     callback = function () {};
+  //   }
 
-    for (var x = 0; x < elements.length; x++) {
-      if (!kind || kind == 'width') {
-        newWidth = self.element.offsetWidth - widthDiff + 'px';
-        elements[x].style.width = newWidth;
-        self._eeState.reflowWidth = newWidth;
-        eventData.width = newWidth;
-      }
-      if (!kind || kind == 'height') {
-        newHeight = self.element.offsetHeight - heightDiff + 'px';
-        elements[x].style.height = newHeight;
-        self._eeState.reflowHeight = newHeight
-        eventData.height = newHeight;
-      }
-    }
+  //   // 原有方法，为iframe设置尺寸  --bill
+  //   for (var x = 0; x < elements.length; x++) {
+  //     if (!kind || kind == 'width') {
+  //       newWidth = self.element.offsetWidth - widthDiff + 'px';
+  //       elements[x].style.width = newWidth;
+  //       self._eeState.reflowWidth = newWidth;
+  //       eventData.width = newWidth;
+  //     }
+  //     if (!kind || kind == 'height') {
+  //       newHeight = self.element.offsetHeight - heightDiff + 'px';
+  //       elements[x].style.height = newHeight;
+  //       self._eeState.reflowHeight = newHeight
+  //       eventData.height = newHeight;
+  //     }
+  //   }
+  //   // console.log(self.iframeElement)
+  //   self.iframeElement.style.width = widthDiff;
 
-    self.emit('reflow', eventData);
-    callback.call(this, eventData);
-    return self;
-  }
+  //   self.emit('reflow', eventData);
+  //   callback.call(this, eventData);
+  //   return self;
+  // }
 
   /**
    * Will take the markdown and generate a preview view based on the theme
@@ -1287,7 +1504,8 @@
       , theme = self.settings.theme.preview
       , anchors;
 
-    _replaceClass(self.getElement('wrapper'), 'epiceditor-edit-mode', 'epiceditor-preview-mode');
+    // _replaceClass(self.getElement('wrapper'), 'epiceditor-edit-mode', 'epiceditor-preview-mode');
+    self.iframe.getElementById('epiceditor-wrapper').setAttribute("class","epiceditor-preview-mode");
 
     // Check if no CSS theme link exists
     if (!self.previewerIframeDocument.getElementById('theme')) {
@@ -1304,14 +1522,16 @@
     self.previewer.innerHTML = self.exportFile(null, 'html', true);
 
     // Hide the editor and display the previewer
-    if (!self.is('fullscreen')) {
-      self.editorIframe.style.left = '-999999px';
-      self.previewerIframe.style.left = '';
+    // if (!self.is('fullscreen')) {
+    //   self.editorIframe.style.left = '-999999px';
+    //   self.previewerIframe.style.left = '';
+    //   self._focusExceptOnLoad();
+    // }
       self._eeState.preview = true;
       self._eeState.edit = false;
-      self._focusExceptOnLoad();
-    }
+      self._eeState.always = false;
 
+    self.reflow();
     self.emit('preview');
     return self;
   }
@@ -1362,12 +1582,14 @@
    */
   EpicEditor.prototype.edit = function () {
     var self = this;
-    _replaceClass(self.getElement('wrapper'), 'epiceditor-preview-mode', 'epiceditor-edit-mode');
+    // _replaceClass(self.getElement('wrapper'), 'epiceditor-preview-mode', 'epiceditor-edit-mode');
+    self.iframe.getElementById('epiceditor-wrapper').setAttribute("class","epiceditor-edit-mode");
     self._eeState.preview = false;
     self._eeState.edit = true;
-    self.editorIframe.style.left = '';
-    self.previewerIframe.style.left = '-999999px';
+    self._eeState.always = false;
     self._focusExceptOnLoad();
+
+    self.reflow();
     self.emit('edit');
     return this;
   }
@@ -1408,6 +1630,8 @@
   EpicEditor.prototype.is = function (what) {
     var self = this;
     switch (what) {
+    case 'always':
+      return self._eeState.always;
     case 'loaded':
       return self._eeState.loaded;
     case 'unloaded':
@@ -1839,6 +2063,354 @@
     this.getElement('editor').documentElement.style.overflow = setting;
     this.getElement('previewer').documentElement.style.overflow = setting;
   }
+
+  // 新增方法
+    // 输入内容
+  EpicEditor.prototype.enterContent = function (btn) {
+    var self = this;
+    var time = new Date();
+    var _id= "t"+time.getTime();
+    var text = '';
+      // console.log(self.editorIframeDocument.getSelection());
+
+      // 输入标题
+    if (btn.className.indexOf('toolbar-heading') > -1) {
+      var hNum = parseInt(btn.className.substr(btn.className.indexOf('heading')+7,1));
+      text = '<h'+hNum+'  class="text-cont">';
+      for (var i = 0; i < hNum ; i++) {
+        text += '#';
+      }
+      // 是否有选中的内容
+      if (!!self._eeState.selectText) {
+        text += '<span class="'+_id+'">'+self._eeState.selectText + '</span></h'+hNum+'>';
+      }else{
+        text += '<span class="'+_id+'">输入标题</span></h'+hNum+'>';
+      }
+    }
+    // 粗体
+    else if (btn.className.indexOf('toolbar-bold') > -1) {
+
+      if (!!self._eeState.selectText) {
+        text += '**' + self._eeState.selectText + '**';
+      }else{
+        text += '<span>**</span><span class="text-cont '+_id+'">文字</span><span>**</span>';
+      }
+    }
+    // 斜体
+    else if (btn.className.indexOf('toolbar-italic') > -1) {
+
+      if (!!self._eeState.selectText) {
+        text += '*<span class="text-cont '+_id+'">' + self._eeState.selectText + '</span>*';
+      }else{
+        text += '*<span class="text-cont '+_id+'">文字</span>*';
+      }
+    }
+
+    // 特别提示
+    else if (btn.className.indexOf('toolbar-underline') > -1) {
+
+      if (!!self._eeState.selectText) {
+        text += '`<span class="text-cont '+_id+'">' + self._eeState.selectText + '</span>`';
+      }else{
+        text += '`<span class="text-cont '+_id+'">文字</span>`';
+      }
+    }
+    // 输入代码
+    else if (btn.className.indexOf('toolbar-code') > -1) {
+
+      if (!!self._eeState.selectText) {
+        text += '<br/>```<div class="text-cont '+_id+'">' + self._eeState.selectText + '</div>```<br/>';
+      }else{
+        text += '<br/>```<div class="text-cont '+_id+'">输入代码</div>```<br/>';
+      }
+    }
+    // 插入超链接
+    else if (btn.className.indexOf('dialog-aml-btn') > -1) {
+      var _url = self.iframe.getElementById("js-aml-ipt").value;
+      self.iframe.getElementById("js-aml-ipt").value = "";
+      text += '[<span class="'+_id+'">链接描述</span>]('+_url+')';
+    }
+    // 引用文字
+    else if (btn.className.indexOf('toolbar-quote') > -1) {
+      self._eeState.enterType = "blockquote";
+      text += '<br/><span class="ace_constant blockquote"><span>> </span><span class="text-cont"></span></span>';
+    }
+    // ol list
+    else if (btn.className.indexOf('toolbar-list-ol') > -1) {
+      self._eeState.enterType = "list-ol";
+      text += '<br /><span class="text-cont">1. </span>';
+    }
+    // ul list
+    else if (btn.className.indexOf('toolbar-list-ul') > -1) {
+      self._eeState.enterType = "list-ul";
+      text += '<br /><span class="text-cont">- </span>';
+    }
+
+    self._eeState.selectText = '';
+    self.focus();
+
+    self.insertHtmlCaret(self.editorIframe.contentWindow,text);
+
+    if(!!_id){
+      self.selectText(_id);
+    }
+    self.save(true);
+
+// var obj = self.editorIframe.getElementsByTagName("body")[0];
+//     //创建选择区域
+//     if(obj.createTextRange){//IE浏览器
+//         var range = obj.createTextRange();
+//         range.moveEnd("character",-l)
+//         //range.moveStart("character",-l)
+//         range.moveEnd("character",l-1);
+//         range.moveStart("character", l-1-con.length);
+//         range.select();
+//     }else{
+//         obj.setSelectionRange(l-1-con.length,l-1);
+//         obj.focus();
+//     }
+// }
+
+    // Add the generated draft HTML into the previewer
+    self.previewer.innerHTML = self.exportFile(null, 'html', true);
+
+    return this;
+
+  }
+
+  // 上传图片到服务器  --- ralf
+  EpicEditor.prototype.uploader = function(cb){
+    var self = this
+    var uploadbtn= self.iframe.getElementById('selectImage')
+    if (cb && typeof cb == 'function') {
+      cb.call(this, uploadbtn)
+      self.on('uploader', function(content){
+        if (content) {
+          self.focus();
+          self.iframe.getElementById("js-dialog-image").style.display = "none";
+          self.insertHtmlCaret(self.editorIframe.contentWindow,content);
+          self.selectText(_id);
+          self.save(true);
+        }
+      })
+    }
+    return this;
+  }
+
+    // 插入图片
+  EpicEditor.prototype.enterImage = function (url) {
+    var self = this;
+    var time = new Date();
+    var _id= "t"+time.getTime();
+    var text = '![<span class="text-cont '+_id+'">图片描述</span>]('+url+')';
+
+    self.focus();
+
+    self.iframe.getElementById("js-dialog-image").style.display = "none";
+    self.insertHtmlCaret(self.editorIframe.contentWindow,text);
+    self.selectText(_id);
+
+    self.save(true);
+
+    return this;
+  }
+    // 自动填充
+  EpicEditor.prototype.autoEnter = function () {
+    var self = this;
+    var text = '';
+
+    // enterType= blockquote:引用 list列表
+    if (self._eeState.enterType == "blockquote") {
+      text += '<span class="ace_constant blockquote">&gt; <span class="text-cont"></span></span>';
+
+    }
+    if (self._eeState.enterType == "list-ul") {
+      text += '- ';
+
+    }
+    if (self._eeState.enterType == "list-ol") {
+      text += '1. ';
+
+    }
+
+    self.focus();
+
+    self.insertHtmlCaret(self.editorIframe.contentWindow,text)
+    return this;
+  }
+
+    // 切换实时预览模式
+  EpicEditor.prototype.alwaysPreview = function () {
+    var self = this;
+    self.iframe.getElementById('epiceditor-wrapper').setAttribute("class","epiceditor-always-preview-mode");
+
+    self._eeState.preview = false;
+    self._eeState.edit = false;
+    self._eeState.always = true;
+
+    // Save a preview draft since it might not be saved to the real file yet
+    self.save(true);
+
+    // Add the generated draft HTML into the previewer
+    self.previewer.innerHTML = self.exportFile(null, 'html', true);
+
+    self.reflow();
+    self.emit('fullscreenenter');
+
+    return this;
+  }
+
+  // 编辑器最大化
+  EpicEditor.prototype.maxEditor = function (btn) {
+    var self = this;
+    if (btn.className.indexOf('md-view-full on') > -1) {
+       _replaceClass(btn, 'md-view-full on', 'md-view-full');
+      btn.title = "最大化";
+
+      _saveStyleState(self.element, 'apply', self.element.statesCss);
+    }else{btn
+       _replaceClass(btn, 'md-view-full', 'md-view-full on');
+      btn.title = "最小化";
+
+      self.element.statesCss = _saveStyleState(self.element, 'save', {
+        'position': 'fixed'
+      , 'top': '0'
+      , 'left': '0'
+      , 'width': '100%'
+      , 'z-index': '9999' // Most browsers
+      , 'zIndex': '9999' // Firefox
+      , 'border': 'none'
+      , 'margin': '0'
+      , 'background': _getStyle(self.editor, 'background-color')
+      , 'height': '100% '
+      });
+    }
+
+
+    self.reflow();
+    self.emit('maxEditor');
+    return this;
+  }
+
+  // reset编辑器 替换原有reflow
+   EpicEditor.prototype.reflow = function (kind, callback) {
+    var self = this
+      , widthDiff = _outerWidth(self.element) - self.element.offsetWidth
+      , heightDiff = _outerHeight(self.element) - self.element.offsetHeight
+      , elements = [self.editorIframe, self.previewerIframe]
+      , eventData = {}
+      , btnHeight = self.settings.button.bar === true ? 39 : 0
+      , newWidth
+      , newHeight;
+
+    if (typeof kind == 'function') {
+      callback = kind;
+      kind = null;
+    }
+
+    if (!callback) {
+      callback = function () {};
+    }
+
+    self.iframeElement.style.width = "100%";
+    self.iframeElement.style.height = "100%";
+
+    for (var x = 0; x < elements.length; x++) {
+      if (!kind || kind == 'width') {
+        if (self.is("always")) {
+          newWidth = (self.iframeElement.offsetWidth-2)/2 + 'px';
+        }else{
+          newWidth = self.element.offsetWidth - widthDiff + 'px';
+        }
+        elements[x].style.width = newWidth;
+        self._eeState.reflowWidth = newWidth;
+        eventData.width = newWidth;
+      }
+      if (!kind || kind == 'height') {
+        if (self.is("fullscreen")) {
+          newHeight = window.innerHeight-btnHeight + 'px';
+        }else{
+          newHeight = self.element.offsetHeight-btnHeight - heightDiff + 'px';
+        }
+        elements[x].style.height = newHeight;
+        self._eeState.reflowHeight = newHeight
+        eventData.height = newHeight;
+      }
+    }
+
+    self.emit('reflow', eventData);
+    callback.call(this, eventData);
+    return self;
+  }
+  /**
+   * 插入文本到光标出
+   * @win {window} 页面的window对象，或者iframe.contentWindow对象
+   * @html {String} 插入的文本
+   */
+   EpicEditor.prototype.insertHtmlCaret = function (win,html) {
+      var sel, range;
+      var doc = win.document
+
+      if (win.getSelection) {
+          // IE9 and non-IE
+          sel = win.getSelection();
+          if (sel.getRangeAt && sel.rangeCount) {
+              range = sel.getRangeAt(0);
+              range.deleteContents();
+              // Range.createContextualFragment() would be useful here but is
+              // non-standard and not supported in all browsers (IE9, for one)
+              var el = doc.createElement("div");
+              el.innerHTML = html;
+              var frag = doc.createDocumentFragment(), node, lastNode,contNode;
+              while ( (node = el.firstChild) ) {
+                  lastNode = frag.appendChild(node);
+                  if (lastNode.className === "text-cont") {
+                    contNode = lastNode
+                  }
+              }
+              range.insertNode(frag);
+              // Preserve the selection
+              if (lastNode) {
+                  lastNode = !!contNode ? contNode :  lastNode;
+                  range = range.cloneRange();
+                  range.setStartAfter(lastNode);
+                  range.collapse(true);
+                  sel.removeAllRanges();
+                  sel.addRange(range);
+              }
+          }
+      }
+      else
+      if (document.selection && document.selection.type != "Control") {
+          // IE < 9
+          document.selection.createRange().pasteHTML(html);
+      }
+  }
+  /**
+   * 选中节点内容
+   * @className {className} 页面节点className
+   */
+   EpicEditor.prototype.selectText = function (className) {
+      var win = this.editorIframe.contentWindow
+      var text = this.editor.getElementsByClassName(className)[0];
+      if (this.editor.createTextRange) {
+          var range = this.editor.createTextRange();
+          range.moveToElementText(text);
+          range.select();
+      } else if (win.getSelection) {
+          var selection = win.getSelection();
+          var range = this.editorIframeDocument.createRange();
+          range.selectNodeContents(text);
+          selection.removeAllRanges();
+          selection.addRange(range);
+          /*if(selection.setBaseAndExtent){
+              selection.setBaseAndExtent(text, 0, text, 1);
+          }*/
+      } else {
+          console.log("none");
+      }
+  }
+
 
   EpicEditor.version = '0.2.2';
 
@@ -2899,5 +3471,3 @@ if (typeof module !== 'undefined') {
 }).call(function() {
   return this || (typeof window !== 'undefined' ? window : global);
 }());
-
-SAX.setter('epic','finish')

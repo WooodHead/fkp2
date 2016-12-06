@@ -1,5 +1,6 @@
 let ItemMixin = require('component/mixins/item')
 let Radio = require('./radio')
+let smd = require('libs').smd
 
 /*
  * 生成select的表单
@@ -130,7 +131,7 @@ function mk_element(item, _i){
 
   // 'text', 'password', 'select', 'tel'
   else {
-    lableObj = <lable key={"lable"+_i} className={_class + ' for-' + (P.name||P.id)}>
+    lableObj = <lable ref={(P.id||P.name)} key={"lable"+_i} className={_class + ' for-' + (P.id||P.name||'')}>
       {_title ? <span className="fkp-title">{_title}</span> : false}
       {whatElement()}
       {P.required ? <span className="fkp-input-box" /> : ''}
@@ -228,6 +229,7 @@ let Input = {
 	},
 	//插入真实 DOM之前
 	componentWillMount:function(){
+    this.intent = []
     if (this.props.data){
       this.setState({
         fill: this.props.data
@@ -235,9 +237,13 @@ let Input = {
     }
 	},
 
+  componentDidMount: function() {
+    // console.log(this.refs)
+    // console.log(React.findDOMNode(this.refs.username))
+  },
+
   _preRender: function(){
     let self = this;
-    this.intent = [];
     this.fills = [];
 
     if (this.state.fill){
@@ -246,7 +252,10 @@ let Input = {
 
       if (_.isArray(eles)){
         self.fills = eles.map(function(item, i){
-          if( _.isString(item)) return (<div key={'split'+i} className="split">{item}</div>)
+          if( _.isString(item)) {
+            var _title = smd(item)
+            return (<div key={'split'+i} className="split" dangerouslySetInnerHTML={{__html: _title}}></div>)
+          }
           return ( mk_elements.call(self, item, i) )
         })
       }

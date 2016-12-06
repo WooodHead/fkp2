@@ -37,6 +37,32 @@ var util = {
   babelQuery: babelQuery
 }
 
+Date.prototype.Format = function(fmt)
+{ //author: meizz
+  var o = {
+    "M+" : this.getMonth()+1,                 //月份
+    "d+" : this.getDate(),                    //日
+    "h+" : this.getHours(),                   //小时
+    "m+" : this.getMinutes(),                 //分
+    "s+" : this.getSeconds(),                 //秒
+    "q+" : Math.floor((this.getMonth()+3)/3), //季度
+    "S"  : this.getMilliseconds()             //毫秒
+  };
+  if(/(y+)/.test(fmt))
+    fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+  for(var k in o)
+    if(new RegExp("("+ k +")").test(fmt))
+  fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+  return fmt;
+}
+
+function convTimestamp(time){
+  var arr = time.split(/[- :]/),
+      _date = new Date(arr[0], arr[1]-1, arr[2], arr[3], arr[4], arr[5]),
+      timeStr = Date.parse(_date);
+  return timeStr
+}
+
 var FkpBuild = base.class.create()
 FkpBuild.prototype = {
   init: function(opts){
@@ -110,16 +136,18 @@ var Build = base.inherits( UtilBuild, {
     if (process.env.WATCH_FILE == 'true' && !this.jsruntime.demo) {
       let that = this
       let port = that.env==='pro' ? configs.ports.node : configs.ports.dev
-      fs.writeFileSync(configs.dirs.server+'/tmp.js', 'console.log("临时文件，触发nodemon重启，生产环境无此文件")')
+      let fd = fs.openSync(configs.dirs.server+'/tmp.js', 'a')
+      if (fd) {
+        let _now = convTimestamp(new Date().Format("yyyy-MM-dd hh:mm:ss"))
+        fs.futimesSync(fd, _now, _now)         
+      }
       setTimeout(function(){
-        del([configs.dirs.server+'/tmp.js']).then(function(){
-          browserSync.init({
-            proxy: 'http://localhost:' + port+'/',
-            files: [configs.staticPath+ '/**'],
-            logFileChanges: false,
-            notify: true,
-            injectChanges: true
-          })
+        browserSync.init({
+          proxy: 'http://localhost:' + port+'/',
+          files: [configs.staticPath+ '/**'],
+          logFileChanges: false,
+          notify: true,
+          injectChanges: true
         })
       }, configs.delay.openBrowse)
     }

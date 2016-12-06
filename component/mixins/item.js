@@ -24,12 +24,12 @@ function itemMixin(){
           if(this.props.itemDefaultMethod){
             if(this.props.itemMethod){
                 var mtd = this.props.itemMethod;
-                mtd.call(that, self.intent);
+                mtd.call(self, that, self.intent);
             }
             setTimeout(function(){
               var dMtd = self.props.itemDefaultMethod;
         			if(typeof dMtd==='function'){
-        				dMtd.call(that, self.intent);
+        				dMtd.call(self, that, self.intent);
         			}
             }, 17)
 	        }

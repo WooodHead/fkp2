@@ -1,1 +1,1 @@
-console.log('222yes!!!');
+console.log('yes!!!');

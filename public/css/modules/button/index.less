@@ -24,15 +24,18 @@
   border: 1px solid #d1cece;
   border-radius: 4px;
   background-color: #fff;
+  &:active{
+    transition: all 60ms ease;
+    transform: scale(.97);
+    opacity: .75;
+  }
   &:focus{
-    color: #333;
-    background-color: #fff;
-    border-color: #d1cece;
+    outline: 0;
   }
   &:hover{
-    color: #333;
-    background-color: #fff;
-    border-color: #d1cece;
+    background-color: #fdfdfd;
+    transition: all 60ms ease;
+    opacity: .85;
   }
   &+span[class="fkp-input-box"]{
     display: none;

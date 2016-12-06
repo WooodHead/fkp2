@@ -37,5 +37,6 @@ module.exports = {
   // wlog: wlog,
   uri: parseQuery,
   guid: guid,
-  timeAgo:   timer.timeAgo      //时间过去了多久
+  timeAgo:   timer.timeAgo,      //时间过去了多久
+  validator:     require('./_component/validator')        //校验基础方法
 }

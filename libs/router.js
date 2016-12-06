@@ -457,16 +457,90 @@ route.start = function(key){
   }
 }
 
+
+// let context = {}
+// function store(name, Comp){
+//   let C = Comp.type
+//   let P = Comp.props
+//   let Tmp = class extends C {
+//     constructor(props){
+//       super(props)
+//       context[name] = this
+//     }
+//   }
+//   return React.createElement(Tmp, P)
+// }
+//
+// class Father extends React.Component {
+//   constructor(props){
+//     super(props)
+//     this.state.data = []
+//     SAX.bind('STORE', this)
+//     let props = this.props
+//     if (props.config && libs.objtypeof(props.config) == 'object') {
+//       let theConfig = props.config
+//       let that = this
+//       this.childs = Object.keys(theConfig).map((item)=>{
+//         this.state[item] = false
+//         this[item] = context[item]::function(data){
+//           let tmp={}
+//           tmp[item] = true
+//           tmp[data] = data||[]
+//           that.setState(tmp)
+//         }
+//         return {key: item, component: theConfig[item]}
+//       })
+//     }
+//   }
+//
+//   componentWillMount() {
+//     if (this.props.config) this.setState(this.props.config)
+//   }
+//
+//   render(){
+//     let fill = this.childs.map((item)=>{
+//       if (this.state[item.key]) {
+//         return item.component
+//       }
+//     })
+//     return (
+//       <div className='router-container'>
+//         {fill}
+//       </div>
+//     )
+//   }
+// }
+//
+// route.wrap = function(name, options, cb){
+//   if (!window.SAX){
+//     console.error("SAX不存在，router依赖SAX");
+//     return false;
+//   }
+//
+//   let url = libs.urlparse(location.href);
+//   if (url.params.reurl){
+//     SAX._reurl = url.params.reurl
+//     clearState('reurl')
+//   }
+//
+//   let dft = { container: 'body' }
+//   let opts = _.extend(dft, options)
+//
+//   let fatherConfig = {}
+//   if(libs.objtypeof(name)==='object'){
+//     Object.keys(name).map(function(item, ii){
+//       var _id = item;
+//       var utile = new _utile()
+//       utile.plugins('router', router)
+//       utile.plugins('libs', libs)
+//       var page_component = name[item](_id, utile)   //must return react component
+//       fatherConfig[name] = store(item, page_component)
+//     })
+//   }
+// }
+
+
 module.exports = {
   router: router,
   route: route
 }
-
-/*
-* 每一条路由都必须匹配一个方法
-* init route
-*/
-// route({
-//     'abc': abc,
-//     'bcd': bcd
-// });

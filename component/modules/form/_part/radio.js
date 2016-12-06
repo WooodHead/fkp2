@@ -36,12 +36,13 @@ var Radio = React.createClass({
       _cls = me.type==='radio' ? 'fkp-radio-box' : 'fkp-checkbox-box';
 
       if (this.names.length){
-        this.names.map(function(item, i){
+        this.values.map(function(item, i){
           let _id = me.ids[i] ? me.ids[i] : '',
           _title = me.titles[i] ? me.titles[i] : '',
           _value = me.values[i] ? me.values[i] : 'novalue',
           _desc  = me.descs[i] ? me.descs[i] : '',
           _input = [],
+          _name = me.names[i] ? me.names[i] : me.names[0],
           _active = ''
           if (_value && _value!=='novalue' && _value.indexOf('-')===0){
             // && parseInt(_value)<0){
@@ -50,26 +51,24 @@ var Radio = React.createClass({
           }
           else { checked = false; }
 
-          if (item){
-            var lableClass = me.type==='radio' ? 'radioItem' : 'checkboxItem';
-            me.fills.push(
-              <lable key={'radio'+i} className={lableClass}>
-                {(function(){
-                  if (_title) return <span className="fkp-title">{_title}</span>
-                })()}
-                {(function(){
-                  if (checked) return <input defaultChecked type={me.type} name={item} id={_id} value={_value}/>
-                  else {
-                    return <input type={me.type} name={item} id={_id} value={_value}/>
-                  }
-                })()}
-                <span className={_cls} />
-                {(function(){
-                  if (_desc) return <span className="fkp-desc">{_desc}</span>
-                })()}
-              </lable>
-            )
-          }
+          var lableClass = me.type==='radio' ? 'radioItem' : 'checkboxItem';
+          me.fills.push(
+            <lable key={'radio'+i} className={lableClass}>
+              {(function(){
+                if (_title) return <span className="fkp-title">{_title}</span>
+              })()}
+              {(function(){
+                if (checked) return <input defaultChecked type={me.type} name={_name} id={_id} value={_value}/>
+                else {
+                  return <input type={me.type} name={_name} id={_id} value={_value}/>
+                }
+              })()}
+              <span className={_cls} />
+              {(function(){
+                if (_desc) return <span className="fkp-desc">{_desc}</span>
+              })()}
+            </lable>
+          )
           // me.fills.push(_input)
         })
       }
@@ -115,7 +114,7 @@ var Radio = React.createClass({
     let groupClass = this.type === 'radio' ? 'radioGroup' : 'checkboxGroup'
     if (fill){
       return (
-        <div className={groupClass}>
+        <div ref={this.names[0]} className={groupClass}>
           {fill}
         </div>
       )
