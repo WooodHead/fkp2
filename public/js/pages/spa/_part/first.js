@@ -7,6 +7,12 @@ function start(name, dom, utile){
   , inject = libs.inject()
   inject.css('/css/m/announce.css')  //注入样式
 
+  let FormsInputs = Input([
+    'FKP2 单页DEMO',
+    { input: <input type='text' id='intent' placehold="这里的数据会传给下一页" value='' /> },
+    { input: <input type='button' id='test' value='你妹' /> }
+  ], callback)
+
   function callback(){
     $('#test').click(()=>{
       if (FormsInputs.form.intent) {
@@ -14,12 +20,6 @@ function start(name, dom, utile){
       } else libs.msgtips('请填写数据', 'alert')
     })
   }
-
-  let FormsInputs = Input([
-    'FKP2 单页DEMO',
-    { input: <input type='text' id='intent' placehold="这里的数据会传给下一页" value='' /> },
-    { input: <input type='button' id='test' value='你妹' /> }
-  ], callback)
 
   class Announce extends React.Component {
     render(){

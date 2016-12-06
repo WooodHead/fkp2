@@ -1,5 +1,5 @@
 // import api from 'api'
-import * as libs from 'libs'
+import libs from 'libs'
 import './_common/xyz'
 import { Slider } from 'component/modules/slider'
 
@@ -8,7 +8,7 @@ var ws = require('libs/wsocket')
 ws.emit('hello', 'hi')
 ws.on('hello', function(val){
   setTimeout(function(){
-    libs.msgtips(val.message)
+    libs.msgtips.success(val.message)
   },2000)
 })
 
@@ -71,7 +71,7 @@ setTimeout( () => {
   //   console.log(data);
   //   libs.msgtips('get baidu首页数据over')
   // })
-  libs.msgtips('get data')
+  libs.msgtips.warning('get data')
 },500)
 
 setTimeout( () => {
@@ -79,5 +79,5 @@ setTimeout( () => {
   .then( (data) => {
     console.log(data);
   })
-  libs.msgtips('get post data')
+  libs.msgtips.sticky('post data yes, click to close', 'error')
 },1000)
