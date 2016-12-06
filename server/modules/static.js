@@ -15,8 +15,9 @@ function setStatic(app){
     console.log('-');
     console.log('-');
 
-    app.use(convert(statics(CONFIG.upload, {
-        dynamic: true
+    app.use(convert(statics(CONFIG.upload.root, {
+        dynamic: true,
+        prefix: '/uploader'
     })))
 
     app.use(convert(statics(CONFIG.static.doc, {
