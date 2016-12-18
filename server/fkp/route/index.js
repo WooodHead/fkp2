@@ -109,8 +109,8 @@ async function init(app, prefix='', options) {
 
   async function forBetter(ctx, next) {
     try {
-      let ignoreStacic = ['/css/', '/js/', '/images/', '/img/']
-      if (ignoreStacic.indexOf(ctx.url)>-1) return
+      let ignoreStacic = ['css', 'js', 'images', 'img']
+      if (ignoreStacic.indexOf(ctx.params.cat)>-1) return
       return await this::dealwithRoute(ctx, ctx.fkp.staticMapper, _controlPages)
     } catch (e) {
       debug('forBetter: '+e.message)
