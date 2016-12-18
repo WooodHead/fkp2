@@ -11,10 +11,7 @@ function idm(_name, itemMethod){
       , jump = $(this).attr("data-jump")
       , href = $(this).find('a').attr('href')
       if (page) {
-        SAX.roll(_name, {
-          key: 'JUMP',
-          begin: { start: page-1, jump }
-        })
+        SAX.roll(_name, 'JUMP', {start: page-1, jump})
         itemMethod(page)
       }
     })
@@ -26,7 +23,7 @@ export function pagination(data, opts ) {
   var noop = false,
   dft = {
     container: '',
-    globalName: '_Pagi',
+    globalName: '',
     itemMethod: noop,
     listMethod: noop,
     itemClass: '',
@@ -41,13 +38,12 @@ export function pagination(data, opts ) {
   }
   if (objtypeof(opts) == 'object') dft = _.merge(dft, opts)
   data = _.merge(data, dft.data)
+  if (!dft.globalName) dft.globalName = _.uniqueId('Pagi_')
   let Pagi = _Pagi(dft.globalName)
-  SAX.set(dft.globalName, {
-    data: data,
-    begin: dft.begin
-  }, {
+  SAX.set(dft.globalName, { data: data, begin: dft.begin }, {
     JUMP: function(data){
-      this.setState(data)
+      let xxx = _.extend({}, this.state.begin, data)
+      this.setState({begin: xxx})
     }
   })
   let Component = <Pagi data={data} begin={dft.begin} itemDefaultMethod={idm} itemMethod={dft.itemMethod} listMethod={dft.listMethod} itemClass={dft.itemClass} listClass={dft.listClass}/>

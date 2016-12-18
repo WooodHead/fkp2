@@ -7,11 +7,107 @@ var scroll = require('component/mixins/scrollhlc')
 let PagiPure = require('component/modules/pagination').pure
 let objtypeof = libs.objtypeof
 
-export function LoadList(data, opts){
-  if (!data || objtypeof(data)!='array') return list()
-  let render = React.render
+class App {
+  constructor(config){
+    this.config = config
+    this.eles
+    this.stat
+    this.actions
+    this.client = (()=>{
+      if (typeof window == 'undefined') return false
+      return true
+    })()
+
+    this.componentWill = this::this.componentWill
+    this.componentDid = this::this.componentDid
+    this.append = this::this.append
+    this.render = this::this.render
+
+    // actions
+    this.loaded = this::this.loaded
+    this.loading = this::this.loading
+    this.update = this::this.update
+    this.over = this::this.over
+
+    this.componentWill()
+    return this
+  }
+
+  componentWill(){
+    const dft = this.config
+    let Blist
+    if (this.client) {
+      const inject = libs.inject()
+      inject.css(['/css/m/'+dft.theme])  //注入like_lagou的样式
+      Blist = scroll(list(dft.globalName))
+      this.actions = SAX(dft.globalName)
+    } else {
+      Blist = list(dft.globalName)
+    }
+    this.eles = <Blist
+      data={dft.data}
+      itemClass={dft.itemClass}
+      listClass={dft.listClass}
+
+      itemMethod={dft.itemMethod}
+      listMethod={this.componentDid}
+
+      scrollContainer = {dft.scrollContainer}
+      onscroll={dft.scroll}
+      onscrollend={dft.scrollEnd} >
+      {PagiPure(dft.pagenation)}
+    </Blist>
+
+    return this
+  }
+
+  componentDid(){
+    this.stat = 'finish'
+    this.actions.roll('HIDECHILDREN')
+  }
+
+  append(ary){
+    this.actions.roll('UPDATE', {news: ary, type: 'append'})
+  }
+
+  loaded(){
+    this.actions.roll('LOADED')
+  }
+
+  loading(cb){
+    this.actions.roll('LOADING', {next: cb})
+  }
+
+  update(ary){
+    this.actions.roll('UPDATE', {news: ary})
+  }
+
+  over(){
+    this.actions.roll('OVER')
+  }
+
+  render(id){
+    let container = id || this.config.container || ''
+    if (!container) {
+      return this.eles
+    }
+
+    container = typeof container == 'string'
+    ? document.getElementById(container)
+    : container.nodeType ? container : ''
+
+    if (container) {
+      React.render( this.eles, container )
+    }
+
+    return this
+  }
+}
+
+export function LoadList(opts){
   let noop = function(){}
   let dft = {
+    data: [],
     container: '',
     scrollContainer: '',
     theme: 'list-lagou.css',
@@ -29,98 +125,12 @@ export function LoadList(data, opts){
       }
     }
   }
-  if (objtypeof(opts) == 'object') dft = _.extend(dft, opts)
-  if (typeof opts == 'string') dft.container = opts
-
-  if (typeof opts.itemClick == 'function') {
-    dft.itemMethod = opts.itemClick
-    delete dft.itemClick
-  }
-
-  // 隐藏 pagenation bar
-  dft.listMethod = function(){
-    if (dft.globalName) {
-      SAX.roll(dft.globalName, 'HIDECHILDREN')
-    }
-  }
-
-  let Blist = preDefine(dft.globalName)
-  let Component = (
-    <Blist
-      data={data}
-      itemClass={dft.itemClass}
-      listClass={dft.listClass}
-
-      itemMethod={dft.itemMethod}
-      listMethod={dft.listMethod}
-
-      scrollContainer = {dft.scrollContainer}
-      onscroll={dft.scroll}
-      onscrollend={dft.scrollEnd} >
-      {PagiPure(dft.pagenation)}
-    </Blist>
-  )
-
-  if (!dft.container) return Component
-
-  // client
-  let inject = libs.inject()
-  inject.css(['/css/m/'+dft.theme])  //注入like_lagou的样式
-  render( Component, _.isPlainObject(dft.container)&&dft.container.nodeType ? dft.container : document.getElementById(dft.container) )
-}
-
-function preDefine(gname){
-  let blist
-  if (typeof window == 'undefined') blist = list(gname)
-  else {
-    blist = scroll(list(gname))
-  }
-  if (gname && typeof gname=='string') {
-    SAX.set(gname, null, {
-      HIDECHILDREN: function(data){
-        this.setState({
-          children: false
-        })
-      },
-      LOADING: function(data){
-        if (!this.state.over) {
-          if (typeof data.next == 'function') data.next()
-          this.setState({
-            loading: true
-          })
-        }
-      },
-      LOADED: function(data){
-        if (!this.state.over) {
-          _.delay(()=>{
-            this.setState({
-              loading: false
-            })
-          }, 1000)
-        }
-      },
-      UPDATE: function(data){
-        if (!this.state.over) {
-          if (data.news && data.news.length) {
-            _.delay(()=>{
-              this.setState({
-                data: [...this.state.data, ...data.news]
-              })
-            }, 300)
-          }
-        }
-      },
-      OVER: function(data){
-        this.setState({
-          loading: false,
-          over: true
-        })
-      }
-    })
-  }
-  return blist
+  dft = _.extend(dft, opts)
+  return new App(dft)
 }
 
 export function pure(props){
-  return LoadList(props.data||[], props)
+  let app = LoadList(props)
+  if (app.client) return app
+  return app.render()
 }

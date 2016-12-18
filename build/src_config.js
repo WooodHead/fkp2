@@ -1,6 +1,7 @@
 let path = require('path')
 let src_dir = path.join(__dirname, '../public')
 let version = require('../package.json').version||'1.0.0'
+let nodePort = require('../config')().port||8070
 
 module.exports = {
   name: "FCKJS",
@@ -9,7 +10,7 @@ module.exports = {
   description: "FKP2 SLIME SCAFFOLD",
   ports: {
       dev: 8060,
-      node: 8070,
+      node: nodePort,
   },
   dirs: {
     src: src_dir,

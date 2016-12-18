@@ -82,10 +82,7 @@ var tmpApp = React.createClass({
 			record.map(function(item,list_i){
 				if (Array.isArray(item)){
 					//inline 将数组元素放置在一个li中
-					if(that.props.inline){
-						var it = that._dealWithItemView({i: list_i, item: item})
-						items.push(it);
-					} else itemCollection.push(organizeData(item));
+					itemCollection.push(organizeData(item));
 				} else {
 					var it = that._dealWithItemView({i: list_i, item: item})
 					items.push(it);
@@ -124,9 +121,7 @@ var tmpApp = React.createClass({
 			var that = React.findDOMNode(this);
 			if(typeof mtd==='function'){
 				var the = this;
-				mtd.call(that,the.props.store);
-				// setTimeout(function(){
-				// },600);
+				mtd(that,the.props.store);
 			}
 		}
 	},

@@ -12,6 +12,8 @@ module.exports = {
     "10005": {error: "10005", message: "本站使用github第三方登陆，请先登录"},
     "10006": {error: "10006", message: "请用md语法，'# ...'添加文章标题"},
     "10007": {error: "10007", message: "文章字数太少，要求输入不少于50字(含中/英文)"},
+    "10010": {error: "10010", message: "请登录后操作"},
+    "10510": {error: "10510", message: "更新用户信息失败"},
 
     // models/topic
     "20000": {error: "20000", message: "修改文章参数不正确"},

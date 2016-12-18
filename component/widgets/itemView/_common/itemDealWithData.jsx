@@ -67,62 +67,60 @@ function dealWithData(){
          else if (_.isArray(obj)){
            if (obj[0].li){
              return obj.map(function(_obj_item, i){
+               let title = _obj_item.title
+               if (typeof title == 'string') title = <span className="caption">{title}</span>
                return (
-                 <div className={_obj_item.className||''}>
-                   {_obj_item.title}
+                 <div className={_obj_item.liClassName||'itemCategory'}>
+                   {title}
                    {dealWithLi(_obj_item.li)}
                  </div>
                )
              })
            }
            return dealWithLi(obj)
-         }
-         else {
-           if(_.isObject(obj)){
-             if (obj.title){
-               if (obj.url) return <a href={obj.url} >{obj.title}</a>
-               if (obj.li){
-                 return (
-                   <div className={obj.className||''}>
-                     {obj.title}
-                     {dealWithLi(obj.li)}
-                   </div>
-                 )
-               }
-               return obj.title;
+         } else {
+           if (obj.title){
+             if (obj.url) obj.title = <a href={obj.url} >{obj.title}</a>
+             if (obj.li){
+               let title = obj.title
+               if (typeof title == 'string') title = <span className="caption">{title}</span>
+               return (
+                 <div className={obj.liClassName||'itemCategory'}>
+                   {title}
+                   {dealWithLi(obj.li)}
+                 </div>
+               )
              }
-             else if (obj.li) return dealWithLi(obj.li)
-             return '';
+             return obj.title;
            }
+           else if (obj.li) return dealWithLi(obj.li)
+           return '';
          }
        }
 
-       function dealWithLi(prop_li){
+       function dealWithLi(prop_li, category){
          var lis = []
          if(Array.isArray(prop_li)){
            prop_li.map(function(li_item, li_i){
              var _item = normalItem(li_item);
              var _liItem;
-             var _props = {
-               "key": 'li-'+li_i
-             }
+             var _props = { "key": 'li-'+li_i }
              if (Array.isArray(li_item)){
                 _props.className = "nextLevel2";
                 _liItem = React.createElement('li', _props, _item)
-                //lis.push(<li className="nextLevel2" key={'li-'+li_i}>{_item}</li>)
-             }
-             else {
-                if (li_item.attr && _.isObject(li_item.attr)){
-                  var data_attr = {};
-                  _.mapKeys(li_item.attr, function(value, key) {
-                    if (key.indexOf('data-')>-1) data_attr[key] = value;
-                    else {
-                      data_attr['data-'+key] = value;
-                    }
-                  });
-                  _props = _.assign(_props, data_attr);
-                }
-                _liItem = React.createElement('li', _props, _item)
+             } else {
+               if (_.isPlainObject(li_item.attr)){
+                 var data_attr = {};
+                 _.mapKeys(li_item.attr, function(value, key) {
+                   if (key.indexOf('data-')>-1) data_attr[key] = value;
+                   else {
+                     data_attr['data-'+key] = value;
+                   }
+                 });
+                 _props = _.assign(_props, data_attr);
+               }
+               if (li_item.li) { _props.className = 'itemroot'}
+               _liItem = React.createElement('li', _props, _item)
              }
              lis.push(_liItem)
            })
@@ -355,7 +353,7 @@ function dealWithData(){
          : bodyDom || footerDom || dotDom
            ? <div className={"inner"}>{headerDom}{bodyDom}{footerDom}{dotDom}</div>
            : liDom
-             ? k2 ? <div className="hlist">{k2}{liDom}</div> : liDom
+             ? k2 ? <div className="itemCategory"><span className="caption">{k2}</span>{liDom}</div> : liDom
              : k2
                // : <a href={v1} className={data.caption?'caption':''} target={'_blank'}>{k2}</a>
      ))

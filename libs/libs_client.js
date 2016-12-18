@@ -37,7 +37,7 @@ module.exports = {
     preventDefault: doc.preventDefault,
 
     inject:         doc.inject,          // 注入css和js
-    addSheet:       doc.addSheet,        // 动态注入 CSS---兼容旧版语法方法
+    // addSheet:       doc.addSheet,        // 动态注入 CSS---兼容旧版语法方法
     urlparse:       doc.urlparse,        // url地址解析
     _IE:            doc.ie,              // 输出IE版本
     queryString:    doc.queryString,

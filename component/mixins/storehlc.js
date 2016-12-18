@@ -7,11 +7,6 @@ export default (id, ComposedComponent) => {
     return class extends ComposedComponent {
       constructor(props) {
         super(props)
-        this._act = this._act.bind(this)
-      }
-
-      _act(data){
-        this.setState(data)
       }
 
       componentWillMount() {
@@ -20,7 +15,7 @@ export default (id, ComposedComponent) => {
       }
     }
   } catch (e) {
-    console.log(e);
-    return
+    // console.log(e);
+    return ComposedComponent
   }
 }

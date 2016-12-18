@@ -32,11 +32,9 @@ function itemMixin(){
         				dMtd.call(self, that, self.intent);
         			}
             }, 17)
-	        }
-          else
-          if(this.props.itemMethod){
-              var mtd = this.props.itemMethod;
-              mtd.call(that, self.intent);
+	        } else if(this.props.itemMethod){
+            var mtd = this.props.itemMethod;
+            mtd.call(self, that, self.intent);
           }
       }
     }

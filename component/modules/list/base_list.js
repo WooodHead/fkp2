@@ -5,32 +5,71 @@ let libs = require('libs')
 let list = require('./_component/loadlist')  //设定列表域为 lagou
 let objtypeof = libs.objtypeof
 
-export function BaseList(data, opts){
-  if (!data || objtypeof(data)!='array') return List()
+class List {
+  constructor(config){
+    this.config = config
+    this.client = typeof window == 'undefined' ? false : true
+    this.componentWill = this::this.componentWill
+    this.componentStatic = this::this.componentStatic
+    this.render = this::this.render
+
+    this.componentStatic()
+    this.componentWill()
+  }
+
+  componentStatic(){
+    if (this.client) {
+      libs.inject().css(['/css/m/'+this.config.theme])  //注入like_lagou的样式
+    }
+  }
+
+  componentWill(){
+    const dft = this.config
+    let Blist = list(dft.globalName)
+    this.eles = (
+      <Blist
+        data={dft.data}
+        itemClass={dft.itemClass}
+        listClass={dft.listClass}
+        listMethod={dft.listMethod}
+        itemMethod={dft.itemMethod}
+        >
+      </Blist>
+    )
+  }
+
+  render(id){
+    let container = id || this.config.container || ''
+    if (!container) return this.eles
+
+    container = typeof container == 'string'
+    ? document.getElementById(container)
+    : container.nodeType ? container : ''
+
+    if (container) {
+      React.render( this.eles, container )
+    }
+  }
+}
+
+export function BaseList(opts){
   let noop = function(){}
   let dft = {
+    data: [],
     container: '',
-    theme: 'list-lagou.css',
+    theme: '',    //list-lagou.css
     globalName: '',
     itemMethod: noop,
     listMethod: noop,
     itemClass: '',
     listClass: ''
   }
-  if (objtypeof(opts) == 'object') dft = _.extend(dft, opts)
-  if (typeof opts == 'string') dft.container = opts
-
-  let Blist = list(dft.globalName)
-  let Component = <Blist itemClass={dft.itemClass} listClass={dft.listClass} listMethod={dft.listMethod} onscrollend={dft.scrollEnd} scroll={dft.scroll} data={data} itemMethod={dft.itemMethod}/>
-  if (!dft.container) return Component
-
-  // client
-  let render = React.render
-  let inject = libs.inject()
-  inject.css(['/css/m/'+dft.theme])  //注入like_lagou的样式
-  render( Component, _.isPlainObject(dft.container)&&dft.container.nodeType ? dft.container : document.getElementById(dft.container) );
+  if (objtypeof(opts) == 'object') dft = _.merge(dft, opts)
+  return new List(dft)
 }
 
 export function pure(props){
-  return BaseList(props.data||[], props)
+  delete props.container
+  delete props.globalName
+  return BaseList(props)
 }

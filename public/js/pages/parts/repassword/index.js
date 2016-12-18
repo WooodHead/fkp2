@@ -14,7 +14,6 @@ function equalPassword(value, block, errmsg){
 
 //表单结构
 let Input = input([
-  {input: {id: "opassword", type: "password"}, title: '原始密码:'},
   {input: {id: "password", type: "password"}, title: '密码:'},
   {input: {id: "repassword", type: "password"}, title: '再一次:'},
   {input: {id: "apply", type: "button", value: '提交'}, title: ' '}

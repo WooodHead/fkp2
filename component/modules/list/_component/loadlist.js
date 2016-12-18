@@ -32,7 +32,7 @@ class ListApp extends React.Component {
 
 		let children = this.state.children ? this.props.children : []
 		return (
-			<div>
+			<div className="list-container">
 				<List data={this.state.data} {..._props} />
 				{loadbar}
 				{overbar}
@@ -44,7 +44,54 @@ class ListApp extends React.Component {
 
 function storeIt(key){
 	if (!key) return ListApp
+	if (typeof key == 'string') { storeAction(key) }
 	return store(key, ListApp)
+}
+
+function storeAction(key){
+	SAX.set(key, null, {
+		HIDECHILDREN: function(data){
+			this.setState({
+				children: false
+			})
+		},
+		LOADING: function(data){
+			if (!this.state.over) {
+				if (data && data.next && typeof data.next == 'function') data.next()
+				this.setState({
+					loading: true
+				})
+			}
+		},
+		LOADED: function(data){
+			if (!this.state.over) {
+				_.delay(()=>{
+					this.setState({
+						loading: false
+					})
+				}, 1000)
+			}
+		},
+		UPDATE: function(data){
+			if (!this.state.over) {
+				if (data.news && data.news.length) {
+					_.delay(()=>{
+						if (data.type && data.type == 'append') {
+							this.setState({ data: [...this.state.data, ...data.news] })
+						} else {
+							this.setState({ data: data.news })
+						}
+					}, 300)
+				}
+			}
+		},
+		OVER: function(data){
+			this.setState({
+				loading: false,
+				over: true
+			})
+		}
+	})
 }
 
 module.exports = storeIt

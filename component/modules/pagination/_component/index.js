@@ -84,135 +84,127 @@ class PageItem extends React.Component {
 class Pagenation extends React.Component {
   constructor(props){
     super(props)
-  }
-
-  componentWillMount() {
-    let statData = {
+    this.state = {
       data: this.props.data,
       begin: this.props.begin
     }
-    this.setState(statData)
   }
+
+  componentWillMount() { }
 
   render(){
 
-    if(this.state.data){
-      let data = this.state.data
-      , newData = []
-      , pages = data.total/data.per
-      , pre
-      , aft
-      , half
-      , begin = this.state.begin
-      , start = parseInt(begin.start||0)
-      , ostart = start
-      , off = parseInt(begin.off)
-      , end = start+off
-      , query = ''
+    let data = this.state.data
+    , newData = []
+    , pages = data.total/data.per
+    , pre
+    , aft
+    , half
 
-			if(data.total%data.per) pages+=0
-			if(end>pages) end = pages
-			half = off%2 ? (off-off%2)/2 : (off-off%2)/2-1;
 
-			if(start!==0){
-        pre = (start-half) < 1 ? 0 : start-half;
-        aft = (pre + off) >= pages ? pages : (pre + off);
-				start = pre;
-				end = pre === 0 ? off >= pages ? aft : off : aft;
-			}
+    , begin = this.state.begin
+    , start = parseInt(begin.start||0)
+    , ostart = start
+    , off = parseInt(begin.off)
+    , end = start+off
+    , query = ''
 
-			if(ostart>=0){
-        newData.push({
-          url: ostart == 0 ? 'javascript:;' : data.query+ostart,
-          text: '<',dataPage:ostart
-        })
+		if(data.total%data.per) pages+=0
+		if(end>pages) end = pages
+		half = off%2 ? (off-off%2)/2 : (off-off%2)/2-1;
 
-        if (ostart > 0) {
-          if (ostart%begin.off === 0 && begin.jump){
-            start = ostart
-            aft = aft + _.floor(begin.off/2)
-            end = (start+begin.off) >= pages ? pages : (start+begin.off);
-          }
+
+		if(start!==0){
+      pre = (start-half) < 1 ? 0 : start-half;
+      aft = (pre + off) >= pages ? pages : (pre + off);
+			start = pre;
+			end = pre === 0 ? off >= pages ? aft : off : aft;
+		}
+
+		if(ostart>=0){
+      newData.push({
+        url: ostart == 0 ? 'javascript:;' : data.query+ostart,
+        text: '<',dataPage:ostart
+      })
+
+      if (ostart > 0) {
+        if (ostart%begin.off === 0 && begin.jump){
+          start = ostart
+          aft = aft + _.floor(begin.off/2)
+          end = (start+begin.off) >= pages ? pages : (start+begin.off);
         }
       }
-
-			if(start>1){
-				newData.push({
-          url: (data.query+1),
-          text: '1',
-          dataPage:'1',
-          dataJump: ''
-        })
-				newData.push({
-          url: 'javascript:;',
-          text: '...',
-          dataPage: ostart-off>0?ostart-off+1:1,
-          dataJump: ostart-off>0?ostart-off+1:1
-        })
-			}
-
-			if( end > 0 ){
-        let ii=start
-				for( ii; ii<end; ii++){
-					query = data.query+(ii+1);
-          newData.push({
-            url: query,
-            text: ii+1,
-            dataPage:ii+1,
-            dataJump: '',
-	          active:( function(){
-							if(ostart < half || (ostart + half) > pages){
-								return ostart===ii ? true : false
-							} else{
-								return (half+start)===ii ? true : false
-							}
-						})()
-          })
-        }
-
-        if(end <= pages){
-          if (end < pages) {
-            newData.push({
-              url: 'javascript:;',
-              text: '...'+ii,
-              dataPage: ostart+off>pages?pages+1:ostart+off+1,
-              dataJump: ostart+off>pages?pages+1:ostart+off+1
-            });
-
-    				newData.push({
-              url: data.query+(pages),
-              text: (_.ceil(pages)),
-              dataPage: _.ceil(pages),
-              dataJump: ''
-            });
-          }
-
-  				newData.push({
-            url: ostart >= Math.floor(end) ? 'javascript:;' : data.query+(ostart+2),
-            text: '>',
-            dataPage: ostart >= Math.floor(end) ? '' : ostart+2
-          })
-        }
-			}
-      let _props = _.merge({data: newData, itemView:PageItem}, this.props)
-      let _List =  React.createElement(List, _props)
-
-      return _List
     }
 
-    return (<div></div>)
+		if(start>1){
+			newData.push({
+        url: (data.query+1),
+        text: '1',
+        dataPage:'1',
+        dataJump: ''
+      })
+			newData.push({
+        url: 'javascript:;',
+        text: '...',
+        dataPage: ostart-off>0?ostart-off+1:1,
+        dataJump: ostart-off>0?ostart-off+1:1
+      })
+		}
 
+		if( end > 0 ){
+      let ii=start
+			for( ii; ii<end; ii++){
+				query = data.query+(ii+1);
+        newData.push({
+          url: query,
+          text: ii+1,
+          dataPage:ii+1,
+          dataJump: '',
+          active:( function(){
+						if(ostart < half || (ostart + half) > pages){
+							return ostart===ii ? true : false
+						} else{
+							return (half+start)===ii ? true : false
+						}
+					})()
+        })
+      }
+
+      if(end <= pages){
+        if (end < pages) {
+          newData.push({
+            url: 'javascript:;',
+            text: '...'+ii,
+            dataPage: ostart+off>pages?pages+1:ostart+off+1,
+            dataJump: ostart+off>pages?pages+1:ostart+off+1
+          });
+
+  				newData.push({
+            url: data.query+(pages),
+            text: (_.ceil(pages)),
+            dataPage: _.ceil(pages),
+            dataJump: ''
+          });
+        }
+
+				newData.push({
+          url: ostart >= Math.floor(end) ? 'javascript:;' : data.query+(ostart+2),
+          text: '>',
+          dataPage: ostart >= Math.floor(end) ? '' : ostart+2
+        })
+      }
+		}
+    let _props = _.merge({data: newData, itemView:PageItem}, this.props)
+    let _List =  React.createElement(List, _props)
+
+    return _List
   }
 }
 
 
 function actRct( storeName ){
-  if (storeName) {
-    _storeName = storeName;
-    return store(storeName, Pagenation)
-  }
-  return Pagenation
-  // return require('component/util')(storeName, pagenation)
+  _storeName = storeName;
+  return store(storeName, Pagenation)
 }
 
 module.exports = actRct
