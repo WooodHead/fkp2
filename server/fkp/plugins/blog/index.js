@@ -1,5 +1,6 @@
 import path from 'path'
 import blogcontrol from './blogcontrol'
+import blogadmin from './blogadmin'
 
 // mongo blog
 let _db
@@ -16,6 +17,9 @@ async function blog(ctx, cmd){
 }
 
 export default function(fkp){
+  fkp.routepreset('/blog/admin', {
+    customControl: blogadmin
+  })
   fkp.routepreset('/blog', {
     customControl: blogcontrol
   })

@@ -39,6 +39,10 @@ export async function forDetail(ctx, blog, isAjax){
   }
 }
 
+export async function forTotal(ctx, blog, isAjax){
+  return await blog.total()
+}
+
 async function _forlist(ctx, blog, isAjax){
   let lists = []
   if (isAjax) {

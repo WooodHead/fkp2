@@ -1,43 +1,23 @@
 import router from '../../route'
 import libs from 'libs'
 import adapter from 'component/adapter/mgbloglist'
-import {forList, forDetail, forSave, forTotal} from './handle/topic'
-
-function forDelete(){}
-function forUpdate(){}
-function forAdd(){}
+import {forList, forDetail} from './handle/topic'
 
 export default async function(ctx, next){
   let fkp = ctx.fkp
   let blog = await fkp.blog()
+  let Auth = await fkp.auth()
+
   let routePrefix = this.opts.prefix
   let route = router.makeRoute(ctx, routePrefix)
+  route = 'blog'
   let pageData = router.staticMapper(ctx, fkp.staticMapper, route, routePrefix)
-
   let xData, xDetail, xAdd, xSave
   let [cat, title, id] = Object.values(ctx.params)
   let isAjax = fkp.isAjax()
   switch (cat) {
-    case 'update':
-      forUpdate()
-      break;
-    case 'delete':
-      forDelete()
-      break;
-    case 'add':
-      xAdd = true
-      break;
-    case 'save':
-      xSave = await forSave(ctx, blog, isAjax)
-      break;
-    case 'checkLogin':
-      // xAdd = true
-      break;
     case 'get':
-      if (ctx.query.topic) xDetail = await forDetail(ctx, blog, isAjax)
-      else if(title == 'total') {
-        return ctx.body = {total: await forTotal(ctx, blog, isAjax)}
-      }
+      if (ctx.query.topic) xDetail = await await forDetail(ctx, blog, isAjax)
       else xData = await forList(ctx, blog, isAjax)
       break;
     case 'page':
@@ -49,20 +29,11 @@ export default async function(ctx, next){
     default:
       xData = await forList(ctx, blog)
   }
-
   if (isAjax) {
     pageData =  xData||xDetail||xSave
   } else {
     // blog list
     if (xData) {
-      // node 端注入js和css
-      let attachjs
-      let attachcss = await fkp.injectcss([
-        '~/css/m/boot_button',
-        '/css/m/list/lagou',
-        '/css/m/list/pagination']
-      )
-
       let props = {
         data: adapter(xData.lists),
         listClass: 'like_lagou',
@@ -72,14 +43,20 @@ export default async function(ctx, next){
           begin: { start: parseInt(title||1)-1 }
         }
       }
-      let listStr = ''
-      if (routePrefix=='/logs') {
+      let listStr = fkp.parsereact('component/modules/list/load_list', props)   // 同构客户端的react组件 解析react组件并返回html结构字符串
+
+      // node 端注入js和css
+      let attachjs
+      let attachcss = await fkp.injectcss([
+        '~/css/m/boot_button',
+        '/css/m/list/lagou',
+        '/css/m/list/pagination']
+      )
+      if (routePrefix=='/blog/admin') {
         route = 'blog'
-        listStr = fkp.parsereact('component/modules/list/pagi_list', props)   // 同构客户端的react组件 解析react组件并返回html结构字符串
-        attachjs = await fkp.injectjs(['/js/blog/pagilist'])   // node端注入js return {attachCss: resource...} 分页按钮
+        // attachjs = await fkp.injectjs(['/js/blog/pagilist'])   // node端注入js return {attachCss: resource...} 分页按钮
       } else {
-        listStr = fkp.parsereact('component/modules/list/load_list', props)   // 同构客户端的react组件 解析react组件并返回html结构字符串
-        attachjs = await fkp.injectjs(['/js/blog/loadlist'])   // node端注入js {attachCss: resource...} 自动加载
+        // attachjs = await fkp.injectjs(['/js/blog/loadlist'])   // node端注入js {attachCss: resource...} 自动加载
       }
       pageData = _.assign(pageData, attachcss, attachjs, {blog:{list: listStr}} )
     }
@@ -91,15 +68,8 @@ export default async function(ctx, next){
       pageData = _.assign(pageData, attachcss, attachjs, {blog:{mdcontent: xDetail.mdcontent}} )
     }
 
-    // 添加文章
-    if (xAdd) {
-      pageData.xAdd = true
-    }
-
-    if (xSave) {
-      pageData = _.assign(pageData, xSave )
-    }
-
   }
+  pageData.blog.admin = true
+  // pageData.pagejs = '<script src="/js/blog.js"></script>'
   return router.renderPage(ctx, route, pageData, isAjax)
 }

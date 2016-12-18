@@ -1,9 +1,68 @@
-import {inject, msgtips, poper, insertCaret, validator} from 'libs'
+import {
+  inject,
+  msgtips,
+  poper,
+  insertCaret,
+  validator,
+  strLen
+} from 'libs'
 import Input from 'component/modules/form/inputs'
 import ajax from 'ajax'
 import injectStatic from './_common/injectStatic'
+import {tabs as Tabs, htabs as hTabs} from 'component/modules/tabs'
 
-injectStatic(initEpicEditor)
+const subData = [
+  {title: '导航', content: '111'},
+  {title: '表单', content: '333'},
+  {title: '列表', content: '444'},
+  {title: '高级搜索', content: '5555'}
+]
+
+let htabs = hTabs({
+  data: subData,
+  globalName: 'TabDemo',
+  itemMethod: function(dom, index){
+    $(dom).click(function(e){
+      e.stopPropagation()
+      htabs.select(index)
+      msgtips(index.toString())
+    })
+  }
+})
+
+const _data = [
+  {title: '典型页面', content: '123', idf: 'aaa'},
+  {title: '典型页面1', content: 'aaa', idf: 'bbb', parent: 'aaa'},
+  {title: '典型页面2', content: 'bbb', parent: 'aaa', attr: {"href":'http://www.163.com'}},
+  {title: '典型页面3', content: 'ccc', parent: 'aaa'},
+  {title: '典型页面4', content: 'ddd', parent: 'bbb'},
+  {title: '典型页面5', content: 'eee', parent: 'bbb'},
+  {title: '导航', content: htabs.render()},
+  {title: '表单', content: '333'},
+  {title: '列表', content: '444'},
+  {title: '高级搜索', content: '5555'}
+]
+
+let vtabs = Tabs({
+  data: _data,
+  container: 'admin',
+  globalName: 'TabSwitch',
+  itemMethod: function(dom, index){
+    $(dom).click(function(e){
+      e.stopPropagation()
+      vtabs.select([index, this])
+      if (!$(dom).hasClass('itemroot')) {
+        msgtips(index.toString())
+      }
+    })
+  }
+})
+vtabs.render()
+
+
+if (document.getElementById('epiceditor')) {
+  injectStatic(initEpicEditor)
+}
 function initEpicEditor(options, webup){
   if (!window._epic_ed){
     // 编辑器初始化
@@ -63,6 +122,53 @@ function initEpicEditor(options, webup){
 }
 
 
+// 登录html结构
+var loginFormStructor = Input([
+  ':---请登录后使用',
+  { input: <input type='text' id='username' placehold="username/email" value='' />, title: '用户名：' },
+  { input: <input type='password' id='password' value='' />, title: "密码：" },
+  { input: <input type='button' id='login' value='登录' />, title: ' ' }
+], loginFormAction)
+
+function loginFormAction(form){
+  $('#username').blur(function(){
+    let stat = Validator(this.value, 'username', chkUsername)()
+    if (!stat) form.warning('username')
+    else form.warning('username','no')
+  })
+
+  $('#password').blur(function(){
+    let stat = Validator(this.value, 'password')()
+    if (!stat) form.warning('password')
+    else form.warning('password','no')
+  })
+
+  $('#login').click(()=>{
+    let values = form.values()
+    let chk = Validator
+      (values.username, 'username', chkUsername)
+      (values.password, 'password')
+      ((query, errs)=>{
+        if (errs.length) {
+          errs.map( item => {
+            switch (item.key) {
+              case 'username':
+                form.warning('username')
+              break;
+              case 'password':
+                form.warning('password')
+              break;
+            }
+            msgtips.error(item.info)
+          })
+        } else {
+          // login
+        }
+      })
+  })
+}
+
+
 //编辑器处理
 function dealWithEditor(options, webuploader){
   var stat_editor = 'add';
@@ -76,9 +182,10 @@ function dealWithEditor(options, webuploader){
   if (options && options.content && options._id){
     stat_editor = 'edit'
     editor.open(' ')
-    editor.importFile('_tmp',options.content)
+    // editor.importFile('_tmp',options.content)
   }
 
+  // 编辑器上传
   editor.uploader(function(btn){
     webuploader.custom(function(){
       var that = this
@@ -94,80 +201,49 @@ function dealWithEditor(options, webuploader){
   function chkUsername(value, block, errmsg){
     return value && value.length && block.username.test(value)
   }
-  function formAction(form){
-    $('#username').blur(function(){
-      let stat = Validator(this.value, 'username', chkUsername)()
-      if (!stat) form.warning('username')
-      else {
-        form.warning('username','no')
-      }
-    })
-    $('#password').blur(function(){
-      let stat = Validator(this.value, 'password')()
-      if (!stat) form.warning('password')
-      else {
-        form.warning('password','no')
-      }
-    })
-    $('#login').click(()=>{
-      let values = form.values()
-      let chk = Validator
-          (values.username, 'username', chkUsername)
-          (values.password, 'password')
-          ((query, errs)=>{
-            if (errs.length) {
-              errs.map((item)=>{
-                switch (item.key) {
-                  case 'username':
-                    form.warning('username')
-                    break;
-                  case 'password':
-                    form.warning('password')
-                    break;
-                }
-                msgtips.error(item.info)
-              })
-            } else {
-              // login
-            }
-          })
-    })
-  }
 
-  var formStructor = Input([
-    ':---请登录后使用',
-    { input: <input type='text' id='username' placehold="username/email" value='' />, title: '用户名：' },
-    { input: <input type='password' id='password' value='' />, title: "密码：" },
-    { input: <input type='button' id='login' value='登录' />, title: ' ' }
-  ], formAction)
-
-  $(utilbar).find('.md-save')
-  .off('click')
-  .click(()=>{
-    let cnt = JSON.parse(editor.exportFile(null, 'json'))
-    ajax.post('/blog/save', {cnt: cnt.content})
-    .then((data)=>{
-      if (data.error=='10005') {
+  // 是否登录，激活按钮
+  ajax.get('/auth/isLogin')
+  .then( data => {
+    if (!data.error) {
+      $(utilbar).find('.md-save').addClass('enable')
+      .off('click')
+      .on('click', () => {
+        let cnt = JSON.parse(editor.exportFile(null, 'json'))
+        if (cnt.content && strLen(cnt.content)>30) {
+          savePost(cnt)
+        } else {
+          msgtips.warning('文章字数需要30字以上')
+        }
+      })
+    } else {
+      $(utilbar).find('.md-save')
+      .off('click')
+      .on('click', () => {
         poper.modal.p30(
           <div style={{textAlign: 'left'}}>
-            <div>{formStructor.render()}</div>
+            <div>{loginFormStructor.render()}</div>
             <div>
               <p>第三方登录</p>
               <ul className="logo">
                 <li>
-                  <a className='github' href='/github/sign'></a>
+                  <a className='github' href='/auth/sign'></a>
                 </li>
               </ul>
             </div>
           </div>
         )
-      } else {
-        if (data && data.error) {
-          msgtips.warning(data.message)
-        } else {
-          window.location.href="/blog"
-        }
-      }
-    })
+      })
+    }
+  })
+}
+
+// 保存新的文章
+function savePost(cnt){
+  ajax.post('/blog/save', {cnt: cnt.content})
+  .then((data)=>{
+    if (data && data.error) {
+      msgtips.warning(data.message)
+    } else { window.location.href="/blog/add" }
   })
 }

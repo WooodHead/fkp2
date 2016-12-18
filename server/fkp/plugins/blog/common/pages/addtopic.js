@@ -4,6 +4,9 @@ let Topic = mongoose.model('Topic')
 
 export default async function(ctx, param) {
   try {
+    const Auth = await ctx.fkp.auth()
+    const UpdateUser = Auth.updateuser(ctx)
+
     let _user = ctx.session.$user
     let body = ctx.request.body
     if (body.cnt) {
@@ -33,6 +36,7 @@ export default async function(ctx, param) {
           thirduser: _user.thirduser
         }
       }
+      await UpdateUser.score()
       return await new Topic(ntopic).save()
     }
   } catch (e) {
