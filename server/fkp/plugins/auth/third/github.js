@@ -67,7 +67,7 @@ export default class GitHub {
       const signupUser = await this.signup(github_user_info, 'github')
       if (signupUser) {
         ctx.session.$user = signupUser;
-        return ctx.redirect(C.successUrl)
+        return ctx.redirect('/auth/repassword')
       }
     }
   }

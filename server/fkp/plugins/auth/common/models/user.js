@@ -1,16 +1,16 @@
 // "use strict";
+let fs = require('fs')
+let $path = require('path')
 let bcrypt = require('bcryptjs')
 let mongoose = require("mongoose")
+let Increase = mongoose.model('Increase')
 let Schema = mongoose.Schema
 
 let BaseUserSchema = new Schema({
   id: { type: String, required: true, unique: true, lowercase: false },
   username: { type: String, required: true, unique: true, lowercase: true },
   password: { type: String, required: true },
-  nickname: { type: String, default: ''},
-  phone: {type: String, default: ''},
-  create_at: { type: String, default: (new Date().getTime()) },   //Date.now 带格式
-  update_at: { type: String, default: (new Date().getTime()) },
+  status: {type: Number, default: 1},
   accessToken: {type: String}
 }, {
   toJSON: {
@@ -35,11 +35,19 @@ BaseUserSchema.index({accessToken: 1})
  */
  BaseUserSchema.plugin(require('./catoray/user_profile'))
  BaseUserSchema.plugin(require('./catoray/user_from'))
+ BaseUserSchema.plugin(require('./catoray/user_level'))
+ BaseUserSchema.plugin(require('./catoray/user_privilege'))
 
 /**
  * Middlewares
  */
-BaseUserSchema.pre("save", function(done) {
+BaseUserSchema.pre("save", async function(done) {
+  if (this.isNew) {
+    this.gid = this._id.toString()
+    this.gpassword = '123456'
+    this.groups = ['10', '20', '30', '40', '50', this._id.toString()]
+    const $inc = await Increase.findByIdAndUpdate({_id: 'Increase'}, {$inc: { u_seq: 1} }).exec()
+  }
   if (!this.isModified("password")) return done()
   try {
     let salt = bcrypt.genSaltSync(10);
