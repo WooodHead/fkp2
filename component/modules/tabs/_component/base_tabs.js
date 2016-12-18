@@ -57,7 +57,6 @@ class TapsApp extends React.Component {
 		if (this.props.opts.globalName) { this.actions() }
 		let contents = this.state.data.map((item, i)=> item.content )
 		tapsapp.append({contents: contents})
-		// SAX.append(this.props.opts.globalName, {contents: contents})
 		this._menus()
 	}
 
@@ -100,7 +99,6 @@ class TapsApp extends React.Component {
 
 	getContent(){
 		const tapscontents = tapsapp.data().contents
-		// const gdata = SAX.get(this.props.opts.globalName)
 		const content = tapscontents[this.state.select]
 		if (typeof content == 'function') {
 			if (this.selectData) return content(this.selectData)

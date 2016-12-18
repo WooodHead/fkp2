@@ -1,4 +1,4 @@
-import {merge} from 'lodash'
+const merge = require('lodash').merge
 const path = require('path');
 const fs = require('fs');
 const static_dir = './public'
