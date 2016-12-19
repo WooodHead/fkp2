@@ -75,21 +75,19 @@
     //统计store[name]是否首次执行
     var _count = {}
     var count = function(name) {
-        if (_count[name]) {
-            _count[name]++;
-            return true;
-        } else {
-            // 首次执行
-            if (!_count[name]) {
-                _count[name] = 1;
-                return false;
-            }
-        }
+      if (_count[name]) {
+        _count[name]++;
+        return true;
+      } else {
+        // 首次执行
+        _count[name] = 1;
+        return false;
+      }
     }
 
     var store = function(name, data, act) {
         this.name = name || '';
-        this.sdata = data || null;
+        this.sdata = data || {};
         this.sact = act||{};
         this.ctx = {"null":null};
         var me = this;
@@ -97,26 +95,26 @@
         this.dataer = function(data, key) {
           var keyData;
           if (key) keyData = _stockData[this.name+'.'+key]
+          if (!data) data = this.sdata
             if (data || keyData) {
                 // this.sdata = data;
+                var _resault = [];
                 if (getObjType(this.sact) === 'Array') {
                     var acts = this.sact;
-                    var _resault = [];
                     acts.map(function(fun) {
                         if (getObjType(fun.args) === 'Array') {
                             if (count(me.name)) {
                               fun.args.pop()
                             }
-                            fun.args.push(data)
+                            fun.args.push(data||{})
                             if (typeof fun === 'function') {
-                                var _tmp = fun.apply(fun.args[0], [fun.args[0], data])
-                                _resault.push(_tmp);
-
+                              var _tmp = fun.apply(fun.args[0], [fun.args[0], data])
+                              _resault.push(_tmp);
                             }
                         } else {
                           if (typeof fun === 'function') {
-                              var _tmp = fun.call(me.ctx[me.name||'null'], data);
-                              _resault.push(_tmp);
+                            var _tmp = fun.call(me.ctx[me.name||'null'], data);
+                            _resault.push(_tmp);
                           }
                           if (getObjType(fun)=='Object') {
                             Object.keys(fun).map(function(item){
@@ -139,38 +137,53 @@
                                 if (count(me.name)) {
                                     fun.args.pop()
                                 }
+                                fun.args.push((keyData||data||{}))
                                 if (typeof fun === 'function')
-                                    return fun.apply(fun.args[0], [fun.args[0], data])
+                                    return fun.apply(fun.args[0], [fun.args[0], (keyData||data)])
                             } else {
                                 if (typeof fun === 'function')
                                     return fun.call(me.ctx[me.name||'null'], (keyData||data));
                             }
                         }
                     } else {
-                        for (var item in sacts) {
-                          var _keydata = _stockData[me.name+'.'+item]
-                            if (typeof sacts[item] === 'function') {
-                                var fun = sacts[item]
-                                if (getObjType(fun.args) === 'Array') {
-                                    if (count(me.name)) {
-                                        fun.args.pop()
-                                    }
-                                    fun.args.push(data)
-                                    if (typeof fun === 'function')
-                                        return fun.apply(fun.args[0], [fun.args[0], (_keydata||data)])
-                                } else {
-                                    if (typeof fun === 'function'){
-                                      return fun.call(me.ctx[me.name||'null'], (_keydata||data));
-                                    }
-                                }
-                            }
-                        }
+                      for (var item in sacts) {
+                        var _keydata = _stockData[me.name+'.'+item]
+                          if (typeof sacts[item] === 'function') {
+                              var fun = sacts[item]
+                              if (getObjType(fun.args) === 'Array') {
+                                  if (count(me.name)) {
+                                    fun.args.pop()
+                                  }
+                                  fun.args.push((data||_keydata||{}))
+                                  if (typeof fun === 'function'){
+                                    var _tmp = fun.apply(fun.args[0], [fun.args[0], (data||_keydata)])
+                                    _resault.push(_tmp)
+                                  }
+                              } else {
+                                  if (typeof fun === 'function'){
+                                    var _tmp = fun.call(me.ctx[me.name||'null'], (data||_keydata));
+                                    _resault.push(_tmp)
+                                  }
+                              }
+                          }
+                      }
+                      return _resault
                     }
                 }
+                if (getObjType(this.sact) === 'Function') {
+                  var fun = this.sact
+                  if (Array.isArray(fun.args)) {
+                    if (count(me.name)) { fun.args.pop() }
+                    fun.args.push((data||_keydata||{}))
+                    return typeof fun == 'function' ? fun.apply(fun.args[0], [fun.args[0], data]) : ''
+                  } else {
+                    return typeof fun == 'function' ? fun.call(me.ctx[me.name||'null'], (data||_keydata)) : ''
+                  }
+                }
             } else {
+              var _resault = [];
                 if (getObjType(this.sact) === 'Array') {
                     var acts = this.sact;
-                    var _resault = [];
                     acts.map(function(fun) {
                         if (getObjType(fun.args) === 'Array') {
                             if (typeof fun === 'function') {
@@ -184,8 +197,10 @@
                             }
                             if (getObjType(fun)=='Object') {
                               Object.keys(fun).map(function(item){
-                                var _tmp = fun[item].call(me.ctx[me.name||'null'])
-                                _resault.push(_tmp)
+                                if (typeof fun[item] == 'function'){
+                                  var _tmp = fun[item].call(me.ctx[me.name||'null'])
+                                  _resault.push(_tmp)
+                                }
                               })
                             }
                         }
@@ -199,11 +214,11 @@
                             var fun = sacts[key]
                             if (getObjType(fun.args) === 'Array') {
                                 if (typeof fun === 'function'){
-                                  return fun.apply(fun.args[0], [fun.args[0], keyData])
+                                  return fun.apply(fun.args[0], fun.args)
                                 }
                             } else {
                                 if (typeof fun === 'function')
-                                    return fun.call(me.ctx[me.name||'null'], keyData);
+                                    return fun.call(me.ctx[me.name||'null']);
                             }
                         }
                     } else {
@@ -212,15 +227,28 @@
                             if (typeof sacts[item] === 'function') {
                                 var fun = sacts[item]
                                 if (getObjType(fun.args) === 'Array') {
-                                    if (typeof fun === 'function')
-                                        return fun.apply(fun.args[0], [fun.args[0], _keydata])
+                                    if (typeof fun === 'function'){
+                                      var _tmp = fun.apply(fun.args[0], [fun.args[0], _keydata])
+                                      _resault.push(_tmp);
+                                    }
                                 } else {
-                                    if (typeof fun === 'function')
-                                        return fun.call(me.ctx[me.name||'null'], _keydata);
+                                    if (typeof fun === 'function'){
+                                      var _tmp = fun.call(me.ctx[me.name||'null'], _keydata);
+                                      _resault.push(_tmp);
+                                    }
                                 }
                             }
                         }
+                        return _resault
                     }
+                }
+                if (getObjType(this.sact) === 'Function') {
+                  var fun = this.sact
+                  if (Array.isArray(fun.args)) {
+                    return typeof fun == 'function' ? fun.apply(fun.args[0], fun.args) : ''
+                  } else {
+                    return typeof fun == 'function' ? fun.call(me.ctx[me.name||'null']) : ''
+                  }
                 }
             }
         }
@@ -350,14 +378,46 @@
         // }
 
         this.acter = function(act) {
-          if (act) {
-            if (typeof this.sact == 'object' && typeof act == 'object') {
-              this.sact = extend(true, this.sact, act)
-            } else {
-              var src = typeof this.sact == 'object' ? this.sact : typeof this.sact == 'function' ? [this.sact] : {}
-              var ext = typeof act == 'object' ? act : typeof act == 'function' ? [act] : {}
-              this.sact = extend(true, src, ext)
-            }
+          var s_type = getObjType(this.sact)
+          var a_type = getObjType(act)
+
+          switch (s_type) {
+            case 'Object':
+              if (typeof act == 'object') this.sact = extend(true, this.sact, act)
+              else {
+                let _uuid = uniqueId()
+                if (typeof act == 'function') this.sact[_uuid] = act
+              }
+              break;
+            case 'Array':
+              switch (a_type) {
+                case 'Array':
+                  this.sact = this.sact.concat(act)
+                  break;
+                case 'Object':
+                  this.sact = extend(true, this.sact, act)
+                  break;
+                case 'Function':
+                  this.sact = this.sact.push(act)
+                  break;
+              }
+              break;
+            case 'Function':
+              switch (a_type) {
+                case 'Array':
+                  this.sact = act.unshift(this.sact)
+                  break;
+                case 'Object':
+                  let _uuid = uniqueId()
+                  this.sact = act[_uuid] = this.sact
+                  break;
+                case 'Function':
+                  this.sact = [this.sact, act]
+                  break;
+              }
+              break;
+            default:
+              if (typeof act == 'function') this.sact = act
           }
         }
 
@@ -392,19 +452,13 @@
         // }
 
         this.setter = function(data, act) {
-            if (data)
-                this.sdata = data;
-
-            if (act)
-                this.sact = act;
+            if (data) this.sdata = data;
+            if (act) this.sact = act;
         };
 
         this.getter = function(type) {
-            if (type === 'action')
-                return this.sact;
-
-            if (type === 'data')
-                return this.sdata;
+          if( type === 'action' ) return this.sact;
+          if( type === 'data') return this.sdata;
         };
 
         this.binder = function(ctx) {
@@ -674,7 +728,7 @@
 
         setter: function(name, dataOrAct, fun) {
           this.append(name, dataOrAct, fun)
-          return _stock[name].dataer(dataOrAct)
+          return _stock[name].dataer(_stock[name].sdata)
         },
 
         getter: function(name) {
@@ -724,7 +778,7 @@
               var keyofdata = name + '.' + key
               _stockData[keyofdata] = typeof ddd == 'object' ? extend(true, ddd) : ddd
             }
-            if (that.sact) return _runner(ddd, key)
+            if (that.sact) return _runner((ddd||_data), key)
           }
         },
 
@@ -783,8 +837,9 @@
 
         setActions: function(name, acts){
           var save = _stock;
-          if (!save[name]) save[name] = new store(name)
-          save[name].acter(acts)
+          if (save[name]) {
+            save[name].acter(acts)
+          }
         }
     }
 
@@ -798,8 +853,11 @@
     }
     storeAct.trigger = storeAct.setter
 
-    function sax(name){
+    function sax(name, data, funs){
       this.name = name
+      this.data = data
+      this.funs = funs
+      this.store = _stock[name]
     }
     sax.prototype = {
       roll: function(key, data){
@@ -818,21 +876,24 @@
         storeAct.bind(this.name, ctx)
       },
       has: function(id, cb){
-        storeAct.has(id, cb)
+        return storeAct.has(id, cb)
       },
       pop: function(){
         storeAct.pop(this.name)
+      },
+      trigger: function(data){
+        return storeAct.trigger(this.name, data)
       }
     }
 
-    window.SAX = function(name, data, funs){
+    function SAX(name, data, funs){
       if (name) {
         var save = _stock;
         if (save[name]) {
-          return new sax(name)
+          return new sax(name, data, funs)
         } else {
-          storeAct.set(name, data, funs)
-          return new sax(name)
+          saxer.set(name, data, funs)
+          return new sax(name, data, funs)
         }
       }
     }
@@ -841,5 +902,7 @@
     _keys.map(function(item, ii){
       SAX[item] = storeAct[item]
     })
+
+    window.SAX = SAX
 
 })();
