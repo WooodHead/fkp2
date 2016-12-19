@@ -12,12 +12,7 @@ import cors from 'kcors'
 import conditional from 'koa-conditional-get'
 import etag from 'koa-etag'
 import SQLite3Store from 'koa-sqlite3-session'
-
-import fkp from './fkp'
-import socketio from './modules/wsocket'   //websocket
-import statics from './modules/static'
-import render from './modules/render'
-
+import Hooker from './modules/hook'
 
 global._ = require('lodash')
 global.SAX = require('fkp-sax')
@@ -25,7 +20,19 @@ global.React = require('react')
 global.ReactDomServer = require('react-dom/server')
 global.Cache = require('./modules/cache')
 global.Errors = require('libs/errors')
+global.Hook = function(name){
+  let cacheId = 'Hook_'+name
+  return Cache.ifid(cacheId, ()=>{
+    const hooker = new Hooker(name)
+    Cache.set(cacheId, hooker)
+    return hooker
+  })
+}
 
+import fkp from './fkp'
+import socketio from './modules/wsocket'   //websocket
+import statics from './modules/static'
+import render from './modules/render'
 
 const cwd = process.cwd()
 const day5 = 5 * 24 * 60 * 60 * 1000

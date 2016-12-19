@@ -1,12 +1,12 @@
 /**
  * Module dependencies.
  */
-var fs = require('fs');
-var Path = require('path')
-var Url = require('url')
-var Router = require('koa-router')
-var libs = require('libs')
-var md5 = require('blueimp-md5')
+const fs = require('fs');
+const Path = require('path')
+const Url = require('url')
+const Router = require('koa-router')
+const libs = require('libs')
+const md5 = require('blueimp-md5')
 import control from './control'
 let debug = Debug('modules:route')
 /**
@@ -296,7 +296,8 @@ async function controler(ctx, route, pageData, ctrlPages, routerInstance){
       }
       if (passAccess) pageData = xData
     }
-    pageData = SAX.roll('pageData', pageData)
+    let hookdata = Hook('pageData').trigger(pageData)
+    pageData = _.extend(pageData, hookdata)
     return [pageData, route]
   } catch (e) {
     console.log(e.stack);
