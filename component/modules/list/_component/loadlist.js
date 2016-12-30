@@ -2,25 +2,22 @@
 * list 通用组件
 * 返回 div > (ul > li)*n
 */
-var store = require('component/mixins/storehlc')
+import store from 'component/mixins/storehlc'
 var List = require('component/widgets/listView')
 
 class ListApp extends React.Component {
 	constructor(props){
 		super(props)
 		this.state = {
-			data: [],
+			data: this.props.data||[],
 			loading: false,
 			over: false,
-			children: true
+			children: true,
+			header: true
 		}
 	}
 
-	componentWillMount() {
-		this.setState({
-			data: this.props.data
-		})
-	}
+	componentWillMount() { }
 
 	render(){
 		let _props = _.extend({}, this.props)
@@ -30,9 +27,12 @@ class ListApp extends React.Component {
 		let overbar = this.state.over ? <div className="overbar"><div className="loader">没有更多内容了</div></div> : []
 		delete _props.children
 
-		let children = this.state.children ? this.props.children : []
+		let children = this.state.children
+		? ((childs)=>  childs ? childs.map( (o, ii) => o ? React.cloneElement(o, {key: ii }):'' ):'' )(this.props.children)
+		: ''
 		return (
 			<div className="list-container">
+				{this.props.header}
 				<List data={this.state.data} {..._props} />
 				{loadbar}
 				{overbar}
@@ -43,13 +43,12 @@ class ListApp extends React.Component {
 }
 
 function storeIt(key){
-	if (!key) return ListApp
 	if (typeof key == 'string') { storeAction(key) }
 	return store(key, ListApp)
 }
 
 function storeAction(key){
-	SAX.set(key, null, {
+	SAX.set(key, {}, {
 		HIDECHILDREN: function(data){
 			this.setState({
 				children: false
@@ -74,14 +73,15 @@ function storeAction(key){
 		},
 		UPDATE: function(data){
 			if (!this.state.over) {
-				if (data.news && data.news.length) {
-					_.delay(()=>{
+				if (data.news) {
+					if (_.isPlainObject(data.news)) { data.news = [data.news] }
+					if (Array.isArray(data.news) && data.news.length) {
 						if (data.type && data.type == 'append') {
 							this.setState({ data: [...this.state.data, ...data.news] })
 						} else {
 							this.setState({ data: data.news })
 						}
-					}, 300)
+					}
 				}
 			}
 		},

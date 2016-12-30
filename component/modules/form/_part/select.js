@@ -128,7 +128,7 @@ function select(intent, ctx){
     // 实时赋值
     // 当前对象数值变更，则直接修改父对象 Input.form中的值
     if( _items.length ){
-      that.form[_name] =_items.map(function(it, j){
+      that.form[this.name] =_items.map(function(it, j){
         return it.value
       })
     }

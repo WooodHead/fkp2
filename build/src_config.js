@@ -49,7 +49,7 @@ module.exports = {
   //  ===================================================================
   // 自定义
   globalList: [
-    path.join(__dirname, '../libs', '/vendor_custom/store.js'), //sax
+    // path.join(__dirname, '../libs', '/vendor_custom/store.js'), //sax
     path.join(__dirname, '../libs', '/vendor_custom/config.js')
   ],
 

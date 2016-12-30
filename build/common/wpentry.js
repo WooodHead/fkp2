@@ -113,7 +113,7 @@ module.exports = function(dirname, opts, files, util){
         libraryTarget:'var',
       },
       externals: {
-        "fkp-sax": "SAX"
+        // "fkp-sax": "SAX"   // key 为require, value为全局变量，
       },
       plugins: [
         new webpack.optimize.OccurenceOrderPlugin(),
@@ -121,8 +121,10 @@ module.exports = function(dirname, opts, files, util){
         new ExtractTextPlugin("../css/js_[name]_[id]_[contenthash].css", {
           allChunks: true
         }),
-        new webpack.ProvidePlugin({
-          ajax: "ajax"
+        new webpack.ProvidePlugin({   //value 为require, key 为全局变量，这个比externals更好用
+          ajax: "ajax",
+          SAX: "fkp-sax",
+          immutable: "immutable"
         })
       ],
       resolve: {

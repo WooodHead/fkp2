@@ -3,7 +3,7 @@
  * @type {Object}
  */
 var babelrcObject = {
-    "presets": ["react", "es2015", "stage-0"],
+    "presets": ["react", "es2015", "stage-0", "stage-1", "stage-3"],
 
     "plugins": [
         "transform-runtime",

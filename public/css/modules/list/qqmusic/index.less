@@ -7,25 +7,34 @@
 @wh: 50*@px;
 @border: 1px solid lighten(#000000,95%);
 
-.like_lagou{   // .list_wrap
+.qqmusic{   // .list_wrap
   position: relative;
+  height: 100%;
   overflow: hidden;
+  padding: 1em;
   .hlist{
     .hlist();
     .item{  //li
+      &:before{
+        content: none;
+      }
+      &:hover{
+        background-color: #f5f5f5;
+      }
+      line-height: 3;
       list-style: none;
       color: #666;
       background: #fff;
       border-bottom: @border;
       width: auto;
       height: auto;
-      padding: 2% 1%;
+      padding: 0 1em;
       a{
         width: auto;
-        color: #04b48b;
-        font-size: 1.36em;
+        color: #656565;
+        font-size: 1em;
         &:visited{
-          color: #04b48b;
+          color: #656565;
         }
         &:hover{
           color: red;
@@ -34,8 +43,12 @@
       .hheader{
         padding: 0;
         padding-left: 0;
+        display: inline-block;
+        width: 60%;
+        overflow-x: auto;
+        vertical-align: middle;
         .title_header{
-          line-height: 2em;
+          line-height: 2;
           vertical-align: middle;
           font-size: 14px;
           img{
@@ -59,6 +72,8 @@
       .hbody{
         padding: 0;
         margin-top: 0;
+        display: inline-block;
+        vertical-align: middle;
         .hb-item{
           display: inline-block;
           padding: 0.1em 1em 0.2em 0;
@@ -85,9 +100,21 @@
   }
 }
 
+.pagenation{
+  .hlist{
+    width: 50% !important;
+    margin: 0.4em auto !important;
+    .item{
+      &:before{
+        content: none;
+      }
+    }
+  }
+}
+
 @media screen{
    @media (max-width: 1023px){
-     .like_lagou{
+     .qqmusic{
        .item{
          .hheader{
            .title_header{

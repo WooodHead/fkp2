@@ -380,7 +380,7 @@ _utile.prototype.plugins = function(name, fn){
 }
 
 route.init = function(name, options, cb){
-  if (!window.SAX){
+  if (!SAX && !window.SAX){
     console.error("SAX不存在，router依赖SAX");
     return false;
   }

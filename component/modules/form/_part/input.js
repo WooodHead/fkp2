@@ -1,6 +1,12 @@
-let ItemMixin = require('component/mixins/item')
+import itemHlc from 'component/mixins/itemhlc'
+import store from 'component/mixins/storehlc'
 let Radio = require('./radio')
 let smd = require('libs').smd
+
+const $text_type = ['text', 'password', 'select', 'tel']
+  , $phold_type =['text']
+  , $radio_check = ['radio','checkbox']
+  , $button_type = ['button','submit']
 
 /*
  * 生成select的表单
@@ -73,10 +79,29 @@ function mk_select(item){
   return ( <span>请检查select配置</span> )
 }
 
+// 'text', 'password', 'select', 'tel'
+function whatTypeElement(P){
+  if (_.indexOf($text_type, P.type)>-1){
+    if (P.type === 'select') return mk_select.call(this, item)
+    if (_.indexOf($phold_type, P.type)>-1){
+      return <input placeholder={P.placehold} type={P.type} name={P.name} id={P.id} defaultValue={P.value} className='form_control'/>
+    }
+    return <input type={P.type} name={P.name} id={P.id} defaultValue={P.value} className='form_control'/>
+  }
+
+  if (_.indexOf($button_type, P.type)>-1){
+    return <input type={P.type} name={P.name} id={P.id} defaultValue={P.value} className='btn'/>
+  }
+}
+
+
+
 function mk_elements(item, ii){
   if (Array.isArray(item.input)) {
+    let profile = _.cloneDeep(item)
+    delete profile.input
     let eles = item.input.map((ele, jj)=>{
-      let _ele = mk_element({input: ele}, _.uniqueId(ii+'_'+jj+'_'));
+      let _ele = mk_element({input: ele, ...profile}, _.uniqueId(ii+'_'+jj+'_'));
       return _ele
     })
     return <div key={'multi_'+ii} className="inputMultiply">{eles}</div>
@@ -97,43 +122,22 @@ function mk_element(item, _i){
     placehold: ''
   }
   if (React.isValidElement(item.input)) { P = _.extend({}, Object.create(item.input.props)) }
-  else { P = item.input }
-
-  let _title = item.title || '',
-  _desc = item.desc || '',
-  _class = item.class ? 'inputItem '+item.class : 'inputItem'
-
-  let $text_type = ['text', 'password', 'select', 'tel']
-  ,   $phold_type =['text']
-  ,   $radio_check = ['radio','checkbox']
-  ,   $button_type = ['button','submit']
-
-  let lableObj;
-
-  function whatElement(){
-    if (_.indexOf($text_type, P.type)>-1){
-      if (P.type === 'select') return mk_select.call(this, item)
-      if (_.indexOf($phold_type, P.type)>-1){
-        return <input placeholder={P.placehold} type={P.type} name={P.name} id={P.id} defaultValue={P.value} className='form_control'/>
-      }
-      return <input type={P.type} name={P.name} id={P.id} defaultValue={P.value} className='form_control'/>
-    }
-
-    if (_.indexOf($button_type, P.type)>-1){
-      return <input type={P.type} name={P.name} id={P.id} defaultValue={P.value} className='btn'/>
-    }
+  else {
+    P = item.input
   }
+
+  const _title = item.title || P.title || ''
+  const _desc = item.desc || P.desc || ''
+  const _class = item.class ? 'inputItem '+item.class : 'inputItem'
+  let lableObj
 
   // radio
   if (_.indexOf($radio_check, P.type)>-1){
-    lableObj = <Radio key={'radioGroup'+_i} data={item.input}/>
-  }
-
-  // 'text', 'password', 'select', 'tel'
-  else {
+    lableObj = <Radio key={'radioGroup'+_i} data={item.input} />
+  } else {
     lableObj = <lable ref={(P.id||P.name)} key={"lable"+_i} className={_class + ' for-' + (P.id||P.name||'')}>
       {_title ? <span className="fkp-title">{_title}</span> : false}
-      {whatElement()}
+      {whatTypeElement(P)}
       {P.required ? <span className="fkp-input-box" /> : ''}
       {_desc ? <span className="fkp-desc">{_desc}</span> : false}
     </lable>
@@ -155,19 +159,6 @@ function mk_element(item, _i){
 
 /*
  * inputs
- * Input批量产出form表单，目前支持 text/hiden/password/tel
- * ==========================================================================================
- * 方案1
-    var _input_config = {
-        name:      ['user', 'message' , 'submit'],
-        id:        ['user', 'message' , 'submit'],
-        type:      ['text', 'text', 'button'],
-        title:     ['姓名' , '聊天' , ''],
-        value:     [null  , null  , '发射'],
-        class:     ['user'  ,null  , 'chatSubmit'],
-        placehold: [null  , '请输入聊天内容']
-    }
- * ==========================================================================================
  * 方案2
  * var _input_config = [
      //0
@@ -220,59 +211,56 @@ function mk_element(item, _i){
      ....
 * ==========================================================================================
 */
-let Input = {
-  mixins: [ItemMixin],
-	getInitialState:function(){
-		return {
-      fill: false
-		}
-	},
-	//插入真实 DOM之前
-	componentWillMount:function(){
+
+// import itemHlc from 'component/mixins/itemhlc'
+// import store from 'component/mixins/storehlc'
+
+class Input extends React.Component {
+  constructor(props){
+    super(props)
     this.intent = []
-    if (this.props.data){
-      this.setState({
-        fill: this.props.data
-      })
+    this.state = {
+      data: this.props.data||[]
     }
-	},
+  }
 
-  componentDidMount: function() {
-    // console.log(this.refs)
-    // console.log(React.findDOMNode(this.refs.username))
-  },
+  componentWillMount() {}
 
-  _preRender: function(){
-    let self = this;
-    this.fills = [];
+  componentDidMount() {}
 
-    if (this.state.fill){
-      let self = this;
-      let eles= this.state.fill;
-
-      if (_.isArray(eles)){
-        self.fills = eles.map(function(item, i){
-          if( _.isString(item)) {
-            var _title = smd(item)
-            return (<div key={'split'+i} className="split" dangerouslySetInnerHTML={{__html: _title}}></div>)
-          }
-          return ( mk_elements.call(self, item, i) )
-        })
+  _preRender(){
+    return this.state.data.map( (item, i) => {
+      if( _.isString(item)) {
+        var _title = smd(item)
+        return (<div key={'split'+i} className="split" dangerouslySetInnerHTML={{__html: _title}}></div>)
       }
-    }
-  },
-	render:function(){
-    this._preRender()
-    let fill = this.fills ? this.fills : false;
-    if (fill){
-      return ( <div className="inputGroup"> {fill} </div> )
-    }
-	}
+      return mk_elements.call(this, item, i)
+    })
+  }
+
+  render(){
+    let fill = this._preRender()
+    return (
+      <div className="inputGroup">
+        {fill}
+      </div>
+    )
+  }
 }
 
-//
-function actRct( storeName ){
-  return require('component/util/index')(storeName, Input)
+function storeIt(key){
+	if (typeof key == 'string') { storeAction(key) }
+	return store(key, itemHlc(Input))
 }
 
-module.exports = actRct;
+function storeAction(key){
+  SAX.set(key, {}, {
+    APPEND: function(data){
+      let sdata = Array.from(this.state.data)
+      sdata = sdata.concat(data)
+      this.setState({ data: sdata })
+    }
+  })
+}
+
+module.exports = storeIt;

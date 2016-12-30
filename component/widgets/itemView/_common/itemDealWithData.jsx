@@ -2,16 +2,16 @@
 * 数据处理部分
 * f_div / f_li 的公共数据处理部分
 */
-
-function dealWithData(){
+function dealWithData(state){
    var clsName = "item";
    var itemStyle = '';
    var sty = {};
    var wid = '';
-   var data = this.props.data;
+   const _state = state
+   var data = _state.data
    var items = [];
 
-   if(this.props.itemClass) clsName = "item "+this.props.itemClass
+   if(_state.itemClass) clsName = "item "+_state.itemClass
 
    if(data){
      if(!Array.isArray(data)){

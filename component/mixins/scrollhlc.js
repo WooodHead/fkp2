@@ -13,6 +13,10 @@ export default (ComposedComponent) => {
     }
 
     componentDidMount() {
+      if (typeof this.scrollContainer == 'string') {
+        const sc = this.scrollContainer
+        this.scrollContainer = $(sc)[0]
+      }
       if (this.scrollContainer){
         let _ref = this.scrollContainer
         this._scrollContainer = _ref

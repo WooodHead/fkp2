@@ -8,6 +8,7 @@ var md5 = require('blueimp-md5')
 */
 var mapper //静态资源映射文件
 function matchMapper(src, type){
+  src = src.replace(/\-/g, '/')
   switch (type) {
     case 'css':
       var _src = src.replace('/css/', '').replace('.css', '')

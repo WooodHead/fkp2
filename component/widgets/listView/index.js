@@ -2,54 +2,70 @@
 * list 通用组件
 * 返回 div > (ul > li)*n
 */
+import im from 'immutable'
+import {objtypeof} from 'libs'
 var Fox = require('../itemView/f_li')
 
-var tmpApp = React.createClass({
-	getDefaultProps: function() {
-		return {
-
-		};
-	},
-
-	getInitialState: function() {
-		return {
-      	data: this.props.data||[],
-	    };
-	},
-
-	//插入真实 DOM之前
-	componentWillMount:function(){
+class TmpApp extends React.Component {
+	constructor(props){
+		super(props)
 		var pdata = this.props.data;
-		if( pdata ){
-			if(!Array.isArray( pdata )){
-				pdata = [ pdata ]
-			}
-			this.setState({
-				data: pdata
-			})
+		if( pdata ){ if(!Array.isArray( pdata )){ pdata = [ pdata ] } }
+		this.selected = []
+		this.state = {
+			data: im.fromJS(pdata||[])
 		}
-	},
 
-	//已加载组件收到新的参数时调用
-	componentWillReceiveProps:function(nextProps){
+		this._dealWithData = this::this._dealWithData
+		this._dealWithItemView = this::this._dealWithItemView
+		this.listMethod = this::this.listMethod
+		this.getListDom = this::this.getListDom
+	}
+
+	shouldComponentUpdate(nextProps, nextState) {
+		return !(this.props === nextProps || im.is(this.props, nextProps)) ||
+				 !(this.state === nextState || im.is(this.state, nextState));
+	}
+
+	componentWillMount() {
+
+	}
+
+	getListDom(){
+		return React.findDOMNode(this);
+	}
+
+	componentWillReceiveProps(nextProps) {
 		var pdata = nextProps.data;
-		if(!Array.isArray( pdata )){
-			pdata = [ pdata ]
+		if (pdata) { if(!Array.isArray( pdata )) pdata = [ pdata ] }
+		let stateData = this.state.data
+		if (!im.is(pdata, stateData)) {
+			stateData = stateData.merge(pdata)
+			this.setState({ data: stateData })
 		}
-		if( nextProps.data ){
-			this.setState({
-				data: pdata
-			});
-		}
-		// this.listMethod(nextProps);
-	},
+	}
 
-	_dealWithItemView: function(opts){
+	componentDidMount(){
+		this.listMethod(this.props.listMethod)
+	}
+
+	listMethod(lmd){
+		if (lmd && typeof lmd == 'function') {
+			let that = React.findDOMNode(this);
+			lmd.call(this, that, this.props.store)
+		}
+	}
+
+	_dealWithItemView(opts){
 		var that = this;
 		var props = _.cloneDeep(that.props);
 		props.idf = opts.i;
 		props.key = 'fox'+opts.i;
 		props.data = opts.item;
+
+		const listOperate = {
+			parent: this.getListDom
+		}
 
 		//删除多余的属性
 		delete props.listClass;
@@ -61,13 +77,11 @@ var tmpApp = React.createClass({
 			var view = that.props.itemView;
 			return React.createElement(view, props, that.props.children);
 		}else{
-			// var _props = _.extend({data: opts.item, key: ('fox'+opts.i), idf: opts.i }, props)
-			// return React.createElement(Fox, _props, that.props.children)
-			return <Fox idf={opts.i} key={opts.i} {...props} data={opts.item} />;
+			return <Fox ref={"child_"+opts.i} operate={listOperate} idf={opts.i} {...props} data={opts.item} />;
 		}
-	},
+	}
 
-	_dealWithData: function(data){
+	_dealWithData(data){
 		var that = this;
 		var cls = "hlist";
 		var sty = {};
@@ -79,7 +93,7 @@ var tmpApp = React.createClass({
 		var itemCollection = [];
 		function organizeData(record){
 			var items = [];
-			record.map(function(item,list_i){
+			record.map(function(item, list_i){
 				if (Array.isArray(item)){
 					//inline 将数组元素放置在一个li中
 					itemCollection.push(organizeData(item));
@@ -87,7 +101,8 @@ var tmpApp = React.createClass({
 					var it = that._dealWithItemView({i: list_i, item: item})
 					items.push(it);
 				}
-			});
+			})
+
 			if(items.length){
 				var group = _.uniqueId('group-')
 				return (
@@ -95,46 +110,19 @@ var tmpApp = React.createClass({
 						{items}
 					</ul>
 				)
-			}else {
-				return;
 			}
 		}
-		itemCollection.push(organizeData(data));
 
+		let stateData = this.state.data.toJS()
+		itemCollection.push(organizeData(stateData))
 		return itemCollection;
-	},
+	}
 
-	loopRender: function(){
-		return this._dealWithData(this.state.data);
-	},
-
-
-	// 组件判断是否重新渲染时调用
-    // 虚拟dom比对完毕生成最终的dom后之前
-	// shouldComponentUpdate:function(){
-	// 	return true;
-	// },
-
-	listMethod: function(props){
-		if(props.listMethod){
-			var mtd = props.listMethod;
-			var that = React.findDOMNode(this);
-			if(typeof mtd==='function'){
-				var the = this;
-				mtd(that,the.props.store);
-			}
-		}
-	},
-
-	componentDidMount: function () {
-		this.listMethod(this.props)
-	},
-
-	render: function () {
-		var fills = this.loopRender();
-		var _cls = 'list-wrap'
+	render(){
+		let fills = this._dealWithData()
+		let _cls = 'list-wrap'
 		if(this.props.listClass){
-			_cls = "list-wrap " + this.props.listClass;
+			_cls = "list-wrap " + this.props.listClass
 		}
 		return (
 			<div className={_cls}>
@@ -143,6 +131,7 @@ var tmpApp = React.createClass({
 			</div>
 		)
 	}
-});
 
-module.exports = tmpApp;
+
+}
+module.exports = TmpApp;

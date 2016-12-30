@@ -1,4 +1,5 @@
 module.exports = {
+    'success': {success: '1000', message: "ok"},
     '1000': {success: '1000', message: "ok"},
     '1010': {success: '1010', message: "链接正确，但数据为空"},
 

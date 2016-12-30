@@ -3,52 +3,29 @@
  */
 let libs = require('libs')
 let list = require('./_component/loadlist')  //设定列表域为 lagou
+import ListClass from 'component/class/list'
 let objtypeof = libs.objtypeof
 
-class List {
-  constructor(config){
-    this.config = config
-    this.client = typeof window == 'undefined' ? false : true
-    this.componentWill = this::this.componentWill
-    this.componentStatic = this::this.componentStatic
-    this.render = this::this.render
-
-    this.componentStatic()
-    this.componentWill()
-  }
-
-  componentStatic(){
-    if (this.client) {
-      libs.inject().css(['/css/m/'+this.config.theme])  //注入like_lagou的样式
-    }
+class App extends ListClass {
+  constructor(config) {
+    super(config)
   }
 
   componentWill(){
     const dft = this.config
-    let Blist = list(dft.globalName)
-    this.eles = (
-      <Blist
-        data={dft.data}
-        itemClass={dft.itemClass}
-        listClass={dft.listClass}
-        listMethod={dft.listMethod}
-        itemMethod={dft.itemMethod}
-        >
-      </Blist>
-    )
-  }
+    const BaseList = this.createList(dft.globalName)   // = this.createList(this.config.globalName)
 
-  render(id){
-    let container = id || this.config.container || ''
-    if (!container) return this.eles
+    this.eles = <BaseList
+      data={dft.data}
+      itemClass={dft.itemClass}
+      listClass={dft.listClass}
+      header={dft.header}
+      listMethod={dft.listMethod}
+      itemMethod={dft.itemMethod} >
+      {dft.footer ? dft.footer : ''}
+    </BaseList>
 
-    container = typeof container == 'string'
-    ? document.getElementById(container)
-    : container.nodeType ? container : ''
-
-    if (container) {
-      React.render( this.eles, container )
-    }
+    return this
   }
 }
 
@@ -58,18 +35,18 @@ export function BaseList(opts){
     data: [],
     container: '',
     theme: '',    //list-lagou.css
-    globalName: '',
+    globalName: _.uniqueId('BaseList_'),
     itemMethod: noop,
     listMethod: noop,
     itemClass: '',
     listClass: ''
   }
   if (objtypeof(opts) == 'object') dft = _.merge(dft, opts)
-  return new List(dft)
+  return new App(dft)
 }
 
-export function pure(props){
-  delete props.container
-  delete props.globalName
-  return BaseList(props)
+export function pure(props, getreact){
+  let app = BaseList(props)
+  if (!app.client || getreact) return app.render()
+  return app
 }

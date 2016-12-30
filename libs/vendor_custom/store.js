@@ -866,9 +866,6 @@
       get: function(){
         return storeAct.get(this.name)
       },
-      data: function(){
-        return storeAct.get(this.name)
-      },
       append: function(data, fun){
         storeAct.append(this.name, data, fun)
       },
@@ -892,7 +889,7 @@
         if (save[name]) {
           return new sax(name, data, funs)
         } else {
-          saxer.set(name, data, funs)
+          storeAct.set(name, data, funs)
           return new sax(name, data, funs)
         }
       }

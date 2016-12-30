@@ -2,16 +2,21 @@
 * list 通用组件
 * 返回 div > (ul > li)*n
 */
-var store = require('component/mixins/storehlc')
+import store from 'component/mixins/storehlc'
 import {BaseList, pure} from 'component/modules/list/base_list'
 import Tree from 'component/util/tree'
 
-const tapsapp = SAX('TapsApp', {})
+
+const tapsapp = SAX(_.uniqueId('TapsApp_'), {})
 class TapsApp extends React.Component {
 	constructor(props){
 		super(props)
 		this.menus
 		this.contents = []
+		this.client = (()=>{
+      if (typeof window == 'undefined') return false
+      return true
+    })()
 		this.state = {
 			data: [],
 			selectData: [],
@@ -27,16 +32,10 @@ class TapsApp extends React.Component {
 			this.state.select = 0
 		}
 
-		this.mergeState = this::this.mergeState
 		this.select = this::this.select
 		this._menus = this::this._menus
 		this.actions = this::this.actions
 		this.getContent = this::this.getContent
-	}
-
-	mergeState(options){
-		let tmp = _.extend({}, this.state, options)
-		this.setState(tmp)
 	}
 
 	_menus(){
@@ -93,16 +92,17 @@ class TapsApp extends React.Component {
 	}
 
 	select(id, data){
-		this.setState({ select: (id||0) })
-		if (data) this.setState({ selectData: data})
+		this.setState({
+			select: (id||0),
+			selectData: (data||{})
+		})
 	}
 
 	getContent(){
-		const tapscontents = tapsapp.data().contents
+		const tapscontents = tapsapp.get().contents
 		const content = tapscontents[this.state.select]
 		if (typeof content == 'function') {
-			if (this.selectData) return content(this.selectData)
-			return content()
+			return content(this.selectData)
 		}
 		return content
 	}
@@ -120,9 +120,7 @@ class TapsApp extends React.Component {
 		return (
       <div className={cls}>
 				{this.menus}
-        <div className={boxes_cls}>
-          {content}
-        </div>
+        <div className={boxes_cls}>{content}</div>
       </div>
     )
 	}

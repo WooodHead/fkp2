@@ -20,21 +20,28 @@ function itemMixin(){
           //React.findDOMNode(this) // var box = React.findDOMNode(this.refs.popbox);
           var self = this;
           var that = React.findDOMNode(this);
+          const ctx = {
+            idf: this.idf,
+            getState: this.getState,
+            updateState: this.updateState,
+            parent: this.parent,
+            refs: this.refs
+          }
 
           if(this.props.itemDefaultMethod){
             if(this.props.itemMethod){
                 var mtd = this.props.itemMethod;
-                mtd.call(self, that, self.intent);
+                mtd.call(ctx, that, self.intent);
             }
             setTimeout(function(){
               var dMtd = self.props.itemDefaultMethod;
         			if(typeof dMtd==='function'){
-        				dMtd.call(self, that, self.intent);
+        				dMtd.call(ctx, that, self.intent);
         			}
             }, 17)
 	        } else if(this.props.itemMethod){
             var mtd = this.props.itemMethod;
-            mtd.call(self, that, self.intent);
+            mtd.call(ctx, that, self.intent);
           }
       }
     }

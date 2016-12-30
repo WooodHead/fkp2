@@ -14,6 +14,11 @@ let _jump = false;
 class PageItem extends React.Component {
   constructor(props){
     super(props)
+    this.jump = this::this.jump
+  }
+
+  jump(data){
+    SAX.roll(_storeName, 'JUMP', data)
   }
 
   componentDidMount() {
@@ -22,7 +27,8 @@ class PageItem extends React.Component {
     , dmtd = this.props.itemDefaultMethod;
 
     if(dmtd && typeof dmtd==='function'){
-      dmtd.call(ele, _storeName, mtd);
+      // dmtd.call(ele, _storeName, mtd);
+      dmtd.call(this, ele, mtd);
     }
   }
 
@@ -204,7 +210,17 @@ class Pagenation extends React.Component {
 
 function actRct( storeName ){
   _storeName = storeName;
+  if (typeof storeName == 'string') { storeAction(storeName) }
   return store(storeName, Pagenation)
+}
+
+function storeAction(key){
+	SAX.set(key, {}, {
+    JUMP: function(data){
+      let xxx = _.extend({}, this.state.begin, data)
+      this.setState({begin: xxx})
+    }
+	})
 }
 
 module.exports = actRct

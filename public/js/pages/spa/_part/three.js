@@ -19,7 +19,7 @@ function start(name, dom, utile){
         router('first')
       })
     })
-    return <utile.Announce childs={_childs.eles} />
+    return <utile.Announce childs={_childs.render()} />
   }
 
   return Pages.new({

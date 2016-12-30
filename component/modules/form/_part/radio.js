@@ -1,11 +1,15 @@
 let ItemMixin = require('component/mixins/item')
 // <Radio data={name: [], id: [], title: [], rtitle:[], cb: fn} />
 
+function getArrayItem(item){
+  return item && Array.isArray(item) ? item : typeof item == 'string' ? [item] : ''
+}
+
 var Radio = React.createClass({
   mixins: [ItemMixin],
 	getInitialState:function(){
 		return {
-      fill: false
+      fill: []
 		}
 	},
 	//插入真实 DOM之前
@@ -18,107 +22,69 @@ var Radio = React.createClass({
     this.descs = [];
     this.fills = [];
     this.type = 'radio';
-    let checked;
+    let checked = false;
     let _cls = 'fkp-radio-box';
-
     let me = this;
-    let eles= this.props.data
-
-    if (_.isObject(eles)){
+    const that = this
+    if (_.isPlainObject(this.props.data)){
       let data = this.props.data
 
-      if (data.name) this.names = _.isArray(data.name) ? data.name : ['noname']
-      if (data.id) this.ids = _.isArray(data.id) ? data.id : ''
-      if (data.type) this.type = data.type;
-      if (data.title) this.titles = _.isArray(data.title) ? data.title : ['']
-      if (data.value) this.values = _.isArray(data.value) ? data.value : ['novalue']
-      if (data.desc) this.descs = _.isArray(data.desc) ? data.desc : ['']
-      _cls = me.type==='radio' ? 'fkp-radio-box' : 'fkp-checkbox-box';
+      try {
+        this.names = getArrayItem(data.name)
+        this.ids   = getArrayItem(data.id)
+        this.titles   = getArrayItem(data.title)
+        this.values   = getArrayItem(data.value)
+        this.descs   = getArrayItem(data.desc)
 
-      if (this.names.length){
-        this.values.map(function(item, i){
-          let _id = me.ids[i] ? me.ids[i] : '',
-          _title = me.titles[i] ? me.titles[i] : '',
-          _value = me.values[i] ? me.values[i] : 'novalue',
-          _desc  = me.descs[i] ? me.descs[i] : '',
-          _input = [],
-          _name = me.names[i] ? me.names[i] : me.names[0],
-          _active = ''
-          if (_value && _value!=='novalue' && _value.indexOf('-')===0){
-            // && parseInt(_value)<0){
-            checked = true;
-            _value = _value.replace('-','')
-          }
-          else { checked = false; }
+        if (data.type) this.type = data.type;
+        _cls = this.type==='radio' ? 'fkp-radio-box' : 'fkp-checkbox-box';
 
-          var lableClass = me.type==='radio' ? 'radioItem' : 'checkboxItem';
-          me.fills.push(
-            <lable key={'radio'+i} className={lableClass}>
-              {(function(){
-                if (_title) return <span className="fkp-title">{_title}</span>
-              })()}
-              {(function(){
-                if (checked) return <input defaultChecked type={me.type} name={_name} id={_id} value={_value}/>
-                else {
-                  return <input type={me.type} name={_name} id={_id} value={_value}/>
-                }
-              })()}
-              <span className={_cls} />
-              {(function(){
-                if (_desc) return <span className="fkp-desc">{_desc}</span>
-              })()}
-            </lable>
-          )
-          // me.fills.push(_input)
-        })
+        if (!this.names || !this.values) {
+          throw '请指定name 和 value'
+        }
+      } catch (e) {
+        console.log(e);
       }
 
-      if (this.fills.length){
-        this.setState({
-          fill: this.fills
-        })
-      }
+      this.values.map( (val, ii)=>{
+        let resault = {}
+        const lableClass = this.type==='radio' ? 'radioItem' : 'checkboxItem'
+
+        resault.val = val
+        resault.title = this.titles[ii] || ''
+        resault.desc = this.descs[ii] || ''
+        resault.id = this.ids[ii] || ''
+        resault.name = this.names[ii] || this.names[0]
+
+        if (resault.val && resault.val.indexOf('-')==0){
+          checked = true;
+          resault.val = resault.val.substring(1)
+        }
+
+        this.fills.push(
+          <lable key={'radio'+ii} className={ lableClass }>
+            { resault.title ? <span className="fkp-title">{resault.title}</span> : '' }
+            {(
+              () => checked
+              ? <input defaultChecked type={this.type} name={resault.name} id={resault.id} value={resault.value}/>
+              : <input type={this.type} name={resault.name} id={resault.id} value={resault.value}/>
+            )()}
+            <span className={_cls} />
+            { resault.desc ? <span className="fkp-desc">{resault.desc}</span> : '' }
+          </lable>
+        )
+      })
+      this.setState({ fill: this.fills })
     }
 	},
-	// //插入真实 DOM之后
-	// componentDidMount:function(){
-    //
-	// },
-	// //被重新渲染之前
-	// componentWillUpdate:function(){
-    //
-	// },
-	// //被重新渲染之后
-	// componentDidUpdate:function(){
-    //
-	// },
-	// //移出真实 DOM之前
-	// componentWillUnmount:function(){
-    //
-	// },
-	// //已加载组件收到新的参数时调用
-	// componentWillReceiveProps:function(){
-    //
-	// },
-	// //组件判断是否重新渲染时调用
-    // 虚拟dom比对完毕生成最终的dom后之前
-	// shouldComponentUpdate:function(){
-	// 	return true;
-	// },
-    //
-	// handleClick:function(){
-    //
-	// },
+
 	render:function(){
-    let fill = this.state.fill ? this.state.fill : false;
-    let groupClass = this.type === 'radio' ? 'radioGroup' : 'checkboxGroup'
-    if (fill){
-      return (
-        <div ref={this.names[0]} className={groupClass}>
-          {fill}
-        </div>
-      )
-    }
+    const groupClass = this.type === 'radio' ? 'radioGroup' : 'checkboxGroup'
+    return (
+      <div ref={this.names[0]} className={groupClass}>
+        {this.state.fill}
+      </div>
+    )
 	}
 });
 

@@ -1,5 +1,4 @@
 import {objtypeof, inject, validator, msgtips} from 'libs'
-import ajax from 'ajax'
 import input from 'component/modules/form/inputs'
 
 const injectStatic = inject()

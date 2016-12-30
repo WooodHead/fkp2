@@ -1,53 +1,31 @@
 /**
  * 列表
  */
+
 let libs = require('libs')
-let list = require('./_component/loadlist')  //设定列表域为 lagou
-var scroll = require('component/mixins/scrollhlc')
 let PagiPure = require('component/modules/pagination').pure
+import scroll from 'component/mixins/scrollhlc'
+import ListClass from 'component/class/list'
+
 let objtypeof = libs.objtypeof
 
-class App {
-  constructor(config){
-    this.config = config
-    this.eles
-    this.stat
-    this.actions
-    this.client = (()=>{
-      if (typeof window == 'undefined') return false
-      return true
-    })()
+class App extends ListClass {
+  constructor(config) {
+    super(config)
+  }
 
-    this.componentWill = this::this.componentWill
-    this.componentDid = this::this.componentDid
-    this.append = this::this.append
-    this.render = this::this.render
-
-    // actions
-    this.loaded = this::this.loaded
-    this.loading = this::this.loading
-    this.update = this::this.update
-    this.over = this::this.over
-
-    this.componentWill()
-    return this
+  componentDid(){
+    this.hidechild()
   }
 
   componentWill(){
     const dft = this.config
-    let Blist
-    if (this.client) {
-      const inject = libs.inject()
-      inject.css(['/css/m/'+dft.theme])  //注入like_lagou的样式
-      Blist = scroll(list(dft.globalName))
-      this.actions = SAX(dft.globalName)
-    } else {
-      Blist = list(dft.globalName)
-    }
-    this.eles = <Blist
+    const BaseList = scroll(this.createList(dft.globalName))   // = this.createList(this.config.globalName)
+    this.eles = <BaseList
       data={dft.data}
       itemClass={dft.itemClass}
       listClass={dft.listClass}
+      header={dft.header}
 
       itemMethod={dft.itemMethod}
       listMethod={this.componentDid}
@@ -55,50 +33,9 @@ class App {
       scrollContainer = {dft.scrollContainer}
       onscroll={dft.scroll}
       onscrollend={dft.scrollEnd} >
-      {PagiPure(dft.pagenation)}
-    </Blist>
-
-    return this
-  }
-
-  componentDid(){
-    this.stat = 'finish'
-    this.actions.roll('HIDECHILDREN')
-  }
-
-  append(ary){
-    this.actions.roll('UPDATE', {news: ary, type: 'append'})
-  }
-
-  loaded(){
-    this.actions.roll('LOADED')
-  }
-
-  loading(cb){
-    this.actions.roll('LOADING', {next: cb})
-  }
-
-  update(ary){
-    this.actions.roll('UPDATE', {news: ary})
-  }
-
-  over(){
-    this.actions.roll('OVER')
-  }
-
-  render(id){
-    let container = id || this.config.container || ''
-    if (!container) {
-      return this.eles
-    }
-
-    container = typeof container == 'string'
-    ? document.getElementById(container)
-    : container.nodeType ? container : ''
-
-    if (container) {
-      React.render( this.eles, container )
-    }
+      {dft.footer}
+      {PagiPure(dft.pagenation, true)}
+    </BaseList>
 
     return this
   }
@@ -108,10 +45,12 @@ export function LoadList(opts){
   let noop = function(){}
   let dft = {
     data: [],
+    header: '',
+    footer: '',
     container: '',
     scrollContainer: '',
-    theme: 'list-lagou.css',
-    globalName: '',
+    theme: 'list-lagou',   // public/css/modules/list/lagou
+    globalName: _.uniqueId('LoadList_'),
     itemMethod: noop,
     listMethod: noop,
     itemClass: '',
@@ -129,8 +68,8 @@ export function LoadList(opts){
   return new App(dft)
 }
 
-export function pure(props){
+export function pure(props, getreact){
   let app = LoadList(props)
-  if (app.client) return app
-  return app.render()
+  if (!app.client || getreact) return app.render()
+  return app
 }

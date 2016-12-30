@@ -11,7 +11,8 @@ function start(name, dom, utile){
         <input type='button' id='back' value='返回' />,
         <input type='button' id='prev' value='下一页' />
       ]}
-    ], ()=>{
+    ],
+    ()=>{
       $('#back').click(()=>{
         router.goback()
       })
@@ -19,7 +20,7 @@ function start(name, dom, utile){
         router('three', {second: '我来自第二页'})
       })
     })
-    return <utile.Announce childs={_childs.eles} />
+    return <utile.Announce childs={_childs.render()} />
   }
 
   return Pages.new({
