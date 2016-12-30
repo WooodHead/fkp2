@@ -70,6 +70,7 @@ export default async function(app) {
     fkp.staticMapper = mapper
     fkp.config = CONFIG
     fkp.root = Path.join(__dirname, '../../')
+    fkp.ajax = fetch
 
 
 
