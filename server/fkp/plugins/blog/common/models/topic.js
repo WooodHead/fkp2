@@ -9,7 +9,6 @@ var BaseTopicSchema = new Schema({
     content: { type: String },
     img: { type: String },
     cats: { type: String, default: '默认'},
-    // tags: { type: String, default: '' },
     tags: [String],
     user: {
         id: { type: String },
@@ -42,15 +41,16 @@ BaseTopicSchema.methods.userMatches = async function (user) {
     // return topic;
 }
 
-BaseTopicSchema.statics.topicList = async function (start, end, tag, cat) {
-    let query = {}
+BaseTopicSchema.statics.topicList = async function (start, end, options) {
+    let query = {deleted: false}
     let pageSize = config.mongo.pageSize
     if (!start) start = 0;
     end = pageSize
     // if (!end) end = pageSize
-    if (tag && typeof tag==='string') query.tags = decodeURI(tag)
-    if (cat && typeof cat==='string') query.cats = cat
-    return await this.find(query,'title _id tags create_at update_at img user visit_count',{skip:start, limit:end, sort: {update_at: -1, create_at: -1} }).exec()
+    // if (tag && typeof tag==='string') query.tags = decodeURI(tag)
+    // if (cat && typeof cat==='string') query.cats = cat
+    let $query = this.find(query,'title _id tags create_at update_at img user visit_count',{skip:start, limit:end, sort: {update_at: -1, create_at: -1} })
+    return await $query.exec()
 }
 
 //获取topic

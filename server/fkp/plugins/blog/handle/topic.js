@@ -7,14 +7,20 @@ import {isLogin} from './user'
  * @param  {Boolean} isAjax [description]
  * @return {Promise}        [description]
  */
-export async function forList(ctx, blog, isAjax){
-  let [total, lists] = await _forlist(ctx, blog, isAjax)
+export async function forList(ctx, blog, isAjax, options){
+  let [total, lists] = await _forlist(ctx, blog, isAjax, options)
   return {total, lists: lists}
 }
 
 export async function forSave(ctx, blog, isAjax){
   if (!await isLogin(ctx)) return Errors['10005']
   return await blog.addtopic(ctx)
+}
+
+export async function forDelete(ctx, blog, isAjax){
+  if (!await isLogin(ctx)) return Errors['10005']
+  const bodys = ctx.request.body
+  return await blog.deletetopic(ctx, bodys)
 }
 
 export async function forDetail(ctx, blog, isAjax){
@@ -43,17 +49,17 @@ export async function forTotal(ctx, blog, isAjax){
   return await blog.total()
 }
 
-async function _forlist(ctx, blog, isAjax){
+async function _forlist(ctx, blog, isAjax, opts){
   let lists = []
   if (isAjax) {
     let [page, tag, cat] = ctx.method == 'GET' ? Object.values(ctx.query) : Object.values(ctx.request.body)
     page = (page&&parseInt(page)) || 1
-    if (tag) lists = await blog.listtopic({tag:tag, page: page})
-    if (cat) lists = await blog.listtopic({cat:cat, page: page})
-    lists = await blog.listtopic({page: page})
+    if (tag) lists = await blog.listtopic({tag:tag, page: page}, opts)
+    if (cat) lists = await blog.listtopic({cat:cat, page: page}, opts)
+    lists = await blog.listtopic({page: page}, opts)
   } else {
     let [cat, title, id] = Object.values(ctx.params)
-    lists = await blog.listtopic({page: title||1})
+    lists = await blog.listtopic({page: title||1}, opts)
   }
   let total = await blog.total()
   return [total, lists]

@@ -1,7 +1,12 @@
 import router from '../../route'
 import libs from 'libs'
 import adapter from 'component/adapter/mgbloglist'
-import {forList, forDetail, forSave, forTotal} from './handle/topic'
+import {
+  forList,
+  forDetail,
+  forSave,
+  forTotal
+} from './handle/topic'
 
 function forDelete(){}
 function forUpdate(){}
@@ -9,6 +14,7 @@ function forAdd(){}
 
 export default async function(ctx, next){
   let fkp = ctx.fkp
+  const component = fkp.component()
   let blog = await fkp.blog()
   let routePrefix = this.opts.prefix
   let route = router.makeRoute(ctx, routePrefix)
@@ -66,7 +72,6 @@ export default async function(ctx, next){
       let props = {
         data: adapter(xData.lists),
         listClass: 'like_lagou',
-        itemClass: 'lg_item',
         pagenation: {
           data: { total: xData.total, query: '/blog/page/' },
           begin: { start: parseInt(title||1)-1 }
@@ -75,10 +80,10 @@ export default async function(ctx, next){
       let listStr = ''
       if (routePrefix=='/logs') {
         route = 'blog'
-        listStr = fkp.parsereact('component/modules/list/pagi_list', props)   // 同构客户端的react组件 解析react组件并返回html结构字符串
+        listStr = component.pagilist(props)         
         attachjs = await fkp.injectjs(['/js/blog/pagilist'])   // node端注入js return {attachCss: resource...} 分页按钮
       } else {
-        listStr = fkp.parsereact('component/modules/list/load_list', props)   // 同构客户端的react组件 解析react组件并返回html结构字符串
+        listStr = component.loadlist(props)
         attachjs = await fkp.injectjs(['/js/blog/loadlist'])   // node端注入js {attachCss: resource...} 自动加载
       }
       pageData = _.assign(pageData, attachcss, attachjs, {blog:{list: listStr}} )

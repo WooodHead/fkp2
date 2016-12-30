@@ -1,75 +1,81 @@
 import router from '../../route'
 import libs from 'libs'
-import adapter from 'component/adapter/mgbloglist'
-import {forList, forDetail} from './handle/topic'
+import adapter from 'component/adapter/formbloglist'
+import {forList, forDetail, forDelete} from './handle/topic'
 
 export default async function(ctx, next){
-  let fkp = ctx.fkp
-  let blog = await fkp.blog()
-  let Auth = await fkp.auth()
+  const fkp = ctx.fkp
+  const component = fkp.component()
+  const blog = await fkp.blog()
+  const Auth = await fkp.auth()
 
   let routePrefix = this.opts.prefix
   let route = router.makeRoute(ctx, routePrefix)
   route = 'blog'
-  let pageData = router.staticMapper(ctx, fkp.staticMapper, route, routePrefix)
-  let xData, xDetail, xAdd, xSave
+
   let [cat, title, id] = Object.values(ctx.params)
+
+  let pageData = router.staticMapper(ctx, fkp.staticMapper, route, routePrefix)
+  pageData.blog = { admin: true }
+
+  let xData, xDetail, xAdd, xSave, xDel
   let isAjax = fkp.isAjax()
+
+  // 检查登录及是否为管理员
+  const user = ctx.session.$user
+  if (!user) return ctx.redirect('/')   // 应该要跳转到登录页
+  const isAdmin = user.status == 10000 ? true : false
+
+
+  // 获取数据
   switch (cat) {
-    case 'get':
-      if (ctx.query.topic) xDetail = await await forDetail(ctx, blog, isAjax)
-      else xData = await forList(ctx, blog, isAjax)
-      break;
-    case 'page':
-      xData = await forList(ctx, blog)
-      break;
-    case 'topic':
-      if (title) xDetail = await forDetail(ctx, blog)
-      break;
-    default:
-      xData = await forList(ctx, blog)
+    case 'delete':
+      xDel = await forDelete(ctx, blog, isAjax)
+    break;
+    case 'list':
+      const opts = {
+        from: 'admin',
+        where: [ ['user.username', '==', user.username] ]
+      }
+      if (isAdmin) delete opts.where[0]
+      xData = await forList(ctx, blog, isAjax, opts)
+    break;
   }
+
+
+  // 处理数据
   if (isAjax) {
-    pageData =  xData||xDetail||xSave
+    pageData =  xData||xDetail||xSave||xDel
   } else {
-    // blog list
-    if (xData) {
-      let props = {
+    xData = await forList(ctx, blog)
+    const attachcss = await fkp.injectcss([
+      '/css/m/tabs',
+      '/css/m/list/lagou',
+      '/css/m/list/pagination'
+    ])
+
+    const props = {
+      loadlist: {
         data: adapter(xData.lists),
         listClass: 'like_lagou',
-        itemClass: 'lg_item',
         pagenation: {
           data: { total: xData.total, query: '/blog/page/' },
-          begin: { start: parseInt(title||1)-1 }
+          begin: { start: 0 }
         }
       }
-      let listStr = fkp.parsereact('component/modules/list/load_list', props)   // 同构客户端的react组件 解析react组件并返回html结构字符串
-
-      // node 端注入js和css
-      let attachjs
-      let attachcss = await fkp.injectcss([
-        '~/css/m/boot_button',
-        '/css/m/list/lagou',
-        '/css/m/list/pagination']
-      )
-      if (routePrefix=='/blog/admin') {
-        route = 'blog'
-        // attachjs = await fkp.injectjs(['/js/blog/pagilist'])   // node端注入js return {attachCss: resource...} 分页按钮
-      } else {
-        // attachjs = await fkp.injectjs(['/js/blog/loadlist'])   // node端注入js {attachCss: resource...} 自动加载
-      }
-      pageData = _.assign(pageData, attachcss, attachjs, {blog:{list: listStr}} )
     }
 
-    // blog 详情
-    if (xDetail) {
-      let attachcss = await fkp.injectcss(['/css/t/markdown.css'])   // node端注入css {attachCss: resource...}
-      let attachjs = await fkp.injectjs(['/js/t/prettfy.js'])   // node端注入js {attachCss: resource...}
-      pageData = _.assign(pageData, attachcss, attachjs, {blog:{mdcontent: xDetail.mdcontent}} )
-    }
+    const tabStr = component.tabs({
+      data: [
+        {title: '站点', content: component.loadlist(props.loadlist, true) },
+        {title: '用户', content: '444'},
+        {title: '文章', content: '222'}
+      ]
+    })
+
+    pageData.blog['serverSide'] = tabStr
+    pageData = _.assign(pageData, attachcss)
 
   }
-  pageData.blog.admin = true
-  // pageData.pagejs = '<script src="/js/blog.js"></script>'
   return router.renderPage(ctx, route, pageData, isAjax)
 }
