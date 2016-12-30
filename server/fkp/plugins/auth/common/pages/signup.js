@@ -14,12 +14,11 @@ export default async function(param, type) {
         password: initPassWord
       }).save()
     } else {
-      return userinfo
+      return Errors['10003']
     }
   }
 
   if (type == 'github') {
-    // const userinfo = await User.findOne({id: param.id}).exec()
     const userinfo = await User.userMatches(param.login)
     if (!userinfo) {
       return new User({
@@ -30,10 +29,11 @@ export default async function(param, type) {
         avatar: param.avatar_url,
         email: param.email,
         signfrom: 'github',
-        thirduser: param
+        thirduser: param,
+        status: ( ()=>param.login == CONFIG.db.site_admin.login ? 10000 : 1 )()
       }).save()
     } else {
-      return userinfo
+      return Errors['10003']
     }
   }
 

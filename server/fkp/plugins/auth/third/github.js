@@ -58,16 +58,18 @@ export default class GitHub {
       // has local user 本地数据库是否有该用户
       const hasUser = await this.hasuser(github_user_info)
       if (hasUser){
-        ctx.session.$user = hasUser
-        return ctx.redirect(C.successUrl)
+        return {user: hasUser, hasUser: true, url: C.successUrl}
+        // ctx.session.$user = hasUser
+        // return ctx.redirect(C.successUrl)
       }
 
       // 新用户
       // 将github的用户注册为本地新用户
       const signupUser = await this.signup(github_user_info, 'github')
       if (signupUser) {
-        ctx.session.$user = signupUser;
-        return ctx.redirect('/auth/repassword')
+        return {user: signupUser, hasUser: false, url: '/auth/repassword'}
+        // ctx.session.$user = signupUser;
+        // return ctx.redirect('/auth/repassword')
       }
     }
   }

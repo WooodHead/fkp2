@@ -10,7 +10,7 @@ let BaseUserSchema = new Schema({
   id: { type: String, required: true, unique: true, lowercase: false },
   username: { type: String, required: true, unique: true, lowercase: true },
   password: { type: String, required: true },
-  status: {type: Number, default: 1},
+  status: {type: Number, default: 1},  // 预定义 0: 失效, 1: 有效, 10000: super
   accessToken: {type: String}
 }, {
   toJSON: {

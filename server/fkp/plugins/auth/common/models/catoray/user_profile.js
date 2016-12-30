@@ -15,7 +15,7 @@ module.exports = function (schema) {
       profile: { type: String },
       avatar: { type: String },
       signature: { type: String },
-      email: { type: String}
+      email: { type: String, unique: true}
     });
 
     schema.index({email: 1})

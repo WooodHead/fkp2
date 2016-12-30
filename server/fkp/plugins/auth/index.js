@@ -15,7 +15,9 @@ async function github(ctx, next) {
       ctx.session.$user = null
       break;
     case 'callback':
-      await G.callback()
+      const res = await G.callback()
+      ctx.session.$user = res.user;
+      return ctx.redirect(res.url)
       break;
     default:
       next()
