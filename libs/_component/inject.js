@@ -181,7 +181,7 @@ function _initInject(type, src, cb){
         _tmp[did] = 'finish'
         SAX.append('thirdPartJs', _tmp);
         SAX.deleter(did)
-      }, (cb||function(){})])
+      }])
     }
     this.loadStaic(this.doc, args, type, cb)
   }
