@@ -1,7 +1,6 @@
 import libs from 'libs'
-import ajax from 'ajax'
 import adapter from 'component/adapter/mgbloglist'
-import {PagiList, pure} from 'component/modules/list/pagi_list'
+import {pagilist as PagiList} from 'component'
 
 let params = libs.queryParams('/blog')
 let cur_page=1, cur_tag, cur_cat
@@ -39,16 +38,14 @@ let pagilist
       pagilist = PagiList({
         data: data.lists,
         container:  'blog',
-        globalName: 'BLOGLIST',
+        theme: 'list-lagou',
         listClass: 'like_lagou',
-        itemClass: 'lg_item',
         pagenation: {
           data: { total: data.total, query: '/blog/page/' },
           begin: { start: cur_page-1 },
-          itemMethod: function(page){
-            SAX.roll('BLOGLIST', 'LOADING')
+          itemMethod: function(index){
             pagilist.loading(()=>{
-              pull_list_data(page)
+              pull_list_data(index)
             })
           }
         }

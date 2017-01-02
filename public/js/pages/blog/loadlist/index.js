@@ -1,7 +1,7 @@
 import libs from 'libs'
 import ajax from 'ajax'
 import adapter from 'component/adapter/mgbloglist'
-import {LoadList, pure} from 'component/modules/list/load_list'
+import {loadlist as LoadList} from 'component'
 
 let params = libs.queryParams('/blog')
 let cur_page=1, cur_tag, cur_cat
@@ -40,13 +40,10 @@ let bloglist  //list实例
         data: data.lists,
         container:  'blog',
         scrollContainer: $('.box')[0],
-        globalName: 'BLOGLIST',
+        theme: 'list-lagou',
         listClass: 'like_lagou',
-        itemClass: 'lg_item',
         scrollEnd: function(){
-          bloglist.loading(()=>{
-            pull_list_data(++cur_page)
-          })
+          bloglist.loading( () => pull_list_data(++cur_page) )
         },
         pagenation: {  //for node seo, client for clear react warnning
           data: { total: data.total, query: '/blog/page/' }
