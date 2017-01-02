@@ -62,7 +62,8 @@ export function pagination( opts ) {
 }
 
 export function pure(props, getreact){
-  let app = pagination(props)
-  if (!app.client || getreact) return app.render()
-  return app
+  return pagination(props)
+  // let app = pagination(props)
+  // if (!app.client || getreact) return app.render()
+  // return app
 }

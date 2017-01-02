@@ -101,7 +101,8 @@ export function htabs(opts) {
 }
 
 export function pure(props, getreact){
-  let app = tabs(props)
-  if (!app.client || getreact) return app.render()
-  return app
+  return tabs(props)
+  // let app = tabs(props)
+  // if (!app.client || getreact) return app.render()
+  // return app
 }

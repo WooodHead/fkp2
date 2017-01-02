@@ -221,7 +221,7 @@ tips.sticky = function(msg, stat){
 
 // for modal, like bootstrap modal
 var msgModalInstance
-var modal = function(msg,stat,cb){
+var modal = function(msg, stat, cb){
   var msg_left, msg_top;
   var docRect = DocmentView();
   var scrollleft = docRect.scrollLeft;

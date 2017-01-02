@@ -34,7 +34,7 @@ class App extends ListClass {
       onscroll={dft.scroll}
       onscrollend={dft.scrollEnd} >
       {dft.footer}
-      {PagiPure(dft.pagenation, true)}
+      {PagiPure(dft.pagenation).render()}
     </BaseList>
 
     return this
@@ -69,7 +69,8 @@ export function LoadList(opts){
 }
 
 export function pure(props, getreact){
-  let app = LoadList(props)
-  if (!app.client || getreact) return app.render()
-  return app
+  return LoadList(props)
+  // let app = LoadList(props)
+  // if (!app.client || getreact) return app.render()
+  // return app
 }

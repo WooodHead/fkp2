@@ -5,21 +5,25 @@ function start(name, dom, utile){
   let libs = utile.libs
 
   function myRender(intent){
-    let _childs = utile.Input([
+    const formAsset = [
       '第一页数据：' + (intent && intent.first||''),
       { input: [
         <input type='button' id='back' value='返回' />,
         <input type='button' id='prev' value='下一页' />
       ]}
-    ],
-    ()=>{
+    ]
+
+    const _childs = utile.Input({data: formAsset})
+
+    _childs.rendered = ()=>{
       $('#back').click(()=>{
         router.goback()
       })
       $('#prev').click(()=>{
         router('three', {second: '我来自第二页'})
       })
-    })
+    }
+    
     return <utile.Announce childs={_childs.render()} />
   }
 

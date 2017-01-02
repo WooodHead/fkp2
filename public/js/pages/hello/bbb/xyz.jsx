@@ -1,2 +1,2 @@
-let libs = require('libs');
-libs.msgtips('xyz')
+import msgtips from 'component/modules/msgtips'
+msgtips('xyz')

@@ -51,27 +51,24 @@ class FormInput extends BaseClass{
   }
 }
 
-export default function formInput(data, opts, callback){
+export default function formInput(opts, callback){
   let noop = function(){}
   let dft = {
     data: [],
     container: '',
+    rendered: noop,
     globalName: _.uniqueId('Input_'),
     theme: 'form',
     itemMethod: noop,
     callback: callback
   }
-  if (typeof opts == 'function') {
-    dft.callback = opts
-    opts = undefined
-  }
   dft = _.extend(dft, opts)
-  if (data) dft.data = data
+  if (typeof callback == 'function') {
+    dft.callback = callback
+  }
   return new FormInput(dft)
 }
 
-export function pure(props){
-  let app = formInput(props.data, props)
-  if (app.client) return app
-  return app.render()
+export function pure(props, cb){
+  return formInput(props, cb)
 }

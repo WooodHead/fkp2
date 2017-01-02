@@ -1,5 +1,9 @@
 import Pages from 'libs/pages'
-import Input from 'component/modules/form/inputs'
+
+import {
+  input as Input,
+  msgtips
+} from 'component'
 
 function start(name, dom, utile){
   let router = utile.router
@@ -9,15 +13,20 @@ function start(name, dom, utile){
 
 
   function formStructor(){
-    const fi = Input([
+    const formAsset = [
       'FKP2 单页DEMO',
       { input: <input type='text' id='intent' placehold="这里的数据会传给下一页" value='' /> },
       { input: <input type='button' id='test' value='你妹' /> }
-    ])
+    ]
+
+    const fi = Input({
+      data: formAsset
+    })
+
     fi.rendered = function(){
       $('#test').click( e => {
         if (fi.form.intent) { router('second', {first: fi.form.intent}) }
-        else { libs.msgtips('请填写数据', 'alert') }
+        else { msgtips('请填写数据', 'alert') }
       })
     }
     return fi

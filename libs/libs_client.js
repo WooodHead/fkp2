@@ -1,17 +1,8 @@
-// var getXHR = function () {
-//     return new (window.XMLHttpRequest || ActiveXObject)("Microsoft.XMLHTTP") // jshint ignore:line
-// }
-
 var base = require('./_component/base')
 var doc = require('./_component/doc')
 var timer = require('./_component/time')
 var forapp = require('./_component/forapp')
-
-var base_tips = require('./_component/tips')
-
-
-
-
+// var base_tips = require('./_component/tips')
 
 module.exports = {
     guid:           base.guid,           //生成随机名字
@@ -22,6 +13,7 @@ module.exports = {
     arg2arr:        base.arg2arr,        //类数组对象转成数组
     getObjType:     base.getObjType,     //获取对象类型
     objtypeof:      base.getObjType,     //获取对象类型
+    inherits:       base.inherits,
 
     os:             doc.os,             //获取手机操作系统类型，如android或者ios
     getOffset:      doc.getOffset,      //取得元素的绝对位置
@@ -53,8 +45,9 @@ module.exports = {
     timeAgo:        timer.timeAgo,      //时间过去了多久
     getTs:          forapp.getTs,        // "2010-03-15 10:30:00"转时间戳
 
-    msgtips:        base_tips.tips,
-    poper:          base_tips,
+    // msgtips:        require('component/modules/msgtips'),
+    // msgtips:        base_tips.tips,
+    // poper:          base_tips,
 
     smd:            require('./_component/simplemd'),   //简单markdown
 

@@ -22,7 +22,7 @@ class App extends ListClass {
       listMethod={dft.listMethod}
       itemMethod={dft.itemMethod} >
       {dft.footer ? dft.footer : ''}
-      {pure(dft.pagenation, true)}
+      {pure(dft.pagenation).render()}
     </BaseList>
 
     return this
@@ -55,7 +55,8 @@ export function PagiList(opts){
 }
 
 export function pure(props, getreact){
-  let app = PagiList(props)
-  if (!app.client || getreact) return app.render()
-  return app
+  return PagiList(props)
+  // let app = PagiList(props)
+  // if (!app.client || getreact) return app.render()
+  // return app
 }

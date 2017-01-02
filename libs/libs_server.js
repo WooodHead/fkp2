@@ -1,5 +1,4 @@
 var path = require('path')
-var lodash = require('lodash');
 var qs = require('querystring');
 var timer = require('./_component/time')
 var base = require('./_component/base')
@@ -28,13 +27,10 @@ var co_parse = function(ctx){
 }
 
 module.exports = {
-  objtypeof: base.objtype,
+  objtypeof: base.objtypeof,
   inherits: base.inherits,
   strLen: base.strLen,
   grabString: base.grabString,
-  // clog: clog,
-  // elog: elog,
-  // wlog: wlog,
   uri: parseQuery,
   guid: guid,
   timeAgo:   timer.timeAgo,      //时间过去了多久

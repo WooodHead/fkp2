@@ -46,7 +46,8 @@ export function BaseList(opts){
 }
 
 export function pure(props, getreact){
-  let app = BaseList(props)
-  if (!app.client || getreact) return app.render()
-  return app
+  return BaseList(props)
+  // let app = BaseList(props)
+  // if (!app.client || getreact) return app.render()
+  // return app
 }

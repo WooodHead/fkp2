@@ -180,7 +180,6 @@ module.exports = {
     grabString: grabString,
     json2url: json2url,
     getObjType: getObjType,
-    type: getObjType,
-    objtype: getObjType,
+    objtypeof: getObjType,
     inherits: inherits
 }
