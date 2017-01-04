@@ -59,14 +59,18 @@ export default async function(ctx, next){
   if (isAjax) {
     pageData =  xData||xDetail||xSave
   } else {
-    // blog list
+    /**
+     * blog list
+     */
     if (xData) {
       // node 端注入js和css
       let attachjs
       let attachcss = await fkp.injectcss([
         '~/css/m/boot_button',
-        '/css/m/list/lagou',
-        '/css/m/list/pagination']
+        '/css/m/tabs/blog',
+        // '/css/m/list/lagou',
+        // '/css/m/list/pagination'
+      ]
       )
 
       let props = {
@@ -77,26 +81,34 @@ export default async function(ctx, next){
           begin: { start: parseInt(title||1)-1 }
         }
       }
+
       let listStr = ''
       if (routePrefix=='/logs') {
         route = 'blog'
-        listStr = component.pagilist(props)         
+        listStr = component.pagilist(props)
         attachjs = await fkp.injectjs(['/js/blog/pagilist'])   // node端注入js return {attachCss: resource...} 分页按钮
       } else {
         listStr = component.loadlist(props)
-        attachjs = await fkp.injectjs(['/js/blog/loadlist'])   // node端注入js {attachCss: resource...} 自动加载
+        attachjs = await fkp.injectjs(['/js/blog/tabs'])   // node端注入js {attachCss: resource...} 自动加载
+        attachjs.istab = true   //控制一下模板
+
+        // attachjs = await fkp.injectjs(['/js/blog/loadlist'])   // node端注入js {attachCss: resource...} 自动加载
       }
       pageData = _.assign(pageData, attachcss, attachjs, {blog:{list: listStr}} )
     }
 
-    // blog 详情
+    /**
+     * blog 详情
+     */
     if (xDetail) {
       let attachcss = await fkp.injectcss(['/css/t/markdown.css'])   // node端注入css {attachCss: resource...}
       let attachjs = await fkp.injectjs(['/js/t/prettfy.js'])   // node端注入js {attachCss: resource...}
       pageData = _.assign(pageData, attachcss, attachjs, {blog:{mdcontent: xDetail.mdcontent}} )
     }
 
-    // 添加文章
+    /**
+     * 添加文章
+     */
     if (xAdd) {
       pageData.xAdd = true
     }
