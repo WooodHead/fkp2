@@ -23,8 +23,9 @@ class TmpApp extends React.Component {
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
-		return !(this.props === nextProps || im.is(this.props, nextProps)) ||
-				 !(this.state === nextState || im.is(this.state, nextState));
+		// return !(this.props === nextProps || im.is(this.props, nextProps)) ||
+		// 		 !(this.state === nextState || im.is(this.state, nextState));
+		return !im.is(this.state.data, nextState.data)
 	}
 
 	componentWillMount() {
@@ -37,11 +38,14 @@ class TmpApp extends React.Component {
 
 	componentWillReceiveProps(nextProps) {
 		var pdata = nextProps.data;
-		if (pdata) { if(!Array.isArray( pdata )) pdata = [ pdata ] }
-		let stateData = this.state.data
-		if (!im.is(pdata, stateData)) {
-			stateData = stateData.merge(pdata)
-			this.setState({ data: stateData })
+		if (pdata) {
+			if(!Array.isArray( pdata )) pdata = [ pdata ]
+			pdata = im.fromJS(pdata)
+			let stateData = this.state.data
+			if (!im.is(pdata, stateData)) {
+				stateData = stateData.merge(pdata)
+				this.setState({ data: stateData })
+			}
 		}
 	}
 

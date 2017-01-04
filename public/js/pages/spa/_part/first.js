@@ -1,9 +1,7 @@
 import Pages from 'libs/pages'
 
-import {
-  input as Input,
-  msgtips
-} from 'component'
+import { tips as msgtips } from 'component/client'
+import { input as Input } from 'component'
 
 function start(name, dom, utile){
   let router = utile.router

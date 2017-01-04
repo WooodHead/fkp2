@@ -133,7 +133,7 @@ const config = {
           server: { poolSize: 3 },
           replset: { rs_name: 'myReplicaSetName' },
         },
-        pageSize: 10
+        pageSize: 20
       },
     },
 

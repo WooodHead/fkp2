@@ -1,4 +1,4 @@
-@import "../list/hlist";
+@import "../../list/hlist";
 .hlist{
   .hlist()
 }
@@ -7,8 +7,6 @@
   font-size: 16px;
   display:flex;
   flex-direction:row;
-  height: 100%;
-  overflow: hidden;
 
   /*
    * 左侧部分
@@ -17,6 +15,8 @@
     width: 16em;
     height: 100%;
     overflow: auto;
+    position: fixed;
+    border-right: 1px solid #ededed;
 
     // li 一级子项
     .tabs-menu{
@@ -120,9 +120,8 @@
    * 右侧部分
    */
   .tabsBoxes{
-    flex:1;
-    overflow: auto;
-    height: 100%;
+    flex: 1;
+    padding-left: 16em;
     .list-container{
       width: 100%;
     }
@@ -134,5 +133,4 @@
 }
 
 // 水平tabs
-@import "./htabs";
 @import "./media";

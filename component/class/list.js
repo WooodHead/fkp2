@@ -8,6 +8,7 @@ export default class extends BaseClass {
     this.append = this::this.append
     this.loaded = this::this.loaded
     this.loading = this::this.loading
+    this.trigger = this::this.trigger
     this.update = this::this.update
     this.over = this::this.over
     this.hidechild = this::this.hidechild
@@ -26,10 +27,21 @@ export default class extends BaseClass {
     this.client ? this.actions.roll('LOADING', {next: cb}) : ''
   }
 
+  trigger(cb){
+    this.client ? this.actions.roll('TRIGGER', {bar: cb}) : ''
+  }
+
   update(ary, type){
     if (this.client) {
       this.loaded()
-      if (ary.length) this.actions.roll('UPDATE', {news: ary, type: type})
+      if (ary.length) {
+        if (type == 'append') {
+          this.data = this.data.concat(ary)
+        } else {
+          this.data = ary
+        }
+        this.actions.roll('UPDATE', {news: ary, type: type})
+      }
       else { this.over() }
     }
   }
@@ -39,7 +51,7 @@ export default class extends BaseClass {
   }
 
   hidechild(){
-    this.client ? this.actions.roll('HIDECHILDREN') : ''     
+    this.client ? this.actions.roll('HIDECHILDREN') : ''
   }
 
   select(){}

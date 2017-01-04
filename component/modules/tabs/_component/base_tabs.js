@@ -45,7 +45,7 @@ class TapsApp extends React.Component {
 		})
 		// menus
 		const listProps = _.extend({}, this.props.opts, {data: Tree(data)})
-		listProps.listClass = "tabsMenus"
+		// listProps.listClass = "tabsMenus"
 		listProps.itemClass = "tabs-menu"
 		delete listProps.container
 		delete listProps.itemMethod
@@ -119,7 +119,7 @@ class TapsApp extends React.Component {
 
 		return (
       <div className={cls}>
-				{this.menus}
+				<div className='tabsMenus'>{this.menus}</div>
         <div className={boxes_cls}>{content}</div>
       </div>
     )

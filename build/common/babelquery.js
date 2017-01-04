@@ -8,7 +8,7 @@ var babelrcObject = {
     "plugins": [
         "transform-runtime",
         "add-module-exports",
-        "transform-decorators-legacy",
+        // "transform-decorators-legacy",
         "transform-react-display-name",
         "typecheck"
     ],

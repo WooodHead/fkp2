@@ -60,7 +60,8 @@ export function LoadList(opts){
     pagenation: {
       data: {
         total: 200,
-        query: ''
+        query: '',
+        per: 10
       }
     }
   }

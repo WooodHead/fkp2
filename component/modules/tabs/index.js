@@ -83,7 +83,7 @@ export function tabs(opts){
     footer: '',
     container: '',
     globalName: _.uniqueId('Tabs_'),   // TabsModule
-    theme: '/css/m/tabs',
+    theme: 'tabs', ///css/m/tabs
     cls: '',
     itemMethod: noop,
     listMethod: noop,

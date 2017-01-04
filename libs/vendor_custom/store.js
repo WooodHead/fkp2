@@ -385,7 +385,7 @@
             case 'Object':
               if (typeof act == 'object') this.sact = extend(true, this.sact, act)
               else {
-                let _uuid = uniqueId()
+                var _uuid = uniqueId()
                 if (typeof act == 'function') this.sact[_uuid] = act
               }
               break;
@@ -408,7 +408,7 @@
                   this.sact = act.unshift(this.sact)
                   break;
                 case 'Object':
-                  let _uuid = uniqueId()
+                  var _uuid = uniqueId()
                   this.sact = act[_uuid] = this.sact
                   break;
                 case 'Function':
@@ -883,14 +883,17 @@
       }
     }
 
+    var saxInstance = {}
     function SAX(name, data, funs){
       if (name) {
         var save = _stock;
         if (save[name]) {
-          return new sax(name, data, funs)
+          return saxInstance[name]
         } else {
           storeAct.set(name, data, funs)
-          return new sax(name, data, funs)
+          var instance = new sax(name, data, funs)
+          saxInstance[name] = instance
+          return instance
         }
       }
     }
