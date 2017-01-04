@@ -1,5 +1,5 @@
-import co from 'co'
 import path from 'path'
+import md5 from 'blueimp-md5'
 
 /**
  * 主要用于markdown模板的变量替换，当然也可用于直接执行
@@ -15,8 +15,9 @@ async function getContent(fkp, mapper, src, opts){
     $src = src
     src = src.substring(1)
   }
+  const did = md5(src).slice(22)
   if (src.indexOf('/')== 0) {
-    if (src.indexOf('/js/t/')>-1) return '<script src="'+src+'"></script>\n'
+    if (src.indexOf('/js/t/')>-1) return '<script id="'+did+'" src="'+src+'"></script>\n'
     src = src.replace('/js/', '').replace('.js', '')
   }
   if (mapper[src]) {
@@ -25,7 +26,7 @@ async function getContent(fkp, mapper, src, opts){
       let content = await fkp.readfile(path.join(fkp.root, '/dist/', fkp.config.version, (fkp.env=='dev'?'/dev':''), '/js/'+_src))
       if (content) return '<script>'+content.toString()+'</script>\n'
     } else {
-      return '<script src="/js/'+_src+'"></script>\n'
+      return '<script id="'+did+'" src="/js/'+_src+'"></script>\n'
     }
   }
 }
