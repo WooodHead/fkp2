@@ -2,133 +2,154 @@
 .hlist{
   .hlist()
 }
+
+/*
+ * tabs 容器
+ */
 .tabsGroupX{
   background-color: #fff;
   font-size: 16px;
   display:flex;
   flex-direction:row;
+}
 
-  /*
-   * 左侧部分
-   */
-  .tabsMenus{
-    width: 16em;
-    height: 100%;
-    overflow: auto;
-    position: fixed;
-    border-right: 1px solid #ededed;
+/*
+ * 左侧部分
+ */
+.tabsMenus{
+  width: 27%;
+  height: 100%;
+  overflow: auto;
+  position: fixed;
+  border-right: 1px solid #ededed;
+  background-color: #fefefe;
+  // background-color: #e7eaef;
 
-    // li 一级子项
-    .tabs-menu{
-      -webkit-transform: translateZ(0);
-      transform: translateZ(0);
-      cursor: pointer;
-      -webkit-transition: all .3s ease;
-      transition: all .3s ease;
-      text-overflow: ellipsis;
-      padding: 0 0 0 1.8em;
-    }
+  // li 一级子项
+  .tabs-menu{
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    cursor: pointer;
+    -webkit-transition: all .3s ease;
+    transition: all .3s ease;
+    text-overflow: ellipsis;
+    padding: 0 0 0 1.8em;
   }
 
-  // 左侧子项
-  li{
-    font-size: 14px;
-    line-height: 36px;
-    position: relative;
-    z-index: 10;
-    &.selected{
-      border-right: 2px solid #2db7f5;
-      background-color: #eaf8fe;
-    }
-    &:hover{
-      background-color: #eaf8fe;
-    }
-    &:before{
-      font-family: "iconfont";
-      content: '\e60c';
-      margin-right: 1px;
-      display: inline-block;
-      font-size: 6px;
-      color: #e2dede;
-      transition: all .3s ease;
-    }
-    &.itemroot{  //节点 li
+  // 左侧菜单容器
+  .tabs-menu-body{
+    width: 80%;
+    margin: 0 auto;
+    li{
+      font-size: 14px;
+      line-height: 36px;
       position: relative;
+      z-index: 10;
+      -webkit-tap-highlight-color:rgba(0, 0, 0, 0);
+      -moz-tap-highlight-color:rgba(0, 0, 0, 0);
+      -ms-tap-highlight-color:rgba(0, 0, 0, 0);
+      -o-tap-highlight-color:rgba(0, 0, 0, 0);
+      tap-highlight-color:rgba(0, 0, 0, 0);
+      &.selected{
+        // border-right: 2px solid #2db7f5;
+        // background-color: #eaf8fe;
+        background-color: #50c479;
+        color: #fff;
+        border-radius: 3px;
+      }
+      &:active{
+        background-color: none;
+      }
       &:hover{
-        background-color: transparent;
+        // background-color: #f5fff0;
+        // background-color: transparent;
+        // color: #000;
       }
-      &:before{
-        content: none;
+      &.itemroot{  //节点 li
+        position: relative;
+        &:hover{
+          background-color: transparent;
+        }
+        &:before{
+          content: none;
+        }
       }
-    }
-    &.tabs-menu{
-      &:before{
-        content: none;
+      &.tabs-menu{
+        &:before{
+          content: none;
+        }
       }
-    }
 
-    ul{
-      list-style: none;
-      padding: 0;
-      li{
-        font-size: 12px;
-        margin: 0 0 0 -4em;   // 对齐
-        padding: 0 0 0 5em; // 对齐
-        .caption{
-          font-size: 12px;
+      ul{
+        list-style: none;
+        padding: 0;
+        li{
+          font-size: 14px;
+          // margin: 0 0 0 -4em;   // 对齐
+          // padding: 0 0 0 4em; // 对齐
+          margin: 0 0 0 -1.7em;   // 对齐
+          padding: 0 0 0 1.1em; // 对齐
+          .caption{
+            font-size: 12px;
+          }
           &:before{
             font-family: "iconfont";
             content: '\e60c';
-            margin-right: 1px;
+            margin-right: 5px;
             display: inline-block;
             font-size: 6px;
-            color: #e2dede;
+            color: #d6d6d6;
             transition: all .3s ease;
+            vertical-align: bottom;
           }
         }
       }
     }
   }
 
-  // li span 节点标题
+  // li span 小节点标题
   .caption{
-    margin: 0 0 0 -4em;   // 对齐
-    padding-left: 4em;    // 对齐
-    font-size: 14px;
+    // margin: 0 0 0 -4em;   // 对齐
+    // padding-left: 4em;    // 对齐
+    margin: 0 0 0 -2.3em;   // 对齐
+    padding-left: 0.8em;    // 对齐
+    font-size: 12px;
     display: block;
+    color: #aaa;
     &:hover{
-      background-color: #eaf8fe;
+      // background-color: #f5fff0;
+      background-color: transparent;
     }
     &:after{
       font-family: "iconfont";
       content: '\e612';
       margin-left: 6px;
       display: inline-block;
-      transform: rotate(-90deg);
+      vertical-align: middle;
+      transform: rotate(0deg);
       font-size: 6px;
       color: #abaaaa;
       transition: all .3s ease;
     }
     &.fold{
       &:after{
-        transform: rotate(0deg);
+        transform: rotate(-90deg);
       }
     }
   }
+}
 
-  /*
-   * 右侧部分
-   */
-  .tabsBoxes{
-    flex: 1;
-    padding-left: 16em;
-    .list-container{
-      width: 100%;
-    }
-    &.mulitple{
-      overflow: hidden;
-    }
-    border-left: 1px solid #e9e9e9;
+/*
+ * 右侧部分
+ */
+.tabsBoxes{
+  flex: 1;
+  margin-left: 27%;
+  .list-container{
+    width: 100%;
+  }
+  &.mulitple{
+    overflow: hidden;
   }
 }
 

@@ -46,6 +46,7 @@ class TapsApp extends React.Component {
 		// menus
 		const listProps = _.extend({}, this.props.opts, {data: Tree(data)})
 		// listProps.listClass = "tabsMenus"
+		listProps.listClass = "tabs-menu-body"
 		listProps.itemClass = "tabs-menu"
 		delete listProps.container
 		delete listProps.itemMethod
@@ -117,9 +118,24 @@ class TapsApp extends React.Component {
 		const cls = !opts.cls ? 'tabsGroup tabsGroupX' : 'tabsGroup tabsGroupX ' + opts.cls
     const boxes_cls = !opts.mulitple ? 'tabsBoxes' : 'tabsBoxes mulitple'
 
+		const treeHeader = this.props.opts.treeHeader
+		const treeFooter = this.props.opts.treeFooter
+
+		if (this.props.opts.header ||
+			this.props.opts.footer ) {
+			return (
+				<div className="tabsContainer">
+					{this.props.opts.header}
+					<div className={cls}>
+						<div className='tabsMenus'>{treeHeader}{this.menus}{treeFooter}</div>
+		        <div className={boxes_cls}>{content}</div>
+		      </div>
+					{this.props.opts.footer}
+				</div>
+		)}
 		return (
       <div className={cls}>
-				<div className='tabsMenus'>{this.menus}</div>
+				<div className='tabsMenus'>{treeHeader}{this.menus}{treeFooter}</div>
         <div className={boxes_cls}>{content}</div>
       </div>
     )

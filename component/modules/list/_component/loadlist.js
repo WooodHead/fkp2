@@ -19,7 +19,7 @@ class ListApp extends React.Component {
 		}
 	}
 
-	componentWillMount() { }
+	componentWillMount() {}
 
 	componentWillUpdate(nextProps, nextState) {
 		// 更新并将当前数据保存到tmpData，再次进入时，为最后一次数据，但性能并不好
@@ -61,6 +61,7 @@ function storeIt(key){
 function storeAction(key){
 	SAX.set(key, {}, {
 		HIDECHILDREN: function(data){
+			if (!this||!this.state) return
 			if (this.state.children) {
 				this.setState({ children: false })
 			}
@@ -101,6 +102,14 @@ function storeAction(key){
 			this.setState({
 				loading: false,
 				over: true
+			})
+		},
+		EDIT: function(edata){
+			const {index, data} = edata
+			const tmpState = _.cloneDeep(this.state.data)
+			tmpState[index] = data
+			this.setState({
+				data: tmpState
 			})
 		},
 		TRIGGER: function(data){

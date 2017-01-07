@@ -1,3 +1,4 @@
 import tips from './modules/msgtips'
 import modal from './modules/modal'
-export {tips, modal}
+import sticky from './modules/sticky'
+export {tips, modal, sticky}

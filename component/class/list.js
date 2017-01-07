@@ -10,6 +10,7 @@ export default class extends BaseClass {
     this.loading = this::this.loading
     this.trigger = this::this.trigger
     this.update = this::this.update
+    this.edit = this::this.edit
     this.over = this::this.over
     this.hidechild = this::this.hidechild
     this.select = this::this.select
@@ -29,6 +30,10 @@ export default class extends BaseClass {
 
   trigger(cb){
     this.client ? this.actions.roll('TRIGGER', {bar: cb}) : ''
+  }
+
+  edit(index, data){
+    this.actions.roll('EDIT', {index: index, data: data})
   }
 
   update(ary, type){

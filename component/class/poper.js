@@ -10,19 +10,22 @@ function isValidRctElement(msg){
   if (typeof React != 'undefined' && React.isValidElement(msg)) return true
 }
 
-function active(mm, stat){
-  let item = this.msgItem(stat);
-  let box = this.msgBox(stat);
+function active(mm, stat, cb){
+  this.item = this.msgItem(stat);
+  this.box = this.msgBox(stat);
+  this.container = this.box;
   if (objtypeof(mm)=='string') {
-    item.innerHTML = mm;
+    this.item.innerHTML = mm;
   }
   if (objtypeof(mm)=='object' && mm.nodeType) {
-    item.appendChild(mm)
+    this.item.appendChild(mm)
   }
   if (isValidRctElement(mm)) {
-    React.render(mm, item)
+    React.render(mm, this.item)
   }
-  this.anim(item, box, stat)
+  this.anim(this.item, this.box, stat)
+  return this
+  // if (typeof cb == 'function') cb()
 }
 
 export default class PopClass {
@@ -46,41 +49,6 @@ export default class PopClass {
   run(mmm, stat, cb){
     this.msg = mmm
     this.stat = stat || 'normal';
-    active.call(this, mmm, stat);
-    if (typeof cb == 'function') cb()
+    return active.call(this, mmm, stat, cb);
   }
 }
-
-
-// var tipsbox = function(){
-//   this.pop = function(mmm,stat,cb){
-//     if(!stat)stat='normal';
-//     pushmsg.call(this,mmm,stat);
-//     if(typeof cb=='function') cb()
-//   }
-//
-//   //新建消息实例，可定制
-//   this.msgItem = function(stat){};
-//
-//   //消息实例容器，可定制
-//   this.msgBox = function(stat){};
-//
-//   //退出消息框
-//   this.close = function(){};
-//
-//   //消息动画 实例化后必须定制
-//   this.anim = function(item,container){ };
-//
-//   //组合执行方法
-//   function pushmsg(mm,stat){
-//     var item = this.msgItem(stat);
-//     var box = this.msgBox(stat);
-//     if (objtypeof(mm)=='string') {
-//       item.innerHTML = mm;
-//     }
-//     if (objtypeof(mm)=='object' && mm.nodeName) {
-//       item.appendChild(mm)
-//     }
-//     this.anim(item,box,stat);
-//   }
-// }

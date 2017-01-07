@@ -3,6 +3,7 @@
  */
 let libs = require('libs')
 let list = require('./_component/loadlist')  //设定列表域为 lagou
+import scroll from 'component/mixins/scrollhlc'
 import ListClass from 'component/class/list'
 let objtypeof = libs.objtypeof
 
@@ -13,7 +14,7 @@ class App extends ListClass {
 
   componentWill(){
     const dft = this.config
-    const BaseList = this.createList(dft.globalName)   // = this.createList(this.config.globalName)
+    const BaseList = scroll(this.createList(dft.globalName))   // = this.createList(this.config.globalName)
 
     this.eles = <BaseList
       data={dft.data}
@@ -47,7 +48,4 @@ export function BaseList(opts){
 
 export function pure(props, getreact){
   return BaseList(props)
-  // let app = BaseList(props)
-  // if (!app.client || getreact) return app.render()
-  // return app
 }

@@ -24,13 +24,13 @@ function reallyReturn(wrap, isreact){
 export function item(props, isreact){
   let Item = require('./widgets/itemView/f_div')
   const Component = <Item {...props} />
-  return reallyReturn(Component, isreact)
+  return isClient ? reallyReturn(Component) : reallyReturn(Component, isreact)
 }
 
 export function list(props, isreact){
   let List = require('./widgets/listView')
   const Component = <List {...props} />
-  return reallyReturn(Component, isreact)
+  return isClient ? reallyReturn(Component) : reallyReturn(Component, isreact)
 }
 
 export function input(props, isreact){
@@ -38,6 +38,14 @@ export function input(props, isreact){
   if (_rct.pure) {
     const Component = _rct.pure(props)
     // const Component = _rct.pure(props).render()
+    return reallyReturn(Component, isreact)
+  }
+}
+
+export function cards(props, isreact){
+  const _rct = require('./modules/cards')
+  if (_rct.pure) {
+    const Component = _rct.pure(props)
     return reallyReturn(Component, isreact)
   }
 }

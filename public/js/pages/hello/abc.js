@@ -1,8 +1,8 @@
-import libs from 'libs'
+import {inject} from 'libs'
 import './_common/xyz'
 import { Slider } from 'component/modules/slider'
-import {tips as msgtips} from 'component/client'
-
+import {tips as msgtips, sticky} from 'component/client'
+import itemHlc from 'component/mixins/itemhlc'
 
 // websocket
 var ws = require('libs/wsocket')
@@ -12,6 +12,13 @@ ws.on('hello', function(val){
     msgtips.success(val.message)
   },2000)
 })
+
+const Xxx = itemHlc(<div>aaa</div>, function(dom){
+  $(dom).click(function(){
+    alert('123')
+  })
+})
+const StickyBBox = sticky.bottom(<Xxx />, {delay: 2000})
 
 let Xslider = Slider(
 [
