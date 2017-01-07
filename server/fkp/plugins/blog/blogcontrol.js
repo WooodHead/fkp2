@@ -67,19 +67,46 @@ export default async function(ctx, next){
       let attachjs
       let attachcss = await fkp.injectcss([
         '~/css/m/boot_button',
-        '/css/m/tabs/blog',
+        '/css/m/list/qqmusic',
+        '/css/m/tabs/blog'
+
         // '/css/m/list/lagou',
         // '/css/m/list/pagination'
-      ]
-      )
+      ])
 
-      let props = {
+      const props = {
         data: adapter(xData.lists),
-        listClass: 'like_lagou',
+        header: <div style={{marginTop: '15px'}}></div>,
+        listClass: 'qqmusic',  //like_lagou
         pagenation: {
-          data: { total: xData.total, query: '/blog/page/' },
+          data: { total: xData.total, query: '/blog/page/', per: 20 },
           begin: { start: parseInt(title||1)-1 }
         }
+      }
+
+      const tabsTreeHeader = () => {
+        const headerItem = [
+          { img: '/images/logo128.png',
+            body:[
+              {title: <div>天天修改</div>},
+              {title: <hr />},
+            ]
+          }
+        ]
+        return component.cards({
+          data: headerItem,
+          theme: 'cards/blog'
+        }, true)
+      }
+
+      const tabsProps = {
+        data: [
+          {title: 'AGZGZ', idf: 'category'},
+          {title: '博客', content: component.loadlist(props, true), parent: 'category' },
+          {title: '用户', content: '444', parent: 'category'}
+        ],
+        treeHeader: tabsTreeHeader(),
+        theme: '/css/m/tabs/blog',
       }
 
       let listStr = ''
@@ -88,10 +115,11 @@ export default async function(ctx, next){
         listStr = component.pagilist(props)
         attachjs = await fkp.injectjs(['/js/blog/pagilist'])   // node端注入js return {attachCss: resource...} 分页按钮
       } else {
-        listStr = component.loadlist(props)
+        listStr = component.tabs(tabsProps)
         attachjs = await fkp.injectjs(['/js/blog/tabs'])   // node端注入js {attachCss: resource...} 自动加载
         attachjs.istab = true   //控制一下模板
 
+        // listStr = component.loadlist(props)
         // attachjs = await fkp.injectjs(['/js/blog/loadlist'])   // node端注入js {attachCss: resource...} 自动加载
       }
       pageData = _.assign(pageData, attachcss, attachjs, {blog:{list: listStr}} )
