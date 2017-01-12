@@ -1,0 +1,25 @@
+@import "../index";
+.grids-parent{
+  height: 100%;
+}
+.grids{
+  border: none;
+  height: 100%;
+  ul{
+    display: block;
+    height: 100%;
+  }
+  li{
+    &:last-child{
+      flex: none;
+    }
+    &.grids-item{
+      min-height: 2em;
+      height: 100%;
+      border: none;
+      &:before{
+        content: none;
+      }
+    }
+  }
+}

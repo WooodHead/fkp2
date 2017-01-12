@@ -8,7 +8,8 @@ import itemHlc from 'component/mixins/itemhlc'
 var dealWithDataMethod = require('./_common/itemDealWithData')
 
 function getClass(resault){
-	const data = this.state.get("data").toJS()
+	const state = this.state.toJS()
+	const data = state.data
 	let cls = resault.clsName
 	if (data.className) cls = data.className
 	if (data.li) cls += ' itemroot'
@@ -77,10 +78,13 @@ class fox extends React.Component {
 		const self = this
 		let {k1, v1, k2, v2, clsName, sty, fill} = this.resault
 		let data_attr = {}
-		const stateData = this.state.get("data").toJS()
-		_.mapKeys(stateData, function(value, key) {
-		  if (key.indexOf('data-')>-1) { data_attr[key] = value }
-		})
+		const state = this.state.toJS()
+		const stateData = state.data
+		if (typeof stateData == 'object') {
+			_.mapKeys(stateData, function(value, key) {
+				if (key.indexOf('data-')>-1) { data_attr[key] = value }
+			})
+		}
 
 		const _props = {
 			id: k1

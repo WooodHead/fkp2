@@ -2,7 +2,7 @@
  * 列表
  */
 import {objtypeof} from 'libs'
-import scroll from 'component/mixins/scrollhlc'
+import iscrollHlc from 'component/mixins/iscrollhlc'
 import ListClass from 'component/class/list'
 
 class App extends ListClass {
@@ -12,8 +12,7 @@ class App extends ListClass {
 
   componentWill(){
     const dft = this.config
-    const BaseList = this.createList(dft.globalName)   // = this.createList(this.config.globalName)
-    // const BaseList = scroll(this.createList(dft.globalName))   // = this.createList(this.config.globalName)
+    const BaseList = iscrollHlc( this.createList(dft.globalName), dft.iscroll )  // = this.createList(this.config.globalName)
 
     this.eles = <BaseList
       data={dft.data}
@@ -29,7 +28,7 @@ class App extends ListClass {
   }
 }
 
-export function BaseList(opts){
+export function IScrollList(opts){
   let noop = function(){}
   let dft = {
     data: [],
@@ -39,12 +38,13 @@ export function BaseList(opts){
     itemMethod: noop,
     listMethod: noop,
     itemClass: '',
-    listClass: ''
+    listClass: '',
+    iscroll: {}
   }
   if (objtypeof(opts) == 'object') dft = _.merge(dft, opts)
   return new App(dft)
 }
 
-export function pure(props, getreact){
-  return BaseList(props)
+export function pure(props){
+  return IScrollList(props)
 }

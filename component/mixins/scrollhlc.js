@@ -11,6 +11,7 @@ export default (ComposedComponent) => {
       this._onScroll = this::this._onScroll
       this._onScrollEnd = this::this._onScrollEnd
       this.preLazy = this::this.preLazy
+      this.state.HOC.push('scroll')  //hightOrderComponent push self
     }
 
     componentDidMount() {

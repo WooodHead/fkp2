@@ -1,43 +1,29 @@
-@import "../../_copy2dist/iconfont";
-@import "../dropdown/index";
-@import "../button/index";
-
-input,button,select,textarea{outline:none}
-@input-height: 2.8em;
+@import "../index";
+@input-height: 1.1em;
 .inputGroup{
   font-size: 16px;
-  lable, .inputItem{
-    position: relative;
-    display: block;
-    padding: 0.4em;
-  }
   .inputMultiply{
+    display: table-row;;
     lable, .inputItem{
-      display: inline-block;
+      display: table-cell;
       padding: 0.2em;
     }
     .checkboxGroup{
-      display: inline-block;
+      display: table-cell;
     }
   }
   input{
-    -webkit-appearance: none;
-    -webkit-tap-highlight-color:rgba(0, 0, 0, 0);
-    -moz-tap-highlight-color:rgba(0, 0, 0, 0);
-    -ms-tap-highlight-color:rgba(0, 0, 0, 0);
-    -o-tap-highlight-color:rgba(0, 0, 0, 0);
-    tap-highlight-color:rgba(0, 0, 0, 0);
-    width: 16em;
+    width: 10em;
     height: @input-height;
     outline:none;
     &[type=button]{
+      height: 2.3em;
       background-color: #fff;
     }
   }
   span{
     position: relative;
     display: inline-block;
-    vertical-align: -webkit-baseline-middle;
     vertical-align: middle;
     font-size: 0.9em;
 

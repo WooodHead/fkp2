@@ -50,11 +50,26 @@ export function cards(props, isreact){
   }
 }
 
+export function grids(props, isreact){
+  const _rct = require('./modules/grids')
+  if (_rct.pure) {
+    const Component = _rct.pure(props)
+    return reallyReturn(Component, isreact)
+  }
+}
+
 export function baselist(props, isreact){
   const _rct = require('./modules/list/base_list')
   if (_rct.pure) {
     const Component = _rct.pure(props)
-    // const Component = _rct.pure(props).render()
+    return reallyReturn(Component, isreact)
+  }
+}
+
+export function iscroll(props, isreact){
+  const _rct = require('./modules/list/iscroll_list')
+  if (_rct.pure) {
+    const Component = _rct.pure(props)
     return reallyReturn(Component, isreact)
   }
 }

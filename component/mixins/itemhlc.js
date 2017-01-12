@@ -3,6 +3,10 @@
  * ComposedComponent  {React-Element}   [被包围的子组件]
  */
 export default (ComposedComponent, cb) => {
+  if (!ComposedComponent) {
+    console.log('请指定ComposedComponent');
+    return
+  }
   if (React.isValidElement(ComposedComponent)) {
     return class extends React.Component {
       constructor(props){
@@ -43,12 +47,14 @@ export default (ComposedComponent, cb) => {
           const imd = cb ||this.props.itemMethod
   				imd.call(ctx, that, self.intent)
   			}
+        super.componentDidMount ? super.componentDidMount() : ''
       }
       render(){
         return this.state.show ? ComposedComponent : <var/>
       }
     }
   }
+
   return class extends ComposedComponent {
     constructor(props) {
       super(props);
@@ -71,11 +77,12 @@ export default (ComposedComponent, cb) => {
 				setTimeout(function(){
 					if( typeof self.props.itemDefaultMethod === 'function' ) self.props.itemDefaultMethod.call(ctx, that, self.intent)
 				}, 17)
-			} else if (this.props.itemMethod){
-				this.props.itemMethod.call(ctx, that, self.intent)
 			}
-
-      super.componentDidMount()
+      else if (typeof cb == 'function' || this.props.itemMethod){
+        const imd = cb ||this.props.itemMethod
+        imd.call(ctx, that, self.intent)
+			}
+      super.componentDidMount ? super.componentDidMount() : ''
 		}
   }
 }

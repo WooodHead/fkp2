@@ -50,13 +50,13 @@ class TmpApp extends React.Component {
 	}
 
 	componentDidMount(){
-		this.listMethod(this.props.listMethod)
+		// this.listMethod(this.props.listMethod)
 	}
 
 	listMethod(lmd){
 		if (lmd && typeof lmd == 'function') {
 			let that = React.findDOMNode(this);
-			lmd.call(this, that, this.props.store)
+			lmd(that, this.props.store)
 		}
 	}
 
@@ -89,10 +89,6 @@ class TmpApp extends React.Component {
 		var that = this;
 		var cls = "hlist";
 		var sty = {};
-		if(this.props.listStyle){
-			cls = "hlist";
-			sty = this.props.listStyle;
-		}
 
 		var itemCollection = [];
 		function organizeData(record){
@@ -110,7 +106,7 @@ class TmpApp extends React.Component {
 			if(items.length){
 				var group = _.uniqueId('group-')
 				return (
-					<ul key={group} className={cls} style={sty}>
+					<ul key={group} className={cls}>
 						{items}
 					</ul>
 				)
@@ -125,11 +121,15 @@ class TmpApp extends React.Component {
 	render(){
 		let fills = this._dealWithData()
 		let _cls = 'list-wrap'
+		let sty
 		if(this.props.listClass){
 			_cls = "list-wrap " + this.props.listClass
 		}
+		if(this.props.listStyle){
+			sty = this.props.listStyle;
+		}
 		return (
-			<div className={_cls}>
+			<div className={_cls} style={sty}>
 				{fills}
 				{this.props.children}
 			</div>

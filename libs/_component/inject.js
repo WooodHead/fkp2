@@ -216,16 +216,16 @@ function dealInject(doc){
   }
 
   this.loadStaic = function(doc, args, type, cb){
-    setTimeout(function(){
-      if (type){
-        if (args) _inject.call(doc, type, args, cb)
-        if (type === 'css'){
-          if (typeof cb==='function') cb()
-        }
-      } else{
-        if (args) _inject.call(doc, args)
+    if (type){
+      if (args) _inject.call(doc, type, args, cb)
+      if (type === 'css'){
+        if (typeof cb==='function') cb()
       }
-    },17)
+    } else{
+      if (args) _inject.call(doc, args)
+    }
+    // setTimeout(function(){
+    // },17)
   }
 
   this._config = {

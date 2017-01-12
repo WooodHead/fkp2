@@ -66,9 +66,12 @@ export default class {
     this._componentDid()
   }
 
-  render(cb){
-    if (cb) this.rendered = cb
-    let container = this.config.container
+  render(id){
+    if (typeof id == 'function') {
+      this.rendered = id
+      id = undefined
+    }
+    let container = id || this.config.container
     this.sequentialRun()
     this.stat = 'done'
 

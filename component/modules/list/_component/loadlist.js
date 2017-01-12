@@ -15,11 +15,20 @@ class ListApp extends React.Component {
 			trigger: false,
 			triggerBar: <div className="overbar"><div className="trigger">加载更多内容</div></div>,
 			children: true,
-			header: true
+			header: true,
+			HOC: []  // has hightOrderComponent wrap it
 		}
 	}
 
 	componentWillMount() {}
+
+	componentDidMount() {
+		const lmd = this.props.listMethod
+		if (lmd && typeof lmd == 'function') {
+			let that = React.findDOMNode(this);
+			lmd(that, this.props.store)
+		}
+	}
 
 	componentWillUpdate(nextProps, nextState) {
 		// 更新并将当前数据保存到tmpData，再次进入时，为最后一次数据，但性能并不好
@@ -36,14 +45,20 @@ class ListApp extends React.Component {
 		let overbar = this.state.over ? <div className="overbar"><div className="over">没有更多内容了</div></div> : []
 		let triggerbar = this.state.trigger ? this.state.triggerBar : []
 		delete _props.children
+		delete _props.listMethod
 
 		let children = this.state.children
 		? ((childs)=>  childs ? childs.map( (o, ii) => o ? React.cloneElement(o, {key: ii }):'' ):'' )(this.props.children)
 		: ''
+
+		let _cls = 'list-container'
+		if(this.props.listClass){
+			_cls = "list-container " + this.props.listClass+'-parent'
+		}
 		return (
-			<div className="list-container">
+			<div className={_cls}>
 				{this.props.header}
-				<List data={this.state.data} {..._props} />
+				<List data={this.state.data} hoc={this.state.HOC} {..._props} />
 				{loadbar}
 				{overbar}
 				{triggerbar}
@@ -67,6 +82,7 @@ function storeAction(key){
 			}
 		},
 		LOADING: function(data){
+			if (!this||!this.state) return
 			if (!this.state.over) {
 				if (data && data.next && typeof data.next == 'function') data.next()
 				if (!this.state.loading) {
@@ -75,6 +91,7 @@ function storeAction(key){
 			}
 		},
 		LOADED: function(data){
+			if (!this||!this.state) return
 			if (!this.state.over) {
 				_.delay(()=>{
 					this.setState({
@@ -85,6 +102,7 @@ function storeAction(key){
 			}
 		},
 		UPDATE: function(data){
+			if (!this||!this.state) return
 			if (!this.state.over) {
 				if (data.news) {
 					if (_.isPlainObject(data.news)) { data.news = [data.news] }
@@ -99,20 +117,24 @@ function storeAction(key){
 			}
 		},
 		OVER: function(data){
+			if (!this||!this.state) return
 			this.setState({
 				loading: false,
 				over: true
 			})
 		},
 		EDIT: function(edata){
+			if (!this||!this.state) return
 			const {index, data} = edata
-			const tmpState = _.cloneDeep(this.state.data)
+			// const tmpState = _.cloneDeep(this.state.data)
+			let tmpState = this.state.data
 			tmpState[index] = data
 			this.setState({
 				data: tmpState
 			})
 		},
 		TRIGGER: function(data){
+			if (!this||!this.state) return
 			if (!this.state.over) {
 				if (data.bar){
 					this.setState({

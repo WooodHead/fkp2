@@ -7,6 +7,7 @@ export default (id, ComposedComponent) => {
     return class extends ComposedComponent {
       constructor(props) {
         super(props)
+        this.state.globalName = id
       }
 
       componentWillMount() {

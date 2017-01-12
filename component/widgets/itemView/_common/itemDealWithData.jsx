@@ -1,14 +1,28 @@
 function lazyimg(img, idf){
+  const hoc = this.hoc || []
+  if ( hoc.indexOf('scroll') >-1 ){
+    if (img.indexOf('$$$')>-1){
+      var tmp = img.split('$$$')
+      if (tmp.length===2){
+        if (idf) return <li key={'img'+idf} className='himg-item lazyimg' data-imgsrc={tmp[1]} data-imgtmp={tmp[0]} />
+        return <div className='himg lazyimg' data-imgsrc={tmp[1]} data-imgtmp={tmp[0]}/>
+      }
+    }
+    else{
+      if (idf) return <li data-iid={idf} key={'img'+idf} className="himg-item lazyimg" data-imgsrc={img}></li>
+      return <div className="himg lazyimg" data-imgsrc={img} ></div>
+    }
+  }
   if (img.indexOf('$$$')>-1){
     var tmp = img.split('$$$')
     if (tmp.length===2){
-      if (idf) return <li key={'img'+idf} className='himg-item lazyimg' data-imgsrc={tmp[1]} data-imgtmp={tmp[0]} />
-      return <div className='himg lazyimg' data-imgsrc={tmp[1]} data-imgtmp={tmp[0]}/>
+      if (idf) return <li key={'img'+idf} className='himg-item'><img data-imgsrc={tmp[1]} data-imgtmp={tmp[0]} src={tmp[0]}/></li>
+      return <img className='himg' data-imgsrc={tmp[1]} data-imgtmp={tmp[0]} src={tmp[0]}/>
     }
   }
   else{
-    if (idf) return <li data-iid={idf} key={'img'+idf} data-imgsrc={img} className="himg-item lazyimg" ></li>
-    return <div className="himg lazyimg" data-imgsrc={img} ></div>
+    if (idf) return <li data-iid={idf} key={'img'+idf} className="himg-item" ><img data-imgsrc={img} src={img}/></li>
+    return <img className="himg" data-imgsrc={img} src={img}/>
   }
 }
 
@@ -95,6 +109,7 @@ function dealWithData(state){
    var wid = '';
    const _state = state
    var data = _state.data
+   var hoc = _state.hoc
    var items = [];
 
    if(_state.itemClass) clsName = "item "+_state.itemClass
@@ -117,7 +132,7 @@ function dealWithData(state){
 
        if(data.itemClass) clsName = "item "+data.itemClass
        if(data.itemStyle){
-         clsName = 'item';
+        //  clsName = 'item';
          sty = data.itemStyle;
        }
 
@@ -141,12 +156,11 @@ function dealWithData(state){
        if(data.img){
          if(Array.isArray(data.img)){
            var tmp_k2 = [];
-           tmp_k2 = data.img.map( (pic,j) => lazyimg(pic, j) )
+           tmp_k2 = data.img.map( (pic,j) => lazyimg.call({hoc: hoc}, pic, j) )
            k4 = <ul className="himg">{tmp_k2}</ul>;
           //  k4 = k2 = <ul className="himg">{tmp_k2}</ul>;
          } else{
-           k4 = lazyimg(data.img)
-          //  k4 = k2 = lazyimg(data.img)
+           k4 = lazyimg.call({hoc: hoc}, data.img)
          }
        }
 

@@ -6,35 +6,62 @@ function update(elements, settings) {
 
     // 可见区域内
     if (inviewport(element, settings)){
-      if(element.getAttribute('data-src')){
-        let _src = element.getAttribute('data-src')
-        if (element.nodeName === 'IMG'){
-          element.src = _src;
-        } else{
+      if(element.getAttribute('data-src')){  // block
+        const state = element.getAttribute('state')
+        const _src = element.getAttribute('data-src')
+        if (!state) {
+          element.setAttribute('state', 'done')
           ajax.get(_src, function(data){
             element.innerHTML(data)
           })
         }
       }
-      if(element.getAttribute('data-imgsrc') && element.nodeName != 'IMG'){
-        let _src = element.getAttribute('data-imgsrc')
-        if (!element.children.length) {
-          $(element).append('<img src="'+_src+'" />')
-        } else {
-          $(element).find('img').attr('src', _src)
+
+      if (element.getAttribute('data-imgsrc')) {
+        const state = element.getAttribute('state')
+        if (!state) {
+          const _src = element.getAttribute('data-imgsrc')
+          if (element.nodeName == 'IMG') {
+            element.src = _src
+          } else if (!element.children.length) {
+            $(element).append('<img src="'+_src+'" />')
+            element.removeAttribute('data-imgsrc')
+          }
+          element.setAttribute('state', 'done')
+        }
+        else if (state == 'ready') {
+          const _src = element.getAttribute('data-imgsrc')
+          if (element.nodeName == 'IMG') {
+            element.src = _src
+          }
+          // else {
+          //   $(element).find('img').attr('src', _src)
+          // }
+          element.setAttribute('state', 'done')
         }
       }
     }
 
     // 不可见区域
     else {
-      if (element.getAttribute('data-imgsrc') && element.nodeName != 'IMG' ){
-        $(element).find('img').attr('src', settings.placeholder)   // $(element).find('img').remove()
+      if (element.getAttribute('data-imgsrc')) {
+        const state = element.getAttribute('state')
+        if (state && state == 'done') {
+          const _src = element.getAttribute('data-imgsrc')
+          if (element.nodeName == 'IMG') {
+            element.src = settings.placeholder
+          } else {
+            $(element).find('img').attr('src', settings.placeholder)
+          }
+          element.setAttribute('state', 'ready')
+        }
+      } else {
+        if (element.nodeName == 'IMG') {
+          const _src = element.getAttribute('src')
+          element.setAttribute('data-imgsrc', _src)
+        }
       }
-      if (element.nodeName==='IMG'){
-        $(element).parent().attr('data-imgsrc', element.src)
-        $(element).remove()
-      }
+      // element.removeAttribute('state')
     }
   })
 }
