@@ -76,7 +76,7 @@ export default async function(ctx, next){
 
       const props = {
         data: adapter(xData.lists),
-        header: <div style={{marginTop: '15px'}}></div>,
+        header: <div style={{marginTop: '30px'}}></div>,
         listClass: 'qqmusic',  //like_lagou
         pagenation: {
           data: { total: xData.total, query: '/blog/page/', per: 20 },
@@ -86,7 +86,7 @@ export default async function(ctx, next){
 
       const tabsTreeHeader = () => {
         const headerItem = [
-          { img: '/images/logo128.png',
+          { img: '/images/logo128-1.png',
             body:[
               {title: <div>天天修改</div>},
               {title: <hr />},
@@ -99,12 +99,18 @@ export default async function(ctx, next){
         }, true)
       }
 
+      const gridsProps = {
+        data : [component.iscroll(props, true)],
+        theme: 'grids/blog'
+      }
+
       const tabsProps = {
         data: [
           {title: 'AGZGZ', idf: 'category'},
-          {title: '博客', content: component.loadlist(props, true), parent: 'category' },
+          {title: '博客', content: component.grids(gridsProps, true), parent: 'category' },
           {title: '用户', content: '444', parent: 'category'}
         ],
+        select: 1,
         treeHeader: tabsTreeHeader(),
         theme: '/css/m/tabs/blog',
       }

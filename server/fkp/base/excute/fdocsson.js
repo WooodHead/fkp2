@@ -12,7 +12,7 @@ class DocsList extends React.Component{
   }
   render(){
     let lis = this.state.data.map((item, i)=>{
-      let _img = item.img ? <img src={item.img} /> : <span className="iconfont icon-star star"></span>
+      let _img = item.img ? <img src={item.img} /> : <span className="iconfont icon-favor star"></span>
       return (
         <li key={item.title+i}>
           <a href={item.url}>

@@ -23,7 +23,13 @@ export default async function(ctx, next){
 
   // 检查登录及是否为管理员
   const user = ctx.session.$user
-  if (!user) return ctx.redirect('/')   // 应该要跳转到登录页
+  if (!user) {
+    if (isAjax) {
+      return ctx.body = Errors['10010']
+    } else {
+      return ctx.redirect('/')   // 应该要跳转到登录页
+    }
+  }
   const isAdmin = user.status == 10000 ? true : false
 
 
@@ -37,7 +43,7 @@ export default async function(ctx, next){
         from: 'admin',
         where: [ ['user.username', '==', user.username] ]
       }
-      if (isAdmin) delete opts.where[0]
+      // if (isAdmin) delete opts.where[0]
       xData = await forList(ctx, blog, isAjax, opts)
     break;
   }
