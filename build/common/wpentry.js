@@ -61,6 +61,8 @@ module.exports = function(dirname, opts, files, util){
         //     include: require.resolve('tinymce/tinymce'),    //检测到路径包含tinymce/tinymce
         //     loader: 'exports?window.tinymce',             //输出全局变量tinymce
         // },
+
+        // ,{ test: require.resolve('fkp-sax'), loader: "exports?window.SAX" }
       ]
     }
 
@@ -113,7 +115,13 @@ module.exports = function(dirname, opts, files, util){
         libraryTarget:'var',
       },
       externals: {
-        // "fkp-sax": "SAX"   // key 为require, value为全局变量，
+        // "SAX": "SAX"   // key 为require, value为全局变量，引入全局变量SAX=>require('SAX')
+      },
+      resolve: {
+        root: path.resolve(__dirname, '../../public'),
+        alias: alias,
+        extensions: ['', '.js', '.jsx', '.ts', '.tsx', '.coffee', '.html', '.css', '.styl', '.less', '.hbs', '.rt', '.md'],
+        modulesDirectories: ["node_modules"],
       },
       plugins: [
         new webpack.optimize.OccurenceOrderPlugin(),
@@ -121,18 +129,13 @@ module.exports = function(dirname, opts, files, util){
         new ExtractTextPlugin("../css/js_[name]_[id]_[contenthash].css", {
           allChunks: true
         }),
-        new webpack.ProvidePlugin({   //value 为require, key 为全局变量，这个比externals更好用
+        new webpack.ProvidePlugin({   //value 为require, key 为全局变量
           ajax: "ajax",
-          SAX: "fkp-sax",
-          immutable: "immutable"
+          SAX: "fkp/sax",
+          // "SAX": "fkp-sax",  //每个module自动引入该模块
+          // immutable: "immutable"
         })
       ],
-      resolve: {
-        root: path.resolve(__dirname, '../../public'),
-        alias: alias,
-        extensions: ['', '.js', '.jsx', '.ts', '.tsx', '.coffee', '.html', '.css', '.styl', '.less', '.hbs', '.rt', '.md'],
-        modulesDirectories: ["node_modules"],
-      },
       module: custom_modules(opts),
       ts: {
         compiler: 'ntypescript'
