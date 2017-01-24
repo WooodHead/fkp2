@@ -37,6 +37,7 @@ module.exports = {
     currentStyle:   doc.currentStyle,    //获取dom属性，兼容写法
     insertCaret:    doc.insertCaret,     //一般用在编辑器中的iframe插入数据
     portrait:       doc.portrait,         // 强制竖屏
+    mediaQuery:     doc.mediaQuery,       // 移动端/平板/pc
 
     isSupportFixed: forapp.isSupportFixed,
     changeTitle:    forapp.changeTitle,     //ios特有bug解决方法，改变title

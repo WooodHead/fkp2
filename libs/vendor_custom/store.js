@@ -493,7 +493,8 @@
           case 'Object':
             switch (d_type) {
               case 'Object':
-                save[name].sdata = extend(true, {}, save[name].sdata, dataOrAct)
+                // save[name].sdata = extend(true, {}, save[name].sdata, dataOrAct)
+                save[name].sdata = extend({}, save[name].sdata, dataOrAct)
                 break;
               default:
                 var _uuid = uniqueId(name+'_')
@@ -501,7 +502,7 @@
             }
             break;
           default:
-            save[name].sdata = [save[name].sdata, dataOrAct]
+            if (dataOrAct) save[name].sdata = [save[name].sdata, dataOrAct]
         }
         // if (typeof dataOrAct == 'object' && typeof save[name].sdata == 'object') {
         //   target = extend(true, save[name].sdata, dataOrAct)
@@ -727,7 +728,7 @@
         },
 
         setter: function(name, dataOrAct, fun) {
-          this.append(name, dataOrAct, fun)
+          if (dataOrAct) this.append(name, dataOrAct, fun)
           return _stock[name].dataer(_stock[name].sdata)
         },
 
@@ -839,9 +840,9 @@
     storeAct.roll = function(name, key, ddd){
       if (typeof key == 'object') {
         ddd = key
-        storeAct.runner(name, ddd)
+        return storeAct.runner(name, ddd)
       } else {
-        storeAct.runner(name, ddd, key)
+        return storeAct.runner(name, ddd, key)
       }
     }
     storeAct.trigger = storeAct.setter

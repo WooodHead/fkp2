@@ -441,12 +441,33 @@ function preventDefault(event) {
   }
 }
 
+function mediaQuery(opts){
+  // mq-mobile = "screen and (max-width: 479px)"
+  // mq-tablet = "screen and (min-width: 480px) and (max-width: 767px)"
+  // mq-iPhones4 = "only screen and (min-device-width: 320px) and (max-device-width: 480px) and (-webkit-min-device-pixel-ratio: 2)"
+  // mq-normal = "screen and (min-width: 768px)"
+  var view = DocmentView()
+  if (view.width<=480) {
+    return typeof opts.mobile == 'function' ? opts.mobile() : ''
+  }
+  if (view.width>480 && view.width<=1024) {
+    return typeof opts.tablet == 'function'
+    ? opts.tablet()
+    : typeof opts.pc == 'function'
+      ? opts.pc()
+      : ''
+  }
+  if (view.width>1024) {
+    return typeof opts.pc == 'function' ? opts.pc() : ''
+  }
+}
 
 module.exports = {
     DocmentView: DocmentView,
     scrollView: scrollView,
     getOffset: getOffset,
     node: node,
+    mediaQuery: mediaQuery,
     queryString: queryString,
     queryParams: queryParams,
     getElementsByClassName: getElementsByClassName,
