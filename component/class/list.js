@@ -28,6 +28,10 @@ export default class extends BaseClass {
     this.client ? this.actions.roll('LOADING', {next: cb}) : ''
   }
 
+  pulldown(cb){
+    this.client ? this.actions.roll('PULLDOWN', {bar: cb}) : ''
+  }
+
   trigger(cb){
     this.client ? this.actions.roll('TRIGGER', {bar: cb}) : ''
   }

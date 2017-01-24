@@ -4,16 +4,23 @@ import list from 'component/modules/list/_component/loadlist'
 
 function delay(cb, timer){
   if (typeof cb == 'function') {
-    setTimeout(cb, (timer||17))
+    _.delay(cb, (timer||17))
   }
+}
+
+function rendered(cb){
+  delay(cb, 17)
 }
 
 export default class {
   constructor(config){
-    this.config = config
+    const dft = {
+      autoinjec: true
+    }
+    this.config = _.merge(dft, config)
     this.data = this.config.data
     this.eles
-    this.stat
+    this.stat = 'start'
     this.actions = this.config.globalName ? SAX(this.config.globalName):{roll: ()=>{}}
     this.rendered
     this.client = (() => typeof window !== 'undefined')()
@@ -34,9 +41,13 @@ export default class {
   inject(src){
     if (this.client) {
       const ij = inject()
-      if (this.config.theme) {
-        ij.css(['/css/m/'+src])  //注入样式
+      if (this.config.theme && this.config.autoinjec) {
+        ij.css(['/css/m/'+this.config.theme])  //注入样式
       }
+      if (typeof src == 'function') {
+        src(ij)
+      }
+      return ij
     }
   }
 
@@ -46,22 +57,23 @@ export default class {
 
   _componentDid(){
     delay(()=>{
-      typeof this.rendered == 'function' ? this.rendered() : ''
-      delay(this.componentDid, 17)
-      delay(()=>{this.stat = 'finish'}, 17)
-    }, 17)
+      this.stat = 'finish'
+      delay(()=>{
+        this.componentDid()
+        if (typeof this.rendered == 'function') {
+          // this.rendered()
+          rendered(this.rendered)
+        }
+      }, 17)
 
-    // _.delay(()=>{
-    //   typeof this.rendered == 'function' ? this.rendered() : ''
-    //   _.delay(this.componentDid, 17)
-    //   _.delay(()=>{this.stat = 'finish'}, 17)
-    // }, 17)
+    }, 17)
   }
 
   sequentialRun(){
     if (this.stat != 'finish') {
-      this.inject(this.config.theme)
+      this.inject()
       this.componentWill()
+      this.stat = 'firstrun'
     }
     this._componentDid()
   }
@@ -73,9 +85,9 @@ export default class {
     }
     let container = id || this.config.container
     this.sequentialRun()
-    this.stat = 'done'
 
     if (!container) {
+      this.stat = 'done'
       return this.eles
     }
 
@@ -86,6 +98,7 @@ export default class {
     if (container) {
       React.render( this.eles, container )
     }
+    this.stat = 'done'
 
     return this
   }
