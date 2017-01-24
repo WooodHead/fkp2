@@ -1,5 +1,12 @@
-import lazyLoad from './lazy'
-import isc from 'iscroll/build/iscroll-probe'
+const noop = function(){}
+const client = typeof window == 'undefined' ? false : true
+let lazyLoad = noop,
+isc = noop
+
+if (client) {
+  lazyLoad = require('./lazy')
+  isc = require('iscroll/build/iscroll-probe')
+}
 
 function isPassive() {
   var supportsPassiveOption = false;
@@ -27,8 +34,35 @@ function preLazy(dom, blks){
   return layzblocks
 }
 
+let oriPositionY = 0
+let oriPositionX = 0
+function getDiff(iscrl, opts){
+  let direction
+  if (!opts.direction || opts.direction == 'Y') {
+    if (iscrl.y<oriPositionY) {
+      direction = 'down'
+    } else {
+      direction = 'up'
+    }
+    oriPositionY = iscrl.y
+    return [iscrl.y, direction]
+  }
+  if (opts.direction == 'X') {
+    if (iscrl.x<oriPositionX) {
+      direction = 'left'
+    } else {
+      direction = 'right'
+    }
+    oriPositionX = iscrl.x
+    return [iscrl.x, direction]
+  }
+  else {
+    return [iscrl.x, iscrl.y]
+  }
+}
+
 function bindScrollAction(dom, ctx, funs, opts){
-  const {onscroll, onscrollend} = funs
+  const {onscroll, onscrollend, onpulldown} = funs
 
   setTimeout(()=>{
     const iscr = new isc(dom, opts)
@@ -37,20 +71,26 @@ function bindScrollAction(dom, ctx, funs, opts){
       passive: false
     } : false);
 
-    if (typeof onscroll == 'function') {
+    if (typeof onscroll == 'function' || typeof onpulldown == 'function') {
       iscr.on('scroll', ()=>{
-        onscroll.call(ctx, iscr.x, iscr.y)
+        // distY
+        const diff = getDiff(iscr, opts)
+        onscroll ? onscroll.apply(iscr, diff) : ''
+        onpulldown ? onpulldown.apply(iscr, diff) : ''
       })
     }
     iscr.on('scrollEnd', ()=>{
+      const diff = getDiff(iscr, opts)
       lazyLoad(this.layzblocks, dom)
       if (typeof onscrollend == 'function') {
-        onscrollend.call(ctx, iscr.x, iscr.y)
+        onscrollend.apply(iscr, diff)
+        setTimeout(()=>{
+          iscr.refresh()
+        },300)
       }
     })
     return iscr
   }, 1300)
-
 }
 
 // scrollAndLazy
@@ -64,7 +104,7 @@ export default (ComposedComponent, options) => {
     mouseWheel:true,     // probeType: 3
   }
   const opts = _.merge(dft, (options||{}) )
-
+  // dom
   if (typeof ComposedComponent == 'object' && ComposedComponent.nodeType) {
     const dom = ComposedComponent
     const blks = preLazy(dom)
@@ -74,10 +114,12 @@ export default (ComposedComponent, options) => {
     }
     const onscroll = opts.scroll
     const onscrollend = opts.scrollEnd
+    const onpulldown = opts.pulldown
 
-    return bindScrollAction.call(_ctx, dom, ctx, {onscroll, onscrollend}, opts)
+    return bindScrollAction.call(_ctx, dom, ctx, {onscroll, onscrollend, onpulldown}, opts)
   }
 
+  // react element
   if (React.isValidElement(ComposedComponent)) {
     return class extends React.Component {
       constructor(props){
@@ -98,9 +140,9 @@ export default (ComposedComponent, options) => {
         }
         const onscroll = opts.scroll || this.props.onscroll
         const onscrollend = opts.scrollEnd || this.props.onscrollend
+        const onpulldown = opts.pulldown || this.props.onpulldown
 
-        this.iscroll = bindScrollAction.call(_ctx, dom, ctx, {onscroll, onscrollend}, opts)
-        // super.componentDidMount ? super.componentDidMount() : ''
+        this.iscroll = bindScrollAction.call(_ctx, dom, ctx, {onscroll, onscrollend, onpulldown}, opts)
       }
       render(){
         return ComposedComponent
@@ -108,7 +150,7 @@ export default (ComposedComponent, options) => {
     }
   }
 
-
+  // react class
   return class extends ComposedComponent {
     constructor(props) {
       super(props)
@@ -124,16 +166,17 @@ export default (ComposedComponent, options) => {
       const _ctx = {
         layzblocks: blks
       }
-
       const onscroll = opts.scroll || this.props.onscroll
       const onscrollend = opts.scrollEnd || this.props.onscrollend
+      const onpulldown = opts.pulldown || this.props.onpulldown
 
-      this.iscroll = bindScrollAction.call(_ctx, dom, ctx, {onscroll, onscrollend}, opts)
+      this.iscroll = bindScrollAction.call(_ctx, dom, ctx, {onscroll, onscrollend, onpulldown}, opts)
       super.componentDidMount ? super.componentDidMount() : ''
     }
 
     componentWillUnmount(){
       this.iscroll ? this.iscroll.destroy() : ''
+      super.componentWillUnmount ? super.componentWillUnmount() : ''
     }
   }
 }

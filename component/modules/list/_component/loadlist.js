@@ -14,8 +14,9 @@ class ListApp extends React.Component {
 			over: false,
 			trigger: false,
 			triggerBar: <div className="overbar"><div className="trigger">加载更多内容</div></div>,
+			pulldown: false,
+			pulldownBar: <div className="overbar"><div className="pull-bar">刷新页面</div></div>,
 			children: true,
-			header: true,
 			HOC: []  // has hightOrderComponent wrap it
 		}
 	}
@@ -44,20 +45,26 @@ class ListApp extends React.Component {
 		let loadbar = this.state.loading ? <div className="loadbar"><div className="loader">Loading...</div></div> : []
 		let overbar = this.state.over ? <div className="overbar"><div className="over">没有更多内容了</div></div> : []
 		let triggerbar = this.state.trigger ? this.state.triggerBar : []
+		let pullbar = this.state.pulldown ? this.state.pulldownBar : ''
 		delete _props.children
 		delete _props.listMethod
 
 		let children = this.state.children
-		? ((childs)=>  childs ? childs.map( (o, ii) => o ? React.cloneElement(o, {key: ii }):'' ):'' )(this.props.children)
+		? ( childs =>  childs ? childs.map( (o, ii) => o ? React.cloneElement(o, {key: ii }):'' ):'' )(this.props.children)
 		: ''
 
 		let _cls = 'list-container'
 		if(this.props.listClass){
-			_cls = "list-container " + this.props.listClass+'-parent'
+			let l_class = _.trim(this.props.listClass).split(' ')
+			l_class.map( (item, ii) => {
+				l_class[ii] = _.trim(item)+'-parent'
+			})
+			_cls = 'list-container ' + l_class.join(' ')
+			// _cls = "list-container " + this.props.listClass+'-parent'
 		}
 		return (
 			<div className={_cls}>
-				{this.props.header}
+				{pullbar}
 				<List data={this.state.data} hoc={this.state.HOC} {..._props} />
 				{loadbar}
 				{overbar}
@@ -96,6 +103,7 @@ function storeAction(key){
 				_.delay(()=>{
 					this.setState({
 						loading: false,
+						pulldown: false,
 						trigger: false
 					})
 				}, 1000)
@@ -120,13 +128,13 @@ function storeAction(key){
 			if (!this||!this.state) return
 			this.setState({
 				loading: false,
+				pulldown: false,
 				over: true
 			})
 		},
 		EDIT: function(edata){
 			if (!this||!this.state) return
 			const {index, data} = edata
-			// const tmpState = _.cloneDeep(this.state.data)
 			let tmpState = this.state.data
 			tmpState[index] = data
 			this.setState({
@@ -147,6 +155,27 @@ function storeAction(key){
 					this.setState({
 						trigger: true,
 						loading: false,
+						over: false
+					})
+				}
+			}
+		},
+		PULLDOWN: function(data){
+			if (!this||!this.state) return
+			if (!this.state.over) {
+				if (data.bar){
+					this.setState({
+						pulldownBar: data.bar,
+						pulldown: true,
+						trigger: false,
+						loading: false,
+						over: false
+					})
+				} else {
+					this.setState({
+						pulldown: true,
+						loading: false,
+						trigger: false,
 						over: false
 					})
 				}
