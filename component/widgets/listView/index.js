@@ -130,7 +130,9 @@ class TmpApp extends React.Component {
 		}
 		return (
 			<div className={_cls} style={sty}>
+				{this.props.header}
 				{fills}
+				{this.props.footer}
 				{this.props.children}
 			</div>
 		)

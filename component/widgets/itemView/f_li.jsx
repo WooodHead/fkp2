@@ -8,7 +8,7 @@ var dealWithDataMethod = require('./_common/itemDealWithData')
 
 function getClass(resault){
 	const state = this.state.toJS()
-	const data = state.data
+	const data = state.data || {}
 	let cls = resault.clsName
 	if (data.className) cls = data.className
 	if (data.li) cls += ' itemroot'
@@ -82,7 +82,7 @@ class fox extends React.Component {
 		if (typeof stateData == 'object') {
 			_.mapKeys(stateData, function(value, key) {
 				if (key.indexOf('data-')>-1) { data_attr[key] = value }
-			}) 			
+			})
 		}
 
 		const _props = {
