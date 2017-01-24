@@ -240,8 +240,12 @@ class Input extends React.Component {
 
   render(){
     let fill = this._preRender()
+    let _cls = 'inputGroup'
+    if (this.props.listClass) {
+      _cls = 'inputGroup '+this.props.listClass
+    }
     return (
-      <div className="inputGroup">
+      <div className={_cls}>
         {fill}
       </div>
     )

@@ -24,6 +24,7 @@ function tabsDid(dom, select, itemFun){
 class App extends BaseClass {
   constructor(config) {
     super(config)
+    this.change = function(){}
   }
 
   componentWill(){
@@ -52,6 +53,7 @@ class App extends BaseClass {
         $(dom).find('.caption:first').toggleClass('fold')
         $(dom).find('ul:first').toggleClass('none')
       } else {
+        this.change(page, dom, data)
         $(this.items[(index||0)]).addClass('selected')
         if (this.stat == 'finish' && config.globalName) {
           this.actions.roll('SELECT', {_index: index, data: data})
@@ -59,9 +61,7 @@ class App extends BaseClass {
       }
     }
 
-    setTimeout( ()=>{
-      _select(page, dom, data)
-    }, 130)     
+    _select(page, dom, data)
   }
 }
 
@@ -69,6 +69,7 @@ export function tabs(opts){
   var noop = false
   , dft = {
     data: [],
+    select: 0,
     header: '',
     footer: '',
     treeHeader: '',

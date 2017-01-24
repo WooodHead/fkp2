@@ -21,7 +21,8 @@ class TapsApp extends React.Component {
 			data: [],
 			selectData: [],
 			menus: [],
-			mulitple: false
+			mulitple: false,
+			select: 0
 		}
 
 		if (this.props.opts) {
@@ -29,7 +30,7 @@ class TapsApp extends React.Component {
 			this.state = opts
 			this.state.data = this.props.opts.data
 			this.state.menus = this.props.opts.data.map( item => item.title )
-			this.state.select = 0
+			// this.state.select = 0
 		}
 
 		this.select = this::this.select

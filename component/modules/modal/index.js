@@ -42,6 +42,15 @@ inject().css([
   .modal-p50{
     width: 50%;
   }
+  .modal-p60{
+    width: 60%;
+  }
+  .modal-p70{
+    width: 70%;
+  }
+  .modal-p80{
+    width: 80%;
+  }
   .modal-p90{
     width: 90%;
   }
@@ -75,10 +84,11 @@ class Modal extends PopClass {
     let scrolltop = docRect.scrollTop;
     let clientwidth = docRect.width;
     let clientheight = docRect.height;
-    
-    let pWidth = ''
+
+    let pWidth = 'modal-p50'
     if (stat && objtypeof(stat)=='object') {
-      pWidth = stat.p30 || stat.p40 || stat.p50 || stat.p90
+      // pWidth = stat.p30 || stat.p40 || stat.p50 || stat.p90
+      pWidth = stat.pW || pWidth
     }
     var modal = '<div class="modal-bg" style="height:'+clientheight+'px;"><div class="modal-container '+pWidth+' fadeInDown animated-fastest" id="modal-container"></div></div>'
     $('#modal-container').length ? '' : $('body').append(modal);
@@ -116,28 +126,49 @@ export default function modal(msg, stat, cb){
 }
 
 modal.p30 = function(msg,stat,cb){
-  var dft = {p30: 'modal-p30'}
+  var dft = {pW: 'modal-p30'}
   if (objtypeof(stat) == 'object') {
     dft = _.extend(dft, stat)
   }
   modal(msg,dft,cb)
 }
 modal.p40 = function(msg,stat,cb){
-  var dft = {p40: 'modal-p40'}
+  var dft = {pW: 'modal-p40'}
   if (objtypeof(stat) == 'object') {
     dft = _.extend(dft, stat)
   }
   modal(msg,dft,cb)
 }
 modal.p50 = function(msg,stat,cb){
-  var dft = {p50: 'modal-p50'}
+  var dft = {pW: 'modal-p50'}
+  if (objtypeof(stat) == 'object') {
+    dft = _.extend(dft, stat)
+  }
+  modal(msg,dft,cb)
+}
+modal.p60 = function(msg,stat,cb){
+  var dft = {pW: 'modal-p60'}
+  if (objtypeof(stat) == 'object') {
+    dft = _.extend(dft, stat)
+  }
+  modal(msg,dft,cb)
+}
+modal.p70 = function(msg,stat,cb){
+  var dft = {pW: 'modal-p70'}
+  if (objtypeof(stat) == 'object') {
+    dft = _.extend(dft, stat)
+  }
+  modal(msg,dft,cb)
+}
+modal.p80 = function(msg,stat,cb){
+  var dft = {pW: 'modal-p80'}
   if (objtypeof(stat) == 'object') {
     dft = _.extend(dft, stat)
   }
   modal(msg,dft,cb)
 }
 modal.p90 = function(msg,stat,cb){
-  var dft = {p90: 'modal-p90'}
+  var dft = {pW: 'modal-p90'}
   if (objtypeof(stat) == 'object') {
     dft = _.extend(dft, stat)
   }

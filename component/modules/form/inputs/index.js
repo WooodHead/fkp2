@@ -31,7 +31,7 @@ class FormInput extends BaseClass{
     }
 
     let Inputs = Input(dft.globalName)
-    this.eles = <Inputs data={dft.data} itemMethod={dft.itemMethod} itemDefaultMethod={defaultMethod}/>
+    this.eles = <Inputs listClass={dft.listClass} data={dft.data} itemMethod={dft.itemMethod} itemDefaultMethod={defaultMethod}/>
   }
 
   // 获取所有元素的即时值
@@ -56,7 +56,8 @@ export default function formInput(opts, callback){
   let dft = {
     data: [],
     container: '',
-    rendered: noop,
+    listClass: '',
+    rendered: '',
     globalName: _.uniqueId('Input_'),
     theme: 'form',
     itemMethod: noop,

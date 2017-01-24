@@ -5,7 +5,7 @@ function adapter(data){
 	function getTitile(title){
 		return (
 			<h4>
-				<i className="iconfont icon-xiala"/>
+				<i className="iconfont icon-triangledownfill"/>
 				<span className="catalog">{title}</span>
 			</h4>
 		)

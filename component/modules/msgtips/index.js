@@ -12,6 +12,18 @@ inject().css([
     bottom: 16px;
     right: 32px;
   }
+  .tips-toast{
+    width:130px;
+    bottom: 80px;
+    right: auto;
+    left: 50%;
+    margin-left: -65px;
+    text-align: center;
+  }
+  .tips-notification{
+    bottom: auto;
+    top: 10px;
+  }
   .tips-item{
     padding: 8px;
     border-radius: 5px;
@@ -43,19 +55,34 @@ class Tips extends PopClass {
         case 'success':
           bgcolor='background-color: #40bc6c;';
           break;
+        default:
+          if (stat.toast) {
+            bgcolor='background-color: #bbbbbb;';
+          }
       }
     }
     tip.style.cssText = bgcolor;
-    tip.className = 'tips-item bounceInRight animated'
+    let cls = 'tips-item bounceInRight animated'
+    if (stat && stat.toast) {
+      cls = 'tips-item fadeIn animated'
+    }
+    tip.className = cls
     return tip;
   }
 
   //消息实例容器，可定制
   msgBox(stat){
     let boxContainer
+    let cls = 'tips-container'
+    if (stat && stat.toast) {
+      cls += ' tips-toast'
+    }
+    if (stat && stat.notification) {
+      cls += ' tips-notification'
+    }
     if (!document.getElementById('msgcontainer')) {
       let box = document.createElement('div')
-      box.className = 'tips-container'
+      box.className = cls
       box.id = 'msgcontainer'
       let body = document.getElementsByTagName('body')
       body[0].appendChild(box)
@@ -125,6 +152,26 @@ tips.error = function(msg, stat){
 tips.success = function(msg, stat){
   var dft = {color: 'success'}
   dft = _.extend(dft, stat)
+  tips(msg, dft)
+}
+
+tips.toast = function(msg, stat){
+  var dft = {toast: true}
+  if (typeof stat=='string') {
+    dft.color = stat
+  } else {
+    dft = _.extend(dft, stat)
+  }
+  tips(msg, dft)
+}
+
+tips.notification = function(msg, stat){
+  var dft = {notification: true}
+  if (typeof stat=='string') {
+    dft.color = stat
+  } else {
+    dft = _.extend(dft, stat)
+  }
   tips(msg, dft)
 }
 

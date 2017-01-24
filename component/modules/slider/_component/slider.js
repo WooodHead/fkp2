@@ -7,32 +7,21 @@ export class Pure extends React.Component{
       data: [],
       control: []
     }
-    this.preRender = this.preRender.bind(this)
   }
 
   componentWillMount() {
     if (this.props.data){
-      this.setState({
-        data: this.props.data
-      })
+      if (this.props.control){
+        this.setState({
+          data: this.props.data,
+          control: this.props.control
+        })
+      } else {
+        this.setState({
+          data: this.props.data
+        })
+      }
     }
-    if (this.props.control){
-      this.setState({
-        control: this.props.control
-      })
-    }
-  }
-
-  componentDidMount() {
-
-  }
-
-  componentWillReceiveProps(nextProps) {
-
-  }
-
-  preRender(){
-
   }
 
   render(){
@@ -47,5 +36,5 @@ export class Pure extends React.Component{
   }
 }
 
-let Slider = ItemHlc(Pure)
-export {Slider}
+let BXSlider = ItemHlc(Pure)
+export {BXSlider}
