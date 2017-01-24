@@ -5,21 +5,11 @@
 .grids{
   border: none;
   height: 100%;
-  ul{
-    display: block;
+  .grids-item{
     height: 100%;
-  }
-  li{
-    &:last-child{
-      flex: none;
-    }
-    &.grids-item{
-      min-height: 2em;
-      height: 100%;
-      border: none;
-      &:before{
-        content: none;
-      }
+    border: none;
+    &:before{
+      content: none;
     }
   }
 }

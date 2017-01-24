@@ -34,15 +34,17 @@
   height: 30px;
 
 .bottomlock
-  height: 4.3em;
-  display: flex;
-  flex-direction: row;
+  height: 3.6em;
+  display: table;
   width: 100%;
-  flex-wrap: nowrap;
   .b-left
-    width: 27%;
+    display: table-cell;
+    width: 27.4%;
+    border-right: 1px solid #e8e8e8;
+    text-align: center;
+    padding: 0.8em 0.4em 0.4em 0.4em;
   .b-right
-    flex: 1;
+    display: table-cell;
 
 
 @import "./media"

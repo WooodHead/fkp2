@@ -9,14 +9,16 @@
 .tabsGroupX{
   background-color: #fff;
   font-size: 16px;
-  display:flex;
-  flex-direction:row;
+  // display: table;
+  // display:flex;
+  // flex-direction:row;
 }
 
 /*
  * 左侧部分
  */
 .tabsMenus{
+  // display: table-cell;
   width: 27%;
   height: 100%;
   overflow: auto;
@@ -123,7 +125,7 @@
     }
     &:after{
       font-family: "iconfont";
-      content: '\e612';
+      content: '\e616';
       margin-left: 6px;
       display: inline-block;
       vertical-align: middle;
@@ -144,9 +146,11 @@
  * 右侧部分
  */
 .tabsBoxes{
+  // display: table-cell;
   background: #fff;
-  flex: 1;
-  margin-left: 27%;
+  width: 73%;
+  height: 100%;
+  padding-left: 27%;
   .list-container{
     width: 100%;
   }
