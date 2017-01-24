@@ -3,18 +3,57 @@
  */
 import {objtypeof} from 'libs'
 import {pure as bsPure} from 'component/modules/list/base_list'
+import ListClass from 'component/class/list'
 
-/*
-  data: [
-    {idf: 'xxx', title: 'xxx', content: 'yyy', width: '30%'},
-    {idf: 'xxx', title: 'xxx', content: 'yyy', width: '70%'},
-  ]
-
-  {
-    title : content
+class G extends ListClass {
+  constructor(config){
+    super(config)
+    const len = config.data.length || []
+    const _width = (_.divide(100/len).toString())+'%'
+    this.style = {
+      width: _width
+    }
+    this.replace = this::this.replace
   }
-  invalidate
- */
+
+  replace(index, data){
+    let dft = this.config
+
+    let _data = {}
+    if (typeof index != 'number') {
+      data = index
+      index = 0
+    }
+    _data.title = (typeof data == 'string' || typeof data == 'number' || React.isValidElement(data))
+    ? data
+    : typeof data == 'object'
+      ? (data.content || ' ')
+      : ' '
+    _data.itemStyle = {width: data.width||this.style.width}
+    dft.data[index] = _data
+    if (this.stat == 'finish' || this.stat == 'done') {
+      this.actions.roll('EDIT', {index: index, data: _data})
+    }
+    else {
+      this.componentWill()
+    }
+  }
+
+  componentWill(){
+    const dft = this.config
+    const BaseList = this.createList(dft.globalName)   // = this.createList(this.config.globalName)
+
+    this.eles = <BaseList
+      data={dft.data}
+      itemClass={dft.itemClass}
+      listClass={dft.listClass}
+      header={dft.header}
+      listMethod={dft.listMethod}
+      itemMethod={dft.itemMethod} >
+      {dft.footer ? dft.footer : ''}
+    </BaseList>
+  }
+}
 
 function grids(opts){
   const data = opts.data
@@ -44,26 +83,31 @@ function grids(opts){
 
   if (validate) {
     opts.data = _data
-    let gridInstance = bsPure(opts)
-
-    gridInstance.replace = function(index, data){
-      let _data = {}
-      if (typeof index != 'number') {
-        data = index
-        index = 0
-      }
-      _data.title = (typeof data == 'string' || typeof data == 'number' || React.isValidElement(data))
-      ? data
-      : typeof data == 'object'
-        ? (data.content || ' ')
-        : ' '
-
-      _data.itemStyle = {width: data.width||_width}
-      this.actions.roll('EDIT', {index: index, data: _data})
-    }
-
-    return gridInstance
+    return new G(opts)
   }
+
+  // if (validate) {
+  //   opts.data = _data
+  //   let gridInstance = bsPure(opts)
+  //
+  //   gridInstance.replace = function(index, data){
+  //     let _data = {}
+  //     if (typeof index != 'number') {
+  //       data = index
+  //       index = 0
+  //     }
+  //     _data.title = (typeof data == 'string' || typeof data == 'number' || React.isValidElement(data))
+  //     ? data
+  //     : typeof data == 'object'
+  //       ? (data.content || ' ')
+  //       : ' '
+  //
+  //     _data.itemStyle = {width: data.width||_width}
+  //     this.actions.roll('EDIT', {index: index, data: _data})
+  //   }
+  //
+  //   return gridInstance
+  // }
 }
 
 export function Grids(opts){
