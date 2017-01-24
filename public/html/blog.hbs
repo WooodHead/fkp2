@@ -13,77 +13,9 @@
   {{{pagecss}}}
   <meta name="description" content="">
   <style>
-    {{# if istab}}
-    html{
-      height: auto;
-    }
-    {{else}}
-      html{
-        height: 100%;
-      }
-    {{/if}}
     .container-full{
-      width: 99%;
+      width: 98.3%;
     }
-    .height100{
-      height: 100%;
-      overflow: hidden;
-    }
-    .height100s{
-      height: 100%;
-      overflow-y: scroll;
-    }
-    .detail h1:first-child{
-      font-size: 0.2em;
-    }
-    .detail h1:first-child::after{
-      content: "的详情"
-    }
-    .left{
-      position: relative;
-    }
-    .bg{
-      position: relative;
-      width: 100%;
-      height: 100%;
-      background: url(/images/bg/ghost2.jpg);
-      background-repeat: no-repeat;
-      background-size: cover;
-    }
-    .bg .toolbar{
-      position: absolute;
-      bottom: 1em;
-      right: 0.7em;
-    }
-    .bg .toolbar a{
-      text-decoration: none;
-    }
-    .bg .toolbar i{
-      font-size: 2em;
-    }
-    .box{
-      position: relative;
-    }
-    .box .navb{
-      position: fixed;
-      z-index: 1;
-      width: 70%;
-      height: 2.8em;
-      margin-left: -1em;
-      padding-left: 1em;
-      padding-right: 1em;
-      padding: 0.3em 1em 0.3em 1em;
-      background-color: #fff;
-      border-bottom: 1px solid #d9d9d9;
-      box-shadow: rgb(157, 165, 171) 0px 0px 0.5em;
-    }
-    .blogs{
-      margin-top: 2.8em;
-    }
-    .btn-group > .add{
-      width: 2.4em;
-    }
-
   </style>
 </head>
 <body>
@@ -99,12 +31,19 @@
     </div>
     {{else}}
     {{# if istab}}
+      <style>
+        {{# if istab}}
+          html, body, .row, #blog, .tabsGroup{
+            height: 100%;
+            width: 100%;
+          }
+          .container-full{
+            height: 100%;
+          }
+        {{/ if}}
+      </style>
       <div class="container-full">
-        <div class="row">
-          <div class="col-xs-12 col-sm-12">
-            <div id="blog">{{{blog.list}}}</div>
-          </div>
-        </div>
+        <div id="blog">{{{blog.list}}}</div>
       </div>
     {{else}}
         <div class="container-full height100">
