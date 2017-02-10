@@ -1,0 +1,86 @@
+.sticky-container
+  width: 72.8%;
+  left:auto;
+  right: 0;
+  display: flex
+  flex-direction: row;
+  background-color: transparent;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  min-height: 30px;
+  .sticky-item
+    background-color: #fff;
+    flex: 1
+
+.sticky-blog
+  height: 70px;
+  box-shadow: 2px -1px 5px 0 rgba(74, 74, 74, 0.3);
+
+
+.sticky-bottom
+  box-shadow: none;
+  .sticky-blog
+    box-shadow: 1px -1px 3px 0 rgba(74, 74, 74, 0.3);
+
+ib()
+  display: inline-block;
+  vertical-align: middle;
+
+
+.toplock
+  height: 40px;
+  line-height: 40px;
+  .agzgz
+    ib()
+    font-size: 0.9em;
+    background-color: #e6e6e6;
+    padding: 0 0.6em;
+    margin-left: -0.05em;
+    margin-top: -0.2em;
+    color: #b5b5b5;
+    // text-shadow: -2px -1px 0px #868686;
+  .descript
+    ib()
+    font-size: 0.8em;
+    margin-left: 1em;
+    color: #a2a2a2;
+
+.top-tags
+  padding: 0.2em;
+  height: 100%;
+  padding-left: 0.6em;
+  background-color: #fcfcfc
+  .hlist
+    li
+      ul
+        li
+          background-color: #fff
+          display: inline-block;
+          vertical-align: middle;
+          margin-right: 0.6em;
+          margin-top: 0.6em;
+          padding: 0.4em 0.6em;
+          font-size: 0.8em;
+          color: #959595;
+          border: 1px solid #c4c4c4;
+          border-radius: 5px;
+
+.bottomlock
+  height: 3.6em;
+  display: table;
+  width: 100%;
+  .b-left
+    display: table-cell;
+    width: 27.2%;
+    border-right: 1px solid #fafafa;
+    text-align: center;
+    vertical-align: middle;
+    .btn
+      margin-top: 0.9em;
+    // padding: 0.8em 0.4em 0.4em 0.4em;
+  .b-right
+    display: table-cell;
+
+
+@import "./media"

@@ -1,0 +1,166 @@
+@import "../../modules/list/hlist";
+.hlist{
+  .hlist()
+}
+
+/*
+ * tabs 容器
+ */
+.tabsGroupX{
+  background-color: #fff;
+  font-size: 16px;
+  // display: table;
+  // display:flex;
+  // flex-direction:row;
+}
+
+/*
+ * 左侧部分
+ */
+.tabsMenus{
+  // display: table-cell;
+  width: 27%;
+  height: 100%;
+  overflow: auto;
+  position: fixed;
+  border-right: 1px solid #efefef;
+  // background-color: #f4f3f2;
+  background-color: #fcfcfc;
+  // background-color: #e7eaef;
+
+  // li 一级子项
+  .tabs-menu{
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    cursor: pointer;
+    -webkit-transition: all .3s ease;
+    transition: all .3s ease;
+    text-overflow: ellipsis;
+    padding: 0 0 0 1.8em;
+  }
+
+  // 左侧菜单容器
+  .tabs-menu-body{
+    width: 80%;
+    margin: 0 auto;
+    li{
+      font-size: 14px;
+      line-height: 28px;
+      position: relative;
+      z-index: 10;
+      -webkit-tap-highlight-color:rgba(0, 0, 0, 0);
+      -moz-tap-highlight-color:rgba(0, 0, 0, 0);
+      -ms-tap-highlight-color:rgba(0, 0, 0, 0);
+      -o-tap-highlight-color:rgba(0, 0, 0, 0);
+      tap-highlight-color:rgba(0, 0, 0, 0);
+      &.selected{
+        // border-right: 2px solid #2db7f5;
+        // background-color: #eaf8fe;
+        background-color: #50c479;
+        color: #fff;
+        border-radius: 3px;
+      }
+      &:active{
+        background-color: none;
+      }
+      &:hover{
+        // background-color: #f5fff0;
+        // background-color: transparent;
+        // color: #000;
+      }
+      &.itemroot{  //节点 li
+        position: relative;
+        &:hover{
+          background-color: transparent;
+        }
+        &:before{
+          content: none;
+        }
+      }
+      &.tabs-menu{
+        &:before{
+          content: none;
+        }
+      }
+
+      ul{
+        list-style: none;
+        padding: 0;
+        li{
+          font-size: 14px;
+          // margin: 0 0 0 -4em;   // 对齐
+          // padding: 0 0 0 4em; // 对齐
+          margin: 0.6em 0 0 -1.7em;   // 对齐
+          padding: 0 0 0 0.6em; // 对齐
+          .caption{
+            font-size: 12px;
+          }
+          &:before{
+            font-family: "iconfont";
+            content: '\e60c';
+            margin-right: 5px;
+            display: inline-block;
+            font-size: 6px;
+            color: #d6d6d6;
+            transition: all .3s ease;
+            vertical-align: bottom;
+          }
+        }
+      }
+    }
+  }
+
+  // li span 小节点标题
+  .caption{
+    // margin: 0 0 0 -4em;   // 对齐
+    // padding-left: 4em;    // 对齐
+    margin: 0 0 0 -2.3em;   // 对齐
+    padding-left: 0.6em;    // 对齐
+    font-size: 12px;
+    display: block;
+    color: #aaa;
+    &:hover{
+      // background-color: #f5fff0;
+      background-color: transparent;
+    }
+    &:after{
+      font-family: "iconfont";
+      content: '\e616';
+      margin-left: 6px;
+      // display: inline-block;
+      // vertical-align: middle;
+      position: absolute;
+      right: 1em;
+      top: 0;
+      transform: rotate(0deg);
+      font-size: 6px;
+      color: #abaaaa;
+      transition: all .3s ease;
+    }
+    &.fold{
+      &:after{
+        transform: rotate(-90deg);
+      }
+    }
+  }
+}
+
+/*
+ * 右侧部分
+ */
+.tabsBoxes{
+  // display: table-cell;
+  background: #fff;
+  width: 73%;
+  height: 100%;
+  padding-left: 27.3%;
+  .list-container{
+    width: 100%;
+  }
+  &.mulitple{
+    overflow: hidden;
+  }
+}
+
+// 水平tabs
+// @import "./media";

@@ -1,0 +1,28 @@
+// Media queries
+mq-mobile = "screen and (max-width: 479px)"
+mq-tablet = "screen and (min-width: 480px) and (max-width: 767px)"
+mq-iPhones4 = "only screen and (min-device-width: 320px) and (max-device-width: 480px) and (-webkit-min-device-pixel-ratio: 2)"
+mq-normal = "screen and (min-width: 768px)"
+
+.sticky-container
+  @media mq-mobile
+    width: 69.8%
+  @media mq-tablet
+    width: 69.8%
+  @media mq-iPhones4
+    width: 69.8%
+  @media mq-normal
+    width: 72.8%;
+
+@media mq-mobile
+  .bottomlock
+    .b-left
+      width: 30.5%;
+@media mq-tablet
+  .bottomlock
+    .b-left
+      width: 30.5%;
+@media mq-iPhones4
+  .bottomlock
+    .b-left
+      width: 30.5%;

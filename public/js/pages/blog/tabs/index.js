@@ -1,14 +1,29 @@
 import itemHlc from 'component/mixins/itemhlc'
-import { input as Input, iscroll, tabs as Tabs, cards as Cards, grids as Grids } from 'component'
 import { tips as msgtips, modal } from 'component/client'
-import {mediaQuery} from 'libs'
-import adapter from 'component/adapter/mgbloglist'
-import * as bar from './_common/toolbars'
+import {mediaQuery, smd, queryString} from 'libs'
+import {
+  input as Input,
+  iscroll,
+  tabs as Tabs,
+  cards as Cards,
+  grids as Grids,
+  list as List
+} from 'component'
+
+const locQuery = queryString()
+const {category, tag} = locQuery
+
 
 const USER = SAX('User', {login: false, info: {} })
+const RUNTIME = SAX('Runtime', { docker: '' })
 const BLOG = SAX('Blog')
 
-// actions方法集合
+
+/*
+ ==============
+ * actions方法集合
+ ==============
+ */
 BLOG.setActions({
   CHECKLOGIN: async function(){
     const userInfo = SAX.get('User')
@@ -24,42 +39,17 @@ BLOG.setActions({
   }
 })
 
-// 异步拿取数据
-BLOG.append({
-  pullBlogList: async function(api, page) {
-    if (!api) api = '/blog/get'
-    let _data = await ajax.get(api, {page: page})
-    if (!_data.error) {
-      _data.lists = adapter(_data.lists)
-      return _data
-    }
-  },
 
-  Modal: mediaQuery({
-    mobile: ()=>modal.p60,
-    tablet: ()=>modal.p60,
-    pc: ()=>modal.p30,
-  }),
 
-  Msgtips: msgtips
-})
-
-// 栅格，用于灵活置换其中内容
-BLOG.append({
-  main: Grids({
-    data : ['main'],
-    theme: 'grids/blog'
-  }),
-
-  grids:{
-    start: Grids({ data: [ 'start' ] }),
-    docker: Grids({ data: [ 'docker' ] })
-  }
-})
-
+/*
+ ==============
+ * 内部组件
+ ==============
+ */
 BLOG.append({
   // tabs menu的头部是否登录结构
   treeHeader: Cards({
+    autoinjec: false,
     theme: 'cards/blog',
     data: [
       { img: '/images/logo128-1.png',
@@ -70,24 +60,127 @@ BLOG.append({
       }
     ]
   }),
-  // 列表页触发加载结构
+  // 上拉加载
   triggerBar: itemHlc(
     <div className='tb-bar'>
-      <button className='btn' type="button">加载更多内容</button>
+      <button className='btn btn-more' type="button">点我加载更多内容</button>
     </div>
-  )
+  ),
+
+  // 下拉刷新
+  pulldownBar: itemHlc(
+    <div className='tb-bar'>
+      <button className='btn btn-more' type="button">松开我刷新</button>
+    </div>
+  ),
+
+  // 文档说明
+  docs: <div className='tb-bar' dangerouslySetInnerHTML={{__html: smd(':---文档正在整理中，稍后就来。。。')}} />
 })
 
-// sticky栏组
+
+
+/*
+ ==============
+ * 异步拿取数据
+ ==============
+ */
+BLOG.append({
+  tags: undefined,
+
+  pullBlogList: async function(api, page, adapter) {
+    if (!api) api = '/blog/get'
+    let paramsBody = {page: page}
+    if (category) paramsBody.category = category
+    if (tag) paramsBody.tag = tag
+    let _data = await ajax.get(api, paramsBody)
+    if (!_data.error) {
+      if (adapter) _data.lists = adapter(_data.lists)
+      return _data
+    }
+  },
+
+  pullBlogTags: function() {
+    if (this.tags) return this.tags
+    else {
+      ajax.get('/blog/get/tags')
+      .then( (data)=> {
+        const _data = _.filter(data.tags, item => {
+          if (item) return item
+        })
+        this.tags = _data
+        BLOG.roll('TAGSLIST', _data)
+      })
+    }
+  }
+})
+
+
+/*
+==============
+ utile 助手方法
+==============
+*/
+BLOG.append({
+  createlist: function(props){
+    // opts = {data: {Array}, listClass: {String}, listStyle: {Json}}
+    if (props) {
+      return List(props)
+    }
+  },
+  Modal: mediaQuery({
+    mobile: ()=>modal.p60,
+    tablet: ()=>modal.p60,
+    pc: ()=>modal.p30,
+  }),
+
+  Msgtips: msgtips
+})
+
+/*
+=======================
+ 栅格，用于灵活置换其中内容
+=======================
+*/
+BLOG.append({
+  main: Grids({
+    autoinjec: false,
+    data : ['main'],
+    theme: 'grids/blog'
+  }),
+
+  grids:{
+    start: Grids({ data: [ 'start' ], autoinjec: false }),
+    docker: Grids({ data: [ 'docker' ], autoinjec: false }),
+    toolbar: Grids({ data: [ ' ' ], autoinjec: false }),
+    tags: Grids({ data: [ 'bbb' ], autoinjec: false })
+  }
+})
+
+
+
+/*
+=======================
+ sticky栏组
+=======================
+*/
 BLOG.append({
   stickys: require('./_common/sticky')
 })
 
-// 底部状态栏
+
+
+
+/*
+=======================
+ 底部状态栏
+=======================
+*/
+import * as bar from './_common/toolbars'
 BLOG.append({
   bars: function(){
     const Start = bar.start()
-    const main = bar.main()
+    const main = bar.main(this.stickys)
     const my = bar.my()
     return {
       start: <Start itemMethod={startAction}/>,
@@ -124,7 +217,13 @@ BLOG.append({
   }
 })
 
-// blog 列表
+
+
+/*
+=======================
+ blog 列表
+=======================
+*/
 const blogList = require('./_common/bloglist')
 BLOG.append({
   getBlog: blogList.load_list_data,
@@ -132,10 +231,18 @@ BLOG.append({
   listInst: blogList.listInstance
 })
 
-// 登录modal及表单
+
+
+/*
+=======================
+ 登录modal及表单
+=======================
+*/
 BLOG.append({
   loginFormStructor: require('./_common/loginform')
 })
+
+
 
 const Config = BLOG.get()
 const stickys = Config.stickys
@@ -175,15 +282,16 @@ async function startIndex(){
   const tabsConfig = [
     {title: 'AGZGZ', idf: 'category'},
     {title: '博客', content: Config.main.render(), parent: 'category'},
-    {title: '用户', content: '444', parent: 'category'}
+    {title: '文档', content: Config.docs, parent: 'category'}
   ]
 
   const tabs = Tabs({
+    autoinjec: false,
     data: tabsConfig,
     select: 1,
     treeHeader: Config.treeHeader.render(),
     container: 'blog',
-    theme: 'tabs/blog',  // = /css/m/tabs/blog
+    // theme: 'tabs/blog',  // = /css/m/tabs/blog
     fold: false,
     itemMethod: tabsUnitFun
   })

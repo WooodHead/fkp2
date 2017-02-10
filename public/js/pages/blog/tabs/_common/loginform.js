@@ -6,6 +6,7 @@ const BLOG = SAX('Blog')
 const Config = BLOG.get()
 
 inject().css(`
+  /* === public/js/pages/blog/tabs/_common/loginform === */   
   a{
     text-decoration: none;
   }

@@ -1,75 +1,15 @@
-// import itemHlc from 'component/mixins/itemhlc'
-// import { input as Input, iscroll } from 'component'
-// // import stickys from './sticky'
-// // const stGrids = stickys.grids
-//
-// const bars = {
-//   menus: ()=>{
-//     const Start = itemHlc(
-//       <button className="btn" id="for-admin">管理</button>,
-//       function(dom){
-//         $(dom).click(function(){
-//           toolDock.right(bars.admin)
-//         })
-//         $('body').on('click', '.return', function(){
-//           toolDock.right(bars.main)
-//         })
-//       }
-//     )
-//     return <Start />
-//   },
-//
-//   admin: [
-//     <a><i className="iconfont icon-myfill login" style={{color: '#748cf4'}}/></a>,
-//     <a><i className="iconfont icon-favorfill mylist" style={{color: '#748cf4'}}/></a>,
-//     <a><i className="iconfont icon-roundaddfill" style={{color: '#748cf4'}}/></a>,
-//     <a><i className="iconfont icon-arrow_left return" style={{color: '#748cf4'}}/></a>
-//   ],
-//
-//   main: Input({
-//     theme: 'form/blog',
-//     listClass: 'formSearch',
-//     data: [{ input:
-//         {type: 'text',id:'search', placeholder: 'xxx', desc: <a><i className="iconfont icon-search" /></a>},
-//     } ]
-//   }).render()
-// }
-//
-// // 底部功能栏
-// const toolDock = {
-//   left: function(cfg){
-//     if (React.isValidElement(cfg)){
-//       stGrids.botLeft.replace(cfg)
-//       return
-//     }
-//     stGrids.botLeft.replace(bars.menus())
-//   },
-//   right: function(cfg){
-//     if (React.isValidElement(cfg)){
-//       stGrids.botRight.replace(cfg)
-//       return
-//     }
-//     const toolBar = iscroll({
-//       data: cfg,
-//       theme: 'list/books',
-//       listClass: 'books',
-//       iscroll: { scrollX: true }
-//     })
-//     stGrids.botRight.replace(toolBar.render())
-//   }
-// }
-//
-// export default {bars, toolDock}
-
 import itemHlc from 'component/mixins/itemhlc'
-import { input as Input} from 'component'
-
-const myItem = {
-  login:  <a><i className="iconfont icon-myfill login" style={{color: '#748cf4'}}/></a>,
-  mylist: <a><i className="iconfont icon-favorfill mylist" style={{color: '#748cf4'}}/></a>,
-  back:   <a><i className="iconfont icon-arrow_left back" style={{color: '#748cf4'}}/></a>
-}
-
+import { input as Input, baselist} from 'component'
+import { inject } from 'libs'
+const RUNTIME = SAX('Runtime')
+inject().css(`
+  .mainBtn{
+    width: 2em;
+  }
+  .mainBtn a{
+    display: block;
+  }
+`)
 
 function init(){
   const BLOG = SAX('Blog')
@@ -78,12 +18,15 @@ function init(){
   const bottomBar = Config.bottomBar()
   const Modal = Config.Modal
   const Msgtips = Config.Msgtips
+  const stickys = Config.stickys
   const main = Config.main
   const loginFormStructor = Config.loginFormStructor
   const loginStat = BLOG.roll('CHECKLOGIN')
   const getBlog = Config.getBlog
   const getMyBlog = Config.getMyBlog
   const listInstance = Config.listInst
+  const grids = Config.grids
+  const createlist = Config.createlist
   return {
     loginStat,
     bars,
@@ -94,35 +37,43 @@ function init(){
     getBlog,
     getMyBlog,
     Msgtips,
-    listInstance
+    listInstance,
+    stickys,
+    grids,
+    createlist
   }
 }
-const myItemAction = {
-  login: (dom)=>{
-    const that = myItemAction
-    const cfg = init()
-    if (!that.loginStat) {
-      $(dom).click(function(){
-        cfg.Modal(
-          <div style={{textAlign: 'left'}}>
-            <div>{cfg.loginFormStructor.render()}</div>
-            <p>第三方登录</p>
-            <a href='/auth/sign'>
-              <i className="iconfont icon-github"></i>
-            </a>
-          </div>
-        )
-      })
-    }
-  },
 
+const myItem = {
+  mylist: <a><i className="iconfont icon-favorfill mylist" style={{color: '#748cf4'}}/></a>,
+  back:   <a><i className="iconfont icon-arrow_left back" style={{color: '#748cf4'}}/></a>,
+  add:   <a href="/blog/add" target="_blank"><i className="iconfont icon-roundaddfill" style={{color: '#748cf4'}}/></a>
+}
+
+const myItemAction = {
   mylist: async (dom)=>{
-    const that = myItemAction
     const cfg = init()
     let mylist = await cfg.listInstance('mylist')
+
+    const formConfig = [
+      {
+        input: [
+          {type: 'checkbox', id:['checkALL'], name: ['checkALL'], value: ['4'], desc: '全选', itemClass: 'switch'},
+          {type: 'button', id: 'deleteArticleItem',  value: '删除', itemClass: 'btn'},
+        ]
+      }
+    ]
+    const fi = Input({
+      data: formConfig,
+      autoinjec: false
+    })
+
     $(dom).click(function(){
       if (mylist) {
+        RUNTIME.update({ docker: 'mylist' })
         cfg.main.replace(mylist.render())
+        cfg.stickys.toolbar('show')
+        cfg.grids.toolbar.replace(<div style={{padding: '0.6em'}}>{fi.render()}</div>)
       } else {
         cfg.Msgtips.toast('请先登录')
       }
@@ -134,6 +85,8 @@ const myItemAction = {
     const cfg = init()
     let blog = await cfg.listInstance()
     $(dom).click(function(){
+      RUNTIME.update({ docker: '' })
+      cfg.stickys.toolbar('hide')
       cfg.bottomBar.docker(cfg.bars.main)
       cfg.main.replace(blog.render())
     })
@@ -142,24 +95,58 @@ const myItemAction = {
 
 
 export function start(){
-  return itemHlc( <button className="btn" id="for-admin">管理</button> )
+  return itemHlc( <button className="btn" id="for-admin" style={{backgroundColor:'#fff'}}>我的</button> )
 }
 
-export function main(){
-  return Input({
-    theme: 'form/blog',
-    listClass: 'formSearch',
-    data: [{ input:
-        {type: 'text',id:'search', placeholder: 'xxx', desc: <a><i className="iconfont icon-search" /></a>},
-    } ]
+export function main(stickys){
+  const _desc = [
+    <a key='main1' id="yyy"><i className="iconfont icon-search" /></a>,
+    <a key='main2' id="blogtags"><i className="iconfont icon-commandfill"/></a>
+  ]
+
+  const btns = baselist({
+    data: _desc,
+    theme: 'list/books',
+    listClass: 'books',
+    itemClass: 'mainBtn'
   })
+
+  btns.rendered = function(){
+    let dystickyShow = false
+    $('body').on('click', '#blogtags', function(){
+      if (dystickyShow) {
+        dystickyShow = false
+        stickys.dytop('hide')
+      } else {
+        dystickyShow = true
+        stickys.dytop('show')
+      }
+    })
+  }
+
+  return btns
+
+  // iscroll({
+  //   data: cfg,
+  //   theme: 'list/books',
+  //   listClass: 'books',
+  //   iscroll: { scrollX: true }
+  // })
+
+
+  // return Input({
+  //   autoinjec: false,
+  //   listClass: 'formSearch',
+  //   data: [{ input:
+  //       {type: 'text',id:'search', placeholder: 'xxx', style: {width: '8em'}, desc: btns.render()}
+  //   } ]
+  // })
 }
 
 export function my(){
   return [
-    // wrapItem(myItem.login, myItemAction.login),
     wrapItem(myItem.mylist, myItemAction.mylist),
-    <a><i className="iconfont icon-roundaddfill" style={{color: '#748cf4'}}/></a>,
+    myItem.add,
     wrapItem(myItem.back, myItemAction.back)
   ]
 }

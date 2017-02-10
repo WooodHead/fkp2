@@ -1,0 +1,65 @@
+@gutter-width: 16px;     // 1rem
+@outer-margin: 32px;     // 2rem
+@screen-xlt-min: 320px;  //20em
+@screen-lt-min: 375px;   //23.4375em
+@screen-xxs-min: 414px;  //25.875em
+@screen-xs-min: 480px;   //30em
+@screen-sm-min: 768px;   //48em
+@screen-md-min: 1024px;  //64em
+@screen-lg-min: 1200px;  //75em
+
+// ip6为基准 font-size=100px
+// 320*588   fz=85.333    ip5 dpr=2
+// 375*667   fz=100       ip6 dpr=2
+// 414*738   fz=110.4     ip6p  dpr=3
+// 768*1024  fz=204.8     iPad dpr=2
+// 1024*768  fz=136.533   pc dpr=1
+// 1200*768  fz=160       pc dpr=1
+
+// @media (min-width: 401px) and (max-width: 800px){}
+
+html{
+  padding: 0;
+  margin: 0
+}
+body{
+  padding: 0;
+  margin: 0;
+}
+
+.tabsLeft(){
+  .tabsGroupX{
+    .tabsMenus{
+      width: 30%;
+    }
+    .tabsBoxes{
+      // margin-left: 30%;
+      width: 69%;
+      padding-left: 30.6%;
+    }
+  }
+}
+
+@media screen{
+  @media (max-width: @screen-xlt-min) {
+    .tabsLeft();
+  }
+  @media (min-width: @screen-xlt-min) and (max-width: @screen-lt-min) {
+    .tabsLeft();
+  }
+  @media (min-width: @screen-lt-min) and (max-width: @screen-xxs-min) {
+    .tabsLeft();
+  }
+  @media (min-width: @screen-xxs-min) and (max-width: @screen-xs-min) {
+    .tabsLeft();
+  }
+  @media (min-width: @screen-xs-min) and (max-width: @screen-sm-min) {
+    .tabsLeft();
+  }
+  @media (min-width: @screen-sm-min) and (max-width: @screen-md-min) {
+  }
+  @media (min-width: @screen-md-min) and (max-width: @screen-lg-min) {
+  }
+  @media (min-width: @screen-lg-min) {
+  }
+}

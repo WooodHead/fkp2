@@ -1,8 +1,12 @@
 import { iscroll } from 'component'
-import { queryParams, inject } from 'libs'
+import { queryParams, inject, addEvent, rmvEvent } from 'libs'
+import adapter from 'component/adapter/mgbloglist'
+import adapter_my from 'component/adapter/formbloglist'
+import {slip} from 'component/client'
 
 inject()
 .css( `
+  /* === public/js/pages/blog/tabs/_common/bloglist === */
   .tb-bar{
     padding: 2em 2em 6em 2em;
     text-align: center;
@@ -14,7 +18,8 @@ inject()
     cursor: pointer;
   }
 `)
-
+const RUNTIME = SAX('Runtime')
+const runtime = RUNTIME.get()
 const BLOG = SAX('Blog')
 const Config = BLOG.get()
 const stickys = Config.stickys
@@ -40,6 +45,26 @@ if (params) {
   }
 }
 
+// toggle checkbox
+let selectedItem = {}
+let selectedItemDom = {}
+function cboxToggleChecked(cbox, idf, dom){
+  if (cbox.checked){
+    cbox.checked = false
+    delete selectedItem[idf]
+    if(selectedItemDom[idf]) delete selectedItemDom[idf]
+  } else {
+    cbox.checked = true
+    selectedItem[idf] = cbox.value
+    if(dom) selectedItemDom[idf] = dom
+  }
+}
+
+// const PullDownBar = Config.pulldownBar
+// const pulldownAction = (dom) => {
+//
+// }
+
 const TriggerBar = Config.triggerBar
 function triggerAction(dom) {
   $(dom).click(e => {
@@ -50,6 +75,9 @@ function triggerAction(dom) {
 function triggerAction_my(dom) {
   $(dom).click(e => {
     my_list_data(++cur_page)
+    setTimeout(()=>{
+      listMethod()()
+    }, 100)
   })
 }
 
@@ -59,15 +87,18 @@ function pulldownFun(type){
   return async function(topPos){
     let llct = loadlistComponent
     let api = '/blog/get'
+    let adp = adapter
     if (type) {
       llct = loadlistComponent_my
       api = '/blog/admin/list'
+      adp = adapter_my
     }
     if (topPos > 50) {
       if (!pulldownStat) {
-        llct.pulldown()
+        const PulldownBar = Config.pulldownBar
+        llct.pulldown(<PulldownBar />)
         pulldownStat = true
-        const data = await Config.pullBlogList(api, 0)
+        const data = await Config.pullBlogList(api, 0, adp)
         llct.update(data.lists)
         setTimeout(()=>{
           pulldownStat = false
@@ -82,15 +113,19 @@ function scrollFun(){
   return function(topPos, direction){
     if (direction == 'down') {
       stickys.dytop('hide')
+      stickys.toolbar('hide')
       stickys.top.hide()
       stickys.bot.hide()
     } else {
-      stickys.dytop('show')
+      if (runtime.docker == 'mylist') {
+        stickys.toolbar('show')
+      }
+      // stickys.dytop('show')
       stickys.top.show()
       stickys.bot.show()
     }
     if (-topPos<400) {
-      stickys.dytop('hide')
+      // stickys.dytop('hide')
       stickys.top.show()
       stickys.bot.show()
     }
@@ -110,12 +145,73 @@ function scrollEndFun(type){
   }
 }
 
+let slimeDomParent
+function listMethod(type) {
+  return function(dom) {
+    if (!slimeDomParent) slimeDomParent = dom
+    let slipDom = $(slimeDomParent).find('.hlist')[0]
+    slip.x(slipDom, {
+      rightBlock: function(dom){
+        let that = this
+        const cbox = $(this.parent).find('input[type=checkbox]')[0]
+        if (!$(dom).find('.item-remove').length ){
+          $(dom).append(`
+            <span class="btn btn-swipmenu item-remove" style="background-color:#fff;">删除</span>
+            <span class="btn btn-swipmenu item-edit" style="background-color:#fff;"><a href='/blog/edit?topic=${cbox.value}' target='_blank'>编辑</a></span>
+          `)
+          $(dom).find('.item-remove').click(async function(){
+            if (cbox) {
+              const res = await ajax.post('/blog/admin/delete', {0: cbox.value})
+              if (res.success) {
+                that.remove()
+              }
+            }
+          })
+        }
+      }
+    })
+
+    setTimeout(()=>{
+      $('#checkALL').click( e => {
+        $('input[name=selected]').each((ii, item)=>{
+          cboxToggleChecked(item, ii)
+        })
+      })
+
+      $('#deleteArticleItem').click( async e => {
+        if (Object.keys(selectedItem).length) {
+          const res = await ajax.post('/blog/admin/delete', selectedItem)
+          if (res.success) {
+            if (Object.keys(selectedItemDom).length) {
+              Object.keys(selectedItem).map((item)=>{
+                selectedItemDom[item].remove()
+                // pull_list_data(curPagiPage)
+              })
+            }
+          }
+        }
+      })
+    }, 1500)
+  }
+}
+
+function itemMethod(dom, data){
+  const that = this
+  $(dom).click(function(){
+    const cbox = $(this).find('input[type=checkbox]')[0]
+    cboxToggleChecked(cbox, that.idf, dom)
+  })
+}
+
+
 function ScrollList(data, funs){
   const iscrollProps = {
     data: data.lists,
     header: <div style={{marginTop: '30px'}}></div>,
     theme: 'list/qqmusic',
     listClass: 'qqmusic',
+    itemMethod: funs.itemMethod,
+    listMethod: funs.listMethod,
     pulldown: funs.pulldown,
     scroll: funs.scroll,
     scrollEnd: funs.scrollEnd,
@@ -131,7 +227,7 @@ function ScrollList(data, funs){
 
 // blog list
 export async function load_list_data(page){
-  const data = await Config.pullBlogList('/blog/get', page)
+  const data = await Config.pullBlogList('/blog/get', page, adapter)
   if (loadlistComponent) loadlistComponent.append(data.lists)
   else {
     loadlistComponent = ScrollList(data, {
@@ -144,11 +240,13 @@ export async function load_list_data(page){
 }
 
 export async function my_list_data(page){
-  let data = await Config.pullBlogList('/blog/admin/list', page)
+  let data = await Config.pullBlogList('/blog/admin/list', page, adapter_my)
   if (data) {
     if (loadlistComponent_my) loadlistComponent_my.append(data.lists)
     else {
       loadlistComponent_my = ScrollList(data, {
+        listMethod: listMethod(),
+        itemMethod: itemMethod,
         pulldown: pulldownFun('mylist'),
         scroll: scrollFun(),
         scrollEnd: scrollEndFun('mylist')
