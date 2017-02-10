@@ -9,7 +9,7 @@ var ws = require('libs/wsocket')
 ws.emit('hello', 'hi')
 ws.on('hello', function(val){
   setTimeout(function(){
-    msgtips.success(val.message)
+    msgtips.toast(val.message)
   },2000)
 })
 

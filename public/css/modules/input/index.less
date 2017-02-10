@@ -12,7 +12,10 @@ input,button,select,textarea{outline:none}
     padding: 0.4em;
   }
   .inputMultiply{
-    lable, .inputItem{
+    lable{
+      margin-left: 0.3em;
+    }
+    .inputItem{
       display: inline-block;
       padding: 0.2em;
     }
@@ -31,6 +34,7 @@ input,button,select,textarea{outline:none}
     height: @input-height;
     outline:none;
     &[type=button]{
+      // border: none;
       background-color: #fff;
     }
   }

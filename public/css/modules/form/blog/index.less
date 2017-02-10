@@ -4,17 +4,23 @@
   // &.formSearch{
     font-size: 14px;
     .inputMultiply{
-      display: table-row;;
+      display: table;
       lable, .inputItem{
-        display: table-cell;
-        padding: 0.2em;
+        // display: table-cell;
+        display: inline-block;
+        padding: 0;
       }
       .checkboxGroup{
-        display: table-cell;
+        // display: table-cell;
       }
     }
     input{
-      width: 9.8em;
+      &[type=text]{
+        width: 9.8em;
+      }
+      &[type=password]{
+        width: 9.8em;
+      }
       height: @input-height;
       outline:none;
       &[type=button]{

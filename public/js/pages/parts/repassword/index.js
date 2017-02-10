@@ -1,8 +1,20 @@
-import {objtypeof, inject, validator, msgtips} from 'libs'
-import input from 'component/modules/form/inputs'
-
+import {objtypeof, inject, validator } from 'libs'
+import { input as Input } from 'component'
+import { tips as msgtips } from 'component/client'
+const Validator = validator()
 const injectStatic = inject()
-injectStatic.css('/css/m/form')
+injectStatic.css(`
+  /* === public/js/parts/repassword === */
+  input[type=text]{
+    width: 12em;
+  }
+  input[type=password]{
+    width: 12em;
+  }
+  .inputGroup input[type=button]{
+    border: 1px solid #999;
+  }
+`)
 const resetPassWordUrl = '/auth/resetpwd'
 
 // 密码校验方法
@@ -12,32 +24,36 @@ function equalPassword(value, block, errmsg){
 }
 
 //表单结构
-let Input = input([
+const inputData = [
   {input: {id: "password", type: "password"}, title: '密码:'},
   {input: {id: "repassword", type: "password"}, title: '再一次:'},
   {input: {id: "apply", type: "button", value: '提交'}, title: ' '}
-], formAction)
+]
 
-// 校验密码
-let Validator = validator()
-function formAction(form){
+let repForm = Input({
+  data: inputData
+})
+
+repForm.rendered = function(){
   $('#repassword').blur(function(){
-    let values = form.values()
+    let values = repForm.values()
     let stat = Validator(this.value, 'noop', values::equalPassword)()
-    if (stat) form.warning('repassword', 'no')
+    if (stat) repForm.warning('repassword', 'no')
     else {
-      form.warning('repassword')
+      repForm.warning('repassword')
     }
   })
+
   $('#password').blur(function(){
     let stat = Validator(this.value, 'password')()
-    if (stat) form.warning('password', 'no')
+    if (stat) repForm.warning('password', 'no')
     else {
-      form.warning('password')
+      repForm.warning('password')
+      msgtips.toast('6位密码，包含字符串，数字和符号')
     }
   })
   $('#apply').click(()=>{
-    let values = form.values()
+    let values = repForm.values()
     let chk = Validator
       (values.password, 'password')
       (values.repassword, 'noop', values::equalPassword)
@@ -46,10 +62,11 @@ function formAction(form){
           errs.map((item)=>{
             switch (item.key) {
               case 'password':
-                form.warning('password')
+                repForm.warning('password')
+                msgtips.toast('6位密码，包含字符串，数字和符号')
                 break;
               case 'noop':
-                form.warning('repassword')
+                repForm.warning('repassword')
                 break;
             }
             msgtips.error(item.info)
@@ -75,17 +92,11 @@ function submit(val){
 }
 
 let RePassword = (
-  <div className="announce announce60">
-    <div className="row" style={{textAlign: "left"}}>
-      <div className="col-md-3"></div>
-      <div className="col-md-6">
-        {Input.eles}
-      </div>
-      <div className="col-md-3"></div>
-    </div>
+  <div className="announce announce60" style={{textAlign: 'left'}}>
+    {repForm.render()}
   </div>
 )
 
 if (document.getElementById('formBox')) {
-  React.render(RePassword, document.getElementById('formBox'))
+  React.render(RePassword, document.getElementById('formBox') )
 }

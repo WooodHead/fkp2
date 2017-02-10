@@ -18,31 +18,44 @@
 
 // @media (min-width: 401px) and (max-width: 800px){}
 
-// 屏幕居中
-.announce{
-  position: absolute;
-  margin: auto;
-  padding: 0;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 80%;
-  height: 50%;
-  text-align: center;
-  &.announce60{
-    width: 60%;
-  }
-  &.announce40{
-    width: 40%;
-  }
-}
-
-
 .mobile(){
-  .announce{
-    &.announce60{
-      width: 80%;
+  .qqmusic{
+    .hlist{
+      .item{
+        line-height: 1;
+        margin-bottom: 0;
+        .hheader{
+          padding: 0;
+          width: 88%;
+          .title_header{
+            font-size: 0.9em;
+            abbr{
+              display: block;
+              font-size: 0.4em;
+              padding: 0;
+              margin: 0;
+              &:before{
+                content: '时间: '
+              }
+            }
+          }
+        }
+        .hbody{
+          padding: 0;
+          width: 90%;
+          margin-left: 0;
+          margin-bottom: 0.5em;
+          .hb-item{
+            font-size: 0.6em;
+            span{
+              font-size: 0.6em;
+            }
+            a{
+              font-size: 0.6em;
+            }
+          }
+        }
+      }
     }
   }
 }
@@ -57,16 +70,16 @@
     .mobile()
   }
   @media (min-width: @screen-xlt-min) and (max-width: @screen-lt-min) {
-    .mobile()
+
   }
   @media (min-width: @screen-lt-min) and (max-width: @screen-xxs-min) {
-    .mobile()
+
   }
   @media (min-width: @screen-xxs-min) and (max-width: @screen-xs-min) {
-    .mobile()
+
   }
   @media (min-width: @screen-xs-min) and (max-width: @screen-sm-min) {
-    
+
   }
   @media (min-width: @screen-sm-min) and (max-width: @screen-md-min) {
 

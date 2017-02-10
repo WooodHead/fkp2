@@ -2,6 +2,25 @@
     button 的默认样式
     来自bootstrap
 */
+.touchAction(){
+  -webkit-touch-action: manipulation;
+  -moz-touch-action: manipulation;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+}
+.tapHignLight(){
+  -webkit-tap-highlight-color:rgba(0, 0, 0, 0);
+  -moz-tap-highlight-color:rgba(0, 0, 0, 0);
+  -ms-tap-highlight-color:rgba(0, 0, 0, 0);
+  -o-tap-highlight-color:rgba(0, 0, 0, 0);
+  tap-highlight-color:rgba(0, 0, 0, 0);
+}
+.userSelect(){
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 .btn{
   width: 5em;
   display: inline-block;
@@ -13,22 +32,28 @@
   text-align: center;
   white-space: nowrap;
   vertical-align: middle;
-  -ms-touch-action: manipulation;
-  touch-action: manipulation;
+  .touchAction();
   cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+  .userSelect();
   background-image: none;
   border: 1px solid #d1cece;
   border-radius: 4px;
   outline: none;
-  // background-color: #fff;
+  -webkit-appearance: none;
+  .tapHignLight();
+
   &:active{
-    transition: all 60ms ease;
+    transition: all 0.02 ease;
     transform: scale(.97);
     opacity: .75;
+
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+    text-decoration: none;
+    background-color: #eeeeee;
+    border-color: #cfcfcf;
+    color: #d4d4d4;
+    box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.2);
+
     &:focus{
       outline: none;
       outline-offset: none;
