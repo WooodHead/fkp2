@@ -84,30 +84,7 @@ function grids(opts){
   if (validate) {
     opts.data = _data
     return new G(opts)
-  }
-
-  // if (validate) {
-  //   opts.data = _data
-  //   let gridInstance = bsPure(opts)
-  //
-  //   gridInstance.replace = function(index, data){
-  //     let _data = {}
-  //     if (typeof index != 'number') {
-  //       data = index
-  //       index = 0
-  //     }
-  //     _data.title = (typeof data == 'string' || typeof data == 'number' || React.isValidElement(data))
-  //     ? data
-  //     : typeof data == 'object'
-  //       ? (data.content || ' ')
-  //       : ' '
-  //
-  //     _data.itemStyle = {width: data.width||_width}
-  //     this.actions.roll('EDIT', {index: index, data: _data})
-  //   }
-  //
-  //   return gridInstance
-  // }
+  }   
 }
 
 export function Grids(opts){

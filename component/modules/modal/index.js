@@ -5,6 +5,7 @@ inject().css([
   `/css/t/animate.css`
 ])
 .css([ `
+  /* === component/modal === */   
   .modal-bg{
     z-Index:10020;
     background-color:rgba(236, 247, 254, 0.7);

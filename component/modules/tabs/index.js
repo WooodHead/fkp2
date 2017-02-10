@@ -77,7 +77,7 @@ export function tabs(opts){
     container: '',
     globalName: _.uniqueId('Tabs_'),   // TabsModule
     theme: 'tabs', // = /css/m/tabs
-    cls: '',
+    cls: 'tabsGroupX',
     itemMethod: noop,
     listMethod: noop,
     tabsDidMethod: noop,

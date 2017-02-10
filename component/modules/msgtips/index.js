@@ -5,7 +5,9 @@ inject().css([
   `/css/t/animate.css`
 ])
 .css([
-  ` .tips-container{
+  `
+  /* === component/msgtips === */
+  .tips-container{
     z-Index:10030;
     width:230px;
     position:fixed;
@@ -73,22 +75,25 @@ class Tips extends PopClass {
   //消息实例容器，可定制
   msgBox(stat){
     let boxContainer
+    let boxContainerId = 'msgcontainer'
     let cls = 'tips-container'
     if (stat && stat.toast) {
       cls += ' tips-toast'
+      boxContainerId = 'msgcontainer-toast'
     }
     if (stat && stat.notification) {
       cls += ' tips-notification'
+      boxContainerId = 'msgcontainer-notification'
     }
-    if (!document.getElementById('msgcontainer')) {
+    if (!document.getElementById(boxContainerId)) {
       let box = document.createElement('div')
       box.className = cls
-      box.id = 'msgcontainer'
+      box.id = boxContainerId
       let body = document.getElementsByTagName('body')
       body[0].appendChild(box)
       boxContainer = box
     } else {
-      boxContainer = document.getElementById('msgcontainer')
+      boxContainer = document.getElementById(boxContainerId)
     }
     return boxContainer
     // $('#msgcontainer').length ? '' : $('body').append('<div class="tips-container" id="msgcontainer"></div>');

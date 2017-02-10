@@ -21,6 +21,7 @@ class App extends ListClass {
   componentWill(){
     const dft = this.config
     const BaseList = scroll(this.createList(dft.globalName))   // = this.createList(this.config.globalName)
+    // listMethod={this.componentDid}
     this.eles = <BaseList
       data={dft.data}
       itemClass={dft.itemClass}
@@ -28,7 +29,7 @@ class App extends ListClass {
       header={dft.header}
 
       itemMethod={dft.itemMethod}
-      listMethod={this.componentDid}
+      listMethod={dft.listMethod}
 
       scrollContainer = {dft.scrollContainer}
       onscroll={dft.scroll}

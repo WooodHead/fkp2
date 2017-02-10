@@ -29,26 +29,24 @@ var Radio = React.createClass({
     if (_.isPlainObject(this.props.data)){
       let data = this.props.data
 
-      try {
-        this.names = getArrayItem(data.name)
-        this.ids   = getArrayItem(data.id)
-        this.titles   = getArrayItem(data.title)
-        this.values   = getArrayItem(data.value)
-        this.descs   = getArrayItem(data.desc)
+      this.names = getArrayItem(data.name)
+      this.ids   = getArrayItem(data.id)
+      this.titles   = getArrayItem(data.title)
+      this.values   = getArrayItem(data.value)
+      this.descs   = getArrayItem(data.desc)
 
-        if (data.type) this.type = data.type;
-        _cls = this.type==='radio' ? 'fkp-radio-box' : 'fkp-checkbox-box';
+      if (data.type) this.type = data.type;
+      _cls = this.type==='radio' ? 'fkp-radio-box' : 'fkp-checkbox-box';
 
-        if (!this.names || !this.values) {
-          throw '请指定name 和 value'
-        }
-      } catch (e) {
-        console.log(e);
+      if (!this.names || !this.values) {
+        throw '请指定name 和 value'
       }
+
+      const itemClass = data.itemClass ? data.itemClass : ''
 
       this.values.map( (val, ii)=>{
         let resault = {}
-        const lableClass = this.type==='radio' ? 'radioItem' : 'checkboxItem'
+        let lableClass = this.type ==='radio' ? 'radioItem '+itemClass : 'checkboxItem '+itemClass
 
         resault.val = val
         resault.title = this.titles[ii] || ''

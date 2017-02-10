@@ -33,6 +33,7 @@ module.exports = {
   grabString: base.grabString,
   uri: parseQuery,
   guid: guid,
+  smd:            require('./_component/simplemd'),   //简单markdown
   timeAgo:   timer.timeAgo,      //时间过去了多久
   validator:     require('./_component/validator')        //校验基础方法
 }

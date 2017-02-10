@@ -575,6 +575,18 @@
           }
         },
 
+        update: function(name, target){
+          if (!name || name == '') return false;
+          if (typeof target != 'object') return false;
+          var save = _stock;
+          if (!save[name]) return false
+          var odata = save[name].getter('data')
+          Object.keys(target).map(function(item, ii){
+            odata[item] = target[item]
+          })
+          return true
+        },
+
         set: function(name, dataOrAct, fun) {
             if (!name || name == '') return false;
             if (!dataOrAct) dataOrAct = {}
@@ -872,6 +884,9 @@
         storeAct.append(this.name, data, fun)
         this.data = this.store.sdata
         return this.data
+      },
+      update: function(data){
+        return storeAct.update(this.name, data)
       },
       bind: function(ctx){
         this.ctx = ctx

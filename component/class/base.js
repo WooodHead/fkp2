@@ -22,7 +22,7 @@ export default class {
     this.eles
     this.stat = 'start'
     this.actions = this.config.globalName ? SAX(this.config.globalName):{roll: ()=>{}}
-    this.rendered
+    this.rendered = this.config.rendered
     this.client = (() => typeof window !== 'undefined')()
 
     this.componentWill = this::this.componentWill

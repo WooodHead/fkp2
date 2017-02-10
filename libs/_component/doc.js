@@ -2,72 +2,137 @@
 var base = require('./base')
 
 
+// var currentStyle = function(element){
+//   return element.currentStyle || document.defaultView.getComputedStyle(element, null);
+//   // return element.currentStyle || window.getComputedStyle(element, null);
+// }
+//
+// //获取元素的实际absolute位置
+// //上下左右
+// function getOffset(el){
+//   if (!el) el=window
+//   if(el===window||el===document){
+//     return DocmentView()
+//   } else {
+//     var parent
+//     , pbox
+//   	, box = el.getBoundingClientRect()
+//     , doc = el.ownerDocument
+//     , body = doc.body
+//     , docElem = doc.documentElement
+//     // for ie
+//     , clientTop = docElem.clientTop || body.clientTop || 0
+//     , clientLeft = docElem.clientLeft || body.clientLeft || 0
+//     // In Internet Explorer 7 getBoundingClientRect property is treated as physical,
+//     // while others are logical. Make all logical, like in IE8.
+//     , zoom = 1;
+//
+//     if (body.getBoundingClientRect) {
+//       var bound = body.getBoundingClientRect();
+//       zoom = (bound.right - bound.left)/body.clientWidth;
+//     }
+//     if (zoom > 1){
+//       clientTop = 0;
+//       clientLeft = 0;
+//     }
+//     var node = el.parentNode;
+//     if(node.nodeName.toLowerCase()!=='body'){
+//     	while(currentStyle(node).position!=='relative'){
+//   			node = node.parentNode;
+//         if(node.nodeName.toLowerCase()!=='body') break;
+//   			if(currentStyle(node).position==='relative'){
+// 					parent = node;
+// 					pbox = parent.getBoundingClientRect();
+// 					var ptop = pbox.top/zoom + (window.pageYOffset || docElem && docElem.scrollTop/zoom || body.scrollTop/zoom) - clientTop,
+//             pleft = pbox.left/zoom + (window.pageXOffset|| docElem && docElem.scrollLeft/zoom || body.scrollLeft/zoom) - clientLeft;
+// 					break;
+//   			}
+//     	}
+//     }
+//
+//     var top = box.top/zoom + (window.pageYOffset || docElem && docElem.scrollTop/zoom || body.scrollTop/zoom) - clientTop,
+//     left = box.left/zoom + (window.pageXOffset|| docElem && docElem.scrollLeft/zoom || body.scrollLeft/zoom) - clientLeft;
+//
+//     top  = parent ? top-ptop : top;
+//     left = parent ? left-pleft : left;
+//     top  = top - parseInt(currentStyle(el).paddingTop);
+//     var diff_height = box.bottom-box.top,
+//         diff_width = box.right - box.left,
+//         bottom = top + diff_height,
+//         right = left + diff_width;
+//     return {
+//       top: top,
+//       left: left,
+//       width: diff_width,
+//       height: diff_height,
+//       bottom: bottom,
+//       right: right
+//     };
+//   }
+// }
+
+
 var currentStyle = function(element){
   return element.currentStyle || document.defaultView.getComputedStyle(element, null);
-  // return element.currentStyle || window.getComputedStyle(element, null);
 }
 
 //获取元素的实际absolute位置
 //上下左右
 function getOffset(el){
-  if (!el) el=window
-  if(el===window||el===document){
-    return DocmentView()
-  } else {
-    var parent
-    , pbox
-  	, box = el.getBoundingClientRect()
-    , doc = el.ownerDocument
-    , body = doc.body
-    , docElem = doc.documentElement
-    // for ie
-    , clientTop = docElem.clientTop || body.clientTop || 0
-    , clientLeft = docElem.clientLeft || body.clientLeft || 0
-    // In Internet Explorer 7 getBoundingClientRect property is treated as physical,
-    // while others are logical. Make all logical, like in IE8.
-    , zoom = 1;
+  if (!el) return
 
-    if (body.getBoundingClientRect) {
-      var bound = body.getBoundingClientRect();
-      zoom = (bound.right - bound.left)/body.clientWidth;
-    }
-    if (zoom > 1){
-      clientTop = 0;
-      clientLeft = 0;
-    }
-    var node = el.parentNode;
-    if(node.nodeName.toLowerCase()!=='body'){
-    	while(currentStyle(node).position!=='relative'){
-  			node = node.parentNode;
-        if(node.nodeName.toLowerCase()!=='body') break;
-  			if(currentStyle(node).position==='relative'){
-					parent = node;
-					pbox = parent.getBoundingClientRect();
-					var ptop = pbox.top/zoom + (window.pageYOffset || docElem && docElem.scrollTop/zoom || body.scrollTop/zoom) - clientTop,
-            pleft = pbox.left/zoom + (window.pageXOffset|| docElem && docElem.scrollLeft/zoom || body.scrollLeft/zoom) - clientLeft;
-					break;
-  			}
-    	}
-    }
+  var parent
+  , pbox
+	, box = el.getBoundingClientRect()
+  , doc = el.ownerDocument
+  , body = doc.body
+  , docElement = doc.documentElement
+  // for ie
+  , clientTop = docElement.clientTop || body.clientTop || 0
+  , clientLeft = docElement.clientLeft || body.clientLeft || 0
+  // In Internet Explorer 7 getBoundingClientRect property is treated as physical,
+  // while others are logical. Make all logical, like in IE8.
+  , zoom = 1;
 
-    var top = box.top/zoom + (window.pageYOffset || docElem && docElem.scrollTop/zoom || body.scrollTop/zoom) - clientTop,
-    left = box.left/zoom + (window.pageXOffset|| docElem && docElem.scrollLeft/zoom || body.scrollLeft/zoom) - clientLeft;
+  if (body.getBoundingClientRect) {
+    var bound = body.getBoundingClientRect();
+    zoom = (bound.right - bound.left)/body.clientWidth;
+  }
 
-    top  = parent ? top-ptop : top;
-    left = parent ? left-pleft : left;
-    top  = top - parseInt(currentStyle(el).paddingTop);
-    var diff_height = box.bottom-box.top,
-        diff_width = box.right - box.left,
-        bottom = top + diff_height,
-        right = left + diff_width;
-    return {
-      top: top,
-      left: left,
-      width: diff_width,
-      height: diff_height,
-      bottom: bottom,
-      right: right
-    };
+  if (zoom > 1){
+    clientTop = 0;
+    clientLeft = 0;
+  }
+
+  var node = el.parentNode;
+  while(currentStyle(node).position != 'relative' && node.nodeName != 'BODY'){
+    node = node.parentNode;
+  }
+
+  parent = node;
+  pbox = parent.getBoundingClientRect();
+  var ptop = pbox.top/zoom + (window.pageYOffset || docElement && docElement.scrollTop/zoom || body.scrollTop/zoom) - clientTop,
+      pleft = pbox.left/zoom + (window.pageXOffset|| docElement && docElement.scrollLeft/zoom || body.scrollLeft/zoom) - clientLeft;
+
+  var top = box.top/zoom + (window.pageYOffset || docElement && docElement.scrollTop/zoom || body.scrollTop/zoom) - clientTop,
+      left = box.left/zoom + (window.pageXOffset|| docElement && docElement.scrollLeft/zoom || body.scrollLeft/zoom) - clientLeft;
+
+  top  = parent ? (top-ptop) : top;
+  left = parent ? (left-pleft) : left;
+  top  = top - parseInt(currentStyle(el).paddingTop)
+
+  var diff_height = box.bottom-box.top,
+      diff_width = box.right - box.left,
+      bottom = top + diff_height,
+      right = left + diff_width;
+
+  return {
+    top: top,
+    left: left,
+    bottom: bottom,
+    right: right,
+    width: diff_width,
+    height: diff_height
   }
 }
 
@@ -204,24 +269,32 @@ function removeClass(element, className) {
  * @className 用空格分开的className字符串
  */
  // demo getElementsByClassName(document,"div","aaa ccc")
-function getElementsByClassName(fatherId,tagName,className){
-	node = fatherId&&document.getElementById(fatherId) || document;
-	tagName = tagName || "*";
-    if (!className){
-        return false;
+function getElementsByClassName(fatherId, className){
+  var node
+  if (fatherId) {
+    if (typeof fatherId == 'string') {
+      node = document.getElementById(fatherId)
     }
-    if (className.indexOf(' ')>0){
-        className = className.split(" ");
+
+    if (typeof fatherId == 'object' && fatherId.nodeType) {
+      node = fatherId
     }
-    else {
-        className = [className]
-    }
+  } else {
+    node = document
+  }
+
+  if (!className) return false
+  if (className.indexOf(' ')>0) className = className.split(" ")
+  else {
+    className = [className]
+  }
 	var classNameLength = className.length;
 	for(var i = 0,j=classNameLength;i< j;i++){
 		//创建匹配类名的正则
 		className[i]= new RegExp("(^|\\s)" + className[i].replace(/\-/g, "\\-") + "(\\s|$)");
 	}
-	var elements = node.getElementsByTagName(tagName);
+	// var elements = node.getElementsByTagName(tagName);
+	var elements = node.children
 	var result = [];
 	for(var i=0, j=elements.length, k=0;i< j; i++){//缓存length属性
 		var element = elements[i];

@@ -128,7 +128,7 @@ function mk_element(item, _i){
 
   const _title = item.title || P.title || ''
   const _desc = item.desc || P.desc || ''
-  const _class = item.class ? 'inputItem '+item.class : 'inputItem'
+  const _class = (item.itemClass||P.itemClass) ? 'inputItem '+(item.itemClass||P.itemClass) : 'inputItem'
   let lableObj
 
   // radio

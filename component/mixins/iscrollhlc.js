@@ -63,9 +63,9 @@ function getDiff(iscrl, opts){
 
 function bindScrollAction(dom, ctx, funs, opts){
   const {onscroll, onscrollend, onpulldown} = funs
-
+  const iscr = new isc(dom, opts)
   setTimeout(()=>{
-    const iscr = new isc(dom, opts)
+    iscr.refresh()
     document.addEventListener('touchmove', function (e) { e.preventDefault(); }, isPassive() ? {
       capture: false,
       passive: false
@@ -89,8 +89,8 @@ function bindScrollAction(dom, ctx, funs, opts){
         },300)
       }
     })
-    return iscr
   }, 1300)
+  return iscr
 }
 
 // scrollAndLazy
@@ -102,6 +102,7 @@ export default (ComposedComponent, options) => {
 
   let dft = {
     mouseWheel:true,     // probeType: 3
+    // momentum: false
   }
   const opts = _.merge(dft, (options||{}) )
   // dom
@@ -143,6 +144,7 @@ export default (ComposedComponent, options) => {
         const onpulldown = opts.pulldown || this.props.onpulldown
 
         this.iscroll = bindScrollAction.call(_ctx, dom, ctx, {onscroll, onscrollend, onpulldown}, opts)
+        if (this.props.itemDefaultMethod) this.props.itemDefaultMethod(this)
       }
       render(){
         return ComposedComponent

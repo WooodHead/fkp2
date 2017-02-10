@@ -45,6 +45,7 @@ function injectStatic(type, ij, dft){
   }
 
   ij.css(`
+    /* === component/list/iscroll_list === */     
     .${parent}{
       width: 100%;
       height: 100%;
@@ -97,18 +98,11 @@ class App extends ListClass {
       injectStatic('Y', this.ij, dft)
     }
 
-    // if (dft.iscroll.scrollX && !dft.iscroll.scrollY){
-    //   dft.iscroll.direction = 'X'
-    //   injectStatic('X', this.ij, dft)
-    // } else
-    // if (dft.iscroll.scrollX && dft.iscroll.scrollY) {
-    //   dft.iscroll.direction = 'FREE'
-    //   injectStatic('FREE', this.ij, dft)
-    // }
-    // else {
-    //   dft.iscroll.direction = 'Y'
-    //   injectStatic('Y', this.ij, dft)
-    // }
+    this.itemDefaultMethod = this::this.itemDefaultMethod
+  }
+
+  itemDefaultMethod(ctx){
+    this.iscroll = ctx.iscroll
   }
 
   componentWill(){
@@ -130,6 +124,7 @@ class App extends ListClass {
       dft.iscroll
     )
     this.eles = <Eles
+      itemDefaultMethod={this.itemDefaultMethod}
       onpulldown={dft.pulldown}
       onscroll={dft.scroll}
       onscrollend={dft.scrollEnd}
