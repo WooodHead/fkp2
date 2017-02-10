@@ -1,5 +1,5 @@
 import router from '../../route'
-import libs from 'libs'
+import {smd} from 'libs'
 import adapter from 'component/adapter/mgbloglist'
 import {
   forList,
@@ -20,7 +20,7 @@ export default async function(ctx, next){
   let route = router.makeRoute(ctx, routePrefix)
   let pageData = router.staticMapper(ctx, fkp.staticMapper, route, routePrefix)
 
-  let xData, xDetail, xAdd, xSave
+  let xData, xDetail, xAdd, xSave, xEdit
   let [cat, title, id] = Object.values(ctx.params)
   let isAjax = fkp.isAjax()
   switch (cat) {
@@ -33,6 +33,9 @@ export default async function(ctx, next){
     case 'add':
       xAdd = true
       break;
+    case 'edit':
+      xEdit = true
+      break;
     case 'save':
       xSave = await forSave(ctx, blog, isAjax)
       break;
@@ -41,10 +44,17 @@ export default async function(ctx, next){
       break;
     case 'get':
       if (ctx.query.topic) xDetail = await forDetail(ctx, blog, isAjax)
-      else if(title == 'total') {
-        return ctx.body = {total: await forTotal(ctx, blog, isAjax)}
+      else if(title == 'total') return ctx.body = {total: await forTotal(ctx, blog, isAjax)}
+      else {
+        switch (title) {
+          case 'tags':
+            let tags = await blog.tags()
+            return ctx.body = {tags: tags}
+            break;
+          default:
+            xData = await forList(ctx, blog, isAjax)
+        }
       }
-      else xData = await forList(ctx, blog, isAjax)
       break;
     case 'page':
       xData = await forList(ctx, blog)
@@ -66,9 +76,9 @@ export default async function(ctx, next){
       // node 端注入js和css
       let attachjs
       let attachcss = await fkp.injectcss([
-        '~/css/m/boot_button',
+        // '~/css/m/boot_button',
         '/css/m/list/qqmusic',
-        '/css/m/tabs/blog'
+        // '/css/m/tabs/blog'
 
         // '/css/m/list/lagou',
         // '/css/m/list/pagination'
@@ -108,7 +118,7 @@ export default async function(ctx, next){
         data: [
           {title: 'AGZGZ', idf: 'category'},
           {title: '博客', content: component.grids(gridsProps, true), parent: 'category' },
-          {title: '用户', content: '444', parent: 'category'}
+          {title: '文档', content: <div className='tb-bar' dangerouslySetInnerHTML={{__html: smd(':---文档正在整理中，稍后就来。。。')}} />, parent: 'category'}
         ],
         select: 1,
         treeHeader: tabsTreeHeader(),
@@ -132,7 +142,7 @@ export default async function(ctx, next){
     }
 
     /**
-     * blog 详情
+     * 文章详细
      */
     if (xDetail) {
       let attachcss = await fkp.injectcss(['/css/t/markdown.css'])   // node端注入css {attachCss: resource...}
@@ -145,6 +155,13 @@ export default async function(ctx, next){
      */
     if (xAdd) {
       pageData.xAdd = true
+    }
+
+    /**
+     * 修改文章
+     */
+    if (xEdit) {
+      pageData.xEdit = true
     }
 
     if (xSave) {

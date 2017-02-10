@@ -46,7 +46,6 @@ BaseTopicSchema.statics.topicList = async function (start, end, options) {
     let pageSize = config.mongo.pageSize
     if (!start) start = 0;
     end = pageSize
-    // if (!end) end = pageSize
     // if (tag && typeof tag==='string') query.tags = decodeURI(tag)
     // if (cat && typeof cat==='string') query.cats = cat
     let $query = this.find(query,'title _id tags create_at update_at img user visit_count',{skip:start, limit:end, sort: {update_at: -1, create_at: -1} })

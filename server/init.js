@@ -88,7 +88,7 @@ export default function init() {
 
 
   // fkp/router模块
-  let server = socketio.init(app)
+  let server = socketio.init(app)  //global SIO = {on, emit, use}
   fkp(app)
   socketio.run()
 

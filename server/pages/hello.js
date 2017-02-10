@@ -1,9 +1,10 @@
 "use strict";
 let debug = Debug('pages:hello')
 
-SIO.on('hello', function(data, socket) {
+SIO.on('hello', function(data, socket, client) {
   var _io = this.io
-  ,  _id = socket.id
+  , _id = socket.id
+  , remoteIp = client.address
   if (typeof data === 'string') {
     if (data === 'hi') {
       socket.emit('hello', {

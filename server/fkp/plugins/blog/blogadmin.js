@@ -43,7 +43,7 @@ export default async function(ctx, next){
         from: 'admin',
         where: [ ['user.username', '==', user.username] ]
       }
-      // if (isAdmin) delete opts.where[0]
+      if (isAdmin) delete opts.where[0]
       xData = await forList(ctx, blog, isAjax, opts)
     break;
   }

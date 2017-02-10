@@ -22,6 +22,10 @@ module.exports = function (schema) {
         deleted: {type: Boolean, default: false},
     });
 
+    schema.add({
+      wall: { type: Boolean, default: false }, // 上墙贴
+    });
+
     // schema.index({email: 1}, {unique: true});
     // schema.index({score: -1});
     // schema.index({githubId: 1});

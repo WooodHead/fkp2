@@ -26,11 +26,15 @@ export async function forDelete(ctx, blog, isAjax){
 export async function forDetail(ctx, blog, isAjax){
   let fkp = ctx.fkp
   let detail = await blog.detailtopic({_id: (ctx.params.title||ctx.query.topic)})
+  if (!isAjax) {
+    await blog.counttopic({_id: (ctx.params.title||ctx.query.topic)})
+  }
   if (!detail.error) {
     let mdcontent = await fkp.markdown(detail.content)
     mdcontent.mdcontent.user = detail.user
     mdcontent.mdcontent.profile = {
       _id: detail._id,
+      src: detail.content,
       last_reply_at: detail.last_reply_at,
       collect_count: detail.collect_count,
       visit_count: detail.visit_count,
@@ -52,14 +56,27 @@ export async function forTotal(ctx, blog, isAjax){
 async function _forlist(ctx, blog, isAjax, opts){
   let lists = []
   if (isAjax) {
-    let [page, tag, cat] = ctx.method == 'GET' ? Object.values(ctx.query) : Object.values(ctx.request.body)
+    let {page, tag, category} = ctx.method == 'GET' ? ctx.query : ctx.request.body
     page = (page&&parseInt(page)) || 1
-    if (tag) lists = await blog.listtopic({tag:tag, page: page}, opts)
-    if (cat) lists = await blog.listtopic({cat:cat, page: page}, opts)
-    lists = await blog.listtopic({page: page}, opts)
+    if (tag) {
+      lists = await blog.listtopic({page: page}, {query: {tags: decodeURI(tag)}})
+    }
+    else if (category) lists = await blog.listtopic({page: page}, {query: {cats: decodeURI(category)}})
+    else {
+      lists = await blog.listtopic({page: page}, opts)
+    }
   } else {
     let [cat, title, id] = Object.values(ctx.params)
-    lists = await blog.listtopic({page: title||1}, opts)
+    let {page, tag, category} = ctx.query
+    page = title||(page&&parseInt(page)) || 1
+
+    if (tag) {
+      lists = await blog.listtopic({page: page}, {query: {tags: decodeURI(tag)}})
+    }
+    else if (category) lists = await blog.listtopic({page: page}, {query: {cats: decodeURI(category)}})
+    else {
+      lists = await blog.listtopic({page: page}, opts)
+    }
   }
   let total = await blog.total()
   return [total, lists]
