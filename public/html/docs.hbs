@@ -2,21 +2,25 @@
 <html class="no-js" lang="en">
     <head>
         <title>Hello World</title>
-        @@include('./_common/header/head.html')
+        @@include('./_common/header/h5_scale_1.html')
         <link rel="stylesheet" href="/css/t/markdown.css" />
     </head>
     <body>
-      <div class="container-fluid">
-        <div class="row">
+      <div class="container-full">
           {{#if docs.docindex }}
             <div class="col-xs col-sm col-md col-lg">
               {{{docs.docindex.cnt}}}
             </div>
           {{else}}
-            <div class="col-xs col-sm-4 col-md-4 col-lg-4">
+            <!-- <div class="docs-menu">
+              <input type="checkbox" />
+              <span/>
+            </div> -->
+            <input type="checkbox" class="docs-trigger"/>
+            <div class="docs-tree">
               {{{docs.menutree}}}
             </div>
-            <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+            <div class="docs-body">
               <div class="markdown-body u-clearfix">
                 {{# if docs.home}}
                   <p>
@@ -31,7 +35,6 @@
               </div>
             </div>
           {{/if}}
-        </div>
       </div>
         @@include('./_common/footer/foot.html')
         <script src="/js/t/prettfy.js"></script>

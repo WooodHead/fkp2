@@ -17,20 +17,29 @@ xlarge = 'screen and (min-width: 1200px)'
   position: relative
   display: block
   margin: 5em auto
+  margin-top: 0
   height: auto
-  width: 60%
+  width: 90%
+  padding: 1em;
   text-align: center
   vertical-align: middle
   ul
     list-style: none
 
 #slider
-  height: 100%
+  width: 80%
+  // height: 100%
+  margin: 0 auto
   overflow: hidden
+  .bx-wrapper
+    margin-bottom: 4em;
 
+h1
+  border-bottom: 1px solid #f2f2f2
 h2
   color: #000
   font-weight: 800
+  border-bottom: 1px solid #f2f2f2
 
 .descript
   padding: 2%
@@ -39,9 +48,23 @@ h2
 
 @media little
   .box
-    width: 100%
+    width: 94%
+    padding: 0
+    padding: 2%;
   .bx-pager
     display: none
+  #slider
+    width: 100%;
+    margin: 0;
+    padding: 0
+  .descript
+    padding: 4%
+  #slider
+    .bx-wrapper
+      margin-bottom: 2em;
+    .bx-viewport
+      border: none
+      border-bottom: 1px solid #f3f3f3
 
 @media medium
   .box

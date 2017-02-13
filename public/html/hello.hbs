@@ -2,17 +2,22 @@
 <html class="no-js" lang="en">
     <head>
         <title>Hello World</title>
-        @@include('./_common/header/head.html')
+        @@include('./_common/header/h5_scale_1.html')
         <link rel="stylesheet" href="/css/t/markdown.css" />
     </head>
     <body>
         <div class="box">
           <div id='slider'> </div>
-          <div id='test'> </div>           
-          <div class="markdown-body u-clearfix">
-            <div class="showbooks">
-              {{{home.cnt}}}
+          <div class="columContainer">
+            <div class="columWrap">
+              <div class="columBox">
+                <div id='test' class="test">{{{floor1}}}</div>
+                <div id='opensrc' class="test">{{{floor2}}}</div>
+              </div>
             </div>
+          </div>
+          <div id='fkp' class="test" style="margin-top:2em;"> </div>
+          <div class="markdown-body u-clearfix">
           </div>
         </div>
         @@include('./_common/footer/foot.html')
