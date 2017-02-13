@@ -2,10 +2,9 @@
 let debug = Debug('pages:hello')
 import path from 'path'
 
-function hello(oridata) {
+function docs(oridata) {
   return {
     get: async function(ctx){
-      // let fkper = ctx.fkp()
       let cat = ctx.params.cat
       let title = ctx.params.title
       let id = ctx.params.id
@@ -17,10 +16,15 @@ function hello(oridata) {
 
       if (cat) {
         let _path = 'fdocs/'+cat
-        let fdocs = await ctx.fkp.docs(_path, 'mdindex, mdmenu')
+        let fdocs = await ctx.fkp.docs(_path, {
+          start: '_home.md',
+          menutree: true
+        })
         oridata.docs = _.extend({}, fdocs)
       } else {
-        let fdocs = await ctx.fkp.docs('fdocs', 'mdhome')
+        let fdocs = await ctx.fkp.docs('fdocs', {
+          start: true
+        })
         oridata.docs.docindex = fdocs.home
       }
 
@@ -32,6 +36,9 @@ function hello(oridata) {
         if (mdfile) oridata.docs = _.extend(oridata.docs, mdfile)
       }
 
+      const attachjs = await ctx.fkp.injectjs(['/js/parts/tree'])
+      oridata = _.merge(oridata, attachjs)
+
       oridata.fkp = 'FKP2'
       return oridata;
     },
@@ -42,4 +49,4 @@ function hello(oridata) {
   }
 }
 
-export { hello as getData }
+export { docs as getData }

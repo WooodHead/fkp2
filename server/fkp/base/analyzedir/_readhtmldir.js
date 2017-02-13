@@ -34,6 +34,7 @@ function chkType(type) {
 let collection = []
 let dirs = { root: '' }
 let tmp = {}
+let docsConfig
 
 function getTempTitle(content) {
   let title = content.match(/<title>([\s\S]*?)<\/title>/ig)
@@ -56,6 +57,7 @@ function getMdTitle(cnt) {
 function analyzeDirMehtod(directory){
   let htmlDir = fs.readdirSync( directory )
   const parent = directory == dirs.root ? '' : directory
+  // const parent = directory
   htmlDir.map(function(filename, ii){
     const subItem = $join(directory, filename)
     const itemState = fs.statSync(subItem)
@@ -86,14 +88,8 @@ function analyzeDirMehtod(directory){
 
       if (ext == '.md') {
         function getMdUrl(){
-          // let _filenameMd = filename.replace(ext, '_md.html')
-          // let _url = parent ? depthFile.replace('.html','_md.html') : ( (parent || '') + '/' + _filenameMd )
-          // if (subItem.indexOf(dirs.root) > -1) {
-          //   // let mdpath = subItem.replace(dirs.root, '').replace(/\//g,'__').replace('.md', '')
-          //   // return '/docs/'+mdpath
-          //   return '/docs/'+subItem.replace(dirs.root, '').replace('.md', '')
-          // }
-          return ''
+          const root = dirs.root.indexOf('/') > -1 ? dirs.root.substring(0, dirs.root.indexOf('/')) : _path
+          return '/docs'+subItem.replace(root, '').replace('.md', '')
         }
 
         let content = fs.readFileSync(subItem, 'utf8')
@@ -122,8 +118,14 @@ function analyzeDirMehtod(directory){
     }
 
     if (itemState.isDirectory() && filename.indexOf('_') !=0 ) {
+      let cn_filename
+      if (docsConfig) {
+        if (docsConfig.directory[filename]) {
+          cn_filename = docsConfig.directory[filename]
+        }
+      }
       profile = {
-        title: filename,
+        title: cn_filename || filename,
         content: '',
         idf: subItem,
         parent: parent
@@ -136,9 +138,16 @@ function analyzeDirMehtod(directory){
 
 export function analyzeDir(_path){
   if (!_path) return false
+  collection = []
   dirs.root = _path
   _path = _path.indexOf('/') == 0 ? _path.substring(1) : _path
-  _path = _path.indexOf('/') > -1 ? _path.substring(0, _path.indexOf('/')+1) : _path
+  let configPath = _path + '/config.js'
+  if (fs.existsSync(configPath)) {
+    const _config = require(configPath)
+    docsConfig = _config
+  }
+
+  // _path = _path.indexOf('/') > -1 ? _path.substring(0, _path.indexOf('/')+1) : _path
   analyzeDirMehtod(_path)
   return collection
 }

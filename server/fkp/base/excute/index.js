@@ -9,7 +9,8 @@ import renderfdocsSon from './fdocsson'
  * @return {Promise}
  */
 async function index(fkp, cmd){
-  let _data = await fkp.parsedocs('folder')('fdocs', {sonlist: true})
+  const markdownParse = fkp.parsedocs()
+  let _data = await markdownParse.folder('fdocs', {sonlist: true})
   let _mdson = renderfdocsSon(_data.sonlist)
   let commond = {
     name: '你妹啊，真的可以吗',
@@ -18,9 +19,9 @@ async function index(fkp, cmd){
 
   if (!cmd) return commond
   if (!_.isArray(cmd) || !_.isString()) return false
-  if (cmd && typeof cmd == 'string') cmd = [cmd]
+  if (typeof cmd == 'string') cmd = [cmd]
   let cmds = _.pick(commond, cmd)
-  if (_.isEmpty(cms)) return false
+  if (_.isEmpty(cmds)) return false
   return cmds
 }
 

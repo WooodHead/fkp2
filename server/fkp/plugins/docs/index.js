@@ -1,9 +1,10 @@
 import co from 'co'
 import path from 'path'
 
-async function docs(ctx, dir, type){
+async function docs(ctx, dir, opts){
   if (!dir) return false
-  let fkp = ctx.fkp
+  const fkp = ctx.fkp
+  const markdownParse = fkp.parsedocs()
   let dft = {
     docs: false,
     start: false,
@@ -13,39 +14,10 @@ async function docs(ctx, dir, type){
     append: {}
   }
 
-  if (!type) return await fkp.parsedocs('file')(dir)
-
-  // 返回文件内容
-  function setOptions(_type){
-    switch (_type) {
-      case 'mdmenu':
-        dft.menutree = true
-        break;
-      case 'mdhome':
-        dft.start = true
-        break;
-      case 'mdindex':
-        dft.start = '_home.md'
-        break;
-      case 'mdson':
-        dft.sonlist = true
-        break;
-      case 'sitemap':
-        dft.sitemap = true
-        break;
-    }
-  }
-
-  if (_.isPlainObject(type)) dft = _.extend(dft, type)
-  if (_.isString(type)) {
-    if (type.indexOf(',')>-1) {
-      let types = type.split(',')
-      for (let item of types) {
-        setOptions(_.trim(item))
-      }
-    } else {
-      setOptions(type)
-    }
+  // if (!opts) return await fkp.parsedocs('file')(dir)
+  if (!opts) return await markdownParse.file(dir)
+  if (_.isPlainObject(opts)) {
+    dft = _.merge(dft, opts)
   }
 
   if (dir == 'fdocs') {
@@ -55,7 +27,8 @@ async function docs(ctx, dir, type){
       return false
     }
   }
-  return await fkp.parsedocs('folder')(dir, dft)
+  // return await fkp.parsedocs('folder')(dir, dft)
+  return await markdownParse.folder(dir, dft)
 }
 
 export default function(fkp){

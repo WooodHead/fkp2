@@ -18,6 +18,8 @@ SIO.on('hello', function(data, socket, client) {
 function hello(oridata) {
   return {
     get: async function(ctx){
+      const component = ctx.fkp.component()
+
       // let xxx = await Fetch.get('163')
       // console.log(xxx);
       // let xxx = await ctx.fkp.injectjs(['t/test'])   // node 端注入js
@@ -28,8 +30,87 @@ function hello(oridata) {
       // let blog = await ctx.fkp.blog()
       // let xxx = await blog.listtopic({page:1})
 
-      let fdocsHome = await ctx.fkp.docs('fdocs', 'mdhome')
-      oridata = _.extend(oridata, fdocsHome)
+      // let fdocsHome = await ctx.fkp.docs('fdocs', {
+      //   start: true
+      // })
+      // oridata = _.extend(oridata, fdocsHome)
+
+
+      const titles1 = [
+        <a className="iconfont icon-text" title="列表，如果所有元素都是列表">如果所有元素都是列表</a>,
+        <a className="iconfont icon-video_fill_light"></a>,
+        <a className="iconfont icon-goods_new_fill_light"></a>,
+        <a className="iconfont icon-video_fill_light"></a>,
+        <a className="iconfont icon-goods_new_fill_light"></a>,
+        <a className="iconfont icon-video_fill_light"></a>,
+        <a className="iconfont icon-goods_new_fill_light"></a>,
+        <a className="iconfont icon-video_fill_light"></a>,
+        <a className="iconfont icon-goods_new_fill_light"></a>,
+        <a className="iconfont icon-video_fill_light"></a>,
+        <a className="iconfont icon-goods_new_fill_light"></a>,
+        <a className="iconfont icon-video_fill_light"></a>,
+        <a className="iconfont icon-goods_new_fill_light"></a>,
+        <a className="iconfont icon-video_fill_light"></a>,
+        <a className="iconfont icon-goods_new_fill_light"></a>,
+        <a className="iconfont icon-video_fill_light"></a>,
+        <a className="iconfont icon-goods_new_fill_light"></a>,
+        <a className="iconfont icon-video_fill_light"></a>,
+        <a className="iconfont icon-goods_new_fill_light"></a>,
+        <a className="iconfont icon-video_fill_light"></a>,
+        <a className="iconfont icon-text" title="列表，如果所有元素都是列表"></a>,
+        <a className="iconfont icon-video_fill_light"></a>,
+        <a className="iconfont icon-goods_new_fill_light"></a>,
+        <a className="iconfont icon-video_fill_light"></a>,
+        <a className="iconfont icon-goods_new_fill_light"></a>,
+        <a className="iconfont icon-video_fill_light"></a>,
+        <a className="iconfont icon-goods_new_fill_light"></a>,
+        <a className="iconfont icon-video_fill_light"></a>,
+        <a className="iconfont icon-goods_new_fill_light"></a>,
+        <a className="iconfont icon-video_fill_light"></a>,
+        <a className="iconfont icon-goods_new_fill_light"></a>,
+        <a className="iconfont icon-video_fill_light"></a>,
+        <a className="iconfont icon-goods_new_fill_light"></a>,
+        <a className="iconfont icon-video_fill_light"></a>,
+        <a className="iconfont icon-goods_new_fill_light"></a>,
+        <a className="iconfont icon-video_fill_light"></a>,
+        <a className="iconfont icon-goods_new_fill_light"></a>,
+        <a className="iconfont icon-video_fill_light"></a>,
+        <a className="iconfont icon-goods_new_fill_light"></a>,
+        <a className="iconfont icon-video_fill_light"></a>,
+        <a className="iconfont icon-video_fill_light"></a>,
+        <a className="iconfont icon-goods_new_fill_light"></a>,
+        <a className="iconfont icon-video_fill_light"></a>,
+        <a className="iconfont icon-goods_new_fill_light"></a>,
+        <a className="iconfont icon-video_fill_light"></a>,
+      ]
+      const list1 = component.baselist({
+        data: titles1,
+        theme: 'list/books',
+        listClass: 'books'
+      }, true)
+
+      const grids = component.grids
+      const floor1 = grids({
+        data: [
+          {width: '27%', content: <h3 style={{color:'#9c9c9c'}}>推荐文章</h3>},
+          {width: '71%', content: list1}
+        ]
+      })
+
+      const floor2 = grids({
+        header: <h2 className="splite"></h2>,
+        data: [
+          {width: '27%', content: <h3 style={{color:'#9c9c9c'}}>开源收藏</h3>},
+          {width: '71%', content: list1}
+        ]
+      })
+
+      oridata.floor1 = floor1
+      oridata.floor2 = floor2
+
+      // floor1.render()
+      // floor2.render()
+
       oridata.fkp = 'FKP2'
       return oridata;
     },

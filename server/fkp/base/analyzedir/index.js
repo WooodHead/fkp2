@@ -2,13 +2,13 @@ let co = require('co')
 let path = require('path')
 let bluebird = require('bluebird')
 let fs = bluebird.promisifyAll(require('fs'))
-import parseanyHtmlDirs from './_readhtmldir'
+import {analyzeDir} from './_readhtmldir'
 
 async function index(fkp, url){
   try {
-    let _id = 'parsedir_'+url
+    let _id = 'analyzeDir_'+url
     return Cache.ifid(_id, ()=>{
-      let dirdata = parseanyHtmlDirs(url)
+      let dirdata = analyzeDir(url)
       Cache.set(_id, dirdata)
       return dirdata
     })

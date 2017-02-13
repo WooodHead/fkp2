@@ -10,6 +10,8 @@ function index(fkp, type){
   // this directory maybe has some sub directory
   // every directory maybe has homefile like _home.md/_home.json/_home.jpg/_home.png
   // support 2 level
+
+  const component = fkp.component()
   async function sonsHomeFiles(dir){
     let _docsList = []
     let rootList = await fkp.readdir(dir)
@@ -115,13 +117,16 @@ function index(fkp, type){
         menutree: false,
         append: {}
       }
-      let opts = _.extend({}, defaults, options||{})
+      let opts = _.merge({}, defaults, options||{})
 
       // 所有public/html下的文件
       if (opts.sitemap) sitemap = await getSiteMap()
 
       // 文档目录下的首页文件内容
       if (opts.start){
+        if (typeof opts.start == 'boolean') {
+          opts.start = '/_home_start/index.md'
+        }
         let tmp = await loadmdFile(opts.start, doc_dir)
         if (tmp) start.home = tmp.mdcontent
         else start.home = {cnt: '<h1>FKP-JS</h1><small>a full stack framwork</small>', title: 'FKP-JS', author: '天天修改'}
@@ -129,13 +134,19 @@ function index(fkp, type){
 
       // dir docs
       // let _docs = _readdirs(doc_dir)
-      let _docs = await fkp.parsedir(doc_dir)
-      docs = {docs: _docs}
+      // let _docs = await fkp.parsedir(doc_dir)
+      // docs = {docs: _docs}
+      // let docsData = _.extend({}, opts.append, sitemap, docs, start);
+
+      // let _docs = await fkp.parsedir(doc_dir)
+      docs = {docs: '_docs'}
       let docsData = _.extend({}, opts.append, sitemap, docs, start);
 
       if (opts.menutree){
-        let _props = { data: _docs }
-        let reactHtml = await fkp.parsereact('component/modules/menutree/index', _props)
+        // let _props = { data: _docs }
+        // let reactHtml = await fkp.parsereact('component/modules/menutree/index', _props)
+        let _data = await fkp.analyzedir(doc_dir)
+        let reactHtml = component.tree({data: _data})
         docsData.menutree = reactHtml[0]
       }
       if (opts.sonlist) docsData.sonlist = await sonsHomeFiles(doc_dir)
@@ -149,24 +160,20 @@ function index(fkp, type){
   }
 
   async function getDocsData(url, opts){
-    let id = url;
-    let tmp;
-
-    if (opts.pre) id = opts.pre + url
-    if (Cache.has(id)) return Cache.get(id)
-    else {
-      tmp = await _getDocsData(url, opts)
-      Cache.set(id, tmp)
-      return tmp;
-    }
+    return await _getDocsData(url, opts)
   }
 
-  switch (type) {
-    case 'folder':
-      return getDocsData
-    case 'file':
-      return loadmdFile
+  return {
+    file: loadmdFile,
+    folder: getDocsData
   }
+  //
+  // switch (type) {
+  //   case 'folder':
+  //     return getDocsData
+  //   case 'file':
+  //     return loadmdFile
+  // }
 }
 
 export default function(fkp){
