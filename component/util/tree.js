@@ -33,13 +33,14 @@
 // 	</div>
 // </li>
 
+// let idrecode = {}
 let idrecode = []
-
 function subTree(item, dataAry){
 	let nsons = []
 	let sons = _.filter(dataAry, o => o.parent == item.idf)
-	sons.map((son)=>{
+	sons.map( son => {
 		if (son.idf) {
+			// idrecode[son.idf] = true
 			idrecode.push(son.idf)
 			nsons = nsons.concat([subTree(son, dataAry)])
 		} else {
@@ -65,6 +66,13 @@ export default function(dataAry){
 	dataAry.map( (item, ii)=>{
 		if (_.isString(item)) menus.push(item)
 		if (_.isPlainObject(item)) {
+			// if (item.idf && !idrecode[item.idf]) {
+			item['data-treeid'] = ii
+			if (item['attr']) {
+				item['attr']['data-treeid'] = ii
+			} else {
+				item['attr'] ={'data-treeid': ii}
+			}
 			if (item.idf && idrecode.indexOf(item.idf) == -1) {
 				menus.push(subTree(item, dataAry))
 			}

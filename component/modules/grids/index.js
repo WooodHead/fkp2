@@ -47,6 +47,8 @@ class G extends ListClass {
       data={dft.data}
       itemClass={dft.itemClass}
       listClass={dft.listClass}
+      itemStyle={dft.itemStyle}
+      listStyle={dft.listStyle}
       header={dft.header}
       listMethod={dft.listMethod}
       itemMethod={dft.itemMethod} >
@@ -75,16 +77,17 @@ function grids(opts){
         ? x.toString()+'%'
         : _width
 
+    let _itemStyle = _.merge({}, opts.itemStyle, {width: $width})
     _data.push({
       title: content,
-      itemStyle: {width: $width}
+      itemStyle: _itemStyle
     })
   })
 
   if (validate) {
     opts.data = _data
     return new G(opts)
-  }   
+  }
 }
 
 export function Grids(opts){

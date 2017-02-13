@@ -37,9 +37,9 @@ const config = {
      * 微信端配置文件
      */
     weixin: {
-      token: '_agzgz',
-      appid: 'wxec91673b97ce1463',
-      appsecret: '2c2c9312a61cd9aa0eca16e2e8939cfb',
+      token: 'weixin token name',
+      appid: 'your weixin appid',
+      appsecret: 'your weixin appsecret',
       encodingAESKey: ''
     },
 
@@ -83,8 +83,8 @@ const config = {
      */
     auth: {
       github:{  //第三方github登陆
-        clientID: 'd65a863ee074f62231c5',
-        clientSecret: '9f4a6a2f93c7c23405378c70bb2ae1c618734985',
+        clientID: 'github clientID',
+        clientSecret: 'github clientSecret',
         callbackURL: 'http://www.agzgz.com/github/callback',
         successUrl: '/',
         userKey: 'githubuser',    //save this key to session
@@ -127,7 +127,6 @@ const config = {
       },
       mongo: {
         url: "mongodb://127.0.0.1:27017/fkp",
-        // url: "mongodb://58.96.191.90:27017/fkp",
         options: {
           db: { native_parser: true },
           server: { poolSize: 3 },

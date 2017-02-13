@@ -12,27 +12,29 @@ class App extends ListClass {
   }
 
   componentDid(){
-    const that = this
-    const config = this.config
-    const itemFun = config.itemMethod
-    const listFun = config.listMethod
-    const [dom, intent] = this.aboutList
+    if (this.client) {
+      const that = this
+      const config = this.config
+      const itemFun = config.itemMethod
+      const listFun = config.listMethod
+      const [dom, intent] = this.aboutList
 
-    if (typeof listFun == 'function') {
-      listFun(dom, intent)
+      if (typeof listFun == 'function') {
+        listFun(dom, intent)
+      }
+
+      that.items = []
+      let menusBody = $(dom).find('.tree-menu-body')
+      menusBody.find('li').each(function(ii, item){
+        that.items.push(item)
+        if ($(item).hasClass('itemroot')) {
+          if (config.fold) $(item).find('.itemCategory ul').addClass('none')
+        }
+        if (typeof itemFun == 'function') {
+          itemFun.call(that, item, ii)
+        }
+      })
     }
-
-    that.items = []
-    let menusBody = $(dom).find('.tree-menu-body')
-    menusBody.find('li').each(function(ii, item){
-      that.items.push(item)
-      if ($(item).hasClass('itemroot')) {
-        if (config.fold) $(item).find('.itemCategory ul').addClass('none')
-      }
-      if (typeof itemFun == 'function') {
-        itemFun.call(that, item, ii)
-      }
-    })
   }
 
   componentWill(){

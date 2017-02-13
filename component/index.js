@@ -117,3 +117,19 @@ export function htabs(props, isreact){
     return reallyReturn(Component, isreact)
   }
 }
+
+export function tree(props, isreact){
+  const _rct = require('./modules/tree')
+  if (_rct.pure) {
+    const Component = _rct.pure(props)
+    return reallyReturn(Component, isreact)
+  }
+}
+
+export function htree(props, isreact){
+  const _rct = require('./modules/tree')
+  if (_rct.htree) {
+    const Component = _rct.htree(props)
+    return reallyReturn(Component, isreact)
+  }
+}
