@@ -1,6 +1,7 @@
 export default async function(ctx){
-  if (ctx.header.referer.indexOf('/blog/add')>-1 && ctx.session.$user) {
-  // if (ctx.session.$user) {
+  console.log(ctx.req);
+  // if (ctx.header.referer.indexOf('/blog/add')>-1 && ctx.session.$user) {
+  if (ctx.session.$user) {
     let fkp = ctx.fkp
     let attachjs = await fkp.injectjs(['/js/common', '/js/parts/repassword'])
     let attachcss = await fkp.injectcss(['/css/common', '/css/m/announce', '/css/m/form'])
