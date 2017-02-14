@@ -4,6 +4,7 @@ import { Slider } from 'component/modules/slider'
 import {baselist, grids} from 'component'
 import {tips as msgtips, sticky} from 'component/client'
 import itemHlc from 'component/mixins/itemhlc'
+import scrollHlc from 'component/mixins/scrollhlc'
 
 // websocket
 var ws = require('libs/wsocket')
@@ -35,7 +36,7 @@ let Xslider = Slider({
         <img src="/images/test/tree_root.jpg" title="Funky roots" />
       </div>
       <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4 descript">
-        <h3>FKP2</h3>
+        <h4>FKP2</h4>
         Full Stack Plus 2<br/> SAP/MPA最佳实践方式
       </div>
     </div>,
@@ -45,7 +46,7 @@ let Xslider = Slider({
         <img src="/images/test/hill_road.jpg" title="The long and winding road" />
       </div>
       <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4 descript">
-        <h3>脚手架</h3>
+        <h4>脚手架</h4>
         gulp+webpack组合，灵活、模块化的脚手架系统，支持4套模式
       </div>
     </div>,
@@ -55,7 +56,7 @@ let Xslider = Slider({
         <img src="/images/test/houses.jpg" title="Happy trees" />
       </div>
       <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4 descript">
-        <h3>前端</h3>
+        <h4>前端</h4>
         Babel、JQ+React的混合流组件模式，低成本学习成本
       </div>
     </div>,
@@ -65,7 +66,7 @@ let Xslider = Slider({
         <img src="/images/test/houses.jpg" title="Happy trees" />
       </div>
       <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4 descript">
-        <h3>node端</h3>
+        <h4>node端</h4>
         灵活、低配置，无限层级RESTFUL路由，匹配前端目录结构
       </div>
     </div>
@@ -155,6 +156,29 @@ const floor2 = grids({
 
 floor1.render()
 floor2.render()
+
+setTimeout(()=>{
+  scrollHlc($('.columContainer')[0], {
+    scrollContainer: window,
+    scroll: function(dom, state){
+      if (state.directionY == 'down') {
+        StickyBBox.hide()
+      } else {
+        StickyBBox.show()
+      }
+    }
+  })
+}, 1000)
+
+// setTimeout(()=>{
+//   const yyy = $('.columWrap')[0]
+//   iscrollHlc(yyy, {
+//     scrollX: true,
+//     scrollY: true,
+//     momentum: false,
+// 		snap: true
+//   })
+// },1000)
 
 
 // ajax.get('/api/163')
