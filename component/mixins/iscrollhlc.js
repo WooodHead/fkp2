@@ -61,19 +61,29 @@ function getDiff(iscrl, opts){
   }
 }
 
+let scrollState = {
+  ttt: false
+}
+
 function bindScrollAction(dom, ctx, funs, opts){
   const {onscroll, onscrollend, onpulldown} = funs
   const iscr = new isc(dom, opts)
+  // document.addEventListener('touchmove', function (e) { e.preventDefault(); }, isPassive() ? {
+  //   capture: false,
+  //   passive: false
+  // } : false);
+  document.addEventListener('touchmove', function (e) { e.preventDefault(); }, {
+    capture: false,
+    passive: false
+  } : false);
+
   setTimeout(()=>{
     iscr.refresh()
-    document.addEventListener('touchmove', function (e) { e.preventDefault(); }, isPassive() ? {
-      capture: false,
-      passive: false
-    } : false);
 
     if (typeof onscroll == 'function' || typeof onpulldown == 'function') {
       iscr.on('scroll', ()=>{
         // distY
+        clearTimeout(scrollState.ttt)
         const diff = getDiff(iscr, opts)
         onscroll ? onscroll.apply(iscr, diff) : ''
         onpulldown ? onpulldown.apply(iscr, diff) : ''
@@ -81,7 +91,9 @@ function bindScrollAction(dom, ctx, funs, opts){
     }
     iscr.on('scrollEnd', ()=>{
       const diff = getDiff(iscr, opts)
-      lazyLoad(this.layzblocks, dom)
+      scrollState.ttt = setTimeout(()=>{
+        lazyLoad(this.layzblocks, dom)
+      }, 1200)
       if (typeof onscrollend == 'function') {
         onscrollend.apply(iscr, diff)
         setTimeout(()=>{

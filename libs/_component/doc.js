@@ -80,7 +80,7 @@ var currentStyle = function(element){
 //上下左右
 function getOffset(el){
   if (!el) return
-
+  if(el===window||el===document) return DocmentView()
   var parent
   , pbox
 	, box = el.getBoundingClientRect()
