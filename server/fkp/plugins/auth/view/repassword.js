@@ -1,5 +1,4 @@
 export default async function(ctx){
-  console.log(ctx.req);
   // if (ctx.header.referer.indexOf('/blog/add')>-1 && ctx.session.$user) {
   if (ctx.session.$user) {
     let fkp = ctx.fkp
