@@ -6,6 +6,8 @@ export function isLogin(ctx){
     if (ctx.session.$user) {
       user = _.extend({}, ctx.session.$user)
       delete user.thirduser
+      delete user._id
+      delete user.mode
     } else {
       user = Errors['10010']
     }
