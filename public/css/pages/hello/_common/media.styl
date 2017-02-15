@@ -13,41 +13,24 @@ medium = 'screen and (min-width: 768px) and (max-width: 992px)'
 large = 'screen and (min-width: 992px) and (max-width: 1200px)'
 xlarge = 'screen and (min-width: 1200px)'
 
-.box
-  position: relative
-  display: block
-  margin: 5em auto
-  margin-top: 0
-  height: auto
-  width: 90%
-  padding: 1em;
-  text-align: center
-  vertical-align: middle
-  ul
-    list-style: none
+ip4 = 'screen and (max-width: 320px)'
+ip6 = 'screen and (max-width: 375px)'
+ip6p = "only screen and (min-device-width: 376px) and (max-device-width: 480px)"
 
-#slider
-  width: 80%
-  // height: 100%
-  margin: 0 auto
-  overflow: hidden
-  .bx-wrapper
-    margin-bottom: 4em;
 
-h1
-  border-bottom: 1px solid #f2f2f2
-h2
-  color: #000
-  font-weight: 800
-  border-bottom: 1px solid #f2f2f2
-
-h4
-  margin: 0.4em 0
-
-.descript
-  padding: 2%
-  text-align: left
-  color: #adadad
+mobileTest()
+  .splite
+    display: none;
+  .columBox
+    width: 202%;
+  .test
+    width: 49%
+    float: left;
+    margin-left: 0.3em
+  .grids-item
+    width: 100%
+    // display: inline-block;
+    // vertical-align: middle;
 
 @media little
   .box
@@ -86,3 +69,40 @@ h4
 @media xlarge
   .box
     height: 60%
+
+
+@media ip6
+  mobileTest()
+  .test
+    .books-parent
+      .books
+        ul.hlist
+          // background-color: red
+          li
+            width: 7.1em
+            height: 7.1em
+            margin-left: 3px
+            margin-bottom: 0
+            margin-top: 3px
+
+@media ip6p
+  mobileTest()
+  .test
+    .books-parent
+      .books
+        ul.hlist
+          li
+            width: 8.8em
+            height: 8.8em
+            a
+              font-size: 1.2em
+
+@media ip4
+  mobileTest()
+  .test
+    .books-parent
+      .books
+        ul.hlist
+          li
+            width: 6.7em
+            height: 6.7em

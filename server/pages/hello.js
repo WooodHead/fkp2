@@ -82,6 +82,11 @@ function hello(oridata) {
         <a className="iconfont icon-video_fill_light"></a>,
         <a className="iconfont icon-goods_new_fill_light"></a>,
         <a className="iconfont icon-video_fill_light"></a>,
+        <a className="iconfont icon-video_fill_light"></a>,
+        <a className="iconfont icon-goods_new_fill_light"></a>,
+        <a className="iconfont icon-video_fill_light"></a>,
+        <a className="iconfont icon-goods_new_fill_light"></a>,
+        <a className="iconfont icon-video_fill_light"></a>,
       ]
       const list1 = component.baselist({
         data: titles1,
@@ -92,16 +97,16 @@ function hello(oridata) {
       const grids = component.grids
       const floor1 = grids({
         data: [
-          {width: '27%', content: <h3 style={{color:'#9c9c9c'}}>推荐文章</h3>},
-          {width: '71%', content: list1}
+          {width: '100%', content: <h3 style={{color:'#9c9c9c'}}>推荐文章</h3>},
+          {width: '100%', content: list1}
         ]
       })
 
       const floor2 = grids({
         header: <h2 className="splite"></h2>,
         data: [
-          {width: '27%', content: <h3 style={{color:'#9c9c9c'}}>开源收藏</h3>},
-          {width: '71%', content: list1}
+          {width: '100%', content: <h3 style={{color:'#9c9c9c'}}>开源收藏</h3>},
+          {width: '100%', content: list1}
         ]
       })
 

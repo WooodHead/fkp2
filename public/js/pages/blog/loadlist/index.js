@@ -37,10 +37,11 @@ let bloglist  //list实例
       bloglist.append(data.lists)
     } else {
       bloglist = LoadList({
+        autoinject: false,
         data: data.lists,
         container:  'blog',
         scrollContainer: $('.box')[0],
-        theme: 'list-lagou',
+        theme: 'list/lagou',
         listClass: 'like_lagou',
         scrollEnd: function(){
           bloglist.loading( () => pull_list_data(++cur_page) )

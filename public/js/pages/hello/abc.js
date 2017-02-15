@@ -1,8 +1,8 @@
-import {inject} from 'libs'
-import './_common/xyz'
+import {inject, mediaQuery} from 'libs'
+// import './_common/xyz'
 import { Slider } from 'component/modules/slider'
 import {baselist, grids} from 'component'
-import {tips as msgtips, sticky} from 'component/client'
+import {tips as msgtips, sticky, modal} from 'component/client'
 import itemHlc from 'component/mixins/itemhlc'
 import scrollHlc from 'component/mixins/scrollhlc'
 
@@ -15,58 +15,67 @@ ws.on('hello', function(val){
   },2000)
 })
 
-const Xxx = itemHlc(
-  <div className='bottombar-descript'>
-    <img src='/images/logo.png' style={{display: 'inline-block', verticalAlign:'middle'}}/>
-    <span style={{display: 'inline-block', verticalAlign: 'middle',marginLeft:'0.6em'}}>关注JS全栈，关注React，欢迎入群</span>
-  </div>
-  , function(dom){
-  $(dom).click(function(){
-    msgtips.notification('你电到我了')
-  })
+let Modal = modal.p30
+mediaQuery({
+  mobile: function(){
+    Modal = modal.p70
+  }
 })
-const StickyBBox = sticky.bottom(<Xxx />, {delay: 2000})
-// sticky(<Xxx />)
+
+// const Xxx = itemHlc(
+//   <div className='bottombar-descript'>
+//     <img src='/images/logo.png' style={{display: 'inline-block', verticalAlign:'middle'}}/>
+//     <span style={{display: 'inline-block', verticalAlign: 'middle',marginLeft:'0.6em'}}>关注JS全栈/React</span>
+//   </div>
+//   , function(dom){
+//     const naver = document.getElementById('agzgzNav')
+//     $(dom).click(function(){
+//       Modal(naver)
+//       // msgtips.notification('你电到我了')
+//     })
+// })
+// const StickyBBox = sticky.bottom(<Xxx />, {delay: 2000})
+const StickyBBox = sticky.bottom(document.getElementById('agzgzNav'), {delay: 2000})
 
 let Xslider = Slider({
   container: 'slider',
   data: [
     <div className="row">
       <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-        <img src="/images/test/tree_root.jpg" title="Funky roots" />
+        <img src="/images/banner/hello/banner-3.jpg" title="Funky roots" />
       </div>
       <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4 descript">
-        <h4>FKP2</h4>
+        <h3>FKP2</h3>
         Full Stack Plus 2<br/> SAP/MPA最佳实践方式
       </div>
     </div>,
 
     <div className="row">
       <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-        <img src="/images/test/hill_road.jpg" title="The long and winding road" />
+        <img src="/images/banner/hello/banner-2.jpg" title="The long and winding road" />
       </div>
       <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4 descript">
-        <h4>脚手架</h4>
+        <h3>脚手架</h3>
         gulp+webpack组合，灵活、模块化的脚手架系统，支持4套模式
       </div>
     </div>,
 
     <div className="row">
       <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-        <img src="/images/test/houses.jpg" title="Happy trees" />
+        <img src="/images/banner/hello/banner-7.jpg" title="Happy trees" />
       </div>
       <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4 descript">
-        <h4>前端</h4>
+        <h3>前端</h3>
         Babel、JQ+React的混合流组件模式，低成本学习成本
       </div>
     </div>,
 
     <div className="row">
       <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-        <img src="/images/test/houses.jpg" title="Happy trees" />
+        <img src="/images/banner/hello/banner-4.jpg" title="Happy trees" />
       </div>
       <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4 descript">
-        <h4>node端</h4>
+        <h3>node端</h3>
         灵活、低配置，无限层级RESTFUL路由，匹配前端目录结构
       </div>
     </div>
@@ -130,26 +139,32 @@ const titles1 = [
   <a className="iconfont icon-video_fill_light"></a>,
   <a className="iconfont icon-goods_new_fill_light"></a>,
   <a className="iconfont icon-video_fill_light"></a>,
+  <a className="iconfont icon-video_fill_light"></a>,
+  <a className="iconfont icon-goods_new_fill_light"></a>,
+  <a className="iconfont icon-video_fill_light"></a>,
+  <a className="iconfont icon-goods_new_fill_light"></a>,
+  <a className="iconfont icon-video_fill_light"></a>,
 ]
 const list1 = baselist({
   data: titles1,
-  theme: 'list/books',
+  autoinject: false,
   listClass: 'books'
 })
 
 const floor1 = grids({
   data: [
-    {width: '27%', content: <h3 style={{color:'#9c9c9c'}}>推荐文章</h3>},
-    {width: '71%', content: list1.render()}
+    {width: '100%', content: <h3 style={{color:'#9c9c9c'}}>推荐文章</h3>},
+    {width: '100%', content: list1.render()}
   ],
+  autoinject: false,
   container: 'test'
 })
 
 const floor2 = grids({
   header: <h2 className="splite"></h2>,
   data: [
-    {width: '27%', content: <h3 style={{color:'#9c9c9c'}}>开源收藏</h3>},
-    {width: '71%', content: list1.render()}
+    {width: '100%', content: <h3 style={{color:'#9c9c9c'}}>开源收藏</h3>},
+    {width: '100%', content: list1.render()}
   ],
   container: 'opensrc'
 })
@@ -193,6 +208,6 @@ setTimeout( () => {
   .then( (data) => {
     console.log(data);
   })
-  msgtips.success('post data yes, click to close', 'error')
+  // msgtips.success('post data yes, click to close', 'error')
   msgtips.sticky('欢迎密集喜爱症患者, 点击关闭', 'error')
 },1000)
