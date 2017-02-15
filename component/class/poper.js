@@ -14,10 +14,11 @@ function active(mm, stat, cb){
   this.item = this.msgItem(stat);
   this.box = this.msgBox(stat);
   this.container = this.box;
+  if (!mm) mm = ' '
   if (objtypeof(mm)=='string') {
     this.item.innerHTML = mm;
   }
-  if (objtypeof(mm)=='object' && mm.nodeType) {
+  if (typeof mm =='object' && mm.nodeType) {
     this.item.appendChild(mm)
   }
   if (isValidRctElement(mm)) {
