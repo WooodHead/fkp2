@@ -32,13 +32,14 @@ Using the following technologies:
 ## Build
 Include 3 mode and 4 commond  
 包含该三种模式和4个命令  
-1. ly demo -- with watch, only static file, like `HTML/CSS/JAVASCRIPT`
-2. **ly dev** -- with watch, node and static file  
-3. ly pro --  with watch/uglify/hash, node and static file, but watch is not good
-4. gulp build -- with uglify/hash, like `gulp pro` but no watch, it used in production environment  
+1. ly demo -- with watch, only static file, like `HTML/CSS/JAVASCRIPT`  
+2. **ly dev** -- with watch, node and static file    
+3. ly pro --  with watch/uglify/hash, node and static file, but watch is not good   
+4. gulp build -- with uglify/hash, like `gulp pro` but no watch, it used in production environment    
 
 Pls note that `ly` is a executable bash file that in root directory. it encapsulated `GULP` and ...   
 `ly`是执行文件，`windows/linux/mac`下要注意给执行权限  
+
 In development mode, will watch `CSS/JAVASCRIPT/HTML/NODEJS` file, and timely response on browser  
 开发模式下，watch `CSS/JAVASCRIPT/HTML/NODEJS` 这些文件，会快速响应到浏览器上，方便开发， 提升开发效率  
 
