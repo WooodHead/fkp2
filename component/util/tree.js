@@ -67,9 +67,9 @@ export default function(dataAry){
 		if (_.isString(item)) menus.push(item)
 		if (_.isPlainObject(item)) {
 			// if (item.idf && !idrecode[item.idf]) {
-			item['data-treeid'] = ii
+			// item['data-treeid'] = ii
 			if (item['attr']) {
-				item['attr']['data-treeid'] = ii
+				if (!item['attr']['data-treeid']) item['attr']['data-treeid'] = ii
 			} else {
 				item['attr'] ={'data-treeid': ii}
 			}
