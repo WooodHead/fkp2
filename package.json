@@ -14,7 +14,7 @@
     "cheerio": "^0.22.0",
     "co": "^4.6.0",
     "debug": "^2.2.0",
-    "fkp-sax": "^1.5.8",
+    "fkp-sax": "^1.5.9",
     "handlebars": "^4.0.2",
     "immutable": "^3.8.1",
     "iscroll": "^5.2.0",
@@ -117,10 +117,9 @@
     "webpack": "^1.13.2",
     "webpack-dev-server": "^1.16.2"
   },
-  "license": "MIT",
+  "license": "ISC",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "天天修改",
-  "license": "ISC"
+  "author": "天天修改"
 }

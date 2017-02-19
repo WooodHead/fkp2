@@ -383,7 +383,7 @@
 
           switch (s_type) {
             case 'Object':
-              if (typeof act == 'object') this.sact = extend(true, this.sact, act)
+              if (typeof act == 'object') this.sact = extend({}, this.sact, act)
               else {
                 var _uuid = uniqueId()
                 if (typeof act == 'function') this.sact[_uuid] = act
@@ -395,7 +395,7 @@
                   this.sact = this.sact.concat(act)
                   break;
                 case 'Object':
-                  this.sact = extend(true, this.sact, act)
+                  this.sact = extend({}, this.sact, act)
                   break;
                 case 'Function':
                   this.sact = this.sact.push(act)
@@ -789,7 +789,7 @@
 
             if (key && ddd) {
               var keyofdata = name + '.' + key
-              _stockData[keyofdata] = typeof ddd == 'object' ? extend(true, ddd) : ddd
+              _stockData[keyofdata] = typeof ddd == 'object' ? extend({}, ddd) : ddd
             }
             if (that.sact) return _runner((ddd||_data), key)
           }
