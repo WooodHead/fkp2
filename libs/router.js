@@ -1,8 +1,8 @@
 // popstate的bug，在ios上popstate首次进入就被执行了
+//解决方案  http://stackoverflow.com/questions/6421769/popstate-on-pages-load-in-chrome
+//android 和 iphone上页面刷新就会直接执行popstate，这是一个浏览器的bug
 (function() {
-  //解决方案  http://stackoverflow.com/questions/6421769/popstate-on-pages-load-in-chrome
-  //android 和 iphone上页面刷新就会直接执行popstate，这是一个浏览器的bug
-  var blockPopstateEvent = document.readyState!="complete";
+  var blockPopstateEvent = document.readyState != "complete";
   window.addEventListener("load", function() {
     // The timeout ensures that popstate-events will be unblocked right
     // after the load event occured, but not in the same event-loop cycle.
@@ -18,8 +18,7 @@
   }, false)
 }())
 
-
-let qs = require('querystring')
+let queryString = require('querystring')
 let libs = require('./libs_client')
 let _multiDom = false
 let allow_router_cb = false  // router.cb允许在业务页面指定后退的特殊地址，权重较高
@@ -43,7 +42,7 @@ function bindFn(e){
       let _history_data = SAX.get('_HISTORY_DATA')
       if (!_history.length || _history.length === 1){
         if (_history.hash) {
-          _history.replaceState(null,null, history.source)
+          _history.replaceState(null, null, history.source)
           router(_history.hash, false, true)
         }
         typeof wx == undefined ? window.history.go(-1) : wx.closeWindow()
@@ -53,12 +52,10 @@ function bindFn(e){
         let pophistory = pop[0]
         let hist = pophistory[pophistory.length-1]
         if(hist.hash){
-          history.replaceState(null,null, hist.source)
+          history.replaceState(null, null, hist.source)
           router(hist.hash, false, true)
         } else { window.location.href = hist.source }
       }
-
-
     }
   }
 }
@@ -67,13 +64,13 @@ var rt = libs.$class.create()
 rt.prototype = {
   init: function(name, data, back){
     SAX.set("_routerInstanc", this)
-    SAX.set('_HISTORY', []);
-    SAX.set('_HISTORY_DATA', []);
-    this.multiDom = _multiDom;
-    this.intent;
-    this.isBack = false;
+    SAX.set('_HISTORY', [])
+    SAX.set('_HISTORY_DATA', [])
+    this.multiDom = _multiDom
+    this.intent
+    this.isBack = false
     this.hideStack = []
-    this._injectionCss();
+    this._injectionCss()
     this.distribute(name, data, back)
   },
 
@@ -137,20 +134,16 @@ rt.prototype = {
         if (!this.isBack){
           if (hash !== name) {
             _uri = href+'#'+name;
-            historyStat({uri: _uri}, '1null', _uri)
-            tmp_url = libs.urlparse(location.href);
-            this.url = tmp_url;
-            url = tmp_url
+            pushState({uri: _uri}, '1null', _uri)
+            url = this.url = libs.urlparse(location.href);
           }
           SAX.append('_HISTORY', url);
         }
       } else {
         if (!this.isBack){
           _uri = name;
-          historyStat({uri: _uri}, '2null', '#'+name)
-          tmp_url = libs.urlparse(location.href);
-          this.url = tmp_url;
-          url = tmp_url
+          pushState({uri: _uri}, '2null', '#'+name)
+          url = this.url = libs.urlparse(location.href);
           SAX.append('_HISTORY', url);
         }
       }
@@ -180,7 +173,8 @@ rt.prototype = {
       else {
         SAX.setter(name, intent)
       }
-      historyStatBehavior()
+      allow_router_cb = true;
+      // historyStatBehavior()
     }
   },
 
@@ -229,37 +223,8 @@ rt.prototype = {
   }
 }
 
-function router(name, data, isback){
-  let _url = libs.urlparse(location.href);
-  if (_url.params.hash){
-    let _src = _url.source.replace('hash='+_url.params.hash, '').replace('?&', '?')
-    history.replaceState(null,null, _src)
-  }
-  let instance = SAX.get('_routerInstanc');
-  if (instance){ instance.distribute(name, data, isback) }
-  else { new rt(name, data, isback) }
-}
-
-// 弹出上一步的地址，但不执行
-router.pre = function(){
-  var _h = SAX.get('_HISTORY');
-  return _h[(_h.length-2)];
-}
-
-// router 回退一步
-router.goback = function(name, data){
-  setTimeout(function(){
-    _goback(name, data, true)
-  }, 0)
-}
-
-function historyStatBehavior(){
-  // initialURL = location.href;
-  allow_router_cb = true;
-}
-
-
-function historyStat(args, title, uri){
+// function historyStat(args, title, uri){
+function pushState(args, title, uri){
   console.log('========= pushState history')
   window.history.pushState(args, title, uri)
 }
@@ -273,12 +238,13 @@ function _goback(name, data, isback){
       let hash = tmp[1]
       let _url = '/'+uri+'#'+hash
       router(_url)
-    } else { router(url.params.goback) }
+    } else {
+      router(url.params.goback)
+    }
   } else {
     if (!name) name = false
-    else if (libs.objtypeof(name)==='object'){ data = name }
-
-    if (typeof name === 'string') { router(name) }
+    else if (libs.objtypeof(name)==='object') data = name
+    if (typeof name === 'string') router(name)
     else{
       let _history = SAX.get('_HISTORY')
       if (!_history.length || _history.length === 1){
@@ -295,14 +261,13 @@ function _goback(name, data, isback){
         if(hist.hash){
           history.replaceState(null,null, hist.source)
           router(hist.hash, data, isback)
-        } else { window.location.href = hist.source }
+        } else {
+          window.location.href = hist.source
+        }
       }
     }
   }
 }
-
-router.clear = function(){ }
-
 
 /*
  * 清除掉url中的指定params，并重写url，并不跳转url
@@ -321,11 +286,12 @@ function clearState(tag){
     .replace('&#', '#')
     .replace('?', '')
 
-    history.replaceState(null,null, _src)
-    setTimeout(function(){ history.replaceState(null,null, _src) }, 0)
+    history.replaceState(null, null, _src)
+    setTimeout(function(){
+      history.replaceState(null, null, _src)
+    }, 0)
   }
 }
-router.clearState = clearState;
 
 /*
  * 重置url中的指定params，并重写url，并不跳转url
@@ -338,11 +304,38 @@ function reState(tag, value){
   var url = libs.urlparse(location.href);
   var params = url.params;
   params[tag] = value;
-  var rct = qs.stringify(params)
+  var rct = queryString.stringify(params)
   rct = url.relative.replace(url.path, url.path+'?'+rct)
-  history.replaceState(null,null, rct)
+  history.replaceState(null, null, rct)
 }
+
+function router(name, data, isback){
+  let _url = libs.urlparse(location.href);
+  if (_url.params.hash){
+    let _src = _url.source.replace('hash='+_url.params.hash, '').replace('?&', '?')
+    history.replaceState(null, null, _src)
+  }
+  let instance = SAX.get('_routerInstanc');
+  if (instance){
+    instance.distribute(name, data, isback)
+  }
+  else {
+    new rt(name, data, isback)
+  }
+}
+
+router.clear = function(){}
 router.reState = reState;
+router.clearState = clearState;
+router.goback = function(name, data){  //router 回退一步
+  setTimeout(function(){
+    _goback(name, data, true)
+  }, 0)
+}
+router.pre = function(){  //弹出上一步的地址，但不执行
+  var _h = SAX.get('_HISTORY');
+  return _h[(_h.length-2)];
+}
 
 
 let route = function(name, handle){
@@ -364,7 +357,6 @@ let route = function(name, handle){
     }
   }
 }
-
 
 /*
  * 为每一个key新增一个div, id为key值
@@ -391,11 +383,7 @@ route.init = function(name, options, cb){
     SAX._reurl = url.params.reurl
     clearState('reurl')
   }
-
-  let dft = {
-    container: 'body'
-  }
-
+  let dft = { container: 'body' }
   let opts = _.extend(dft, options)
 
   $(opts.container).append('<div id="router-wrap" style="width:100%;position:relative;height:100%;"></div>');
@@ -414,6 +402,7 @@ route.init = function(name, options, cb){
       let utile = new _utile()
       utile.plugins('router', router)
       utile.plugins('libs', libs)
+      
       var page_instence = name[item](_id, subdom, utile)
 
       if (page_instence.goback || page_instence.trigger || page_instence.end){
