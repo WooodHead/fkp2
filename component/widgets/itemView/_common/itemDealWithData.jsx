@@ -1,3 +1,6 @@
+
+const itemrootCkb = <input type='checkbox' className='itemrootCkb'/>
+
 function lazyimg(img, idf){
   const hoc = this.hoc || []
   if ( hoc.indexOf('scroll') >-1 ){
@@ -37,6 +40,7 @@ function normalItem(obj){
         if (typeof title == 'string') title = <span className="caption">{title}</span>
         return (
           <div className={_obj_item.liClassName||'itemCategory'}>
+            {itemrootCkb}
             {title}
             {dealWithLi(_obj_item.li)}
           </div>
@@ -52,6 +56,7 @@ function normalItem(obj){
         if (typeof title == 'string') title = <span className="caption">{title}</span>
         return (
           <div className={obj.liClassName||'itemCategory'}>
+            {itemrootCkb}
             {title}
             {dealWithLi(obj.li)}
           </div>
@@ -323,6 +328,7 @@ function dealWithData(state){
      }
    }
 
+
    var fill = Array.isArray(data)
    ? items
    : (
@@ -330,7 +336,9 @@ function dealWithData(state){
       ? <div className={'inner'}>{headerDom}{bodyDom}{footerDom}{dotDom}</div>
       : liDom
         ? k2
-          ? ( React.isValidElement(k2) ? <div className="itemCategory">{k2}{liDom}</div> : <div className="itemCategory"><span className="caption">{k2}</span>{liDom}</div> )
+          ? ( React.isValidElement(k2)
+            ? <div className="itemCategory">{itemrootCkb}{k2}{liDom}</div>
+            : <div className="itemCategory">{itemrootCkb}<span className="caption">{k2}</span>{liDom}</div> )
           : liDom
         : k2
 

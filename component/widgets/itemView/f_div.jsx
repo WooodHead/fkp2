@@ -83,6 +83,13 @@ class fox extends React.Component {
 		if (typeof stateData == 'object') {
 			_.mapKeys(stateData, function(value, key) {
 				if (key.indexOf('data-')>-1) { data_attr[key] = value }
+				if (key=='attr') {
+					Object.keys(stateData['attr']).map(function(item, ii){
+						if (item) {
+							data_attr[item] = stateData['attr'][item]
+						}
+					})
+				}
 			})
 		}
 
