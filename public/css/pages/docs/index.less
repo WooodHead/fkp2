@@ -9,6 +9,58 @@ a{
   text-decoration: none;
 }
 
+.docs-index{
+  width: 100%;
+  ul{
+    li{
+      list-style: none;
+      width: 16em;
+      height: 20em;
+      margin: 0.5em;
+      position: relative;
+      display: inline-block;
+      vertical-align: middle;
+      border: 1px solid #d0d0d0;
+      border-radius: 3px;
+      box-sizing: border-box;
+      transition: all .2s linear;
+      &:hover{
+        transform: translate3d(0, -2px, 0);
+        box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        .hfoot{
+          a{
+            text-decoration: underline;
+          }
+        }
+      }
+      img{
+        width: 100%;
+      }
+    }
+  }
+}
+
+.hlist {
+  .item {
+    .hbody{
+      padding: 0;
+      width: 100%;
+      height: 16em;
+      border-bottom: 1px solid #f7f7f7;
+      overflow: hidden;
+    }
+    .hfoot{
+      line-height: 1.8;
+      a{
+        display: block;
+        color: #4f4f4f;
+        font-size: 1.6em;
+        font-weight: 400;
+      }
+    }
+  }
+}
+
 .docs-menu{
   position: fixed;
   width: 3.5em;

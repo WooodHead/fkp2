@@ -7,34 +7,36 @@
     </head>
     <body>
       <div class="container-full">
-          {{#if docs.docindex }}
-            <div class="col-xs col-sm col-md col-lg">
-              {{{docs.docindex.cnt}}}
+        {{#if docs.docindex }}
+          <div class="col-xs col-sm col-md col-lg docs-index">
+            <div class="markdown-body">
+              {{{docs.docindex.cnt}}}               
             </div>
-          {{else}}
-            <!-- <div class="docs-menu">
-              <input type="checkbox" />
-              <span/>
-            </div> -->
-            <input type="checkbox" class="docs-trigger"/>
-            <div class="docs-tree">
-              {{{docs.menutree}}}
+          </div>
+        {{else}}
+          <!-- <div class="docs-menu">
+            <input type="checkbox" />
+            <span/>
+          </div> -->
+          <input type="checkbox" class="docs-trigger"/>
+          <div class="docs-tree">
+            {{{docs.menutree}}}
+          </div>
+          <div class="docs-body">
+            <div class="markdown-body u-clearfix">
+              {{# if docs.home}}
+                <p>
+                  {{{docs.home.cnt}}}
+                </p>
+              {{/if}}
+              {{# if docs.mdcontent}}
+                <p>
+                  {{{docs.mdcontent.cnt}}}
+                </p>
+              {{/if}}
             </div>
-            <div class="docs-body">
-              <div class="markdown-body u-clearfix">
-                {{# if docs.home}}
-                  <p>
-                    {{{docs.home.cnt}}}
-                  </p>
-                {{/if}}
-                {{# if docs.mdcontent}}
-                  <p>
-                    {{{docs.mdcontent.cnt}}}
-                  </p>
-                {{/if}}
-              </div>
-            </div>
-          {{/if}}
+          </div>
+        {{/if}}
       </div>
         @@include('./_common/footer/foot.html')
         <script src="/js/t/prettfy.js"></script>

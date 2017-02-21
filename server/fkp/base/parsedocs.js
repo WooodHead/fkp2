@@ -12,10 +12,11 @@ function index(fkp, type){
   // support 2 level
 
   const component = fkp.component()
+
   async function sonsHomeFiles(dir){
     let _docsList = []
     let rootList = await fkp.readdir(dir)
-    if (!rootList) return []
+
     return new Promise(async (resolve, reject)=>{
       for (let i=0; i<rootList.length; i++){
         let filename = rootList[i]
@@ -29,7 +30,11 @@ function index(fkp, type){
           let secondList = await fkp.readdir(path)
           if (secondList && secondList.length){
             if (_.includes(secondList, '_home.json')) doc['config'] = path + '/_home.json'
-            if (_.includes(secondList, '_home.md')) doc['home'] = path + '/_home.md'
+            if (_.includes(secondList, '_home.md')) {
+              const _path = path + '/_home.md'
+              let tmp = await loadmdFile(_path)
+              doc['home'] = _.merge({path: _path}, tmp)
+            }
             if (_.includes(secondList, '_home.jpg')) doc['img'] = '/docs/'+filename + '/_home.jpg'
             if (_.includes(secondList, '_home.png')) doc['img'] = '/docs/'+filename + '/_home.png'
             _docsList.push(doc)
@@ -41,7 +46,7 @@ function index(fkp, type){
   }
 
   // 读取并解析 md 文件
-  async function loadmdFile(url, whichdir){
+  async function loadmdFile(url, whichdir, opts){
     try {
       if (typeof url != 'string') url = '/_home_start/index.md'
       let _id = 'loadmdFile_'+url
@@ -59,7 +64,7 @@ function index(fkp, type){
           let mdcnt = {mdcontent:{}};
           let md_raw = fs.readFileSync( url, 'utf8' );
           if (!md_raw || !md_raw.length) return false
-          return await fkp.markdown(md_raw);
+          return await fkp.markdown(md_raw, opts);
         }
         return false
       })
@@ -127,8 +132,9 @@ function index(fkp, type){
         if (typeof opts.start == 'boolean') {
           opts.start = '/_home_start/index.md'
         }
-        let tmp = await loadmdFile(opts.start, doc_dir)
-        if (tmp) start.home = tmp.mdcontent
+        let tmp = await loadmdFile(opts.start, doc_dir, {sanitize: false})
+        if (tmp) start.home = _.assign({}, tmp.mdcontent, {params: tmp.params})
+
         else start.home = {cnt: '<h1>FKP-JS</h1><small>a full stack framwork</small>', title: 'FKP-JS', author: '天天修改'}
       }
 
