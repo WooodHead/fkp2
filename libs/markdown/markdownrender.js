@@ -1,64 +1,63 @@
-var marked = require('marked')
-var render = new marked.Renderer()
+// var marked = require('marked')
+// var render = new marked.Renderer()
 var whiteListPropsAry = ['id', 'class', 'div', 'excute'];
 
-export default function(fkp){
+function customParse(str, spec){
+  console.log('============ modules/common/mdrender.js\n');
+  var re = /[\s]?\{(.*?)\}/;    // "fjdskg  {abc: xxx} {xyz: yyy}" 取 " {....}"
+  var re_g = / \{(.*)\}/g;
+  var re_g_li = /<li>(\{.*?\})\s*<\/li>\s*/;
+  var re_whiteList = /(id|class|div|excute):[\w@;: \-_]+/ig;    //只允许id 和 class
 
-  function customParse(str, spec){
-    console.log('============ modules/common/mdrender.js\n');
-    var re = /[\s]?\{(.*?)\}/;    // "fjdskg  {abc: xxx} {xyz: yyy}" 取 " {....}"
-    var re_g = / \{(.*)\}/g;
-    var re_g_li = /<li>(\{.*?\})\s*<\/li>\s*/;
-    var re_whiteList = /(id|class|div|excute):[\w@;: \-_]+/ig;    //只允许id 和 class
+  var tmp_str = str;
 
-    var tmp_str = str;
-
-    if (spec==='ul'){
-      str = _.unescape(str)
-      var config = str.match(re_g_li)
-      if (config && config.length) {
-        str = str.replace(config[0],'')
-        tmp_str = str
-        var _obj = getAsset(config[1])
-        return [tmp_str, _obj]
-      }
-    }else{
-      tmp_str = tmp_str.replace(re_g, '')
-      var _obj = getAsset(str);
-      return [tmp_str, _obj];
+  if (spec==='ul'){
+    str = _.unescape(str)
+    var config = str.match(re_g_li)
+    if (config && config.length) {
+      str = str.replace(config[0],'')
+      tmp_str = str
+      var _obj = getAsset(config[1])
+      return [tmp_str, _obj]
     }
-
-    function getAsset(_str){
-      var key, val, obj={},
-        tmp = _str.match(re),
-        _tmp = _(tmp[0]).chain().thru(function(val){ return val.match(re_whiteList) }).value()
-
-      if (_tmp && _tmp.length){
-        _tmp.map(function(item, i){
-          var kv = item.split(':');
-          if (kv[0]==='id' && kv[1].indexOf(' ')>-1) obj[kv[0]] = _.split(_.trim(kv[1]), ' ', 1)
-          else{
-            obj[kv[0]] = _.trim(kv[1]);
-          }
-        })
-      }
-      return obj
-    }
+  }else{
+    tmp_str = tmp_str.replace(re_g, '')
+    var _obj = getAsset(str);
+    return [tmp_str, _obj];
   }
 
-  function whiteListProps(props, type){
-    var str = '';
-    for (var item in props){
-      switch (item) {
-        case 'div':
-          break;
-        default:
-          if (whiteListPropsAry.indexOf(item)>-1) str += ' '+item+'="'+props[item]+'"'
-      }
-    }
-    return str;
-  }
+  function getAsset(_str){
+    var key, val, obj={},
+      tmp = _str.match(re),
+      _tmp = _(tmp[0]).chain().thru(function(val){ return val.match(re_whiteList) }).value()
 
+    if (_tmp && _tmp.length){
+      _tmp.map(function(item, i){
+        var kv = item.split(':');
+        if (kv[0]==='id' && kv[1].indexOf(' ')>-1) obj[kv[0]] = _.split(_.trim(kv[1]), ' ', 1)
+        else{
+          obj[kv[0]] = _.trim(kv[1]);
+        }
+      })
+    }
+    return obj
+  }
+}
+
+function whiteListProps(props, type){
+  var str = '';
+  for (var item in props){
+    switch (item) {
+      case 'div':
+        break;
+      default:
+        if (whiteListPropsAry.indexOf(item)>-1) str += ' '+item+'="'+props[item]+'"'
+    }
+  }
+  return str;
+}
+
+export default function(render){
   render.link = function(href, title, text) {
     var config = {}
     var id = ""
@@ -126,11 +125,11 @@ export default function(fkp){
 
     // var id = config.id || this.options.headerPrefix + raw.toLowerCase().replace(/[^\\w]+/g, '-')
     var id;
-    if (/[\u4e00-\u9fa5]/g.test(raw)) id = config.id || _.uniqueId('fkp-')
+    if (/[\u4e00-\u9fa5]/g.test(raw)) id = config.id || _.uniqueId('fkp-anchor-')
     else {
       id = config.id || this.options.headerPrefix + raw.toLowerCase().replace(/[^\\w]+/g, '-')
     }
-    if (!id || id==='-') id=_.uniqueId('fkp-')
+    if (!id || id==='-') id=_.uniqueId('fkp-anchor-')
     var cls = config.class ? ' class="'+config.class+'"' : ''
     return '<h' + level + ' id="' + id + '"' + cls + '>' + text + '</h' + level + '>';
   }
