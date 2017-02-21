@@ -114,6 +114,7 @@ const config = {
         'css',
         'js',
         'author',
+        'desc',
         {'分类': 'cats'},   //支持中文 key
         {'作者': 'author'}
     ],

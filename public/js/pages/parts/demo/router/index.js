@@ -3,9 +3,9 @@ import {grids} from 'component'
 import {router} from 'component/client'
 import itemHlc from 'component/mixins/itemhlc'
 
-import page1 from './common/page1'
-import page2 from './common/page2'
-import page3 from './common/page3'
+import page1 from './_common/page1'
+import page2 from './_common/page2'
+import page3 from './_common/page3'
 
 if ($('#test-router').length) {
   const rter = router({

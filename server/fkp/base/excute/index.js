@@ -1,4 +1,5 @@
 import co from 'co'
+import fs from 'fs'
 import path from 'path'
 import renderfdocsSon from './fdocsson'
 
@@ -11,6 +12,14 @@ import renderfdocsSon from './fdocsson'
 async function index(fkp, cmd){
   const markdownParse = fkp.parsedocs()
   let _data = await markdownParse.folder('fdocs', {sonlist: true})
+  // for (let ii=0; ii<_data.sonlist.length; ii++) {
+  //   const home = _data.sonlist[ii].home
+  //   if (home) {
+  //     // const tmp = markdownParse.file(home)
+  //     // console.log(tmp);
+  //   }
+  // }
+  // // awiat fkp.readfile('/fdocs/fkpdoc/_home.md')
   let _mdson = renderfdocsSon(_data.sonlist)
   let commond = {
     name: '你妹啊，真的可以吗',
