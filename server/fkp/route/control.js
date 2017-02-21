@@ -15,7 +15,9 @@ Control.prototype = {
     try {
       var dft = {
         get: this.get,
-        post: this.post
+        post: this.post,
+        GET: this.get,
+        POST: this.post
       }
       if (_.isPlainObject(options)) dft = _.extend(dft, options)
       this.initStat = true
@@ -32,11 +34,16 @@ Control.prototype = {
       let opts = this.opts
       let mtd = ctx.method
       let _data = this.data
-      if (mtd === 'GET' && _.isFunction(opts.get)) {
-        _data = opts.get.call(this, ctx)
+
+      const _get = opts.get || opts.GET
+      const _post = opts.post || opts.POST
+
+      if (mtd === 'GET' && _.isFunction(_get)) {
+        _data = _get.call(this, ctx)
       }
-      if (mtd === 'POST' && _.isFunction(opts.post)){
-        _data = opts.post.call(this, ctx)
+
+      if (mtd === 'POST' && _.isFunction(_post)){
+        _data = _post.call(this, ctx)
       }
       return _data
     } catch (e) {
