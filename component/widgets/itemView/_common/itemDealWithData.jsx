@@ -32,70 +32,74 @@ function lazyimg(img, idf){
 // 处理title及url
 // 处理li的相关数据
 function normalItem(obj){
-  if (typeof obj === 'string' || React.isValidElement(obj)) return obj
+  if (typeof obj === 'string' || typeof obj === 'number' || React.isValidElement(obj)) return obj
   else if (_.isArray(obj)){
-    if (obj[0].li){
-      return obj.map(function(_obj_item, i){
-        let title = _obj_item.title
-        if (typeof title == 'string') title = <span className="caption">{title}</span>
-        return (
-          <div className={_obj_item.liClassName||'itemCategory'}>
-            {itemrootCkb}
-            {title}
-            {dealWithLi(_obj_item.li)}
-          </div>
-        )
-      })
-    }
     return dealWithLi(obj)
   } else {
     if (obj.title){
-      if (obj.url) obj.title = <a href={obj.url} >{obj.title}</a>
-      if (obj.li){
-        let title = obj.title
-        if (typeof title == 'string') title = <span className="caption">{title}</span>
-        return (
-          <div className={obj.liClassName||'itemCategory'}>
-            {itemrootCkb}
-            {title}
-            {dealWithLi(obj.li)}
-          </div>
-        )
+      let title = obj.title
+      if (obj.url && (typeof title == 'string' || typeof title == 'number')) {
+        title = <a href={obj.url} >{obj.title}</a>
       }
-      return obj.title;
+      if (obj.li){
+        if (typeof title == 'string') {
+          title =
+          (
+            <div className='itemCategory'>
+              {itemrootCkb}
+              <span className="caption">{title}</span>
+              {dealWithLi(obj.li)}
+            </div>
+          )
+        }
+      }
+      return title;
     }
     else if (obj.li) return dealWithLi(obj.li)
     return '';
   }
 }
 
-function dealWithLi(prop_li, category){
+function dealWithLi(prop_li, liClassName){
   var lis = []
   if(Array.isArray(prop_li)){
     prop_li.map(function(li_item, li_i){
       var _item = normalItem(li_item);
       var _liItem;
-      var _props = { "key": 'li-'+li_i }
+      var _props = { "key": _.uniqueId('li-') }
       if (Array.isArray(li_item)){
          _props.className = "nextLevel2";
          _liItem = React.createElement('li', _props, _item)
       } else {
         if (_.isPlainObject(li_item.attr)){
-          var data_attr = {};
+          let data_attr = {};
           _.mapKeys(li_item.attr, function(value, key) {
             if (key.indexOf('data-')>-1) data_attr[key] = value;
             else {
-              data_attr['data-'+key] = value;
+              switch (key) {
+                case 'className':
+                  data_attr['className'] = value
+                break;
+                case 'style':
+                  data_attr['style'] = value
+                break;
+                default:
+                  data_attr['data-'+key] = value;
+              }
             }
           });
           _props = _.assign(_props, data_attr);
         }
-        if (li_item.li) { _props.className = 'itemroot'}
+        if (li_item.li) {   // itemroot
+          _props.className = 'itemroot'
+        }
         _liItem = React.createElement('li', _props, _item)
       }
       lis.push(_liItem)
     })
-    return <ul>{lis}</ul>
+    return React.createElement('ul', {
+      className: liClassName
+    }, lis)
   }
   else{
     lis.push(<li key={'li-'+li_i}>{prop_li}</li>)
@@ -155,7 +159,7 @@ function dealWithData(state){
        }
 
        if(data.li){
-         k3 = dealWithLi(data.li)
+         k3 = dealWithLi(data.li, data.liClassName)
        }
 
        if(data.img){
