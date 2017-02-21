@@ -17,6 +17,7 @@ async function getContent(fkp, mapper, src, opts){
   }
   const did = md5(src).slice(22)
   if (src.indexOf('/')== 0) {
+    if (!path.extname(src)) src +='.js'
     if (src.indexOf('/js/t/')>-1) return '<script id="'+did+'" src="'+src+'"></script>\n'
     src = src.replace('/js/', '').replace('.js', '')
   }
@@ -38,7 +39,7 @@ async function index(fkp, src, opts={}){
   if (Array.isArray(src)) {
     let contents = []
     for (let item of src) {
-      contents.push(await getContent(fkp, mapper, item, opts))
+      contents.push(await getContent(fkp, mapper, _.trim(item), opts))
     }
     content = contents && contents.join('')
   }

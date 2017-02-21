@@ -1,3 +1,4 @@
+var path = require('path')
 var md5 = require('blueimp-md5')
 
 /*
@@ -30,6 +31,7 @@ function createLink(doc, headElement, id, cssCode){
     }
   }
   tmpLink.setAttribute("rel", 'stylesheet');
+  if (!path.extname(cssCode)) cssCode +='.css'
   tmpLink.setAttribute("href", cssCode);
   tmpLink.setAttribute("id", id);
   headElement.appendChild(tmpLink);
@@ -79,6 +81,7 @@ function createScript(doc, headElement, id, src, cb){
   scripter.setAttribute("type", 'text/javascript');
   scripter.setAttribute("id", id);
   if (src.indexOf('http')===0 || src.indexOf('/')===0){
+    if (!path.extname(src)) src +='.js'
     scripter.setAttribute("src", src);
     headElement.appendChild(scripter);
   }

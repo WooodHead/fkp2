@@ -17,6 +17,7 @@ async function getContent(fkp, mapper, src, opts){
   }
   const did = md5(src).slice(22)
   if (src.indexOf('/')== 0) {
+    if (!path.extname(src)) src +='.css'
     if (src.indexOf('/css/t/')>-1) return '<link id="'+did+'" rel="stylesheet" type="text/css" href="'+src+'">\n'
     src = src.replace('/css/', '').replace('.css', '')
   }
@@ -38,7 +39,7 @@ async function index(fkp, src, opts={}){
   if (Array.isArray(src)) {
     let contents = []
     for (let item of src) {
-      contents.push(await getContent(fkp, mapper, item, opts))
+      contents.push(await getContent(fkp, mapper, _.trim(item), opts))
     }
     content = contents.join('')
   }
