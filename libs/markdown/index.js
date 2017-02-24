@@ -8,11 +8,76 @@ function strLen(str){
   return str.replace(/[^\x00-\xff]/g,"aaa").length;
 }
 
-function mkmd(md_raw, templet, opts){
+function _createDiv(raw){
+  let prope = {}
+  const regDiv = /^ *(<>|&lt;&gt;)?([\.\#]*(\S+)?) *(?:\n+|$)/ig
+  const regAttr = /[\.\#](\w+)?/ig
+  const _text = regDiv.exec(raw)
+  if (_text) {
+    const _attr = _text[2]
+    const attrs = _attr.match(regAttr)
+    if (attrs && attrs.length) {
+      attrs.map( attr => {
+        if (attr.charAt(0) == '#') prope.id = attr.substring(1)
+        if (attr.charAt(0) == '.') {
+          if (!prope.className) prope.className = attr.substring(1)
+          else {
+            prope.className += ' '+ attr.substring(1)
+          }
+        }
+      })
+      return '<div id="'+(prope.id||'')+'" class="'+(prope.className||'')+'"></div>'
+    } else {
+      return '<div></div>'
+    }
+  }
+}
+
+function creatDiv(raw){
+  if (raw && typeof raw == 'object'){
+    return _createDiv(raw.text)
+  } else {
+    return _createDiv(raw)
+  }
+}
+
+function getConfig(md_raw, cvariable){
+  // var rev = /[@]{3,}[ ]*\n?([^@]*)[@]{3,}[ ]*\n?/i;
+  // var rev2 = /(.*)(?=: *)[\s]*(.*)(?=\n)/ig;
+  // var rev3 = /^[a-zA-Z0-9,_ \u4e00-\u9fa5\/\\\:\.]+$/;
+  const rev = /^(@{3,}) *\n?([\s\S]*) *\n+\1 *(?:\n+|$)/i;
+  const rev2 = / *([\w\u4e00-\u9fa5]+)(?: *\: *([\w\u4e00-\u9fa5]+) *(?:\n+|$))/ig;
+  const rev3 = /^[a-zA-Z0-9\-\u4e00-\u9fa5\/\\]+$/;  //检测合法的key, value
+  const cnReg = /^[\u4e00-\u9fa5]+$/;   // 检测中文
+
+  let tmp = md_raw.match(rev);
+  if (tmp && tmp[2]) {
+    tmp = tmp[2]
+    let tmp2 = tmp.match(rev2)
+    if (tmp2) {
+      tmp2.map(function(item, i){
+        let tmp = item.split(':')
+        let k = _.trim(tmp[0])
+        let v = _.trim(tmp[1])
+        if (!cnReg.test(k) && accessVar.indexOf(k)>-1 ){
+          cvariable[k] = v
+        } else {
+          let _obj = _.find(accessVar, k);
+          if (_obj) {
+            cvariable[_obj[k]] = v
+          }
+        }
+      })
+    }
+    md_raw = md_raw.replace(rev,'');
+  }
+  return [md_raw, cvariable]
+}
+
+function mkmd(raw, templet, opts){
   console.log('markdown解析');
   console.log('========= markdown/'+__filename+' ');
   var mdcnt = templet
-  var cvariable = {}   //markdown 自定义变量
   let dft = {
     renderer: renderer,
     gfm: true,
@@ -26,42 +91,8 @@ function mkmd(md_raw, templet, opts){
   if (_.isPlainObject(opts)) dft = _.merge(dft, opts)
   marked.setOptions(dft)
 
-  if (md_raw.indexOf('@@@')>-1) {
-    // var rev = /[@]{3,}[ ]*\n?([^@]*)[@]{3,}[ ]*\n?/i;
-    var rev = /^(@{3,}) *\n?([\s\S]*) *\n+\1 *\n?/i;
-    // var rev2 = /(.*)(?=: *)[\s]*(.*)(?=\n)/ig;
-    var rev2 = / *([\w\u4e00-\u9fa5]+)(?: *\: *([\w\u4e00-\u9fa5]+) *?\n?)/ig;
-    var rev3 = /^[a-zA-Z0-9,_ \u4e00-\u9fa5\/\\\:\.]+$/;
-    var rev4 = /^[\u4e00-\u9fa5]+$/;
-
-    var tmp = md_raw.match(rev);
-    tmp = tmp[2]
-    var tmp2 = tmp.match(rev2)
-    var tmp3 = tmp2.map(function(item, i){
-      var tmp = item.split(':')
-      var k = tmp[0]
-      var v = _.trim(tmp[1])
-      if (!rev4.test(k)){
-        if (accessVar.indexOf(k)>-1){
-          if (rev3.test(v)){
-            cvariable[k] = v
-          }
-        }
-      }
-      else {
-        // 支持中文
-        if ( _.findIndex(accessVar, k)>-1 ){
-          let _obj = _.find(accessVar, k);
-          if (_.isObject(_obj)){
-            if (rev3.test(v)){
-                cvariable[_obj[k]] = v
-            }
-          }
-        }
-      }
-    })
-    md_raw = md_raw.replace(rev,'');
-  }
+  //markdown 自定义变量
+  let [md_raw, cvariable] = getConfig(raw, {})
 
   let tokens = marked.lexer(md_raw)
   let props = { }
@@ -69,7 +100,9 @@ function mkmd(md_raw, templet, opts){
     switch (item.type) {
       case 'heading':
         if (item.depth == 1) {
-          if (!props.title) props.title = item.text
+          if (!props.title) {
+            props.title = item.text
+          }
         }
       break;
       case 'blockquote_start':
@@ -81,106 +114,49 @@ function mkmd(md_raw, templet, opts){
   if (!props.title) props.title = '还没有想好标题'
   mdcnt.mdcontent.title = props.title.replace(/ \{(.*)\}/g, '');
   mdcnt.mdcontent.desc = props.desc
+  cvariable.desc = cvariable.desc || props.desc
 
-  return marked(md_raw, function (err, data) {
-    if (err) throw err;
+  try {
+    let data = marked.parser(tokens)
 
-    //图片部分
-    var re_img = /!\[.*\]\((.*)\)/i
-    var img_first = md_raw.match(re_img);
-    if (img_first) mdcnt.mdcontent.img = img_first[1]
+    // 插入div
+    const regDiv = /<p>&lt;&gt;(.*)? *(?:\n+|$)/ig
+    const regDiv1 = /<p>&lt;&gt;(.*)?<\/p> *(?:\n+|$)/i
+    data = data.replace(regDiv, function($0, $1){
+      return creatDiv($1+'\n')
+    })
 
-    //菜单部分
-    const re = /<h2 *(id=[\w|-]+) [^>]*?>(.*?)<\/h2>/ig;
-    let menus = []
-    let caps = data.match(re)
-    if (caps){
-      caps.map( cap => {
-        const _menu = re.exec(cap)
-        const href = '#'+_menu[1]
-        const title = _menu[2]
-        menus.push('<li><a href="#'+href+'">'+ title + '</a></li>')
+    // 首图
+    const regImg = /<img *src= *['"](.*?)['"] *\/>/ig
+    const imgs = data.match(regImg)
+    if (imgs) {
+      mdcnt.mdcontent.img = imgs[0]
+      mdcnt.mdcontent.imgs = imgs
+    }
+
+    // 菜单
+    let mdMenus = ['<ul class="mdmenu>']
+    const regMenu = /<(h[2]) *(?:id=['"]?(.*?)['"]?) *>(.*?)<\/\1>/ig
+    const regMenu1 = /id=['"]?([^>]*)['"] *>(.*)</i
+    const menus = data.match(regMenu)
+    if (menus) {
+      menus.map( item => {
+        const cap = regMenu1.exec(item)
+        if (cap) {
+          const [xxx, href, title] = cap
+          mdMenus.push('<li><a href="#'+(href||'')+'">'+ (title||'') + '</a></li>')
+        }
       })
-    }
-    mdcnt.mdcontent.mdmenu = '<ul class="mdmenu">\n'+menus.join('\n')+'<ul>\n'
-
-    var tmp_len = Object.keys(cvariable)
-    if (tmp_len) {
-      mdcnt.params = cvariable;
+      mdMenus.push('</ul>')
+      mdcnt.mdcontent.mdmenu = mdMenus.join('\n')
     }
 
+    mdcnt.params = cvariable;
     mdcnt.mdcontent.cnt = data
     return mdcnt
-  })
 
-  // return marked(md_raw, function (err, data) {
-  //   return new Promise((res, rej) => {
-  //     if (err) {
-  //       console.log(err, 'markdown.js');
-  //       rej(err)
-  //     }
-  //
-  //     //标题
-  //     var _title = md_raw.match(/#([\s\S]*?)\n/);
-  //     if (_title) mdcnt.mdcontent.title = _title[1].replace(/ \{(.*)\}/g, '');  // 清除自定义属性，如{"id":"xxx"}
-  //
-  //     // let blockquote = /^( *>[^\n]+(\n(?!def)[^\n]+)*\n*)+/
-  //     // let def = /^ *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +["(]([^\n]+)[")])? *(?:\n+|$)/
-  //     // blockquote = blockquote.source.replace('def', def)
-  //     // blockquote = new RegExp(blockquote)
-  //     // let cap = blockquote.exec(md_raw)
-  //     // console.log(md_raw);
-  //     // console.log(cap);
-  //     // console.log(blockquote);
-  //     // console.log('======== 2222');
-  //     // console.log('======== 2222');
-  //     // console.log('======== 2222');
-  //     // console.log('======== 2222');
-  //     // if (cap) {
-  //     //   let _desc = cap[0].replace('> ', '')
-  //     //   if (_desc.length>1) mdcnt.mdcontent.desc = _desc
-  //     //   else mdcnt.mdcontent.desc = ' '
-  //     // } else {
-  //     //   mdcnt.mdcontent.desc = ' '
-  //     // }
-  //
-  //     var _desc = md_raw.replace(_title, '')
-  //     if (strLen(_desc) < 30) mdcnt.mdcontent.desc = false
-  //     else mdcnt.mdcontent.desc = _desc
-  //
-  //     //图片部分
-  //     // var re_img = /<img.*src\s*=\s*[\"|\']?\s*([^>\"\'\s]*)/i
-  //     var re_img = /!\[.*\]\((.*)\)/i
-  //     var img_first = md_raw.match(re_img);
-  //     if (img_first) mdcnt.mdcontent.img = img_first[1]
-  //
-  //     //菜单部分
-  //     // var re = /<h2[^>]?.*>(.*)<\/h2>/ig;
-  //     var re = /<h2 [^>]*>(.*?)<\/h2>/ig;
-  //     var re2 = /id="(.*?)">/i;
-  //     var mdMenu='', mdMenuList = data.match(re);
-  //     if(mdMenuList&&mdMenuList.length){
-  //       mdMenuList.map(function(item){
-  //         var kkk = item.match(re2);
-  //         var href = kkk[1]
-  //         if (href!='-') mdMenu += '<li><a href="#'+href+'">'+ re.exec(item)[1]+'</a></li>\n\r';
-  //         else mdMenu += '<li>'+ re.exec(item)[1]+'</li>\n\r';
-  //         re.lastIndex = 0;
-  //       })
-  //     }
-  //     mdcnt.mdcontent.mdmenu = '<ul class="mdmenu">'+mdMenu+'<ul>'
-  //
-  //     //内容部分
-  //     mdcnt.mdcontent.cnt = data
-  //
-  //     var tmp_len = Object.keys(cvariable)
-  //     if (tmp_len) {
-  //       // mdcnt.mdcontent = _.assign(mdcnt.mdcontent, cvariable)
-  //       mdcnt.params = cvariable;
-  //     }
-  //     res(mdcnt)
-  //     // return mdcnt
-  //   })
-  // })
+  } catch (e) {
+    throw e
+  }
 }
 module.exports = mkmd

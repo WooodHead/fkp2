@@ -2,12 +2,37 @@
 // var render = new marked.Renderer()
 var whiteListPropsAry = ['id', 'class', 'div', 'excute'];
 
+function escape(html, encode) {
+  return html
+    .replace(!encode ? /&(?!#?\w+;)/g : /&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function unescape(html) {
+	// explicitly match decimal, hex, and named HTML entities
+  return html.replace(/&(#(?:\d+)|(?:#x[0-9A-Fa-f]+)|(?:\w+));?/g, function(_, n) {
+    n = n.toLowerCase();
+    if (n === 'colon') return ':';
+    if (n.charAt(0) === '#') {
+      return n.charAt(1) === 'x'
+        ? String.fromCharCode(parseInt(n.substring(2), 16))
+        : String.fromCharCode(+n.substring(1));
+    }
+    return '';
+  });
+}
+
 function customParse(str, spec){
   console.log('============ modules/common/mdrender.js\n');
-  var re = /[\s]?\{(.*?)\}/;    // "fjdskg  {abc: xxx} {xyz: yyy}" 取 " {....}"
+  // var re = /[\s]?\{(.*?)\}/;    // "fjdskg  {abc: xxx} {xyz: yyy}" 取 " {....}"
+  var re = / *?\{(.*?)\} *(?:\n+|$)/;    // "fjdskg  {abc: xxx} {xyz: yyy}" 取 " {....}"
   var re_g = / \{(.*)\}/g;
   var re_g_li = /<li>(\{.*?\})\s*<\/li>\s*/;
-  var re_whiteList = /(id|class|div|excute):[\w@;: \-_]+/ig;    //只允许id 和 class
+  // var re_whiteList = /(id|class|div|excute):[\w@;: \-_]+/ig;    //只允许id 和 class
+  var re_whiteList = / *?(id|class|div|desc) *?: *?[\w@;: \-_\u0391-\uFFE5]+/ig;    //只允许id 和 class
 
   var tmp_str = str;
 
@@ -34,10 +59,9 @@ function customParse(str, spec){
     if (_tmp && _tmp.length){
       _tmp.map(function(item, i){
         var kv = item.split(':');
-        if (kv[0]==='id' && kv[1].indexOf(' ')>-1) obj[kv[0]] = _.split(_.trim(kv[1]), ' ', 1)
-        else{
-          obj[kv[0]] = _.trim(kv[1]);
-        }
+        let key = _.trim(kv[0])
+        let val = _.trim(kv[1])
+        obj[key] = val
       })
     }
     return obj
@@ -131,7 +155,8 @@ export default function(render){
     }
     if (!id || id==='-') id=_.uniqueId('fkp-anchor-')
     var cls = config.class ? ' class="'+config.class+'"' : ''
-    return '<h' + level + ' id="' + id + '"' + cls + '>' + text + '</h' + level + '>';
+    var desc = config.desc ? '<small>'+config.desc+'</small>':''
+    return '<h' + level + ' id="' + id + '"' + cls + '>' + text + desc + '</h' + level + '>';
   }
 
   render.listitem = function(text) {
