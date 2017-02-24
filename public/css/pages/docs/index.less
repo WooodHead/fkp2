@@ -12,10 +12,10 @@ a{
 .docs-index{
   width: 100%;
   ul{
-    li{
+    li.item{
       list-style: none;
       width: 16em;
-      height: 20em;
+      height: 25em;
       margin: 0.5em;
       position: relative;
       display: inline-block;
@@ -53,6 +53,9 @@ a{
       line-height: 1.8;
       a{
         display: block;
+        white-space:nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         color: #4f4f4f;
         font-size: 1.6em;
         font-weight: 400;
