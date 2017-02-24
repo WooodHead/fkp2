@@ -38,7 +38,7 @@ function adpaterSon(component, data){
       ],
       footer: [
         url,
-        item.desc||'还没有介绍'
+        (item.home && item.home.params.desc) || '还没有介绍'
       ]
     }
   })

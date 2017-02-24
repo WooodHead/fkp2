@@ -7,11 +7,12 @@ import convert from 'koa-convert'
 import Bodyparser from 'koa-bodyparser'
 // import session from 'koa-generic-session'
 import session from 'koa-session-minimal'
+// import SQLite3Store from 'koa-sqlite3-session'
+// const redisStore = require('koa-redis')
 import logger from 'koa-logger'
 import cors from 'kcors'
 import conditional from 'koa-conditional-get'
 import etag from 'koa-etag'
-import SQLite3Store from 'koa-sqlite3-session'
 import Hooker from './modules/hook'
 
 global._ = require('lodash')
@@ -28,7 +29,11 @@ global.Hook = function(name){
     return hooker
   })
 }
+import localDB from './db/diskdb'
+global.LocalDB = localDB
 
+
+import ddbStore from './modules/diskdb-session'
 import fkp from './fkp'
 import socketio from './modules/wsocket'   //websocket
 import statics from './modules/static'
@@ -71,7 +76,8 @@ export default function init() {
 
 	app.use(session({
 		key: 'agzgz-',
-	  store: new SQLite3Store('../forsession1.db', {}),
+	  // store: redisStore(),
+    store: new ddbStore(),
     cookie: {
       maxage: null
     }

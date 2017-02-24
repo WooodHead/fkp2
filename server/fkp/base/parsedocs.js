@@ -50,6 +50,10 @@ function index(fkp, type){
     try {
       if (typeof url != 'string') url = '/_home_start/index.md'
       let _id = 'loadmdFile_'+url
+      if (opts) opts.mdurl = url
+      else {
+        opts = {mdurl: url}
+      }
       return Cache.ifid(_id, async ()=>{
         if (whichdir){
           let _tmp = whichdir.replace(/\//g, '_')+'_'    // maybe problem
@@ -59,10 +63,10 @@ function index(fkp, type){
           if (url.indexOf('.md')===-1) url = url + '.md'
           url = path.join(fkp.root, whichdir, url);
         }
-        let exist = await fkp.fileexist(url)
+        const exist = await fkp.fileexist(url)
         if (exist && exist.isFile()){
-          let mdcnt = {mdcontent:{}};
-          let md_raw = fs.readFileSync( url, 'utf8' );
+          const mdcnt = {mdcontent:{}};
+          const md_raw = fs.readFileSync( url, 'utf8' );
           if (!md_raw || !md_raw.length) return false
           return await fkp.markdown(md_raw, opts);
         }
