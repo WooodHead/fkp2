@@ -94,8 +94,8 @@ let Xslider = Slider({
 // ]
 
 const titles1 = [
-  <a className="iconfont icon-text" title="列表，如果所有元素都是列表">如果所有元素都是列表</a>,
-  <a className="iconfont icon-video_fill_light"></a>,
+  <a className="iconfont icon-text" href='/docs' title="FKP2文档">FKP2文档</a>,
+  <a className="iconfont icon-video_fill_light" href='/blog' title="博客">博客</a>,
   <a className="iconfont icon-goods_new_fill_light"></a>,
   <a className="iconfont icon-video_fill_light"></a>,
   <a className="iconfont icon-goods_new_fill_light"></a>,
