@@ -23,6 +23,8 @@ Using the following technologies:
   * Dev model/开发模式，实时watch node/js/css/html
   * Prod mode/生产模式，uglify/hash
   * 多环境支持，应对test/release/pre prod/prod线上环境
+  * SPA 支持单页应用
+  * MPA 支持多页应用
   * 映射型静态文件，无需手动配置入口编译文件
   * 多层次结构文件/目录生成
   * 支持忽略文件/目录
@@ -47,7 +49,7 @@ Using the following technologies:
   * Inject CSS/JS 静态文件注入，生产环境带hash
 3. FED
   * React
-  * Websocket
+  * Websocket   
   * Mapper Static File/映射静态文件
   * SYNC Component
   * SYNC Libs
@@ -71,6 +73,8 @@ Pls note that `ly` is a executable bash file that in root directory. it encapsul
 
 In development mode, will watch `CSS/JAVASCRIPT/HTML/NODEJS` file, and timely response on browser  
 开发模式下，watch `CSS/JAVASCRIPT/HTML/NODEJS` 这些文件，会快速响应到浏览器上，方便开发， 提升开发效率  
+
+![fkpjs.png](http://www.agzgz.com/uploader/web-911000945015718614776488827802026.png)
 
 ## Component  
 Component that can be used in the node-end and front-end that based on React  
