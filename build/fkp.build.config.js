@@ -1,4 +1,5 @@
 var fs = require('fs'),
+    os = require('os'),
     del = require('del'),
     _ = require('lodash'),
     path = require('path'),
@@ -17,7 +18,9 @@ var fs = require('fs'),
     reload  = browserSync.reload,
     wpEntry = require('./common/wpentry'),
     chkType = base.chkType,
-    nodeModulesPath = path.join(__dirname, '../node_modules')
+    nodeModulesPath = path.join(__dirname, '../node_modules');
+
+var platform = os.platform()
 
 var util = {
   fs: fs,
@@ -139,8 +142,14 @@ var Build = base.inherits( UtilBuild, {
       let fd = fs.openSync(configs.dirs.server+'/tmp.js', 'a')
       if (fd) {
         let _now = convTimestamp(new Date().Format("yyyy-MM-dd hh:mm:ss"))
-        fs.futimesSync(fd, _now, _now)         
+        if (platform == 'win32') {
+          _now = parseInt(_now.toString().substring(0, 10))
+        }
+        fs.futimesSync(fd, _now, _now)
       }
+      fs.close(fd, function () {
+         console.log('Done');
+      });
       setTimeout(function(){
         browserSync.init({
           proxy: 'http://localhost:' + port+'/',
