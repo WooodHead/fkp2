@@ -60,12 +60,15 @@ class ListApp extends React.Component {
 				l_class[ii] = _.trim(item)+'-parent'
 			})
 			_cls = 'list-container ' + l_class.join(' ')
-			// _cls = "list-container " + this.props.listClass+'-parent'
 		}
+
+		const listPart = this.state.data&&this.state.data.length
+		? <List data={this.state.data} hoc={this.state.HOC} {..._props} />
+		: ''
 		return (
 			<div className={_cls}>
 				{pullbar}
-				<List data={this.state.data} hoc={this.state.HOC} {..._props} />
+				{listPart}
 				{loadbar}
 				{overbar}
 				{triggerbar}
@@ -114,11 +117,16 @@ function storeAction(key){
 			if (!this.state.over) {
 				if (data.news) {
 					if (_.isPlainObject(data.news)) { data.news = [data.news] }
-					if (Array.isArray(data.news) && data.news.length) {
-						if (data.type && data.type == 'append') {
-							this.setState({ data: [...this.state.data, ...data.news] })
-						} else {
-							this.setState({ data: data.news })
+					if (Array.isArray(data.news)) {
+						switch (data.type) {
+							case 'append':
+								this.setState({ data: [...this.state.data, ...data.news] })
+								break;
+							case 'prepend':
+								this.setState({ data: [...data.news, ...this.state.data] })
+								break;
+							default:
+								this.setState({ data: data.news.length ? data.news : '' })
 						}
 					}
 				}

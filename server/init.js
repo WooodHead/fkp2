@@ -47,7 +47,7 @@ const staticOption = () => ({
 
 const app = new Koa()
 
-export default function init() {
+export default async function init() {
 
   // global middlewares
   app.keys = ['agzgz gogogo']
@@ -95,7 +95,7 @@ export default function init() {
 
   // fkp/router模块
   let server = socketio.init(app)  //global SIO = {on, emit, use}
-  fkp(app)
+  await fkp(app)
   socketio.run()
 
 	app.on('error', async (err, ctx) => {

@@ -53,6 +53,7 @@ function $$(id){
 //   return level;
 // }
 
+// \u4e00-\u9fa5\uFE30-\uFFA0\ 中文及中文符号
 var block = {
   email    : /^[\.a-zA-Z0-9_=-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
   username : /^[a-zA-Z0-9_\u4e00-\u9fa5]{4,}$/,

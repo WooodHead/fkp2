@@ -20,6 +20,33 @@ export default class extends BaseClass {
     this.client ? this.update(ary, 'append') : ''
   }
 
+  prepend(ary){
+    this.client ? this.update(ary, 'prepend') : ''
+  }
+
+  findAndUpdate(query, data){
+    const index = _.findIndex(this.data, query)
+    this.edit(index, data)
+  }
+
+  findAndRemove(query, data){
+    const index = _.findIndex(this.data, query)
+    this.data.splice(index, 1)
+    this.update(this.data)
+  }
+
+  insert(query, data){
+    let index = _.findIndex(this.data, query)
+    if(index >0 ){
+      this.data.splice( (index-1), 0, data)
+      this.update(this.data)
+    }
+  }
+
+  clear(){
+    this.update(['clear'], 'clear')
+  }
+
   loaded(){
     this.client ? this.actions.roll('LOADED') : ''
   }
@@ -44,10 +71,18 @@ export default class extends BaseClass {
     if (this.client) {
       this.loaded()
       if (ary.length) {
-        if (type == 'append') {
-          this.data = this.data.concat(ary)
-        } else {
-          this.data = ary
+        switch (type) {
+          case 'append':
+            this.data = this.data.concat(ary)
+            break;
+          case 'prepend':
+            this.data = ary.concat(this.data)
+            break;
+          case 'clear':
+            this.data = ary = []
+            break;
+          default:
+            this.data = ary
         }
         this.actions.roll('UPDATE', {news: ary, type: type})
       }
