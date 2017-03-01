@@ -280,8 +280,8 @@ async function controler(ctx, route, pageData, ctrlPages, routerInstance){
       // pages根目录+三层路由
       else {
         let paramsCatFile =  Path.join('../../pages', ctx.params.cat)
-        route = ctx.params.cat
-        xData = await getctrlData([paramsCatFile], route, ctx, pageData, ctrl)
+        const xRoute = ctx.params.cat
+        xData = await getctrlData([paramsCatFile], xRoute, ctx, pageData, ctrl)
       }
       // 根据 Fetch.apilist 匹配到api接口，从远程借口拿去数据
       if (!xData) {
