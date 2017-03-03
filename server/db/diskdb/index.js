@@ -69,6 +69,8 @@ class _localDB {
   }
 
   set(articls){
+    const count = this.count()
+    articls.id = count
     this.control.save(articls)
   }
 
@@ -82,6 +84,10 @@ class _localDB {
     } else {
       this.control.remove()
     }
+  }
+
+  removeAll(query){
+    this.remove((query||{}), true)
   }
 
   clear(){

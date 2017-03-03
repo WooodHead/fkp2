@@ -8,11 +8,11 @@
     <body>
         <div class="box">
           <div id='slider'> </div>
+          <div id='pushboom'>{{{pushBoom}}}</div>
           <div class="columContainer">
             <div class="columWrap">
               <div class="columBox clearfloat">
                 <div id='test' class="test">{{{floor1}}}</div>
-                <div id='opensrc' class="test">{{{floor2}}}</div>
               </div>
             </div>
           </div>
@@ -21,17 +21,12 @@
           </div>
         </div>
         <div id='agzgzNav'>
-          <ul>
-            <li>
-              <img src='/images/logo.png'/>
-            </li>
-            <li>
-              <a href="/blog">博客 /</a>
-            </li>
-            <li>
-              <a href="/docs/fkpdoc">文档</a>
-            </li>
-          </ul>
+          <div class="inputButtons">
+            <div class="toolBottonBar">
+              <a title="格式: @{title}##{url}---{descript}"><i class="iconfont icon-aite"></i></a>
+            </div>
+            <input type="text" value="" placeholder='@标题##http://url，<- 插入格子的姿势' class='inputxxx'/>
+          </div>
         </div>
         @@include('./_common/footer/foot.html')
     </body>

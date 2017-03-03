@@ -1,18 +1,19 @@
 import {inject, mediaQuery} from 'libs'
-// import './_common/xyz'
 import { Slider } from 'component/modules/slider'
 import {baselist, grids} from 'component'
 import {tips as msgtips, sticky, modal} from 'component/client'
 import itemHlc from 'component/mixins/itemhlc'
 import scrollHlc from 'component/mixins/scrollhlc'
+var ws = require('libs/wsocket')
+require('./_common/pushboom')(ws)
+
 
 // websocket
-var ws = require('libs/wsocket')
 ws.emit('hello', 'hi')
 ws.on('hello', function(val){
   setTimeout(function(){
     msgtips.toast(val.message)
-  },2000)
+  },0)
 })
 
 let Modal = modal.p30
@@ -22,19 +23,6 @@ mediaQuery({
   }
 })
 
-// const Xxx = itemHlc(
-//   <div className='bottombar-descript'>
-//     <img src='/images/logo.png' style={{display: 'inline-block', verticalAlign:'middle'}}/>
-//     <span style={{display: 'inline-block', verticalAlign: 'middle',marginLeft:'0.6em'}}>关注JS全栈/React</span>
-//   </div>
-//   , function(dom){
-//     const naver = document.getElementById('agzgzNav')
-//     $(dom).click(function(){
-//       Modal(naver)
-//       // msgtips.notification('你电到我了')
-//     })
-// })
-// const StickyBBox = sticky.bottom(<Xxx />, {delay: 2000})
 const StickyBBox = sticky.bottom(document.getElementById('agzgzNav'), {delay: 2000})
 
 let Xslider = Slider({
@@ -160,17 +148,7 @@ const floor1 = grids({
   container: 'test'
 })
 
-const floor2 = grids({
-  header: <h2 className="splite"></h2>,
-  data: [
-    {width: '100%', content: <h3 style={{color:'#9c9c9c'}}>开源收藏</h3>},
-    {width: '100%', content: list1.render()}
-  ],
-  container: 'opensrc'
-})
-
 floor1.render()
-floor2.render()
 
 setTimeout(()=>{
   scrollHlc($('.columContainer')[0], {
@@ -208,6 +186,5 @@ setTimeout( () => {
   .then( (data) => {
     console.log(data);
   })
-  // msgtips.success('post data yes, click to close', 'error')
-  msgtips.sticky('欢迎密集喜爱症患者, 点击关闭', 'error')
+  msgtips.sticky('格子格子，全都是格子', 'success')
 },1000)

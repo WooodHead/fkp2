@@ -1,5 +1,6 @@
 "use strict";
 let debug = Debug('pages:hello')
+import pushboomDb from './common/pushboom'
 
 SIO.on('hello', function(data, socket, client) {
   var _io = this.io
@@ -102,19 +103,23 @@ function hello(oridata) {
         ]
       })
 
-      const floor2 = grids({
-        header: <h2 className="splite"></h2>,
-        data: [
-          {width: '100%', content: <h3 style={{color:'#9c9c9c'}}>开源收藏</h3>},
-          {width: '100%', content: list1}
-        ]
-      })
+      const treeVal = pushboomDb.find().reverse()
+      const pushBoomHistoryData = [
+        {"title":"文档","url":"http://www.agzgz.com/docs"},
+        {"title":"博客","url":"http://www.agzgz.com/blog"},
+      ]
+      const pushboomList = component.baselist({ data: treeVal||[] }, true)
+      const pushboomHis = component.baselist({ data: pushBoomHistoryData, listClass: 'history' }, true)
+      const pushboom = (
+        <div className="pushboomContainer">
+          {pushboomList}
+          {pushboomHis}
+        </div>
+      )
+      const pushboomStr = ReactDomServer.renderToString(pushboom)
 
       oridata.floor1 = floor1
-      oridata.floor2 = floor2
-
-      // floor1.render()
-      // floor2.render()
+      oridata.pushBoom = pushboomStr
 
       oridata.fkp = 'FKP2'
       return oridata;

@@ -1,5 +1,6 @@
 @import "../../modules/list/books/index.styl"
 @import "./_common/box.styl"
+@import "./_common/pushbar.styl"
 
 .test
   width: 100%
@@ -78,6 +79,30 @@
   padding: 0.6em;
   color: #ababab;
   margin-top: 7px;
+
+.sticky-bottom
+  height: 88px
+  .inputButtons
+    position: fixed;
+    bottom: 0
+    left: 0;
+    width: 100%;
+    .toolBottonBar
+      margin-bottom: 0.6em;
+      margin-left:2em;
+      i
+        font-size: 2em;
+        color: #58B2DC
+    .inputxxx
+      z-index: 10;
+      font-size: 2.5rem;
+      padding: .9375rem 1.875rem;
+      font-family: inherit;
+      font-weight: 100;
+      border: none;
+      outline: none;
+      background: rgba(255,255,255,0.95);
+      width: 100%;
 
 .grids
   width: 100%;
