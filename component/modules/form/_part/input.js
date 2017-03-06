@@ -4,7 +4,7 @@ let Radio = require('./radio')
 let smd = require('libs').smd
 
 const $text_type = ['text', 'password', 'select', 'tel']
-  , $phold_type =['text']
+  , $phold_type = ['text', 'password']
   , $radio_check = ['radio','checkbox']
   , $button_type = ['button','submit']
 

@@ -11,8 +11,10 @@ function getClass(resault){
 	const state = this.state.toJS()
 	const data = state.data
 	let cls = resault.clsName
-	if (data.className) cls = data.className
-	if (data.li) cls += ' itemroot'
+	if (data) {
+		if (data.className) cls = data.className
+		if (data.li) cls += ' itemroot'
+	}
 	return cls
 }
 
@@ -58,7 +60,7 @@ class fox extends React.Component {
 		let state = this.state.toJS()
 		this.resault = this.dealWithData(state)
 		this.idf = this.state.get('idf')
-		this.parent = this.props.operate.parent
+		this.parent = this.props.operate&&this.props.operate.parent
 	}
 
 	componentDidMount() {

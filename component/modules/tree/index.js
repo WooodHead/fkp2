@@ -24,7 +24,7 @@ class App extends ListClass {
       }
 
       that.items = []
-      let menusBody = $(dom).find('.tree-menu-body')
+      let menusBody = $(dom).find('.'+config.listClass)
       menusBody.find('li').each(function(ii, item){
         that.items.push(item)
         if ($(item).hasClass('itemroot')) {
@@ -104,7 +104,7 @@ export function tree(opts){
 }
 
 export function htree(opts) {
-  opts.cls = 'treeGroupX'
+  opts.cls = opts.cls || 'treeGroupX'
   return tree(opts)
 }
 
