@@ -108,7 +108,11 @@ function hello(oridata) {
         {"title":"文档","url":"http://www.agzgz.com/docs"},
         {"title":"博客","url":"http://www.agzgz.com/blog"},
       ]
-      const pushboomList = component.baselist({ data: treeVal||[] }, true)
+      const pushboomList = component.iscroll({
+        data: treeVal||[],
+        listClass: 'pushboomBody',
+        iscroll: { scrollX: true }
+      }, true)
       const pushboomHis = component.baselist({ data: pushBoomHistoryData, listClass: 'history' }, true)
       const pushboom = (
         <div className="pushboomContainer">
