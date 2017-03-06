@@ -28,7 +28,7 @@ const wsOnConfig = {
     pushboom = iscroll({
       data: treeVal,
       listClass: 'pushboomBody',
-      iscroll: { scrollX: true}
+      iscroll: { scrollX: true, click: true}
     })
 
     // body and history
