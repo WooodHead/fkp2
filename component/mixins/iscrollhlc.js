@@ -1,3 +1,11 @@
+const os = (function( ua ) {
+  let ret = {},
+  android = ua.match( /(?:Android);?[\s\/]+([\d.]+)?/ ),
+  ios = ua.match( /(?:iPad|iPod|iPhone).*OS\s([\d_]+)/ );
+  ret.mobile = (() => !!(android||ios))()
+  return ret;
+})( navigator.userAgent )
+
 const noop = function(){}
 const client = typeof window == 'undefined' ? false : true
 let lazyLoad = noop,
@@ -7,18 +15,6 @@ if (client) {
   lazyLoad = require('./lazy')
   isc = require('iscroll/build/iscroll-probe')
 }
-
-function isPassive() {
-  var supportsPassiveOption = false;
-  try {
-      addEventListener("test", null, Object.defineProperty({}, 'passive', {
-          get: function () {
-              supportsPassiveOption = true;
-          }
-      }));
-  } catch(e) {}
-}
-
 
 function preLazy(dom, blks){
   let layzblocks = []
@@ -61,23 +57,44 @@ function getDiff(iscrl, opts){
   }
 }
 
-let scrollState = {
-  ttt: false
+function isPassive() {
+  var supportsPassiveOption = false;
+  try {
+    addEventListener("test", null, Object.defineProperty({}, 'passive', {
+      get: function () {
+        supportsPassiveOption = true;
+      }
+    }));
+  } catch(e) {}
+  return supportsPassiveOption;
 }
 
-function bindScrollAction(dom, ctx, funs, opts){
-  const {onscroll, onscrollend, onpulldown} = funs
-  const iscr = new isc(dom, opts)
-  // document.addEventListener('touchmove', function (e) { e.preventDefault(); }, isPassive() ? {
-  //   capture: false,
-  //   passive: false
-  // } : false);
-  document.addEventListener('touchmove', function (e) { e.preventDefault(); }, {
+function preventDefault(pred){
+  document.addEventListener('touchmove', function (e) {
+    pred ? e.preventDefault() : ''
+  }, isPassive() ? {
     capture: false,
     passive: false
   } : false);
 
-  setTimeout(()=>{
+  // document.addEventListener('touchmove', function (e) {
+  //   pred ? e.preventDefault() : ''
+  // }, {
+  //   capture: false,
+  //   passive: false
+  // });
+}
+
+let scrollState = { ttt: false }
+
+function bindScrollAction(dom, ctx, funs, opts){
+  const {onscroll, onscrollend, onpulldown} = funs
+  opts.disableTouch = os.mobile ? false : true
+  opts.disablePointer = os.mobile ? true : false
+  preventDefault(opts.preventDefault)
+  const iscr = new isc(dom, opts)
+
+  _.delay(()=>{
     iscr.refresh()
 
     if (typeof onscroll == 'function' || typeof onpulldown == 'function') {

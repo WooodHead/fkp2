@@ -17,8 +17,6 @@ function injectStatic(type, ij, dft){
   const scrollClass = dft.scrollClass+'-parent'
 
   if (type == 'X') {
-    // scrollerWidth = (2.1*len*16)+'px'
-    // width: ${scrollerWidth};
     orientation = `
       height: 100%;
       white-space:nowrap;
@@ -45,7 +43,7 @@ function injectStatic(type, ij, dft){
   }
 
   ij.css(`
-    /* === component/list/iscroll_list === */     
+    /* === component/list/iscroll_list === */
     .${parent}{
       width: 100%;
       height: 100%;
@@ -147,7 +145,7 @@ export function IScrollList(opts){
     scroll: '',
     scrollEnd: '',
     iscroll: {
-      preventDefault: false
+      // preventDefault: false
     }
   }
   if (objtypeof(opts) == 'object') dft = _.merge(dft, opts)
