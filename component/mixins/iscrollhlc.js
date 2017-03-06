@@ -1,19 +1,19 @@
-const os = (function( ua ) {
-  let ret = {},
-  android = ua.match( /(?:Android);?[\s\/]+([\d.]+)?/ ),
-  ios = ua.match( /(?:iPad|iPod|iPhone).*OS\s([\d_]+)/ );
-  ret.mobile = (() => !!(android||ios))()
-  return ret;
-})( navigator.userAgent )
-
 const noop = function(){}
 const client = typeof window == 'undefined' ? false : true
 let lazyLoad = noop,
 isc = noop
+let os
 
 if (client) {
   lazyLoad = require('./lazy')
   isc = require('iscroll/build/iscroll-probe')
+  os = (function( ua ) {
+    let ret = {},
+    android = ua.match( /(?:Android);?[\s\/]+([\d.]+)?/ ),
+    ios = ua.match( /(?:iPad|iPod|iPhone).*OS\s([\d_]+)/ );
+    ret.mobile = (() => !!(android||ios))()
+    return ret;
+  })( navigator.userAgent )
 }
 
 function preLazy(dom, blks){
@@ -89,9 +89,11 @@ let scrollState = { ttt: false }
 
 function bindScrollAction(dom, ctx, funs, opts){
   const {onscroll, onscrollend, onpulldown} = funs
-  opts.disableTouch = os.mobile ? false : true
-  opts.disablePointer = os.mobile ? true : false
-  preventDefault(opts.preventDefault)
+  if (client) {
+    opts.disableTouch = os.mobile ? false : true
+    opts.disablePointer = os.mobile ? true : false
+    preventDefault(opts.preventDefault)
+  }
   const iscr = new isc(dom, opts)
 
   _.delay(()=>{
@@ -131,7 +133,7 @@ export default (ComposedComponent, options) => {
 
   let dft = {
     mouseWheel:true,     // probeType: 3
-    // momentum: false
+    probeType: 3
   }
   const opts = _.merge(dft, (options||{}) )
   // dom
