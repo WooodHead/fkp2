@@ -4,23 +4,21 @@ import {
   input as Input,
   item as itemComp,
 } from 'component'
-import itemHlc from 'component/mixins/itemhlc'
 const Validator = validator()
-const STATE = SAX('Login')
 
-
-const valideButton = ()=>{
-  const Vb = itemHlc(<button>动态码</button>, function(dom){
-    $(dom).click(function(){
-      alert(123)
-    })
-  })
-  return <Vb />
-}
+const validCode = (
+  <img
+    className="j-zbj-checkcode-imgcode-img zbj-checkcode-imgcode-img"
+    alt="请输入您看到的内容"
+    role="captchaimg"
+    title="点击刷新图片校验码"
+    src="https://login.zbj.com/login/verify?seed=1488531942756"
+  />
+)
 const configForm = [
   {title: '账号:', input:{id: 'username', type: 'text', placehold: '手机号/邮箱'} },
-  {title: ' ', input:{id: 'valide', type: 'text'}, desc: valideButton()},
-  {title: '密码:', input:{id: 'password', type: 'password', placehold:'请输入密码'} }
+  {title: '密码:', input:{id: 'password', type: 'password', placehold:'请输入密码'} },
+  {title: '验证码:', input:{id: 'valide', type: 'text'}, desc: validCode}
 ]
 const registerForm = Input({data: configForm})
 
@@ -36,14 +34,9 @@ registerForm.rendered = function(){
   $('#username').blur(function(){
     const values = registerForm.values()
     const stat = Validator(this.value, 'noop', values::valideSome.username)()
-    if (stat) {
-      if (stat == 'mobile') {
-        $(registerForm.elements['valide']).addClass('block')
-      }
-      registerForm.warning('username', 'no')
-    } else {
-      registerForm.warning('username')
-    }
+    stat
+    ? registerForm.warning('username', 'no')
+    : registerForm.warning('username')
   })
 
   $('#password').blur(function(){
