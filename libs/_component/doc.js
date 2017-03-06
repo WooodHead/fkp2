@@ -503,6 +503,7 @@ var os = (function( ua ) {
     android && (ret.android = parseFloat( android[ 1 ] ));
     ios && (ret.ios = parseFloat( ios[ 1 ].replace( /_/g, '.' ) ));
 
+    ret.mobile = (() => !!(android||ios))()
     return ret;
 })( navigator.userAgent )
 
