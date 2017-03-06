@@ -186,5 +186,5 @@ setTimeout( () => {
   .then( (data) => {
     console.log(data);
   })
-  msgtips.sticky('格子格子，全都是格子', 'success')
+  // msgtips.sticky('格子格子，全都是格子', 'success')
 },1000)

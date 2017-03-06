@@ -2,8 +2,8 @@
   text-align: left;
   background-color: #faf9f9
   border-radius: 4px
-  padding: 0.4em 0.7em;
-  height: 200px
+  padding: 0.3em
+  min-height: 180px
   position: relative;
   border: 1px solid #eaeaea;
   // box-shadow: inset 0 0 14px 6px rgba(206, 206, 206, 0.5)
@@ -11,16 +11,15 @@
     padding: 0
     margin: 0
     li
-      // display: table-cell;
       border-radius: 3px;
       display: inline-block;
       vertical-align: top;
-      width: 5em
-      height: 5em
+      width: 5.8em
+      height: 5.8em
       // border: 1px solid #51a6e0
       border-radius: 5px
       margin-right: 5px
-      // text-align: center;
+      margin-bottom: 5px
       background-color: #fff;
       padding: 0.2em;
       box-sizing: border-box;
@@ -31,29 +30,41 @@
         text-decoration: none;
         color: burlywood
 
+.pushboomContainer
+  .for-iscroll-X-root
+    height: 8em
+  .pushboomBody-parent
+    height: 8em
+    // width: 100%;
+    // overflow: hidden;
+    // .pushboomBody
+    //   height: 100%
+    //   white-space: nowrap;
+    //   width: auto;
+    //   overflow: auto;
+  li
+    text-align: left;
+
 .history-parent
   position: absolute;
   left: 0
-  top: 166.7px
-  padding-left: 0.7em
-  padding-right: 0.7em
-  padding-top: 0.3em
+  top: 135px
+  padding: 0.3em
   box-sizing: border-box;
   width: 100%
   height: 44.4px;
   .history
     li
-      width: 3em
-      height: 3em
+      text-align: center;
+      width: 3.5em
+      height: 3.5em
       line-height: 0.9
       overflow: hidden;
-      // text-overflow: ellipsis;
-      vertical-align: bottom;
+      display: table-cell;
+      vertical-align: middle;
       border-radius: 1px;
-      margin-right: 2px
-      margin-bottom: 3px
-      // padding: 0 0.4em
+      margin-right: 4px
+      margin-bottom: 4px
       font-size: 10px;
-      // box-shadow: 2px 2px 8px 0px rgba(206,206,206,0.5)
       a
-        font-size: 9px;
+        font-size: 10px;

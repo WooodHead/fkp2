@@ -1,4 +1,4 @@
-import {baselist} from 'component'
+import {baselist, iscroll} from 'component'
 import {tips as msgtips} from 'component/client'
 import itemHlc from 'component/mixins/itemhlc'
 import Wsocket from 'libs/wsocket'
@@ -21,8 +21,17 @@ let pushboom, PushBoom
 let pushboomHis, PushBoomHis
 const wsOnConfig = {
   'pushboom:data': function(treeVal){
-    pushboom = baselist({ data: treeVal })
+    // history
     pushboomHis = baselist({ data: pushBoomHistoryData, listClass: 'history' })
+
+    // boom body
+    pushboom = iscroll({
+      data: treeVal,
+      listClass: 'pushboomBody',
+      iscroll: { scrollX: true}
+    })
+
+    // body and history
     PushBoom = (
       <div className="pushboomContainer">
         {pushboom.render()}
