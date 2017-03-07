@@ -46,9 +46,10 @@ function getConfig(md_raw, cvariable){
   // var rev2 = /(.*)(?=: *)[\s]*(.*)(?=\n)/ig;
   // var rev3 = /^[a-zA-Z0-9,_ \u4e00-\u9fa5\/\\\:\.]+$/;
   const rev = /^(@{3,}) *\n?([\s\S]*) *\n+\1 *(?:\n+|$)/i;
-  const rev2 = / *([\w\u4e00-\u9fa5]+)(?: *\: *([\w\u4e00-\u9fa5]+) *(?:\n+|$))/ig;
-  const rev3 = /^[a-zA-Z0-9\-\u4e00-\u9fa5\/\\]+$/;  //检测合法的key, value
-  const cnReg = /^[\u4e00-\u9fa5]+$/;   // 检测中文
+  // const rev2 = / *([\w\u4e00-\u9fa5]+)(?: *\: *([\w\u4e00-\u9fa5]+) *(?:\n+|$))/ig;
+  const rev2 = /(.*)(?: *\:(.+) *(?:\n+|$))/ig;
+  const rev3 = /^[\w\-\u4e00-\u9fa5\uFE30-\uFFA0\/\\\.]+/i;  //检测合法的key, value
+  const cnReg = /^[\u4e00-\u9fa5\uFE30-\uFFA0]+$/;   // 检测中文
 
   let tmp = md_raw.match(rev);
   if (tmp && tmp[2]) {
@@ -56,15 +57,16 @@ function getConfig(md_raw, cvariable){
     let tmp2 = tmp.match(rev2)
     if (tmp2) {
       tmp2.map(function(item, i){
-        let tmp = item.split(':')
-        let k = _.trim(tmp[0])
-        let v = _.trim(tmp[1])
+        const tmp = item.split(':')
+        const k = _.trim(tmp[0])
+        const v = _.trim(tmp[1])
+        const _v = rev3.test(v)
         if (!cnReg.test(k) && accessVar.indexOf(k)>-1 ){
-          cvariable[k] = v
+          if (_v) cvariable[k] = v
         } else {
-          let _obj = _.find(accessVar, k);
+          const _obj = _.find(accessVar, k);
           if (_obj) {
-            cvariable[_obj[k]] = v
+            if (_v) cvariable[_obj[k]] = v
           }
         }
       })
