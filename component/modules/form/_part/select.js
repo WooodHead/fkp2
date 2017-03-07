@@ -1,7 +1,7 @@
 let ajax = require('ajax')
 
 function select(intent, ctx){
-  let that = this
+  let that = ctx
   // 比较select的当前值与点击option获取的值是否相等
   function compareSelctValue(id, nextVal){
     var stat = false;
@@ -219,5 +219,5 @@ function select(intent, ctx){
 }
 
 module.exports = function(ctx, intent){
-  return select.call(ctx, intent, ctx)
+  return select(intent, ctx)
 }
