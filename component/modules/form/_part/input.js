@@ -101,12 +101,12 @@ function mk_elements(item, ii){
     let profile = _.cloneDeep(item)
     delete profile.input
     let eles = item.input.map((ele, jj)=>{
-      let _ele = mk_element({input: ele, ...profile}, _.uniqueId(ii+'_'+jj+'_'));
+      let _ele = this::mk_element({input: ele, ...profile}, _.uniqueId(ii+'_'+jj+'_'));
       return _ele
     })
     return <div key={'multi_'+ii} className="inputMultiply">{eles}</div>
   }
-  return mk_element(item, ii)
+  return this::mk_element(item, ii)
 }
 /*
  * mk_element
@@ -121,15 +121,13 @@ function mk_element(item, _i){
     value: '',
     placehold: ''
   }
-  if (React.isValidElement(item.input)) { P = _.extend({}, Object.create(item.input.props)) }
-  else {
-    P = item.input
-  }
+  P = item.input
+  if (React.isValidElement(item.input)) P = _.extend({}, item.input.props)
 
+  let lableObj
   const _title = item.title || P.title || ''
   const _desc = item.desc || P.desc || ''
   const _class = (item.itemClass||P.itemClass) ? 'inputItem '+(item.itemClass||P.itemClass) : 'inputItem'
-  let lableObj
 
   // radio
   if (_.indexOf($radio_check, P.type)>-1){
@@ -143,7 +141,7 @@ function mk_element(item, _i){
     </lable>
   }
 
-  if (_.isObject(item.union)){
+  if (item.union) {
     item.union.target = {
       id: P.id,
       name: P.name,
@@ -152,76 +150,18 @@ function mk_element(item, _i){
     }
     this.intent.push( item.union )
   }
-
   return lableObj
 
 }
 
-/*
- * inputs
- * 方案2
- * var _input_config = [
-     //0
-     'Radio & Checkbox',    //分割线加标题
-     {
-         input:{
-             type: 'radio',               // checkbox/text/tel/password/select/button
-             name: ['ddd', 'ddd', 'ddd'],
-             title: ['选项1', '选项2', '选项3'],
-             value: ['1', '2', '3']
-         }
-     },
-     {
-         input:{
-             name:      'user',
-             id:        'user',
-             value:     null,
-             type:      'text',
-             placehold: '我的id是user'
-         },
-         title:     '姓名',
-         class:     null,
-         desc:      '*用户名'
-     },
-
-     {
-         input:{
-             name:      'message',
-             id:        'message',
-             value:     null,
-             type:      'text',
-             placehold: '绑定user'
-         },
-         title:     '聊天',
-         class:     null,
-         desc:      null,
-         union: {                   // 联动配置，联动user的value
-             id: "user",
-             cb: function(form){
-                 // this是message的父级lable
-                 libs.msgtips('我是message,我关联姓名');
-                 $('#user').on('input',function(){
-                     $('#message').val($('#user').val())
-                     form.message = $('#user').val()
-                 })
-             }
-         }
-     },
-     ....
-     ....
-* ==========================================================================================
-*/
-
-// import itemHlc from 'component/mixins/itemhlc'
-// import store from 'component/mixins/storehlc'
 
 class Input extends React.Component {
   constructor(props){
     super(props)
     this.intent = []
-    this.state = {
-      data: this.props.data||[]
-    }
+    this.state = { data: this.props.data||[] }
+    this._preRender = this::this._preRender
+    mk_elements = this::mk_elements
   }
 
   componentWillMount() {}
@@ -230,20 +170,15 @@ class Input extends React.Component {
 
   _preRender(){
     return this.state.data.map( (item, i) => {
-      if( _.isString(item)) {
-        var _title = smd(item)
-        return (<div key={'split'+i} className="split" dangerouslySetInnerHTML={{__html: _title}}></div>)
-      }
-      return mk_elements.call(this, item, i)
+      if( typeof item == 'string') return <div key={'split'+i} className="split" dangerouslySetInnerHTML={{__html: smd(item)}}></div>
+      return mk_elements(item, i)
     })
   }
 
   render(){
     let fill = this._preRender()
     let _cls = 'inputGroup'
-    if (this.props.listClass) {
-      _cls = 'inputGroup '+this.props.listClass
-    }
+    if (this.props.listClass) _cls = 'inputGroup '+this.props.listClass
     return (
       <div className={_cls}>
         {fill}

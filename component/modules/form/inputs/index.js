@@ -1,6 +1,18 @@
 let Input = require('../_part/input')
 import BaseClass from 'component/class/base'
 
+function defMenthod(ctx){
+  const dft = ctx.config
+  return function(dom, intent){
+    ctx.ipt = dom
+    Object.keys(this.refs).map((item)=>{
+      ctx.elements[item] = React.findDOMNode(this.refs[item])
+    })
+    require('../_part/select')(ctx, intent)  // 引入select
+    if (typeof dft.callback == 'function') dft.callback.call(dom, ctx)
+  }
+}
+
 class FormInput extends BaseClass{
   constructor(config){
     super(config)
@@ -19,19 +31,8 @@ class FormInput extends BaseClass{
 
   componentWill(){
     const dft = this.config
-    const self = this
-
-    function defaultMethod(dom, intent){
-      self.ipt = dom
-      Object.keys(this.refs).map((item)=>{
-        self.elements[item] = React.findDOMNode(this.refs[item])
-      })
-      require('../_part/select')(self, intent)  // 引入select
-      if (typeof dft.callback == 'function') dft.callback.call(dom, self)
-    }
-
     let Inputs = Input(dft.globalName)
-    this.eles = <Inputs listClass={dft.listClass} data={dft.data} itemMethod={dft.itemMethod} itemDefaultMethod={defaultMethod}/>
+    this.eles = <Inputs listClass={dft.listClass} data={dft.data} itemMethod={dft.itemMethod} itemDefaultMethod={defMenthod(this)}/>
   }
 
   // 获取所有元素的即时值
