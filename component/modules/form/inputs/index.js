@@ -5,8 +5,9 @@ function defMenthod(ctx){
   const dft = ctx.config
   return function(dom, intent){
     ctx.ipt = dom
-    Object.keys(this.refs).map((item)=>{
-      ctx.elements[item] = React.findDOMNode(this.refs[item])
+    Object.keys(this.refs).forEach( item => {
+      // ctx.elements[item] = React.findDOMNode(this.refs[item])
+      ctx.elements[item] = this.refs[item]
     })
     require('../_part/select')(ctx, intent)  // 引入select
     if (typeof dft.callback == 'function') dft.callback.call(dom, ctx)
@@ -32,7 +33,7 @@ class FormInput extends BaseClass{
   componentWill(){
     const dft = this.config
     let Inputs = Input(dft.globalName)
-    this.eles = <Inputs listClass={dft.listClass} data={dft.data} itemMethod={dft.itemMethod} itemDefaultMethod={defMenthod(this)}/>
+    this.eles = <Inputs globalName={dft.globalName} listClass={dft.listClass} data={dft.data} itemMethod={dft.itemMethod} itemDefaultMethod={defMenthod(this)}/>
   }
 
   // 获取所有元素的即时值
