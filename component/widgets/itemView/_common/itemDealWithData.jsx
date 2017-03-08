@@ -42,7 +42,7 @@ function normalItem(obj){
         title = <a href={obj.url} >{obj.title}</a>
       }
       if (obj.li){
-        if (typeof title == 'string') {
+        if (typeof title == 'string' || typeof title == 'number') {
           title =
           (
             <div className='itemCategory'>
@@ -91,7 +91,7 @@ function dealWithLi(prop_li, liClassName){
           _props = _.assign(_props, data_attr);
         }
         if (li_item.li) {   // itemroot
-          _props.className = 'itemroot'
+          _props.className = li_item.itemClass ? li_item.itemClass+' itemroot' : 'itemroot'
         }
         _liItem = React.createElement('li', _props, _item)
       }

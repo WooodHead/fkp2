@@ -35,14 +35,16 @@
 
 // let idrecode = {}
 let idrecode = []
-function subTree(item, dataAry){
+function subTree(item, dataAry, deep){
+	deep = deep||1
 	let nsons = []
 	let sons = _.filter(dataAry, o => o.parent == item.idf)
-	sons.map( son => {
+	sons.map( (son, ii) => {
+		son.itemClass = son.itemClass ? son.itemClass +' level'+deep : 'level'+deep
 		if (son.idf) {
-			// idrecode[son.idf] = true
 			idrecode.push(son.idf)
-			nsons = nsons.concat([subTree(son, dataAry)])
+			nsons = nsons.concat([subTree(son, dataAry, deep++)])
+			deep--
 		} else {
 			nsons = nsons.concat(son)
 		}
@@ -66,14 +68,14 @@ export default function(dataAry){
 	dataAry.map( (item, ii)=>{
 		if (_.isString(item)) menus.push(item)
 		if (_.isPlainObject(item)) {
-			// if (item.idf && !idrecode[item.idf]) {
-			// item['data-treeid'] = ii
 			if (item['attr']) {
 				if (!item['attr']['data-treeid']) item['attr']['data-treeid'] = ii
 			} else {
 				item['attr'] ={'data-treeid': ii}
 			}
 			if (item.idf && idrecode.indexOf(item.idf) == -1) {
+				item.itemClass = item.itemClass ? item.itemClass +' level0' : 'level0'
+				item.ref = item.idf
 				menus.push(subTree(item, dataAry))
 			}
 			if (!item.idf && !item.parent) {
