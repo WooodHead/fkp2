@@ -1,11 +1,13 @@
 let ajax = require('ajax')
 
-function select(intent, ctx){
+function select(_intent, ctx){
+  const intent = ctx.actions.data.intent
+  const unions = ctx.actions.data.unions
+  const allocation = ctx.actions.data.allocation
   let that = ctx
   // 比较select的当前值与点击option获取的值是否相等
   function compareSelctValue(id, nextVal){
     var stat = false;
-    // var curVal = $('.for-'+id).find('.fkp-dd-input').attr('data-value')
     var curVal = $(that.ipt).find('.for-'+id).find('.fkp-dd-input').attr('data-value')
     if (curVal === nextVal) stat = true;
     return stat;
@@ -18,8 +20,6 @@ function select(intent, ctx){
       var theIntent = intent[indexOfIntent]
       $(that.ipt).find('.for-'+theIntent.target.id).find('.fkp-dd-input').val()
       $(that.ipt).find('.for-'+theIntent.target.id).find('.fkp-dd').find('ul').remove()
-      // $('.for-'+theIntent.target.id).find('.fkp-dd-input').val('')
-      // $('.for-'+theIntent.target.id).find('.fkp-dd').find('ul').remove();
       removeUnionTarget(theIntent.target.id)
     }
   }
@@ -32,17 +32,9 @@ function select(intent, ctx){
    * 在对数组项做处理，输出结构，及补全操作
    */
   function checkUnion(param, cb){
-    var unionAry=[];
-    var indexOfIntent = _.findIndex(intent, param)
-    if (indexOfIntent>-1){
-      unionAry = _.filter(intent, param);
-      if( typeof cb === 'function' ) cb(unionAry)
-      return unionAry
+    if (unions[param.id]) {
+      if (typeof cb == 'function') cb([unions[param.id]])
     }
-    else {
-      if( typeof cb === 'function' ) cb()
-    }
-    return indexOfIntent
   }
 
 
@@ -51,12 +43,11 @@ function select(intent, ctx){
      * 支持联动操作
      */
   // $('.fkp-dd')
-  $(that.ipt).find('.fkp-dd')
-  .click(function(){
+  const fkp_dds = $(that.ipt).find('.fkp-dd')
+  $(fkp_dds).click(function(){
     var me = this;
     var _ipt = $(me).find('.fkp-dd-input');   // 下拉菜单文本框
     var _ipt_id = _ipt[0].id;
-    // var _ipt_txt = $(me).find('.fkp-dd-input-txt');
 
     // 下拉项
     var _ul = $(this).find('ul');   // ul对象
@@ -109,11 +100,8 @@ function select(intent, ctx){
    * radio子项动作
    * change
    */
-  // $('.radioItem').find('input[type=radio]')
-  $(that.ipt).find('.radioItem').find('input[type=radio]')
-  .change(function(){
-    // 实时赋值
-    // 当前对象数值变更，则直接修改父对象 Input.form中的值
+  const radios = $(that.ipt).find('.radioItem').find('input[type=radio]')
+  $(radios).change(function(){
     that.form[this.name] = this.value;
   })
 
@@ -122,38 +110,53 @@ function select(intent, ctx){
    * chang
    */
   // $('.checkboxItem').find('input[type=checkbox]')
-  $(that.ipt).find('.checkboxItem').find('input[type=checkbox]')
-  .change(function(){
+  const ckboxs = $(that.ipt).find('.checkboxItem').find('input[type=checkbox]')
+  $(ckboxs).change(function(){
     var _items = $('input[name='+this.name+']:checked');
-    // 实时赋值
-    // 当前对象数值变更，则直接修改父对象 Input.form中的值
     if( _items.length ){
-      that.form[this.name] =_items.map(function(it, j){
-        return it.value
-      })
+      that.form[this.name] =_items.map( it => it.value )
     }
   })
 
-
-  /*
-   * 默认 input 元素的动作
-   * like text tel等等
-   */
-  // $('.inputItem > input')
-  $(that.ipt).find('.inputItem > input')
-  .off('change')
-  .change(function(){
-    that.form[this.id] = this.value
+  Object.keys(allocation).forEach( unit => {
+    const item = allocation[unit]
+    switch (item.type) {
+      case 'checkbox':
+        break;
+      case 'radio':
+        break;
+      case 'select':
+        break;
+      default:
+        const inputItem = $('#'+item.id)
+        $(inputItem).off('change').change(function(){
+          that.form[this.id] = this.value
+        })
+        .off('focus').focus(function(){
+          checkUnion({id: this.id}, dealWithUnion);
+        })
+    }
   })
 
-  // 非select的input
-  // like button
-  // $('.inputItem > input')
-  $(that.ipt).find('.inputItem > input')
-  .off('focus')
-  .focus(function(){
-    checkUnion({id: this.id}, dealWithUnion);
-  })
+  // /*
+  //  * 默认 input 元素的动作
+  //  * like text tel等等
+  //  */
+  // // $('.inputItem > input')
+  // const normalInputs = $(that.ipt).find('.inputItem > input')
+  // $(normalInputs).off('change')
+  // .change(function(){
+  //   that.form[this.id] = this.value
+  // })
+  //
+  // // 非select的input
+  // // like button
+  // // $('.inputItem > input')
+  // // $(that.ipt).find('.inputItem > input')
+  // $(normalInputs).off('focus')
+  // .focus(function(){
+  //   checkUnion({id: this.id}, dealWithUnion);
+  // })
 
 
   /*

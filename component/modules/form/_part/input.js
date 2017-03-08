@@ -2,6 +2,7 @@ import itemHlc from 'component/mixins/itemhlc'
 import store from 'component/mixins/storehlc'
 let Radio = require('./radio')
 let smd = require('libs').smd
+let saxer
 
 const $text_type = ['text', 'password', 'select', 'tel']
   , $phold_type = ['text', 'password']
@@ -121,8 +122,10 @@ function mk_element(item, _i){
     value: '',
     placehold: ''
   }
-  P = item.input
   if (React.isValidElement(item.input)) P = _.extend({}, item.input.props)
+  else {
+    P = _.extend(P, item.input)
+  }
 
   let lableObj
   const _title = item.title || P.title || ''
@@ -131,14 +134,17 @@ function mk_element(item, _i){
 
   // radio
   if (_.indexOf($radio_check, P.type)>-1){
-    lableObj = <Radio key={'radioGroup'+_i} data={item.input} />
+    // lableObj = <Radio key={'radioGroup'+_i} data={item.input} />
+    lableObj = <Radio ref={(P.id&&P.id[0]||P.name&&P.name[0])} key={'radioGroup'+_i} data={P} />
   } else {
-    lableObj = <lable ref={(P.id||P.name)} key={"lable"+_i} className={_class + ' for-' + (P.id||P.name||'')}>
-      {_title ? <span className="fkp-title">{_title}</span> : false}
-      {whatTypeElement(P)}
-      {P.required ? <span className="fkp-input-box" /> : ''}
-      {_desc ? <span className="fkp-desc">{_desc}</span> : false}
-    </lable>
+    lableObj = (
+      <lable ref={(P.id||P.name)} key={"lable"+_i} className={_class + ' for-' + (P.id||P.name||'')}>
+        {_title ? <span className="fkp-title">{_title}</span> : false}
+        {whatTypeElement(P)}
+        {P.required ? <span className="fkp-input-box" /> : ''}
+        {_desc ? <span className="fkp-desc">{_desc}</span> : false}
+      </lable>
+    )
   }
 
   if (item.union) {
@@ -149,7 +155,10 @@ function mk_element(item, _i){
       item: item
     }
     this.intent.push( item.union )
+    saxer.data.intent.push(item.union)
+    saxer.data.unions[item.union.id] = item.union
   }
+  saxer.data.allocation[P.id] = P
   return lableObj
 
 }
@@ -159,6 +168,12 @@ class Input extends React.Component {
   constructor(props){
     super(props)
     this.intent = []
+    saxer = SAX(this.props.globalName)
+    saxer.append({
+      intent: [],
+      unions: {},
+      allocation:{}
+    })
     this.state = { data: this.props.data||[] }
     this._preRender = this::this._preRender
     mk_elements = this::mk_elements
