@@ -15,7 +15,7 @@
     "co": "^4.6.0",
     "debug": "^2.2.0",
     "diskdb": "^0.1.17",
-    "fkp-sax": "^1.5.9",
+    "fkp-sax": "^1.5.10",
     "handlebars": "^4.0.2",
     "immutable": "^3.8.1",
     "iscroll": "^5.2.0",
