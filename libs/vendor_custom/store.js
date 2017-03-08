@@ -862,9 +862,9 @@
     function sax(name, data, funs){
       this.ctx
       this.name = name
-      this.data = data
       this.funs = funs
       this.store = _stock[name]
+      this.data = _stock[name].sdata
     }
     sax.prototype = {
       roll: function(key, data){
@@ -876,7 +876,8 @@
       set: function(data, fun){
         storeAct.set(this.name, data, fun)
       },
-      get: function(){
+      get: function(key){
+        if (key) return this.data[key]
         return this.store.sdata
         // return storeAct.get(this.name)
       },
