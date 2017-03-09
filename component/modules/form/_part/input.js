@@ -13,20 +13,20 @@ const $text_type = ['text', 'password', 'select', 'tel']
  * 生成select的表单
  * item 配置
 */
-function mk_select(item){
-  let P = {
-    id: '',
-    name: 'noname',
-    type: 'text',
-    value: '',
-    placehold: ''
-  }
-  if (React.isValidElement(item.input)) { P = _.extend({}, Object.create(item.input.props)) }
-  else { P = item.input }
-
-  let _title = item.title || ''
-  , _desc = item.desc || ''
-  , _class = item.class ? 'inputItem '+item.class : 'inputItem';
+function mk_select(P){
+  // let P = {
+  //   id: '',
+  //   name: 'noname',
+  //   type: 'text',
+  //   value: '',
+  //   placehold: ''
+  // }
+  // if (React.isValidElement(item.input)) { P = _.extend({}, Object.create(item.input.props)) }
+  // else { P = item.input }
+  //
+  // let _title = item.title || ''
+  // , _desc = item.desc || ''
+  // , _class = item.class ? 'inputItem '+item.class : 'inputItem';
 
   let _select;
   let options = [];
@@ -83,15 +83,15 @@ function mk_select(item){
 // 'text', 'password', 'select', 'tel'
 function whatTypeElement(P){
   if (_.indexOf($text_type, P.type)>-1){
-    if (P.type === 'select') return mk_select.call(this, item)
+    if (P.type === 'select') return mk_select(P)
     if (_.indexOf($phold_type, P.type)>-1){
-      return <input placeholder={P.placehold} type={P.type} name={P.name} id={P.id} defaultValue={P.value} className='form_control'/>
+      return <input ref={'#'+(P.id||P.name)} placeholder={P.placehold} type={P.type} name={P.name} id={P.id} defaultValue={P.value} className='form_control'/>
     }
-    return <input type={P.type} name={P.name} id={P.id} defaultValue={P.value} className='form_control'/>
+    return <input ref={'#'+(P.id||P.name)} type={P.type} name={P.name} id={P.id} defaultValue={P.value} className='form_control'/>
   }
 
   if (_.indexOf($button_type, P.type)>-1){
-    return <input type={P.type} name={P.name} id={P.id} defaultValue={P.value} className='btn'/>
+    return <input ref={'#'+(P.id||P.name)} type={P.type} name={P.name} id={P.id} defaultValue={P.value} className='btn'/>
   }
 }
 
@@ -132,6 +132,12 @@ function mk_element(item, _i){
   const _desc = item.desc || P.desc || ''
   const _class = (item.itemClass||P.itemClass) ? 'inputItem '+(item.itemClass||P.itemClass) : 'inputItem'
 
+  P.attr = {
+    title: _title,
+    desc: _desc,
+    className: _class
+  }
+
   // radio
   if (_.indexOf($radio_check, P.type)>-1){
     // lableObj = <Radio key={'radioGroup'+_i} data={item.input} />
@@ -160,7 +166,6 @@ function mk_element(item, _i){
   }
   saxer.data.allocation[P.id] = P
   return lableObj
-
 }
 
 
