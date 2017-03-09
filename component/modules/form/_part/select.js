@@ -3,7 +3,9 @@ let ajax = require('ajax')
 function select(_intent, ctx){
   const intent = ctx.actions.data.intent
   const unions = ctx.actions.data.unions
-  const allocation = ctx.actions.data.allocation
+  const allocation = ctx.actions.data.allocation // 配置文件
+  const elements = ctx.elements
+  const watchs = {}
   let that = ctx
   // 比较select的当前值与点击option获取的值是否相等
   function compareSelctValue(id, nextVal){
@@ -32,9 +34,16 @@ function select(_intent, ctx){
    * 在对数组项做处理，输出结构，及补全操作
    */
   function checkUnion(param, cb){
-    if (unions[param.id]) {
-      if (typeof cb == 'function') cb([unions[param.id]])
+    const ary = _.filter(intent, param)
+    if (ary.length) {
+      watchs[param.id] = function(){
+        if (typeof cb == 'function') cb(ary)
+      }
     }
+  }
+
+  function dealWatchs(param){
+    if (watchs[param.id]) watchs[param.id]()
   }
 
 
@@ -128,35 +137,17 @@ function select(_intent, ctx){
       case 'select':
         break;
       default:
-        const inputItem = $('#'+item.id)
-        $(inputItem).off('change').change(function(){
+        const inputItem = elements['#'+item.id]
+        checkUnion({id: item.id}, dealWithUnion);
+        $(inputItem).on('input', function(){
           that.form[this.id] = this.value
+          dealWatchs({id: this.id})
         })
-        .off('focus').focus(function(){
-          checkUnion({id: this.id}, dealWithUnion);
+        .focus(function(){
+          dealWatchs({id: this.id});
         })
     }
   })
-
-  // /*
-  //  * 默认 input 元素的动作
-  //  * like text tel等等
-  //  */
-  // // $('.inputItem > input')
-  // const normalInputs = $(that.ipt).find('.inputItem > input')
-  // $(normalInputs).off('change')
-  // .change(function(){
-  //   that.form[this.id] = this.value
-  // })
-  //
-  // // 非select的input
-  // // like button
-  // // $('.inputItem > input')
-  // // $(that.ipt).find('.inputItem > input')
-  // $(normalInputs).off('focus')
-  // .focus(function(){
-  //   checkUnion({id: this.id}, dealWithUnion);
-  // })
 
 
   /*
@@ -166,28 +157,64 @@ function select(_intent, ctx){
    * 支持异步数据处理
    */
   function dealWithUnion(unionAry, data){
-    if(unionAry && unionAry.length){
-      unionAry.map(function(union, i){
-        var _uObj = $('.for-'+union.target.id)[0]
-        if (union.url){
-          if (union.param){
-            var _str =  JSON.stringify(union.param).replace('$value', data.val) .replace('$text', data.txt) .replace('$attr', data.attr)
-            union.param = JSON.parse(_str)
-          }
-          //关联select取回数据
-          ajax.get(union.url, union.param)
-          .then(function(data){
-            if (union.target.type==='select'){
-              if( typeof union.cb === 'function') union.cb.call({form: that.form}, data, _fill.call(_uObj, union))
-            } else {
-              if( typeof union.cb === 'function') union.cb.call({form: that.form}, data)
-            }
-          })
-        } else {
-          if( typeof union.cb === 'function') union.cb.call({form: that.form})
+    unionAry.forEach( unionObj => {
+
+      const src_id = unionObj.id
+      const target_id = unionObj.target.id
+
+      const _uObj = elements[target_id]
+      const targetDom = elements['#'+target_id]
+      const srcDom = elements['#'+src_id]
+
+      if (src_id == target_id) {
+        if (typeof unionObj.cb == 'function') {
+          unionObj.cb.call(targetDom, elements, {form: that.form})
         }
-      })
-    }
+        return
+      }
+
+      if (unionObj.url){
+        if (unionObj.param){
+          var _str =  JSON.stringify(unionObj.param).replace('$value', data.val) .replace('$text', data.txt) .replace('$attr', data.attr)
+          unionObj.param = JSON.parse(_str)
+        }
+
+        //关联select取回数据
+        ajax.get(unionObj.url, unionObj.param)
+        .then(function(data){
+          if (unionObj.target.type==='select'){
+            if( typeof unionObj.cb === 'function') unionObj.cb.call({form: that.form}, data, _fill.call(_uObj, unionObj))
+          } else {
+            if( typeof unionObj.cb === 'function') unionObj.cb.call(ctx, {form: that.form}, data)
+          }
+        })
+      } else {
+        if( typeof unionObj.cb === 'function') unionObj.cb.call(targetDom, elements, {form: that.form})
+        else {
+          function changeTarget(value){
+            switch (targetDom.nodeName) {
+              case 'INPUT':
+                targetDom.value = value
+                break;
+              default:
+                targetDom.innerHTML = value
+            }
+          }
+
+          switch (srcDom.nodeName) {
+            case 'INPUT':
+              changeTarget(srcDom.value)
+              break;
+            default:
+              changeTarget(srcDom.innerHTML)
+          }
+
+          that.form[src_id] = srcDom.value
+          that.form[target_id] = targetDom.value
+
+        }
+      }
+    })
   }
 
   /*
