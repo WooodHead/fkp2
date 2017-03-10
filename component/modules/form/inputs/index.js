@@ -5,10 +5,10 @@ function defMenthod(ctx){
   const dft = ctx.config
   return function(dom, intent){
     ctx.ipt = dom
-    Object.keys(this.refs).forEach( item => {
-      // ctx.elements[item] = React.findDOMNode(this.refs[item])
-      ctx.elements[item] = this.refs[item]
-    })
+    ctx.elements = this.refs
+    // Object.keys(this.refs).forEach( item => {
+    //   ctx.elements[item] = this.refs[item]
+    // })
     require('../_part/select')(ctx, intent)  // 引入select
     if (typeof dft.callback == 'function') dft.callback.call(dom, ctx)
   }
