@@ -5,6 +5,12 @@ function defMenthod(ctx){
   const dft = ctx.config
   return function(dom, intent){
     ctx.ipt = dom
+    // const eles = $(dom).find('lable')
+    // const inputs = $(dom).find('input')
+    // inputs.each( (ii, item) => {
+    //   ctx.elements[item.id] = eles[ii]
+    // })
+
     ctx.elements = this.refs
     // Object.keys(this.refs).forEach( item => {
     //   ctx.elements[item] = this.refs[item]
@@ -30,6 +36,17 @@ class FormInput extends BaseClass{
     this.actions.roll('APPEND', data)
   }
 
+  val(data){
+    if (!data) return this.values()
+    if (typeof data == 'string') return this.values(data)
+    Object.keys(data).forEach( (item, ii) => {
+      const ele = this.elements['#'+item]
+      this.form[item] = data[item]
+      ele.value = data[item]
+    })
+    // this.actions.roll('VAL', data)
+  }
+
   componentWill(){
     const dft = this.config
     let Inputs = Input(dft.globalName)
@@ -38,8 +55,11 @@ class FormInput extends BaseClass{
 
   // 获取所有元素的即时值
   values(id){
-    if (id && this.form[id]) return this.form[id]
-    return this.form
+    if (id) {
+      if (this.form[id]) return this.form[id]
+    } else {
+      return this.form
+    }
   }
 
   warning(id, clear){
