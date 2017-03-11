@@ -2,36 +2,9 @@ let ajax = require('ajax')
 
 function select(_intent, ctx){
   const intent = ctx.actions.data.intent
-  const unions = ctx.actions.data.unions
+  // const unions = ctx.actions.data.unions
   const allocation = ctx.actions.data.allocation // 配置文件
   const elements = ctx.elements
-  // console.log(allocation);
-  console.log(unions);
-  Object.keys(elements).forEach( item => {
-    if (item.indexOf('#')===0) {
-      let iputItem = elements[item]
-      Object.defineProperty(iputItem, "value", {
-        get: function() {
-          return this.getAttribute("value");
-        },
-        set: function(newValue) {
-          this.setAttribute("value", newValue);
-          ctx.form[this.id] = newValue;           
-
-          // //fire the event
-          // if ("createEvent" in document) {  //NON IE browsers
-          //   var evt = document.createEvent("HTMLEvents");
-          //   evt.initEvent("change", false, true);
-          //   iputItem.dispatchEvent(evt);
-          // }
-          // else {  //IE
-          //   var evt = document.createEventObject();
-          //   iputItem.fireEvent("onchange", evt);
-          // }
-        },
-      })
-    }
-  })
   const watchs = {}
   let that = ctx
   // 比较select的当前值与点击option获取的值是否相等
@@ -66,45 +39,6 @@ function select(_intent, ctx){
       watchs[param.id] = function(){
         if (typeof cb == 'function') cb(ary)
       }
-      ary.forEach( unionObj => {
-        const src_id = unionObj.id
-        const target_id = unionObj.target.id
-
-        const _uObj = elements[target_id]
-        const targetDom = elements['#'+target_id]
-        const srcDom = elements['#'+src_id]
-
-        // Object.defineProperty(targetDom, "value", {
-        //   get: function() {
-        //     return this.getAttribute("value");
-        //   },
-        //   set: function(newValue) {
-        //     this.setAttribute("value", newValue);
-        //
-        //     //fire the event
-        //     if ("createEvent" in document) {  //NON IE browsers
-        //       var evt = document.createEvent("HTMLEvents");
-        //       evt.initEvent("change", false, true);
-        //       targetDom.dispatchEvent(evt);
-        //     }
-        //     else {  //IE
-        //       var evt = document.createEventObject();
-        //       targetDom.fireEvent("onchange", evt);
-        //     }
-        //   },
-        // })
-
-
-        // $(srcDom).on('input', function(){
-        //   targetDom.value = srcDom.value;
-        // })
-        //
-        // $(targetDom).on('change', function(){
-        //   console.log(this.value);
-        // })
-
-      })
-
       return true
     }
   }
@@ -205,16 +139,9 @@ function select(_intent, ctx){
         break;
       default:
         const inputItem = elements['#'+item.id]
+        // const inputItem = $(elements[item.id]).find('input')[0]
         const hasUnion = checkUnion({id: item.id}, dealWithUnion);
         hasUnion ? dealWatchs({id: inputItem.id}) : ''
-
-        // $(inputItem).on('input', function(){
-        //   that.form[this.id] = this.value
-        //   hasUnion ? dealWatchs({id: this.id}) : ''
-        // })
-        // .focus(function(){
-        //   hasUnion ? dealWatchs({id: this.id}) : ''
-        // })
     }
   })
 
@@ -227,13 +154,14 @@ function select(_intent, ctx){
    */
   function dealWithUnion(unionAry, data){
     unionAry.forEach( unionObj => {
-
       const src_id = unionObj.id
       const target_id = unionObj.target.id
 
-      const _uObj = elements[target_id]
+      // const _uObj = elements[target_id]
       const targetDom = elements['#'+target_id]
+      // const targetDom = $(elements[target_id]).find('input')[0]
       const srcDom = elements['#'+src_id]
+      // const srcDom = $(elements[src_id]).find('input')[0]
 
       if (src_id == target_id) {
         if (typeof unionObj.cb == 'function') {
@@ -262,39 +190,11 @@ function select(_intent, ctx){
       } else {
         if( typeof unionObj.cb === 'function') unionObj.cb.call(targetDom, elements, {form: that.form})
         else {
-          console.dir(srcDom);
-
           $(srcDom).on('input', function(){
-            targetDom.value = this.value;
+            const targetIt = {}
+            targetIt[targetDom.id] = this.value;
+            ctx.val(targetIt)
           })
-
-          // $(targetDom).on('change', function(){
-          //   console.log(this.value);
-          // })
-
-          // function changeTarget(value){
-          //   result = value
-          //   switch (targetDom.nodeName) {
-          //     case 'INPUT':
-          //       console.log(value);
-          //       targetDom.value = value
-          //       break;
-          //     default:
-          //       targetDom.innerHTML = value
-          //   }
-          // }
-          //
-          // switch (srcDom.nodeName) {
-          //   case 'INPUT':
-          //     changeTarget(srcDom.value)
-          //     break;
-          //   default:
-          //     changeTarget(srcDom.innerHTML)
-          // }
-          //
-          // that.form[src_id] = srcDom.value
-          // that.form[target_id] = targetDom.value
-          // targetDom.value = srcDom.value
         }
       }
     })
