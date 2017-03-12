@@ -145,6 +145,7 @@ function dealWithData(state){
          sty = data.itemStyle;
        }
 
+       var ref = data.ref;
        var k1 = data.id||'',
          v1 = data.url||'javascript:void();',
          k2 = data.title||data.caption||data.catName||data.text||
@@ -358,6 +359,7 @@ function dealWithData(state){
      )
 
    return {
+     ref: ref,
      k1: k1,
      v1: v1,
      k2: k2,

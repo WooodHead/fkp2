@@ -8,10 +8,12 @@ var dealWithDataMethod = require('./_common/itemDealWithData')
 
 function getClass(resault){
 	const state = this.state.toJS()
-	const data = state.data || {}
+	const data = state.data
 	let cls = resault.clsName
-	if (data.className) cls = data.className
-	if (data.li) cls += ' itemroot'
+	if (data) {
+		if (data.className) cls = data.className
+		if (data.li) cls += ' itemroot'
+	}
 	return cls
 }
 
@@ -75,16 +77,19 @@ class fox extends React.Component {
 
 	render(){
 		const self = this
-		let {k1, v1, k2, v2, clsName, sty, fill} = this.resault
+		let {ref, k1, v1, k2, v2, clsName, sty, fill} = this.resault
 		let data_attr = {}
 		const state = this.state.toJS()
 		const stateData = state.data
 		if (typeof stateData == 'object') {
-			_.mapKeys(stateData, function(value, key) {
+			Object.keys(stateData).map( key => {
+				const value = stateData[key]
 				if (key.indexOf('data-')>-1) { data_attr[key] = value }
 				if (key=='attr') {
 					Object.keys(stateData['attr']).map(function(item, ii){
-						if (item) {
+						if (item.indexOf('data-')!=0) {
+							data_attr['data-'+item] = stateData['attr'][item]
+						} else {
 							data_attr[item] = stateData['attr'][item]
 						}
 					})
@@ -93,7 +98,8 @@ class fox extends React.Component {
 		}
 
 		const _props = {
-			id: k1
+			ref: ref
+			, id: k1
 			, style: sty
 			, className: getClass.call(self, this.resault)
 			, key: _.uniqueId('fox_')
