@@ -36,13 +36,15 @@ module.exports = {
     [ path.join(__dirname, '../libs', '/vendor/jquery2/dist/jquery.js'),
       path.join(__dirname, '../libs', '/vendor/react15/src/react.js'),
       path.join(__dirname, '../libs', '/vendor/react15/src/react-dom.js'),
-      path.join(__dirname, '../libs', '/vendor/lodash/src/lodash_full_413.js')
+      path.join(__dirname, '../node_modules', '/lodash/lodash.js')
+      // path.join(__dirname, '../libs', '/vendor/lodash/src/lodash_full_413.js')
     ],
     // [1]生产
     [ path.join(__dirname, '../libs', '/vendor/jquery2/dist/jquery.min.js'),
       path.join(__dirname, '../libs', '/vendor/react15/dist/react.min.js'),
       path.join(__dirname, '../libs', '/vendor/react15/dist/react-dom.min.js'),
-      path.join(__dirname, '../libs', '/vendor/lodash/dist/lodash_full_413.min.js')
+      path.join(__dirname, '../node_modules', '/lodash/lodash.min.js')
+      // path.join(__dirname, '../libs', '/vendor/lodash/dist/lodash_full_413.min.js')
     ]
   ],
 
