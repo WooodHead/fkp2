@@ -1,4 +1,4 @@
-let ajax = require('ajax')
+// let ajax = require('ajax')
 
 function select(_intent, ctx){
   const intent = ctx.actions.data.intent
@@ -53,58 +53,60 @@ function select(_intent, ctx){
      * 支持联动操作
      */
   // $('.fkp-dd')
-  const fkp_dds = $(that.ipt).find('.fkp-dd')
-  $(fkp_dds).click(function(){
-    var me = this;
-    var _ipt = $(me).find('.fkp-dd-input');   // 下拉菜单文本框
-    var _ipt_id = _ipt[0].id;
-
-    // 下拉项
-    var _ul = $(this).find('ul');   // ul对象
-        _ul.toggle();               // toggle动作
-
-    // 检测该子项是否有联动操作
-    checkUnion({"id": _ipt_id}, optionClick)
-
-    // @opts  union对象数组
-    /*
-     * 下拉子项的click动作
-     * opts {Array}  根据id匹配到联动子项
-     *
-     */
-    function optionClick(opts){
-      $(me).find('.fkp-dd-option').off('click')
-      .click(function(e){
-        e = e||argument[0]; e.stopPropagation()
-
-        var _opt_val = $(this).attr('data-value')||$(this).val(),
-        _opt_txt = $(this).text(),
-        _opt_attr = $(this).attr('data-attr')
-
-        // 下拉菜单显示隐藏
-        _ul.toggle();
-
-        // 是否联动
-        // 先检查，再赋值
-        // if 联动子项的值＝＝＝当前选项的值 则删除联动对象
-        if (!compareSelctValue(_ipt_id, _opt_val) ) removeUnionTarget(_ipt_id);
-
-        // 当前对象赋值
-        _ipt.attr('data-value', _opt_val)  // value
-        _ipt.val(_opt_txt);                // text
-
-        // 实时赋值
-        // 表单提交时，获取实时的数据
-        // 当前对象数值变更，则直接修改父对象 Input.form中的值
-        // Input.form.{id} = 'xxxx'
-        that.form[_ipt_id] = _opt_val;
-
-
-        // 处理联动对象
-        dealWithUnion(opts, {val: _opt_val, txt: _opt_txt, attr: _opt_attr});
-      })
-    }
-  })
+  // const fkp_dds = $(that.ipt).find('.fkp-dd')
+  // $(fkp_dds).click(function(){
+  //   var me = this;
+  //   var _ipt = $(me).find('.fkp-dd-input');   // 下拉菜单文本框
+  //   var _ipt_id = _ipt[0].id;
+  //
+  //   // 下拉项
+  //   var _ul = $(this).find('ul');   // ul对象
+  //       _ul.toggle();               // toggle动作
+  //
+  //   // 检测该子项是否有联动操作
+  //   const hasUnion = checkUnion({"id": _ipt_id}, optionClick)
+  //   if (hasUnion) dealWatchs({id: _ipt_id})
+  //
+  //
+  //   // @opts  union对象数组
+  //   /*
+  //    * 下拉子项的click动作
+  //    * opts {Array}  根据id匹配到联动子项
+  //    *
+  //    */
+  //   function optionClick(opts){
+  //     console.log(ctx.elements);
+  //     $(me).find('.fkp-dd-option').off('click')
+  //     .click(function(e){
+  //       e = e||argument[0]; e.stopPropagation()
+  //       var _opt_val = $(this).attr('data-value')||$(this).val(),
+  //           _opt_txt = $(this).text(),
+  //           _opt_attr = $(this).attr('data-attr')
+  //
+  //       // 下拉菜单显示隐藏
+  //       _ul.toggle();
+  //
+  //       // 是否联动
+  //       // 先检查，再赋值
+  //       // if 联动子项的值＝＝＝当前选项的值 则删除联动对象
+  //       if (!compareSelctValue(_ipt_id, _opt_val) ) removeUnionTarget(_ipt_id);
+  //
+  //       // 当前对象赋值
+  //       _ipt.attr('data-value', _opt_val)  // value
+  //       _ipt.val(_opt_txt);                // text
+  //
+  //       // 实时赋值
+  //       // 表单提交时，获取实时的数据
+  //       // 当前对象数值变更，则直接修改父对象 Input.form中的值
+  //       // Input.form.{id} = 'xxxx'
+  //       that.form[_ipt_id] = _opt_val;
+  //
+  //
+  //       // 处理联动对象
+  //       dealWithUnion(opts, {val: _opt_val, txt: _opt_txt, attr: _opt_attr});
+  //     })
+  //   }
+  // })
 
   /*
    * radio子项动作
@@ -130,18 +132,40 @@ function select(_intent, ctx){
 
   Object.keys(allocation).forEach( unit => {
     const item = allocation[unit]
+    let inputItem = elements['#'+item.id]
     switch (item.type) {
       case 'checkbox':
         break;
       case 'radio':
         break;
       case 'select':
+        const ddMenu = elements['+'+item.id]
+        const selectZone = elements['.'+item.id]
+        $(selectZone).on('click', function(e){
+          $(ddMenu).find('ul').toggle()
+        })
+        $('.fkp-dd-option').on('click', function(e){
+          ctx.form[item.id] = inputItem.value = this.getAttribute('data-value')
+          inputItem.text = this.innerHTML
+          selectZone.innerHTML = this.innerHTML
+          const hasUnion = checkUnion({id: item.id}, dealWithUnion)
+          if (hasUnion) {
+            dealWatchs({id: inputItem.id})
+          }
+        })
         break;
       default:
-        const inputItem = elements['#'+item.id]
-        // const inputItem = $(elements[item.id]).find('input')[0]
         const hasUnion = checkUnion({id: item.id}, dealWithUnion);
-        hasUnion ? dealWatchs({id: inputItem.id}) : ''
+        if (hasUnion) {
+          $(inputItem).on('input', function(e){
+            ctx.form[item.id] = this.value
+            dealWatchs({id: inputItem.id})
+          })
+        } else {
+          $(inputItem).on('input', function(e){
+            ctx.form[item.id] = this.value
+          })
+        }
     }
   })
 
@@ -157,20 +181,21 @@ function select(_intent, ctx){
       const src_id = unionObj.id
       const target_id = unionObj.target.id
 
-      // const _uObj = elements[target_id]
       const targetDom = elements['#'+target_id]
-      // const targetDom = $(elements[target_id]).find('input')[0]
       const srcDom = elements['#'+src_id]
-      // const srcDom = $(elements[src_id]).find('input')[0]
+
+      const _ctx = {
+        src: srcDom,
+        elements: elements,
+        values: ctx.values
+      }
 
       if (src_id == target_id) {
         if (typeof unionObj.cb == 'function') {
-          unionObj.cb.call(targetDom, elements, {form: that.form})
+          unionObj.cb.call(targetDom, _ctx)
         }
         return
       }
-
-      let result
 
       if (unionObj.url){
         if (unionObj.param){
@@ -182,19 +207,22 @@ function select(_intent, ctx){
         ajax.get(unionObj.url, unionObj.param)
         .then(function(data){
           if (unionObj.target.type==='select'){
-            if( typeof unionObj.cb === 'function') unionObj.cb.call({form: that.form}, data, _fill.call(_uObj, unionObj))
+            if( typeof unionObj.cb === 'function') unionObj.cb.call(targetDom, _ctx)  //unionObj.cb.call({form: that.form}, data, _fill.call(_uObj, unionObj))
           } else {
-            if( typeof unionObj.cb === 'function') unionObj.cb.call(ctx, {form: that.form}, data)
+            if( typeof unionObj.cb === 'function') unionObj.cb.call(targetDom, _ctx)  //unionObj.cb.call(ctx, {form: that.form}, data)
           }
         })
       } else {
-        if( typeof unionObj.cb === 'function') unionObj.cb.call(targetDom, elements, {form: that.form})
+        if( typeof unionObj.cb === 'function') unionObj.cb.call(targetDom, _ctx)
         else {
-          $(srcDom).on('input', function(){
-            const targetIt = {}
-            targetIt[targetDom.id] = this.value;
-            ctx.val(targetIt)
-          })
+          const targetIt = {}
+          targetIt[target_id] = srcDom.value;
+          ctx.values(targetIt)
+          if (unionObj.target.type == 'select') {
+            if (allocation[src_id].type == 'text') {
+              elements['.'+target_id].innerHTML = srcDom.value;            
+            }
+          }
         }
       }
     })
