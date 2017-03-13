@@ -5,13 +5,14 @@ import Base from 'component/class/base'
 let bsCount = 0
 function itemDefaultMethod(element, intent){
   let dft = this.config
-  const bsConfit = dft.bstable
+  const bsConfig = dft.bstable
   const iject = this.ij
   iject
   .css('/css/t/bootstrap_table.css')
   .js('/js/t/bootstrap_table.js', () => {
     iject.js('/js/t/bootstrap_table_zh_CN.js', ()=>{
-      $(element).bootstrapTable(bsConfit);
+      $(element).bootstrapTable(bsConfig);
+      this.elt = $(element) //这个是获取整个 table的结构 ，可以通过这个去调用 bootstrap的一些方法，在业务的页面上  如：(bt).elt.bootstrap('getData')
     })
   })
 
@@ -21,6 +22,7 @@ class _BoostrapTbale extends Base {
   constructor(config){
     config.listClass = `bt-table-${bsCount}`
     super(config)
+    this.elt = ''
     this.ij = this.inject()
     itemDefaultMethod = this::itemDefaultMethod
     bsCount++
@@ -46,7 +48,6 @@ class _BoostrapTbale extends Base {
 export function BTable(opts){
   let dft = {
     container: '',
-
     bstable:{
       classes: 'table table-hover',     //设置 table的类
       method: 'post',
@@ -70,7 +71,7 @@ export function BTable(opts){
 
 
       singleSelect: false,                 //复选框只能选择一条记录
-      clickToSelect: true,                //点击行即可选中单选/复选框
+      clickToSelect: false,                //点击行即可选中单选/复选框
       checkboxHeader: false,              //为否隐藏全选按钮
 
       search: false,// 是否支持搜索
