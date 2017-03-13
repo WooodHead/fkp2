@@ -21,77 +21,31 @@ const $text_type = ['text', 'password', 'select', 'tel']
 function mk_select(P){
   let _select;
   let options = [];
-  if (P.attr.union){
-    return (
-      <span className="iconfont fkp-dd">
-        <input ref={'#'+P.id} type='hidden' name={P.name} id={P.id} defaultValue=''/>
-        <div ref={'.'+P.id} className="form_control fkp-dd-input">{P.placeholder}</div>
-      </span>
-    )
-  }
 
-  else if (P.options) {
-    function optionMethod(dom){
-      // console.log(dom);
-    }
-
+  if (P.options) {
     const _data = tree(P.options),
           options = list({
             data: _data,
             itemClass: 'fkp-dd-option',
-            itemMethod: optionMethod
           })
 
     return (
       <span className="iconfont fkp-dd">
-        <input ref={'#'+P.id} type='hidden' name={P.name} id={P.id} defaultValue=''/>
-        <div ref={'.'+P.id} className="form_control fkp-dd-input">{P.placeholder}</div>
+        <input ref={'#'+P.id} type='text' className="form_control fkp-dd-input" placeholder={P.placeholder} name={P.name} id={P.id} defaultValue='' />
         <div ref={'+'+P.id}>
           {options}
         </div>
       </span>
     )
+  } else {
+    return (
+      <span className="iconfont fkp-dd">
+        <input ref={'#'+P.id} type='text' className="form_control fkp-dd-input" placeholder={P.placeholder} name={P.name} id={P.id} defaultValue='' />
+        <div ref={'+'+P.id}>
+        </div>
+      </span>
+    )
   }
-
-  // // select的option
-  // // _value必须为二维数组  _value = [ [...], [...], [...]]
-  // // 第一个数组为 option value   required
-  // // 第二个数组为 option text    required
-  // // 第三个数组为 option custom value，以 data-attr 作为option的二外参数    not required
-  // else if (_.isArray(P.value)){
-  //   let _vals = P.value[0],
-  //       _texts = P.value[1]||[],
-  //       _attrs = P.value[2]||[]
-  //
-  //   if (_vals.length !== _texts.length){
-  //     return ( <span>select配置，请检查配置</span> )  // select config error，must be array
-  //   }
-  //   else {
-  //     let $val='请选择'    // pleas selected
-  //     let $attr=''        // data-attr
-  //     _vals.map(function(_val, i){
-  //       _val = _val.toString();
-  //       if (_val){
-  //         if (_attrs){
-  //           $attr = _attrs[i]
-  //         }
-  //         if(_val.indexOf('-')===0){
-  //           $val = _val.replace('-','')
-  //           options.push( <li data-value={$val} key={'opts'+i} data-attr={$attr}>{_texts[i]}</li> )
-  //         } else {
-  //           options.push( <li className="fkp-dd-option" key={'opts'+i} data-attr={$attr} data-value={_val}>{_texts[i]}</li> )
-  //         }
-  //       }
-  //     })
-  //     _select = <ul>{options}</ul>
-  //     return (
-  //       <span className="iconfont fkp-dd">
-  //         <input type='text' className="form_control fkp-dd-input" name={P.name} id={P.id} placeholder={P.placeholder} defaultValue=''/>
-  //         {_select}
-  //       </span>
-  //     )
-  //   }
-  // }
   return ( <span>请检查select配置</span> )
 }
 
@@ -169,6 +123,7 @@ function mk_elements(item, ii){
  * 分析配置文件，并输出结构
  *
  */
+let tmp_P = {}
 function mk_element(item, _i){
   const allocation = this.state.allocation
   let _title,
@@ -194,7 +149,8 @@ function mk_element(item, _i){
   _class = P.attr.itemClass
   _union = P.attr.union
 
-  if (_union) {
+  if (_union && !tmp_P[P.id]) {
+    tmp_P[P.id] = 'true'
     _union.target = {
       id: P.id,
       name: P.name,
@@ -210,7 +166,8 @@ function mk_element(item, _i){
   : <lable ref={(P.id||P.name)} key={"lable"+_i} className={_class + ' for-' + (P.id||P.name||'')}>
       {_title ? <span className="fkp-title">{_title}</span> : false}
       {this::whatTypeElement(P)}
-      {P.required ? <span className="fkp-input-box" /> : ''}
+      {P.required ? <span className="fkp-input-required" /> : ''}
+      {<span className="fkp-input-error" />}
       {_desc ? <span className="fkp-desc">{_desc}</span> : false}
     </lable>
 }
@@ -274,22 +231,12 @@ function storeAction(key){
       this.setState({ data: sdata })
     },
 
-    // {icompany: 'xxxx'}
-    VAL: function(data){
-      if (!data) return
-      let allocation = _.cloneDeep(this.state.allocation)
-      let sdata = this.state.data
-      O.keys(data).forEach( item => {
-        if (allocation[item]) {
-          allocation[item]['value'] = data[item]
-          const index = allocation[item]['_index']
-          let _data = sdata[index]
-          _data['input']['value'] = data[item]
-        }
-      })
-
-      // this.setState({ data: sdata })
-      // this.setState({ allocation: allocation })
+    UPDATE: function(record){
+      if (!record) return
+      const {index, options} = record
+      let sdata = Array.from(this.state.data)
+      sdata[index].input['options'] = options
+      this.setState({ data: sdata })
     },
   })
 }

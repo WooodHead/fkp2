@@ -4,7 +4,8 @@ function select(_intent, ctx){
   const intent = ctx.actions.data.intent
   // const unions = ctx.actions.data.unions
   const allocation = ctx.actions.data.allocation // 配置文件
-  const elements = ctx.elements
+  const elements = ctx.elements('all')
+  let selectElements = {}
   const watchs = {}
   let that = ctx
   // 比较select的当前值与点击option获取的值是否相等
@@ -132,7 +133,7 @@ function select(_intent, ctx){
 
   Object.keys(allocation).forEach( unit => {
     const item = allocation[unit]
-    let inputItem = elements['#'+item.id]
+    let thisInput = elements['#'+item.id]
     switch (item.type) {
       case 'checkbox':
         break;
@@ -140,29 +141,43 @@ function select(_intent, ctx){
         break;
       case 'select':
         const ddMenu = elements['+'+item.id]
-        const selectZone = elements['.'+item.id]
-        $(selectZone).on('click', function(e){
+        if (!selectElements[item.id]) {
+          selectElements[item.id] = {
+            ...item,
+            ddMenu: ddMenu,
+          }
+        }
+
+        $(thisInput).on('click', function(e){
           $(ddMenu).find('ul').toggle()
         })
-        $('.fkp-dd-option').on('click', function(e){
-          ctx.form[item.id] = inputItem.value = this.getAttribute('data-value')
-          inputItem.text = this.innerHTML
-          selectZone.innerHTML = this.innerHTML
+
+        $(ddMenu).on('click', '.fkp-dd-option', function(e){
+          const _val = this.getAttribute('data-value')
+          ctx.form[item.id] = _val
+          thisInput.setAttribute('data-value', _val)
+          thisInput.value = this.innerHTML
+
+          if (typeof item.optionMethod == 'function') {
+            item.optionMethod(this)
+          }
+
           const hasUnion = checkUnion({id: item.id}, dealWithUnion)
+          $(ddMenu).find('ul').toggle()
           if (hasUnion) {
-            dealWatchs({id: inputItem.id})
+            dealWatchs({id: thisInput.id})
           }
         })
         break;
       default:
         const hasUnion = checkUnion({id: item.id}, dealWithUnion);
         if (hasUnion) {
-          $(inputItem).on('input', function(e){
+          $(thisInput).on('input', function(e){
             ctx.form[item.id] = this.value
-            dealWatchs({id: inputItem.id})
+            dealWatchs({id: thisInput.id})
           })
         } else {
-          $(inputItem).on('input', function(e){
+          $(thisInput).on('input', function(e){
             ctx.form[item.id] = this.value
           })
         }
@@ -186,7 +201,8 @@ function select(_intent, ctx){
 
       const _ctx = {
         src: srcDom,
-        elements: elements,
+        target: targetDom,
+        elements: ctx.elements,
         values: ctx.values
       }
 
@@ -213,15 +229,51 @@ function select(_intent, ctx){
           }
         })
       } else {
-        if( typeof unionObj.cb === 'function') unionObj.cb.call(targetDom, _ctx)
-        else {
-          const targetIt = {}
-          targetIt[target_id] = srcDom.value;
-          ctx.values(targetIt)
-          if (unionObj.target.type == 'select') {
-            if (allocation[src_id].type == 'text') {
-              elements['.'+target_id].innerHTML = srcDom.value;            
+        // 清空关联项的数据
+        let targetIt = {}
+        targetIt[target_id] = '';
+        ctx.values(targetIt)
+
+        if( typeof unionObj.cb === 'function') {
+
+          // target 为select类型
+          function options(data, text){
+            let xxx = selectElements[target_id]
+            ctx.actions.roll('UPDATE', {
+              index: xxx._index,
+              options: data
+            })
+          }
+
+          let xctx = {
+            value: function(val, text){
+              let targetValue = {}
+              targetValue[target_id] = val
+              if (selectElements[target_id]) {   // 目标对象是 select类型
+                options(val, text)
+              } else {
+                ctx.values(targetValue)
+              }
             }
+          }
+
+          unionObj.cb.call(xctx, _ctx)
+        }
+        else {
+          let targetValue = {}
+          targetValue[target_id] = srcDom.value
+          if (selectElements[target_id]) {
+            switch (allocation[src_id].type) {
+              case 'select':
+                /* 不应该到这里来，应该去cb */
+              break;
+              default:
+                /* 不应该到这里来，应该去cb */
+                targetDom.value = srcDom.value
+                targetDom.setAttribute('data-value', srcDom.value)
+            }
+          } else {
+            ctx.values(targetValue)
           }
         }
       }

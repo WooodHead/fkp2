@@ -26,12 +26,15 @@ const configUnion = [
     input:{
       id:    'select',
       type:  'select',
-      // value: [[1,2,3], ['a','b','c']],
       options: [
         {title: 'aaa', attr: {'value': 1}},
         {title: 'bbb', attr: {'value': 2}},
         {title: 'ccc', attr: {'value': 3}},
       ],
+      optionMethod: function(dom){
+        console.log(dom);
+        // $(dom)
+      },
       placeholder: '请选择'
     }
   },
@@ -46,12 +49,30 @@ const configUnion = [
     union: {
       id: 'select',
       cb: function(ctx){
-        // console.log(this);
-        console.log(ctx);
+        const data = [   // options 选项
+          {title: 'xxx', attr: {'value': 4}},
+          {title: 'yyy', attr: {'value': 5}},
+          {title: 'zzz', attr: {'value': 6}},
+        ]
+        this.value(data, '我是text')
       }
-    },
-
+    }
   },
+
+  {title: ' ', input: {type: 'button', id: 'go', value: 'gogogo'} }
 ]
+
 const formUni = Input({data: configUnion})
+
+formUni.rendered = function(){
+  const elements = formUni.elements
+  $(elements('xxx')).click(function(){
+    // alert(1)
+  })
+
+  $(elements('go')).click(function(){
+    // console.log(formUni.values('xxx'));
+    // alert(1)
+  })
+}
 formUni.render('demo-form')

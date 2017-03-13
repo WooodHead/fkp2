@@ -97,9 +97,15 @@ function getItemAllocation(data, index){
 function defMenthod(ctx){
   const dft = ctx.config
   let allocation = ctx.allocation
+
   return function(dom, intent){
     ctx.ipt = dom
-    ctx.elements = this.refs
+    let elements = this.refs
+    ctx.elements = function(id){
+      if (id == 'all') return elements
+      return elements['#'+id]
+    }
+    // ctx.elements = this.refs
     require('../_part/select')(ctx, intent)  // 引入select
     if (typeof dft.callback == 'function') dft.callback.call(dom, ctx)
   }
@@ -110,7 +116,7 @@ class FormInput extends BaseClass{
   constructor(config){
     super(config)
     this.form = {}
-    this.elements = {}
+    this.elements
     this.allocation = this::createAllocation(config.data)
 
     this.values = this::this.values
@@ -140,24 +146,25 @@ class FormInput extends BaseClass{
   // 获取所有元素的即时值
   values(data){
     if (!data) return this.form
-    if (typeof data == 'string') this.form[id]
-    let allocation = this.allocation
-        , elements = this.elements
-        , form = this.form
-
-    Object.keys(data).forEach( item => {
-      this.form[item] = data[item]
-      elements['#'+item].value = data[item]
-      allocation[item].value = data[item]
-    })
+    if (typeof data == 'string') return this.form[data]
+    if (typeof data == 'object') {
+      let allocation = this.allocation
+      , elements = this.elements
+      , form = this.form
+      Object.keys(data).forEach( item => {
+        this.form[item] = data[item]
+        elements(item).value = data[item]
+        allocation[item].value = data[item]
+      })
+    }
   }
 
   warning(id, clear){
-    if (this.elements[id]) {
+    if (this.elements(id)) {
       if (clear) {
-        this.elements[id].className = this.elements[id].className.replace(' itemError', '')
+        this.elements(id).className = this.elements(id).className.replace(' itemError', '')
       } else {
-        this.elements[id].className += ' itemError'
+        this.elements(id).className += ' itemError'
       }
     }
   }
