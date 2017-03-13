@@ -18,35 +18,30 @@ const $text_type = ['text', 'password', 'select', 'tel']
  * item 配置
 */
 
+function __select(P, options){
+  return (
+    <span className="iconfont fkp-dd">
+      <input ref={'#'+P.id} type='text' className="form_control fkp-dd-input" placeholder={P.placeholder} name={P.name} id={P.id} defaultValue='' />
+      <div ref={'+'+P.id} className='fkp-dd-list'>
+        {options ? options : ''}
+      </div>
+    </span>
+  )
+}
+
 function mk_select(P){
   let _select;
-  let options = [];
+  let options;
 
   if (P.options) {
     const _data = tree(P.options),
-          options = list({
-            data: _data,
-            itemClass: 'fkp-dd-option',
-          })
-
-    return (
-      <span className="iconfont fkp-dd">
-        <input ref={'#'+P.id} type='text' className="form_control fkp-dd-input" placeholder={P.placeholder} name={P.name} id={P.id} defaultValue='' />
-        <div ref={'+'+P.id}>
-          {options}
-        </div>
-      </span>
-    )
-  } else {
-    return (
-      <span className="iconfont fkp-dd">
-        <input ref={'#'+P.id} type='text' className="form_control fkp-dd-input" placeholder={P.placeholder} name={P.name} id={P.id} defaultValue='' />
-        <div ref={'+'+P.id}>
-        </div>
-      </span>
-    )
+    options = list({
+      data: _data,
+      itemClass: 'fkp-dd-option',
+    })
+    return __select(P, options)
   }
-  return ( <span>请检查select配置</span> )
+  return __select(P)   
 }
 
 // 'text', 'password', 'select', 'tel'
@@ -103,7 +98,6 @@ function mk_elements(item, ii){
     const elements = inputs.map( (ele, jj) => {
       const _name = getTypeName(ele)
       if (_name ) return this::mk_element(item, {key: _.uniqueId(ii+'_'+jj+'_'), index: ii})
-      // if (_name ) return this::mk_element(_name, _.uniqueId(ii+'_'+jj+'_'))
     })
 
     return (
@@ -115,7 +109,6 @@ function mk_elements(item, ii){
 
   const _name = getTypeName(inputs)
   if (_name ) return this::mk_element(item, ii)
-  // if (_name ) return this::mk_element(_name, ii)
 }
 
 /*
@@ -188,7 +181,6 @@ class Input extends React.Component {
     saxer = SAX(this.props.globalName)
     saxer.append({
       intent: [],
-      unions: {},
       allocation:{}
     })
 

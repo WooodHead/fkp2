@@ -1,31 +1,14 @@
-// let ajax = require('ajax')
+function isFunction(cb) {
+  return typeof cb == 'function'
+}
 
 function select(_intent, ctx){
   const intent = ctx.actions.data.intent
-  // const unions = ctx.actions.data.unions
-  const allocation = ctx.actions.data.allocation // 配置文件
+  const allocation = ctx.actions.data.allocation // 配置文件, 每一个有id的表单的配置文件都在这个对象下
   const elements = ctx.elements('all')
-  let selectElements = {}
-  const watchs = {}
+  let isSelect = {}   // 注册所有的select到这个对象下
+  let watchs = {}  // 所有联动的联动方法都会被注册到这个对下下
   let that = ctx
-  // 比较select的当前值与点击option获取的值是否相等
-  function compareSelctValue(id, nextVal){
-    var stat = false;
-    var curVal = $(that.ipt).find('.for-'+id).find('.fkp-dd-input').attr('data-value')
-    if (curVal === nextVal) stat = true;
-    return stat;
-  }
-
-  // 清楚联动select
-  function removeUnionTarget(id, cb){
-    var indexOfIntent = _.findIndex(intent, {id: id})
-    if (indexOfIntent>-1){
-      var theIntent = intent[indexOfIntent]
-      $(that.ipt).find('.for-'+theIntent.target.id).find('.fkp-dd-input').val()
-      $(that.ipt).find('.for-'+theIntent.target.id).find('.fkp-dd').find('ul').remove()
-      removeUnionTarget(theIntent.target.id)
-    }
-  }
 
   /*
    * 检测单项是否有联动操作
@@ -38,7 +21,7 @@ function select(_intent, ctx){
     const ary = _.filter(intent, param)
     if (ary.length) {
       watchs[param.id] = function(){
-        if (typeof cb == 'function') cb(ary)
+        if (isFunction(cb)) cb(ary)
       }
       return true
     }
@@ -48,66 +31,6 @@ function select(_intent, ctx){
     if (watchs[param.id]) watchs[param.id]()
   }
 
-
-    /*
-     * 下拉菜单点击事件 click
-     * 支持联动操作
-     */
-  // $('.fkp-dd')
-  // const fkp_dds = $(that.ipt).find('.fkp-dd')
-  // $(fkp_dds).click(function(){
-  //   var me = this;
-  //   var _ipt = $(me).find('.fkp-dd-input');   // 下拉菜单文本框
-  //   var _ipt_id = _ipt[0].id;
-  //
-  //   // 下拉项
-  //   var _ul = $(this).find('ul');   // ul对象
-  //       _ul.toggle();               // toggle动作
-  //
-  //   // 检测该子项是否有联动操作
-  //   const hasUnion = checkUnion({"id": _ipt_id}, optionClick)
-  //   if (hasUnion) dealWatchs({id: _ipt_id})
-  //
-  //
-  //   // @opts  union对象数组
-  //   /*
-  //    * 下拉子项的click动作
-  //    * opts {Array}  根据id匹配到联动子项
-  //    *
-  //    */
-  //   function optionClick(opts){
-  //     console.log(ctx.elements);
-  //     $(me).find('.fkp-dd-option').off('click')
-  //     .click(function(e){
-  //       e = e||argument[0]; e.stopPropagation()
-  //       var _opt_val = $(this).attr('data-value')||$(this).val(),
-  //           _opt_txt = $(this).text(),
-  //           _opt_attr = $(this).attr('data-attr')
-  //
-  //       // 下拉菜单显示隐藏
-  //       _ul.toggle();
-  //
-  //       // 是否联动
-  //       // 先检查，再赋值
-  //       // if 联动子项的值＝＝＝当前选项的值 则删除联动对象
-  //       if (!compareSelctValue(_ipt_id, _opt_val) ) removeUnionTarget(_ipt_id);
-  //
-  //       // 当前对象赋值
-  //       _ipt.attr('data-value', _opt_val)  // value
-  //       _ipt.val(_opt_txt);                // text
-  //
-  //       // 实时赋值
-  //       // 表单提交时，获取实时的数据
-  //       // 当前对象数值变更，则直接修改父对象 Input.form中的值
-  //       // Input.form.{id} = 'xxxx'
-  //       that.form[_ipt_id] = _opt_val;
-  //
-  //
-  //       // 处理联动对象
-  //       dealWithUnion(opts, {val: _opt_val, txt: _opt_txt, attr: _opt_attr});
-  //     })
-  //   }
-  // })
 
   /*
    * radio子项动作
@@ -137,38 +60,49 @@ function select(_intent, ctx){
     switch (item.type) {
       case 'checkbox':
         break;
+
       case 'radio':
         break;
+
       case 'select':
-        const ddMenu = elements['+'+item.id]
-        if (!selectElements[item.id]) {
-          selectElements[item.id] = {
-            ...item,
-            ddMenu: ddMenu,
-          }
-        }
+        const lable = elements[item.id]
+        const ddMenu = elements['+'+item.id]  //下拉菜单容器
+        let change = true
+
+        !isSelect[item.id]
+        ? isSelect[item.id] = { ...item, ddMenu: ddMenu }
+        : ''
+
+        $(document).click(function(e){
+          $(ddMenu).hide()
+        })
 
         $(thisInput).on('click', function(e){
-          $(ddMenu).find('ul').toggle()
+          e.stopPropagation()
+          $(ddMenu).toggle()
         })
 
         $(ddMenu).on('click', '.fkp-dd-option', function(e){
+          e.stopPropagation()
           const _val = this.getAttribute('data-value')
-          ctx.form[item.id] = _val
-          thisInput.setAttribute('data-value', _val)
-          thisInput.value = this.innerHTML
+          change = ctx.form[item.id] == _val ? false : true
+          $(ddMenu).toggle()
 
-          if (typeof item.optionMethod == 'function') {
-            item.optionMethod(this)
-          }
+          if (change) {
+            ctx.form[item.id] = _val
+            thisInput.setAttribute('data-value', _val)
+            thisInput.value = this.innerHTML
 
-          const hasUnion = checkUnion({id: item.id}, dealWithUnion)
-          $(ddMenu).find('ul').toggle()
-          if (hasUnion) {
-            dealWatchs({id: thisInput.id})
+            if (isFunction(item.optionMethod)) item.optionMethod(this)
+
+            const hasUnion = checkUnion({id: item.id}, dealWithUnion)
+            if (hasUnion) {
+              dealWatchs({id: thisInput.id})
+            }
           }
         })
         break;
+
       default:
         const hasUnion = checkUnion({id: item.id}, dealWithUnion);
         if (hasUnion) {
@@ -207,9 +141,7 @@ function select(_intent, ctx){
       }
 
       if (src_id == target_id) {
-        if (typeof unionObj.cb == 'function') {
-          unionObj.cb.call(targetDom, _ctx)
-        }
+        if (isFunction(unionObj.cb)) unionObj.cb.call(targetDom, _ctx)
         return
       }
 
@@ -223,46 +155,45 @@ function select(_intent, ctx){
         ajax.get(unionObj.url, unionObj.param)
         .then(function(data){
           if (unionObj.target.type==='select'){
-            if( typeof unionObj.cb === 'function') unionObj.cb.call(targetDom, _ctx)  //unionObj.cb.call({form: that.form}, data, _fill.call(_uObj, unionObj))
+            if (isFunction(unionObj.cb)) targetDom::unionObj.cb(_ctx)
           } else {
-            if( typeof unionObj.cb === 'function') unionObj.cb.call(targetDom, _ctx)  //unionObj.cb.call(ctx, {form: that.form}, data)
+            if (isFunction(unionObj.cb)) targetDom::unionObj.cb(_ctx)
           }
         })
-      } else {
+      }
+
+      else {
         // 清空关联项的数据
         let targetIt = {}
         targetIt[target_id] = '';
         ctx.values(targetIt)
 
-        if( typeof unionObj.cb === 'function') {
+        // target 为select类型
+        function options(data, text){
+          let xxx = isSelect[target_id]
+          ctx.actions.roll('UPDATE', {
+            index: xxx._index,
+            options: data
+          })
+        }
 
-          // target 为select类型
-          function options(data, text){
-            let xxx = selectElements[target_id]
-            ctx.actions.roll('UPDATE', {
-              index: xxx._index,
-              options: data
-            })
-          }
-
-          let xctx = {
-            value: function(val, text){
-              let targetValue = {}
-              targetValue[target_id] = val
-              if (selectElements[target_id]) {   // 目标对象是 select类型
-                options(val, text)
-              } else {
-                ctx.values(targetValue)
-              }
+        let xctx = {
+          value: function(val, text){
+            let targetValue = {}
+            targetValue[target_id] = val
+            if (isSelect[target_id]) options(val, text)  // 目标对象是 select类型
+            else {
+              ctx.values(targetValue)
             }
           }
-
-          unionObj.cb.call(xctx, _ctx)
         }
+
+
+        if (isFunction(unionObj.cb)) unionObj.cb.call(xctx, _ctx)
         else {
           let targetValue = {}
           targetValue[target_id] = srcDom.value
-          if (selectElements[target_id]) {
+          if (isSelect[target_id]) {
             switch (allocation[src_id].type) {
               case 'select':
                 /* 不应该到这里来，应该去cb */
@@ -278,36 +209,6 @@ function select(_intent, ctx){
         }
       }
     })
-  }
-
-  /*
-   * 联动表单
-   * 适用于需要联动的select表单， 一般用于 省／市／区 联动
-   * @data {Array}根据异步数据处理过的符合select的数据，二维数组
-   * @itnt intent数据，由ItemMixin下传过来的数据
-   */
-  function fill(data, itnt){
-    if( !Array.isArray(data) ) return false;
-
-    if (Array.isArray(data)){
-      _vals = data[0];
-      _texts = data[1]||[];
-      _attrs = data[2]||[];
-      if (_vals.length !== _texts.length) alert('option的value与text不匹配')
-      var options=['<ul>']
-      _vals.map(function(_val, i){
-        options.push('<li class="fkp-dd-option" data-value='+_val+' data-attr='+_attrs[i]+'>'+_texts[i]+'</li>')
-      })
-      options.push('</ul>');
-      $(this).find('.fkp-dd').append( options.join('') )
-    }
-  }
-
-  function _fill(_intent){
-    var that = this;
-    return function(data){
-      fill.call(that, data, _intent)
-    }
   }
 }
 

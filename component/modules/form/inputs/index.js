@@ -101,11 +101,11 @@ function defMenthod(ctx){
   return function(dom, intent){
     ctx.ipt = dom
     let elements = this.refs
-    ctx.elements = function(id){
+    ctx.elements = function(id, lable){
       if (id == 'all') return elements
-      return elements['#'+id]
+      if (id.charAt(0) == '#' || id.charAt(0) == '+') return elements[id]
+      return lable ? elements[id] : elements['#'+id]
     }
-    // ctx.elements = this.refs
     require('../_part/select')(ctx, intent)  // 引入select
     if (typeof dft.callback == 'function') dft.callback.call(dom, ctx)
   }
@@ -122,6 +122,7 @@ class FormInput extends BaseClass{
     this.values = this::this.values
     this.append = this::this.append
     this.warning = this::this.warning
+    this.clean = this::this.clean
   }
 
   append(data){
@@ -159,12 +160,23 @@ class FormInput extends BaseClass{
     }
   }
 
+  clean(id){
+    this.warning(id, true)
+  }
+
   warning(id, clear){
     if (this.elements(id)) {
       if (clear) {
-        this.elements(id).className = this.elements(id).className.replace(' itemError', '')
+        if (typeof clear == 'boolean') {
+          $(this.elements(id)).removeClass('itemError')
+          $(this.elements(id, true)).find('.fkp-input-error').html('')           
+        }
+        if (typeof clear == 'string') {
+          $(this.elements(id)).removeClass('itemError')
+          $(this.elements(id, true)).find('.fkp-input-error').html(clear)
+        }
       } else {
-        this.elements(id).className += ' itemError'
+        $(this.elements(id)).addClass('itemError')
       }
     }
   }
