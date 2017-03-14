@@ -1,0 +1,238 @@
+body
+  font-size: 12px
+a
+  color: #666
+  text-decoration: none
+
+p,ul,h1
+  padding: 0
+  margin: 0
+
+img
+  width: 100%
+  height: auto
+
+.wid1000
+  width: 1000px
+  margin: 0 auto
+
+.hei129
+  height: 129px
+
+.mt30
+  margin-top: 30px
+
+.fo
+  overflow: hidden
+
+.fl
+  float: left
+
+.fr
+  float: right
+
+.disN
+  display: none
+
+.j-row-list
+  font-size: 0
+  margin-left: -8px
+  li
+    display: inline-block
+    font-size: 12px
+    margin-left: 8px
+
+.j-column-list
+  li
+    display: block
+
+
+// 按钮常用样式
+.f-btn
+  display: inline-block
+  padding: .4em .6em
+  font-size: 14px
+  text-align: center
+  white-space: nowrap
+  vertical-align: middle
+  border: 1px solid transparent
+  border-radius: 4px
+  border-radius: 2px
+  &:hover
+    filter: unquote('progid:DXImageTransform.Microsoft.Alpha(opacity=90)')
+    opacity: 0.9
+    background-image: -webkit-linear-gradient(transparent,rgba(0,0,0,.05) 40%,rgba(0,0,0,.1))
+    background-image: linear-gradient(transparent,rgba(0,0,0,.05) 40%,rgba(0,0,0,.1))
+
+
+.f-btn-default
+  color: #333
+  background-color: #fff
+  border-color: #ccc
+
+.f-btn-primary
+  color: #fff
+  background-color: #0078e7
+  border-color: #0078e7
+
+// 按钮常用样式 end
+
+.j-copydl
+  font-size: 0
+  span
+    color: #333
+    display: inline-block
+    font-size: 14px
+    margin-right: 10px
+  >ul
+    display: inline-block
+
+// select
+.j-select
+  padding: 10px 0
+  display: block
+  position: relative
+  height: 20px
+  >span
+    display: block
+    // background: url(../images/join/job-icon1.jpg) no-repeat right top #f2f2f2
+    // background-size: 36px
+    width: 100%
+    height: 100%
+    line-height: 40px
+    position: absolute
+    top: 0
+    left: 0
+    text-indent: 10px
+    font-size: 14px
+    border: 1px solid #ddd
+  select
+    opacity: 0
+    position: absolute
+    top: 0
+    left: 0
+    width: 95%
+    background: #ccc
+    height: 100%
+    outline: none
+
+
+//垂直居中
+.vertical-center
+  display: table
+  // height  需要指定高度
+  .vc-main
+    display: table-cell
+    vertical-align: middle
+
+//fixed 定位
+.f-fixed
+  background: #fff
+  position: fixed
+  top: 0
+  left: 0
+  width: 100%
+  z-index: 9
+
+
+
+// 搜索
+.j-search
+  >div
+    display: inline-block
+    font-size: 12px
+  input[type="text"]
+    margin-left: 1px
+    width: 82%
+    display: inline-block
+  .j-search-other
+    span,a
+      display: inline-block
+      line-height: 3
+      margin-left: 10px
+    a
+      color: red
+      margin-left: 0
+      
+  .j-search-btn
+      padding: 0.7em 1.2em
+      border-radius: 0 4px 4px 0
+      margin-left: -3px
+      margin-top: -1px
+
+
+//form
+input[type='text']
+  border: 1px solid #ddd
+  display: block
+  height: 30px
+  line-height: 30px
+  padding: .4em .6em
+  width: 100%
+
+
+// 头部1
+.header
+  border-bottom: 1px solid #ddd
+  .head-top
+    height: 30px
+    line-height: 30px
+    border-bottom: 1px solid #ddd
+    .head-top-r
+      text-align: right
+.head-mian
+  padding: 1em 0
+  .j-search-label
+    line-height: 30px
+    margin-left: 10px
+
+//头部2  用于登录、注册等页面
+.header-s
+  padding: 1em 0
+  height: 100px
+  a
+    border-right: 1px solid #ddd
+    display: inline-block;
+    width: 120px
+    padding-right: 15px
+  h1
+    display: inline-block
+    font-weight: normal
+    font-size: 26px
+    padding-left: 15px
+    vertical-align: top
+    line-height: 123px      //这里的 line-height 根据图片上一层的 a标签的高度来定
+
+
+
+//底部
+.footer
+  .foot-top
+    height: 30px
+    line-height: 30px
+    border-top: 1px solid #ddd
+    border-bottom: 1px solid #ddd
+  .foot-bottom
+    border-top: 1px solid #ddd
+    text-align: center
+    padding: 1em 0
+    p
+      line-height: 25px
+  .foot-main
+    padding: 1em 0
+    .foot-m-r
+      margin-left: 0
+      text-align: center
+      li
+        margin-left: 0
+      span
+        font-size: 14px
+        margin-bottom: 8px
+      li
+        line-height: 22px
+
+
+
+
+.wrapper
+  min-height: 400px

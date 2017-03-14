@@ -1,21 +1,17 @@
 @import "../hlist";
 @import "../loading";
 
-@px: 1px;
-@gray70: lighten(#000000, 70%);
-@wh: 50*@px;
-@border: 1px solid lighten(#000000,95%);
+hlist-default()
 
 .like_lagou{   // .list_wrap
   position: relative;
   overflow: hidden;
   .hlist{
-    .hlist();
     .item{  //li
       list-style: none;
       color: #666;
       background: #fff;
-      border-bottom: @border;
+      border-bottom: 1px solid #f4f4f4;
       width: auto;
       height: auto;
       padding: 2% 1%;

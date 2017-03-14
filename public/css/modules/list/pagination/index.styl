@@ -1,17 +1,13 @@
 @import "../hlist";
 @import "../loading";
 
-@px: 1px;
-@gray70: lighten(#000000, 70%);
-@wh: 50*@px;
-@border: 1px solid lighten(#000000,95%);
+hlist-default()
 
 .pagenation{
   position: relative;
   overflow: hidden;
   width: auto;
   .hlist{
-    .hlist();
     margin: 1.7em auto;
     width: 100%;
     .item{  //li
