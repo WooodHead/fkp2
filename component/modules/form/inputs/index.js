@@ -33,6 +33,7 @@ function getTypeName(item){
 
 // 生成配置文件，并挂在到state上
 function getItemAllocation(data, index){
+  if (typeof data == 'string') return
   const dft = {
     _index: index,
     id: '',
@@ -122,7 +123,8 @@ class FormInput extends BaseClass{
     this.values = this::this.values
     this.append = this::this.append
     this.warning = this::this.warning
-    this.clean = this::this.clean
+    this.addWarn = this::this.addWarn
+    this.removeWarn = this::this.removeWarn
   }
 
   append(data){
@@ -160,25 +162,45 @@ class FormInput extends BaseClass{
     }
   }
 
-  clean(id){
-    this.warning(id, true)
+  addWarn(id, message){
+    const theInput = this.elements(id)
+    if (theInput) {
+      const lable = this.elements(id, 'lable')
+      if (message) {
+        $(theInput).addClass('itemError')
+        if (React.isValidElement(message)) {
+          const errDom = $(lable).find('.fkp-input-error')[0]
+          React.render(message, errDom)
+        } else {
+          $(lable).find('.fkp-input-error').addClass('warning').html(message)
+        }
+      } else {
+        $(theInput).addClass('itemError')
+      }
+    }
+  }
+
+  removeWarn(id, message){
+    const theInput = this.elements(id)
+    if (theInput) {
+      const lable = this.elements(id, 'lable')
+      if (message) {
+        $(theInput).removeClass('itemError')
+        if (React.isValidElement(message)) {
+          const errDom = $(lable).find('.fkp-input-error')
+          React.render(message, errDom)
+        } else {
+          $(lable).find('.fkp-input-error').removeClass('warning').addClass('success').html(message)
+        }
+      } else {
+        $(theInput).addClass('itemError')
+        $(lable).find('.fkp-input-error').empty()
+      }
+    }
   }
 
   warning(id, clear){
-    if (this.elements(id)) {
-      if (clear) {
-        if (typeof clear == 'boolean') {
-          $(this.elements(id)).removeClass('itemError')
-          $(this.elements(id, true)).find('.fkp-input-error').html('')           
-        }
-        if (typeof clear == 'string') {
-          $(this.elements(id)).removeClass('itemError')
-          $(this.elements(id, true)).find('.fkp-input-error').html(clear)
-        }
-      } else {
-        $(this.elements(id)).addClass('itemError')
-      }
-    }
+    this.addWarn(id, clear)
   }
 }
 

@@ -41,7 +41,7 @@ function mk_select(P){
     })
     return __select(P, options)
   }
-  return __select(P)   
+  return __select(P)
 }
 
 // 'text', 'password', 'select', 'tel'
@@ -155,7 +155,8 @@ function mk_element(item, _i){
 
   // radio
   return $radio_check.indexOf(P.type) > -1
-  ? <Radio ref={(P.id&&P.id[0]||P.name&&P.name[0])} key={'radioGroup'+_i} data={P} />
+  // ? <Radio ref={(P.id&&P.id[0]||P.name&&P.name[0])} key={'radioGroup'+_i} data={P} />
+  ? <Radio key={'radioGroup'+_i} data={P} />
   : <lable ref={(P.id||P.name)} key={"lable"+_i} className={_class + ' for-' + (P.id||P.name||'')}>
       {_title ? <span className="fkp-title">{_title}</span> : false}
       {this::whatTypeElement(P)}
