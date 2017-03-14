@@ -1,11 +1,16 @@
-@import "../../modules/list/books/index.styl"
-@import "./_common/box.styl"
-@import "./_common/pushbar.styl"
+@import "../../modules/list/books/index"
+@import "./_common/box"
+@import "./_common/pushbar"
+@import "../../modules/sticky"
+
+.pure-g
+  letter-spacing: 0;
 
 .test
   width: 100%
   text-align: left
   position: relative;
+  margin-top: 2em
 
   .books-parent
     width: 100%;
@@ -19,8 +24,8 @@
           vertical-align: top;
           width: 7em;
           height: 7em;
-          margin-top: 0
-          border-radius: 2px
+          margin: 0.5em 0.5em 0.5em 0
+          border-radius: 4px
           padding: 0.3em
           position: relative;
           text-align: center;
@@ -84,28 +89,32 @@
   &.sticky-bottom
     min-height: 55px
     height: 55px
+    #agzgzNav
+      height: 100%
     .inputButtons
       position: fixed;
-      bottom: 0
+      bottom: 0.5em
       left: 0;
       width: 100%;
-      .toolBottonBar
-        margin-bottom: 0.2em;
-        margin-left:0.5em;
-        i
-          font-size: 1.3em;
-          color: #58B2DC
-      .inputxxx
-        z-index: 10;
-        font-size: 1.2em;
-        height: 2em
-        padding: 0.4em 0.4em;
-        font-family: inherit;
-        font-weight: 100;
-        border: none;
-        outline: none;
-        background: rgba(255,255,255,0.95);
-        width: 100%;
+    .toolBottonBar
+      margin-bottom: 0.2em;
+      margin-left:0.5em;
+      input
+        text-indent: 1.5em
+      i
+        font-size: 1.3em;
+        color: #58B2DC
+    .inputxxx
+      z-index: 10;
+      font-size: 1.2em;
+      height: 2em
+      padding: 0.4em 0.4em;
+      font-family: inherit;
+      font-weight: 100;
+      border: none;
+      outline: none;
+      background: rgba(255,255,255,0.95);
+      width: 100%;
 
 .grids
   width: 100%;
