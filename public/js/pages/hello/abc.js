@@ -23,48 +23,48 @@ mediaQuery({
   }
 })
 
-const StickyBBox = sticky.bottom(document.getElementById('agzgzNav'), {delay: 2000})
+const StickyBBox = sticky.bottom(document.getElementById('agzgzNav'), {delay: 2000, autoinject: false})
 
 let Xslider = Slider({
   container: 'slider',
   data: [
-    <div className="row">
-      <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+    <div className="pure-g">
+      <div className="pure-u-8-12">
         <img src="/images/banner/hello/banner-3.jpg" title="Funky roots" />
       </div>
-      <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4 descript">
+      <div className="pure-u-4-12 descript">
         <h3>FKP2</h3>
         Full Stack Plus 2<br/> SAP/MPA最佳实践方式
       </div>
     </div>,
 
-    <div className="row">
-      <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+    <div className="pure-g">
+      <div className="pure-u-8-12">
         <img src="/images/banner/hello/banner-2.jpg" title="The long and winding road" />
       </div>
-      <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4 descript">
+      <div className="pure-u-4-12 descript">
         <h3>脚手架</h3>
-        gulp+webpack组合，灵活、模块化的脚手架系统，支持4套模式
+        gulp+webpack组合，灵活、模块化的脚手架系统
       </div>
     </div>,
 
-    <div className="row">
-      <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+    <div className="pure-g">
+      <div className="pure-u-8-12">
         <img src="/images/banner/hello/banner-7.jpg" title="Happy trees" />
       </div>
-      <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4 descript">
+      <div className="pure-u-4-12 descript">
         <h3>前端</h3>
-        Babel、JQ+React的混合流组件模式，低成本学习成本
+        Babel、JQ+React的混合流组件模式
       </div>
     </div>,
 
-    <div className="row">
-      <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+    <div className="pure-g">
+      <div className="pure-u-8-12">
         <img src="/images/banner/hello/banner-4.jpg" title="Happy trees" />
       </div>
-      <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4 descript">
+      <div className="pure-u-4-12 descript">
         <h3>node端</h3>
-        灵活、低配置，无限层级RESTFUL路由，匹配前端目录结构
+        灵活、低配置，无限层级RESTFUL路由
       </div>
     </div>
   ],

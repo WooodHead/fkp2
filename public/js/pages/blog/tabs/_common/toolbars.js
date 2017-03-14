@@ -1,15 +1,6 @@
 import itemHlc from 'component/mixins/itemhlc'
 import { input as Input, baselist} from 'component'
-import { inject } from 'libs'
 const RUNTIME = SAX('Runtime')
-inject().css(`
-  .mainBtn{
-    width: 2em;
-  }
-  .mainBtn a{
-    display: block;
-  }
-`)
 
 function init(){
   const BLOG = SAX('Blog')
@@ -95,7 +86,7 @@ const myItemAction = {
 
 
 export function start(){
-  return itemHlc( <button className="btn" id="for-admin" style={{backgroundColor:'#fff'}}>我的</button> )
+  return itemHlc( <button className="btn" id="for-admin" style={{marginTop:'0.5em'}}>我的</button> )
 }
 
 export function main(stickys){
