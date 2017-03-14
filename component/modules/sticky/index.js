@@ -3,7 +3,6 @@ import PopClass from 'component/class/poper'
 
 inject()
 .css('/css/t/animate.css')
-.css('/css/m/sticky')
 
 function DocmentView(){
   var doch = window.innerHeight||document.documentElement.offsetHeight||document.body.clientHieght;
@@ -22,6 +21,10 @@ class Sticky extends PopClass {
     this.hide = this::this.hide
     this.show = this::this.show
     this.uuid = 'sticky-container-' + (++uuid)
+
+    if (opts.autoinject) {
+      inject().css('/css/m/sticky')
+    }
   }
 
   msgItem(stat){
@@ -105,6 +108,10 @@ class Sticky extends PopClass {
 
 var msgStickyInstance
 export default function sticky(msg, opts, cb){
+  const dft = {
+    autoinject: true
+  }
+  opts = _.extend(dft, opts)
   msgStickyInstance = new Sticky(opts)
   msgStickyInstance.type = opts ? opts.type : ''
   return msgStickyInstance.run(msg, opts, cb)
