@@ -1,5 +1,6 @@
 import itemHlc from 'component/mixins/itemhlc'
 import { tips as msgtips } from 'component/client'
+import Icon from 'component/widgets/icon'
 import {
   input as Input,
   item as itemComp,
@@ -61,11 +62,11 @@ const formUni = Input({data: configUnion})
 
 formUni.rendered = function(){
   const elements = formUni.elements
-  const warning = formUni.warning
+  const warning = formUni.addWarn
+  const rmvWarn = formUni.removeWarn
 
   $(elements('go')).click(function(){
-    // console.log(formUni.values('xxx'));
-    // alert(1)
+    warning('test', <Icon src='circle' style={{width: '1em', height: '1em'}}/>)
   })
 }
 formUni.render('demo-form')
