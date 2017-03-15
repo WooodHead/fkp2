@@ -3,55 +3,16 @@
     <head>
       <title>Hello World</title>
       @@include('../_common/header/head.html')
-      <style>
-        html{
-          width: 100%;
-          height: 100%;
-        }
-        body{
-          width: 100%;
-          height: 100%;
-        }
-        .boxer{
-          width: 100%;
-          height: 110%;
-          box-sizing: border-box;
-          display: table;
-          overflow: hidden;
-        }
-        .boxer .boxer-header{
-          height: 10em;
-          background-color: blue;
-          display: table-row;
-        }
-        .boxer .boxer-body{
-          display: table-row;
-          height: 550px;
-        }
-        .boxer-body .grids{
-          height: 100%;
-        }
-        .boxer .boxer-footer{
-          display: table-row;
-          background-color: #ececec;
-        }
-        .register-container{
-          position: relative;
-        }
-
-        #register{
-          position: absolute;
-          right: 2em;
-          top: 2em;
-          width: 400px;
-          height: 338px;
-          border: 1px solid #ececec;
-        }
-      </style>
+      <link rel="stylesheet" href="/css/test.css">
     </head>
     <body>
       <div class="boxer">
-        <div class="boxer-header"></div>
+        <div class="boxer-header">
+          <div class="header-s wid1000">
+              <a href="#"><img src="../images/logo256.png" /></a>
+              <h1>欢迎登录</h1>
+          </div>
+        </div>
         <div class="boxer-body">
           <div class="grids pure-g">
             <div class="pure-u-1-2"><p>Thirds</p></div>
@@ -60,7 +21,43 @@
             </div>
           </div>
         </div>
-        <div class="boxer-footer">1</div>
+        <div class="boxer-footer">
+          <div class='footer'>
+            <div class="foot-top">
+              <div class="wid1000 j-copydl">
+                <span>友情链接：</span>
+                <ul class="j-row-list">
+                  <li><a href="#">广州广播电视台</a></li>
+                  <li><a href="#">广州广播电视台</a></li>
+                  <li><a href="#">广州广播电视台</a></li>
+                </ul>
+              </div>
+            </div>
+            <div class="foot-bottom">
+              <div class="wid1000">
+                <p>
+                  <a rel="nofollow" href="http://pages.ctrip.com/public/copyright.htm" id="copyright">Copyright©</a>1999-2017,&nbsp;<a href="http://srwtck.com/get?key=b11e8793cade0a4fedc9f17323b20200&amp;ref=http%3A%2F%2Fwww.ctrip.com%2F%3Futm_source%3Dbaidu%26utm_medium%3Dcpc%26utm_campaign%3Dbaidu81%26campaign%3DCHNbaidu81%26adid%3Dindex%26gclid%3D%26isctrip%3DT&amp;uid=88510421&amp;out=http%3A%2F%2Fwww.ctrip.com%2F">ctrip.com</a>. All rights reserved.&nbsp;|&nbsp;<a rel="nofollow" target="_blank" href="http://www.miibeian.gov.cn/">ICP证：沪B2-20050130</a>
+                </p>
+                <p>
+                  <a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=31010502000018"><i class="icon-gns"></i>沪公网备31010502000018号</a>
+                </p>
+                <p>
+                  旅游违法行为举报电话12318  丨服务质量投诉电话 962020   丨<a href="http://pages.c-ctrip.com/commerce/promote/201611/other/zz/pc/index.html" target="_blank">上海市旅游网站落实诚信建设主体责任承诺书</a>
+                </p>
+                <ul class="j-row-list">
+                  <li><a href="#"><img src="images/xxx.jpg" /></a></li>
+                  <li><a href="#"><img src="images/xxx.jpg" /></a></li>
+                  <li><a href="#"><img src="images/xxx.jpg" /></a></li>
+                </ul>
+                <ul class="j-row-list foot-b-honour">
+                  <li><a class="j-honour-xy" href="#">信用评级</a></li>
+                  <li><a class="j-honour-xy" href="#">信用评级</a></li>
+                  <li><a class="j-honour-xy" href="#">信用评级</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       @@include('../_common/footer/foot.html')
       <script src="/js/parts-demo-login.js"></script>

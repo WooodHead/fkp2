@@ -1,0 +1,162 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <title>Hello World</title>
+    @@include('./_common/header/head.html')
+    <link rel="stylesheet" href="/css/test.css">
+
+  </head>
+  <body>
+    <div class="container">
+      <!-- 头部 -->
+      <div class="header ">
+        <!--
+         f-fixed   ->>>>position:fixed
+         用这个的时候 需要在下一个同级的地方加个margin-top 可用 mt+数字（具体的 fixed高度）
+        -->
+          <div class='head-top f-fixed'>
+            <!--  内容部分不超过1000（暂定））
+              wid+数字 代表宽度px
+              wid+数字+p 代表宽度百分比
+              注：如果以屏幕的大小而变化，这个可以删除
+            -->
+            <div class='wid1000 fo'>
+              <!--
+                jlist-row   代表这个结构下的东西是平行 pc下用：inline-block   移动：flex
+                jlist-column   代表这个结构下的东西是一列列的 100%
+              -->
+              <ul class='j-row-list fl pure-u-1-2'>
+                <li><a href="#">请登录</a></li>
+                <li><a href="#">免费注册</a></li>
+              </ul>
+              <ul class='j-row-list fr pure-u-1-2 head-top-r'>
+                <li><a href="#">客服中心：95111</a></li>
+                <li><a href="#">网站导航</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="head-mian mt30">
+            <div class="wid1000 fo">
+              <div class="pure-u-1-8 fl">
+                <a href="#"><img src="images/logo256.png" /></a>
+              </div>
+              <div class="j-row-list fr pure-u-2-3 vertical-center hei129">
+                <div class="vc-main">
+                  <div class="j-search  form-inputs">
+                    <div class="j-select pure-u-3-24">
+                      <span>找资源</span>
+                      <select>
+                        <option value="d">d</option>
+                      </select>
+                    </div>
+                    <div class="input-group pure-u-17-24">
+                      <input type="text" class="form-control">
+                      <span class="f-btn f-btn-primary j-search-btn">搜索</span>
+                    </div>
+                    <div class="pure-u-4-24 fo j-search-other">
+                      <span class="fl">或</span>
+                      <a class="fr" href="#">发布资源</a>
+                    </div>
+                  </div>
+                  <!-- j-copydl 固定结构是span+ul  -->
+                  <div class="j-search-label j-copydl">
+                    <span>热门搜索：</span>
+                    <ul class="j-row-list">
+                      <li><a href="#">酒店</a></li>
+                      <li><a href="#">饭店</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 头部 结束-->
+      <!-- 头部2 用于登录、注册等页面-->
+      <div class="header-s wid1000 disN">
+          <a href="#"><img src="images/logo256.png" /></a>
+          <h1>欢迎登录</h1>
+      </div>
+      <!-- 头部 结束-->
+      <div class="wrapper">
+        <div class="banner">
+
+        </div>
+
+      </div>
+      <!-- 底部 -->
+      <div class='footer'>
+        <div class="foot-top">
+          <div class="wid1000 j-copydl">
+            <span>友情链接：</span>
+            <ul class="j-row-list">
+              <li><a href="#">广州广播电视台</a></li>
+              <li><a href="#">广州广播电视台</a></li>
+              <li><a href="#">广州广播电视台</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="foot-main wid1000 pure-g">
+          <div class="foot-m-l pure-u-1-3">
+            <img src="/images/demo/xg/b4.jpg" />
+          </div>
+          <ul class="foot-m-r j-row-list foot-m-l pure-u-2-3">
+            <li class="pure-u-1-3">
+              <span>我是 OP</span>
+              <ul class="j-column-list">
+                <li><a href="#">我是 op之一</a></li>
+                <li><a href="#">我是 op之一</a></li>
+                <li><a href="#">我是 op之一</a></li>
+              </ul>
+            </li>
+            <li class="pure-u-1-3">
+              <span>我是供应商</span>
+              <ul class="j-column-list">
+                <li><a href="#">我是供应商之一</a></li>
+                <li><a href="#">我是供应商之一</a></li>
+                <li><a href="#">我是供应商之一</a></li>
+                <li><a href="#">我是供应商之一</a></li>
+                <li><a href="#">我是供应商之一</a></li>
+              </ul>
+            </li>
+            <li class="pure-u-1-3">
+              <span>我是供应商</span>
+              <ul class="j-column-list">
+                <li><a href="#">我是供应商之一</a></li>
+                <li><a href="#">我是供应商之一</a></li>
+                <li><a href="#">我是供应商之一</a></li>
+                <li><a href="#">我是供应商之一</a></li>
+                <li><a href="#">我是供应商之一</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div class="foot-bottom">
+          <div class="wid1000">
+            <p>
+              <a rel="nofollow" href="http://pages.ctrip.com/public/copyright.htm" id="copyright">Copyright©</a>1999-2017,&nbsp;<a href="http://srwtck.com/get?key=b11e8793cade0a4fedc9f17323b20200&amp;ref=http%3A%2F%2Fwww.ctrip.com%2F%3Futm_source%3Dbaidu%26utm_medium%3Dcpc%26utm_campaign%3Dbaidu81%26campaign%3DCHNbaidu81%26adid%3Dindex%26gclid%3D%26isctrip%3DT&amp;uid=88510421&amp;out=http%3A%2F%2Fwww.ctrip.com%2F">ctrip.com</a>. All rights reserved.&nbsp;|&nbsp;<a rel="nofollow" target="_blank" href="http://www.miibeian.gov.cn/">ICP证：沪B2-20050130</a>
+            </p>
+            <p>
+              <a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=31010502000018"><i class="icon-gns"></i>沪公网备31010502000018号</a>
+            </p>
+            <p>
+              旅游违法行为举报电话12318  丨服务质量投诉电话 962020   丨<a href="http://pages.c-ctrip.com/commerce/promote/201611/other/zz/pc/index.html" target="_blank">上海市旅游网站落实诚信建设主体责任承诺书</a>
+            </p>
+            <ul class="j-row-list">
+              <!-- <li><a href="#"><img src="images/xxx.jpg" /></a></li> -->
+            </ul>
+            <ul class="j-row-list foot-b-honour">
+              <li><a class="j-honour-xy" href="#">信用评级</a></li>
+              <li><a class="j-honour-xy" href="#">信用评级</a></li>
+              <li><a class="j-honour-xy" href="#">信用评级</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    @@include('./_common/footer/foot.html')
+
+  </body>
+</html>

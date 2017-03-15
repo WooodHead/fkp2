@@ -1,8 +1,11 @@
-body
-  font-size: 12px
-a
-  color: #666
-  text-decoration: none
+// body
+//   font-size: 12px
+// a
+//   color: #666
+//   text-decoration: none
+//   &:hover,&:active
+//     color: #333
+//     text-decoration: underline
 
 p,ul,h1
   padding: 0
@@ -153,7 +156,7 @@ img
     a
       color: red
       margin-left: 0
-      
+
   .j-search-btn
       padding: 0.7em 1.2em
       border-radius: 0 4px 4px 0
@@ -162,13 +165,13 @@ img
 
 
 //form
-input[type='text']
-  border: 1px solid #ddd
-  display: block
-  height: 30px
-  line-height: 30px
-  padding: .4em .6em
-  width: 100%
+// input[type='text']
+//   border: 1px solid #ddd
+//   display: block
+//   height: 30px
+//   line-height: 30px
+//   padding: .4em .6em
+//   width: 100%
 
 
 // 头部1
@@ -187,21 +190,7 @@ input[type='text']
     margin-left: 10px
 
 //头部2  用于登录、注册等页面
-.header-s
-  padding: 1em 0
-  height: 100px
-  a
-    border-right: 1px solid #ddd
-    display: inline-block;
-    width: 120px
-    padding-right: 15px
-  h1
-    display: inline-block
-    font-weight: normal
-    font-size: 26px
-    padding-left: 15px
-    vertical-align: top
-    line-height: 123px      //这里的 line-height 根据图片上一层的 a标签的高度来定
+
 
 
 
@@ -236,3 +225,152 @@ input[type='text']
 
 .wrapper
   min-height: 400px
+
+
+
+
+
+
+
+
+
+//demo login
+html,body
+  height: 100%
+  width: 100%
+
+.boxer
+  width: 100%
+  height: 100%
+  box-sizing: border-box
+  display: table
+  overflow: hidden
+  .boxer-header
+    height: 10em
+    display: table-row
+    .header-s
+      padding: 1em 0
+      a
+        border-right: 1px solid #ddd
+        display: inline-block
+        width: 120px
+        padding-right: 15px
+        height: 108px
+      h1
+        display: inline-block
+        font-weight: normal
+        font-size: 26px
+        padding-left: 15px
+        vertical-align: top
+        line-height: 108px      //这里的 line-height 根据图片上一层的 a标签的高度来定
+        color: #333
+    // .header
+    //   border-bottom: 2px solid #ddd
+
+
+  .boxer-body
+    display: table-row
+    // height: 550px
+    background: url('https://as.zbjimg.com/static/login/login/img/login-bg_2fc38ad.jpg')
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+  .grids
+    height: 100%
+  .boxer-footer
+    display: table-row
+    // background-color: #ececec
+    height: 12em
+
+
+
+
+.register-container
+  position: relative
+#register
+  position: absolute
+  right: 2em
+  top: 2em
+  width: 400px
+  height: 338px
+  // border: 1px solid #ececec
+  .tabsGroupY
+    border-radius: 4px
+  .inputGroup
+    input
+      width: 17em
+
+  .list-wrap
+    height: 100%
+    .hlist
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      align-content: center;
+      height: 100%;
+      margin-left: -1px
+      text-align: center;
+      li
+        width: 50%
+        height: 100%
+        border-left: 1px solid #ddd
+        padding: 0
+        &:hover
+          border-bottom: 2px solid #2db7f5;
+
+  #valide
+    width: 9.4em
+  .btn-center
+    display: block
+    width: 30%
+    margin: 1em auto
+  .tabsGroupY
+    .tabsBoxes
+      border: none
+      padding: 1em 0
+      overflow: inherit
+    .tabsMenus
+      overflow: hidden
+      border-bottom: 1px solid #ececec
+
+  .hbody
+    margin-top: 0.5em
+
+  .other-info
+    font-size: 12px
+    width: 90%
+    margin: 0.6em auto
+  .hb-item
+    overflow: hidden
+    width: 90%
+    font-size: 12px
+    margin: auto;
+    // .item-attribute
+    //   display: inline-block
+    //   margin-left: 1em
+    //   font-size: 12px
+
+  .qrcode
+    font-size: 12px
+    width: 220px
+    height: 220px
+    margin: auto
+
+  .fkp-desc
+    .btn
+      font-size: 12px
+      padding: .5em 0;
+      width: 8em;
+  .disabled-link
+    background-color: #E8ECEF
+    color: gray
+
+//图片验证码
+.code
+  font-size: 12px;
+  img
+    width: 56%
+    vertical-align: middle;
+  a
+    color: red
+    text-decoration: underline;
