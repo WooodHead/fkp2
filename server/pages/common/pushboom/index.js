@@ -30,7 +30,7 @@ SIO.on('pushboom', function(data, socket, client) {
       if (!dublicat) {
         dublicat = pushboomDb.findOne({url})
         if (!dublicat) {
-          if (count > 30) {
+          if (count > 50) {
             pushboomDb.removeAll({type: 'boom'})
             socket.emit('pushboom', {error: '机房故障，发生爆炸，数据都没了'})
           } else {
