@@ -7,14 +7,13 @@ import scrollHlc from 'component/mixins/scrollhlc'
 var ws = require('libs/wsocket')
 require('./_common/pushboom')(ws)
 
-
 // websocket
-ws.emit('hello', 'hi')
-ws.on('hello', function(val){
-  setTimeout(function(){
-    msgtips.toast(val.message)
-  },0)
-})
+// ws.emit('hello', 'hi')
+// ws.on('hello', function(val){
+//   setTimeout(function(){
+//     msgtips.toast(val.message)
+//   },0)
+// })
 
 let Modal = modal.p30
 mediaQuery({

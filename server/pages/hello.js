@@ -89,38 +89,44 @@ function hello(oridata) {
         <a className="iconfont icon-goods_new_fill_light"></a>,
         <a className="iconfont icon-video_fill_light"></a>,
       ]
+      
       const list1 = component.baselist({
-        data: titles1,
-        theme: 'list/books',
-        listClass: 'books'
-      }, true)
+              data: titles1,
+              theme: 'list/books',
+              listClass: 'books'
+            }, true),
 
-      const grids = component.grids
-      const floor1 = grids({
-        data: [
-          {width: '100%', content: <h3 style={{color:'#9c9c9c'}}>推荐文章</h3>},
-          {width: '100%', content: list1}
-        ]
-      })
+            grids = component.grids,
 
-      const treeVal = pushboomDb.find().reverse()
-      const pushBoomHistoryData = [
-        {"title":"文档","url":"http://www.agzgz.com/docs"},
-        {"title":"博客","url":"http://www.agzgz.com/blog"},
-      ]
-      const pushboomList = component.iscroll({
-        data: treeVal||[],
-        listClass: 'pushboomBody',
-        iscroll: { scrollX: true }
-      }, true)
-      const pushboomHis = component.baselist({ data: pushBoomHistoryData, listClass: 'history' }, true)
-      const pushboom = (
-        <div className="pushboomContainer">
-          {pushboomList}
-          {pushboomHis}
-        </div>
-      )
-      const pushboomStr = ReactDomServer.renderToString(pushboom)
+            floor1 = grids({
+              data: [
+                {width: '100%', content: <h3 style={{color:'#9c9c9c'}}>推荐文章</h3>},
+                {width: '100%', content: list1}
+              ]
+            }),
+
+            treeVal = pushboomDb.find().reverse(),
+            PushboomList = component.iscroll({
+              data: treeVal||[],
+              listClass: 'pushboomBody',
+              iscroll: { scrollX: true }
+            }, true),
+
+            pushBoomHistoryData = [
+              {"title":"文档","url":"http://www.agzgz.com/docs"},
+              {"title":"博客","url":"http://www.agzgz.com/blog"},
+            ],
+
+            PushboomHis = component.baselist({ data: pushBoomHistoryData, listClass: 'history' }, true),
+
+            pushboom = (
+              <div className="pushboomContainer">
+                {PushboomList}
+                {PushboomHis}
+              </div>
+            ),
+
+            pushboomStr = ReactDomServer.renderToString(pushboom)
 
       oridata.floor1 = floor1
       oridata.pushBoom = pushboomStr
