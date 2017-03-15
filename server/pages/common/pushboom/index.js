@@ -2,7 +2,8 @@ const pushboomDb = LocalDB('PUSHIT.DB/BOOM')
 const pushboomHistoryDb = LocalDB('PUSHIT.DB/BOOMHISTORY')
 
 const regs = {
-  boom: /^ *@([\w\u4e00-\u9fa5\uFE30-\uFFA0\-]*) *## *([\w\:\/\.\-\?&\;\,\=]*) *$/
+  // boom: /^ *@([\w\u4e00-\u9fa5\uFE30-\uFFA0\-]*) *## *([\w\:\/\.\-\?&\;\,\=]*) *$/
+  boom: /^@([\w\u4e00-\u9fa5\uFE30-\uFFA0\S ]*)##([\w\:\/\.\-\?&\;\,\=#]*) *$/
 }
 
 function boomValue(val){
