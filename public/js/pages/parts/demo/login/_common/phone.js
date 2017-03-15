@@ -25,22 +25,9 @@ const valideButton = ()=>{
   })
   return <Vb />
 }
-const valideButton2 = ()=>{
-  // <img src="http://10.10.10.109:8080/tp-web-api/captcha.svl" />
-  const Vb = itemHlc(
-    <div className="code">
-      <a class="refreshCode">刷新</a>
-    </div>, function(dom){
-    $(dom).find('.refreshCode').click(function(){
-      // alert(123)
-    })
-  })
-  return <Vb />
-}
 const configForm = [
   {title: '账号:', input:{id: 'username', type: 'text', placehold: '手机号/邮箱'} },
-  // {title: '验证码:', input:{id: 'valide', type: 'text'}, desc: valideButton()},
-  {title: '验证码:', input:{id: 'code', type: 'text'}, desc: valideButton2()},
+  {title: '验证码:', input:{id: 'valide', type: 'text'}, desc: valideButton()},
   {title: '密码:', input:{id: 'password', type: 'password', placehold:'请输入密码'} }
 ]
 const registerForm = Input({data: configForm})
@@ -108,7 +95,7 @@ const submint = ()=> {
 }
 
 const registerBody =(
-  <div className="registerDom">
+  <div className="phoneForm">
     {registerForm.render()}
     <div className="other-info fo">
       <div className="fl">
