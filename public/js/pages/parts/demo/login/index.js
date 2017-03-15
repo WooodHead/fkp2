@@ -9,14 +9,6 @@ STATE.append({
   isMobile: false
 })
 
-// 注入样式表
-// _.delay(()=>{
-//   inject().css(`
-//
-// `)
-// }, 0)
-
-
 // ========= tabs ========
 
 const qrcode = (

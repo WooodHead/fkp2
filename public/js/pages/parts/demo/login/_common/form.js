@@ -30,13 +30,14 @@ const valideButton2 = ()=>{
   const Vb = itemHlc(
     <div className="code">
       <a class="refreshCode">刷新</a>
-    </div>, function(dom){
-    $(dom).find('.refreshCode').click(function(){
-      // alert(123)
-    })
+    </div>,
+    function(dom){
+      $(dom).find('.refreshCode').click(function(){ }
+    )
   })
   return <Vb />
 }
+
 const configForm = [
   {title: '账号:', input:{id: 'username', type: 'text', placehold: '手机号/邮箱'} },
   // {title: '验证码:', input:{id: 'valide', type: 'text'}, desc: valideButton()},
@@ -51,6 +52,7 @@ const valideSome = {
     return regu.email.test(val) ? 'email' : regu.mobile.test(val) ? 'mobile' : undefined
   }
 }
+
 registerForm.rendered = function(){
   $('#username').blur(function(){
     const values = registerForm.values()

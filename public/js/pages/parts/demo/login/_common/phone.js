@@ -38,6 +38,7 @@ const valideSome = {
     return regu.email.test(val) ? 'email' : regu.mobile.test(val) ? 'mobile' : undefined
   }
 }
+
 registerForm.rendered = function(){
   $('#username').blur(function(){
     const values = registerForm.values()
