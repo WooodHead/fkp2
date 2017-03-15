@@ -96,10 +96,8 @@ function getItemAllocation(data, index){
 
 
 function defMenthod(ctx){
-  const dft = ctx.config
-  let allocation = ctx.allocation
-
   return function(dom, intent){
+    const dft = ctx.config
     ctx.ipt = dom
     let elements = this.refs
     ctx.elements = function(id, lable){

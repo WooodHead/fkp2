@@ -97,7 +97,7 @@ function mk_elements(item, ii){
   if (Array.isArray(inputs)) {
     const elements = inputs.map( (ele, jj) => {
       const _name = getTypeName(ele)
-      if (_name ) return this::mk_element(item, {key: _.uniqueId(ii+'_'+jj+'_'), index: ii})
+      if (_name ) return mk_element(item, {key: _.uniqueId(ii+'_'+jj+'_'), index: ii})
     })
 
     return (
@@ -108,7 +108,7 @@ function mk_elements(item, ii){
   }
 
   const _name = getTypeName(inputs)
-  if (_name ) return this::mk_element(item, ii)
+  if (_name ) return mk_element(item, ii)
 }
 
 /*
@@ -118,7 +118,7 @@ function mk_elements(item, ii){
  */
 let tmp_P = {}
 function mk_element(item, _i){
-  const allocation = this.state.allocation
+  const allocation = saxer.data.allocation
   let _title,
       _desc,
       _class,
@@ -135,7 +135,7 @@ function mk_element(item, _i){
 
   P = typeof item == 'string'
   ? allocation[item]
-  : this.props.allocation[getTypeName(item.input)]
+  : allocation[getTypeName(item.input)]
   // : this.props.getItemAllocation(item, index)[getTypeName(item.input)]
 
   _title = P.attr.title
@@ -152,7 +152,6 @@ function mk_element(item, _i){
     }
     saxer.data.intent.push(_union)
   }
-  saxer.data.allocation[P.id] = P
 
   // radio
   return $radio_check.indexOf(P.type) > -1
@@ -185,18 +184,18 @@ class Input extends React.Component {
 
     const data = this.props.data||[]
     this.state = {
-      data: data,
-      allocation: this.props.allocation
+      data: data
     }
 
     saxer = SAX(this.props.globalName)
     saxer.append({
       intent: [],
-      allocation:{}
+      allocation: this.props.allocation
     })
 
     this._preRender = this::this._preRender
     mk_elements = this::mk_elements
+    mk_element = this::mk_element
   }
 
   componentWillMount() {}
