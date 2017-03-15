@@ -3,9 +3,25 @@
 * 返回 div > (ul > li)*n
 */
 import store from 'component/mixins/storehlc'
+import itemHlc from 'component/mixins/itemhlc'
 import {BaseList, pure} from 'component/modules/list/base_list'
 import Tree from 'component/util/tree'
 
+
+function checkContent(content, ii){
+	if (typeof content != 'object') return content
+	if (Array.isArray(content)){
+		console.log('不能指定为数组');
+		return
+	}
+	if (content.props) {
+		const Temp = itemHlc(content)
+		return <Temp key={_.uniqueId('TabsContent_')}/>
+	}
+	else {
+		return content
+	}
+}
 
 const tapsapp = SAX(_.uniqueId('TapsApp_'), {})
 class TapsApp extends React.Component {
@@ -56,7 +72,7 @@ class TapsApp extends React.Component {
 
 	componentWillMount() {
 		if (this.props.opts.globalName) { this.actions() }
-		let contents = this.state.data.map((item, i)=> item.content )
+		let contents = this.state.data.map( (item, ii) => checkContent(item.content, ii) )
 		tapsapp.append({contents: contents})
 		this._menus()
 	}
