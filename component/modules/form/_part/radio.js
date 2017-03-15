@@ -13,110 +13,193 @@ function isString(data){
   return typeof data == 'string'
 }
 
-class Radioo extends React.Component {
-  constructor(props){
-    super(props)
-    this.state = {
-      data: this.props.data
+function rcbox(pdata, opts){
+  let superID,
+      titles = [],
+      values = [].concat(pdata.value),
+      descs = [],
+      names = [];
+
+  const itemClass = pdata.attr.itemClass ? pdata.attr.itemClass : ''
+  const lableClass = pdata.type ==='radio' ? 'radioItem '+itemClass : 'checkboxItem '+itemClass
+  const _cls = pdata.type==='radio' ? 'fkp-radio-box' : 'fkp-checkbox-box';
+
+  // let values = pdata.value
+  // if (!isArray(values)) values = [values]
+
+  const len = values.length
+
+  // superID or names
+  if (isArray(pdata.name)) {
+    if (pdata.name.length == len) {
+      names = pdata.name
+      ids = names
     }
+    superID = P.name[0]
+  } else {
+    superID = pdata.name
   }
 
-  componentWillMount() { }
+  const fill = values.map( (val, ii) => {
+    let checked = false
 
-  preRender(){
-    let superID
-    let titles = [],
-        descs = [],
-        names = [],
-        ids = []
-    const pdata = this.state.data
-    const itemClass = pdata.attr.itemClass ? pdata.attr.itemClass : ''
-    const lableClass = pdata.type ==='radio' ? 'radioItem '+itemClass : 'checkboxItem '+itemClass
-    const _cls = pdata.type==='radio' ? 'fkp-radio-required' : 'fkp-checkbox-required';
+    if (val.charAt(0)=='-') checked = true
 
-
-    let values = pdata.value
-    if (!isArray(values)) values = [values]
-    const len = values.len
-    values.forEach( (val, ii) => {
-
-      // superID or names
-      if (isArray(pdata.name)) {
-        if (pdata.name.length == len) {
-          names = pdata.name
-          ids = names
-          superID = pdata.name[0]
-        } else {
-          superID = pdata.name[0]
-        }
-      } else {
-        superID = pdata.name
+    // title
+    if (isArray(pdata.attr.title)) {
+      if (pdata.attr.title.length == len) titles = pdata.attr.title
+      else {
+        titles.push(pdata.attr.title[ii]||'')
       }
-      this.superID = superID
+      pdata.attr.title = ''
+    }
 
-      // title
-      if (isArray(pdata.attr.title)) {
-        if (pdata.attr.title.length == len) titles = pdata.attr.title
-        else {
-          titles.push(pdata.attr.title[ii]||'')
-        }
-        pdata.attr.title = ''
+    // desc
+    if (isArray(pdata.attr.desc)) {
+      if (pdata.attr.desc.length == len) descs = pdata.attr.desc
+      else {
+        descs.push(pdata.attr.desc[ii]||'')
       }
+      pdata.attr.desc = ''
+    }
 
-      // desc
-      if (isArray(pdata.attr.desc)) {
-        if (pdata.attr.desc.length == len) descs = pdata.attr.desc
-        else {
-          descs.push(pdata.attr.desc[ii]||'')
-        }
-      }
-    })
+    const resault = {
+      title: titles.length ? titles[ii] : '',
+      name: names.length ? names[ii] : superID,
+      id: names.length ? names[ii]+'-'+ii : superID+'-'+ii,
+      value: val,
+      desc: descs.length ? descs[ii] : ''
+    }
 
-    return values.map( (val, ii) => {
-      let checked = false
-
-      if (val.charAt(0)=='-'){
-        checked = true
-      }
-
-      let resault = {
-        title: titles.length ? titles[ii] : '',
-        name: names.length ? names[ii] : superID,
-        id: names.length ? names[ii]+'-'+ii : superID+'-'+ii,
-        value: val,
-        desc: descs.length ? descs[ii] : ''
-      }
-      return (
-         <lable key={'radio'+ii} className={ lableClass }>
-          {resault.title ? <span className="fkp-title">{resault.title}</span> : ''}
-          {
-            checked
-            ? <input ref={'#'+resault.id} defaultChecked type={pdata.type} name={resault.name} id={resault.id} value={resault.value}/>
-            : <input ref={'#'+resault.id} type={pdata.type} name={resault.name} id={resault.id} value={resault.value}/>
-          }
-          <span className={_cls} />
-          { resault.desc ? <span className="fkp-desc">{resault.desc}</span> : '' }
-        </lable>
-      )
-    })
-  }
-
-  render(){
-    const state = this.state
-    const fill = this.preRender()
-    const groupClass = this.state.data.type === 'radio' ? 'radioGroup' : 'checkboxGroup'
     return (
-      <div ref={this.superID} className={groupClass}>
+       <lable key={'rcbox'+ii} className={ lableClass }>
+        {resault.title ? <span className="fkp-title">{resault.title}</span> : ''}
         {
-          state.data.attr.title
-          ? <span className="fkp-title">{state.data.attr.title}</span>
-          : ''
+          checked
+          ? <input ref={'#'+resault.id} defaultChecked type={pdata.type} name={resault.name} id={resault.id} value={resault.value}/>
+          : <input ref={'#'+resault.id} type={pdata.type} name={resault.name} id={resault.id} value={resault.value}/>
         }
-        {fill}
-      </div>
+        <span className={_cls} />
+        {pdata.attr.required ? <span className="fkp-input-required" /> : ''}
+        {resault.desc ? <span className="fkp-desc">{resault.desc}</span> : '' }
+      </lable>
     )
+  })
+
+  const groupClass = pdata.type === 'radio' ? 'radioGroup' : 'checkboxGroup'
+  return {
+    title: pdata.attr.title,
+    fill: fill,
+    desc: pdata.attr.desc,
+    groupClass: groupClass,
+    superID: superID
   }
 }
+
+// class Radioo extends React.Component {
+//   constructor(props){
+//     super(props)
+//     this.state = {
+//       data: this.props.data
+//     }
+//   }
+//
+//   componentWillMount() { }
+//
+//   preRender(){
+//     let superID
+//     let titles = [],
+//         descs = [],
+//         names = [],
+//         ids = []
+//     const pdata = this.state.data
+//     const itemClass = pdata.attr.itemClass ? pdata.attr.itemClass : ''
+//     const lableClass = pdata.type ==='radio' ? 'radioItem '+itemClass : 'checkboxItem '+itemClass
+//     const _cls = pdata.type==='radio' ? 'fkp-radio-box' : 'fkp-checkbox-box';
+//
+//
+//     let values = pdata.value
+//     if (!isArray(values)) values = [values]
+//     const len = values.length
+//
+//     // superID or names
+//     if (isArray(pdata.name)) {
+//       if (pdata.name.length == len) {
+//         names = pdata.name
+//         ids = names
+//       }
+//       superID = P.name[0]
+//     } else {
+//       superID = pdata.name
+//     }
+//     this.superID = superID
+//
+//     values.forEach( (val, ii) => {
+//
+//       // title
+//       if (isArray(pdata.attr.title)) {
+//         if (pdata.attr.title.length == len) titles = pdata.attr.title
+//         else {
+//           titles.push(pdata.attr.title[ii]||'')
+//         }
+//         pdata.attr.title = ''
+//       }
+//
+//       // desc
+//       if (isArray(pdata.attr.desc)) {
+//         if (pdata.attr.desc.length == len) descs = pdata.attr.desc
+//         else {
+//           descs.push(pdata.attr.desc[ii]||'')
+//         }
+//         pdata.attr.desc = ''
+//       }
+//     })
+//
+//     return values.map( (val, ii) => {
+//       let checked = false
+//
+//       if (val.charAt(0)=='-'){
+//         checked = true
+//       }
+//
+//       let resault = {
+//         title: titles.length ? titles[ii] : '',
+//         name: names.length ? names[ii] : superID,
+//         id: names.length ? names[ii]+'-'+ii : superID+'-'+ii,
+//         value: val,
+//         desc: descs.length ? descs[ii] : ''
+//       }
+//       return (
+//          <lable key={'radio'+ii} className={ lableClass }>
+//           {resault.title ? <span className="fkp-title">{resault.title}</span> : ''}
+//           {
+//             checked
+//             ? <input ref={'#'+resault.id} defaultChecked type={pdata.type} name={resault.name} id={resault.id} value={resault.value}/>
+//             : <input ref={'#'+resault.id} type={pdata.type} name={resault.name} id={resault.id} value={resault.value}/>
+//           }
+//           <span className={_cls} />
+//           {pdata.attr.required ? <span className="fkp-input-required" /> : ''}
+//           {resault.desc ? <span className="fkp-desc">{resault.desc}</span> : '' }
+//         </lable>
+//       )
+//     })
+//   }
+//
+//   render(){
+//     const state = this.state
+//     const fill = this.preRender()
+//     const groupClass = this.state.data.type === 'radio' ? 'radioGroup' : 'checkboxGroup'
+//     return (
+//       <div ref={this.superID} className={groupClass}>
+//         { state.data.attr.title
+//           ? <span className="fkp-title">{state.data.attr.title}</span> : '' }
+//         {fill}
+//         { state.data.attr.desc
+//           ? <span className="fkp-desc">{state.data.attr.desc}</span> : '' }
+//       </div>
+//     )
+//   }
+// }
 
 // var Radio = React.createClass({
 //   mixins: [ItemMixin],
@@ -199,4 +282,4 @@ class Radioo extends React.Component {
 // 	}
 // });
 
-module.exports = Radioo;
+module.exports = rcbox;

@@ -5,7 +5,7 @@ import {list} from 'component'
 import {smd} from 'libs'
 
 const A = Array, O = Object
-const Radio = require('./radio')
+const rcbox = require('./radio')
 let saxer, context
 
 const $text_type = ['text', 'password', 'select', 'tel']
@@ -135,7 +135,8 @@ function mk_element(item, _i){
 
   P = typeof item == 'string'
   ? allocation[item]
-  : this.props.getItemAllocation(item, index)[getTypeName(item.input)]
+  : this.props.allocation[getTypeName(item.input)]
+  // : this.props.getItemAllocation(item, index)[getTypeName(item.input)]
 
   _title = P.attr.title
   _desc = P.attr.desc
@@ -155,8 +156,17 @@ function mk_element(item, _i){
 
   // radio
   return $radio_check.indexOf(P.type) > -1
-  // ? <Radio ref={(P.id&&P.id[0]||P.name&&P.name[0])} key={'radioGroup'+_i} data={P} />
-  ? <Radio key={'radioGroup'+_i} data={P} />
+  ? ( ()=>{
+    const resault = rcbox(P)
+    return (
+      <div ref={resault.superID} className={resault.groupClass}>
+        {resault.title ? <span className="fkp-title">{resault.title}</span> : ''}
+        {resault.fill}
+        {resault.desc ? <span className="fkp-desc">{resault.desc}</span> : ''}
+      </div>
+    )
+  })()
+
   : <lable ref={(P.id||P.name)} key={"lable"+_i} className={_class + ' for-' + (P.id||P.name||'')}>
       {_title ? <span className="fkp-title">{_title}</span> : false}
       {this::whatTypeElement(P)}

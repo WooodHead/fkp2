@@ -1,18 +1,20 @@
 .radioGroup{
     font-size: 16px;
-    display:-moz-box;
-    display:-webkit-box;
+    // display:-moz-box;
+    // display:-webkit-box;
     display:flex;
+    align-items: center;
     lable, .radioItem{
       position: relative;
-      display:-moz-box;
-      display:-webkit-box;
+      // display:-moz-box;
+      // display:-webkit-box;
       display:flex;
+      align-items: center;
       margin-right:1em;
-      -moz-box-align:center;
-      -webkit-box-align:center;
-      -o-box-align:center;
-      box-align:center;
+      // -moz-box-align:center;
+      // -webkit-box-align:center;
+      // -o-box-align:center;
+      // box-align:center;
     }
     input{
       position: absolute;
@@ -53,7 +55,7 @@
       &.fkp-radio-box{
         position: relative;
         font-family: iconfont!important;
-        font-size: 1em;
+        font-size: 2em;
         &:after{
           content: '\e6d7';
           display:block;
@@ -64,10 +66,10 @@
           content: '\e656';
           display:block;
           position:absolute;
-          padding-top: 0.1em;
+          // padding-top: 0.1em;
           left:0;
           top:0;
-          color:#66afe9;
+          color:#048cf9;
           // -webkit-transform:scale(0);
           // -moz-transform:scale(0);
           transform: scale(0);
@@ -93,7 +95,8 @@
     position: relative;
     display:flex;
     margin-right:1em;
-    box-align:center;
+    align-items: center;
+    // box-align:center;
   }
   input{
     position: absolute;
@@ -175,22 +178,22 @@
     &.fkp-checkbox-box{
       position: relative;
       font-family: iconfont!important;
-      font-size: 1em;
+      font-size: 2em;
       &:after{
         content: '\e6d5';
         display:block;
-        color:#66afe9;
+        color:#048cf9;
         padding-top: 0;
         transition: all .2s linear;
       }
       &:before{
-        content: '\e6d6';
+        content: '\e6d4';
         display:block;
         position:absolute;
-        padding-top: 0.1em;
+        // padding-top: 0.1em;
         left:0;
-        top:-2px;
-        color:#66afe9;
+        top: 0;
+        color:#048cf9;
         opacity: 0;
         transition: all .2s linear;
         // transform: scale(1);

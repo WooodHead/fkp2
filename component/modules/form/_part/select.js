@@ -4,7 +4,7 @@ function isFunction(cb) {
 
 function select(_intent, ctx){
   const intent = ctx.actions.data.intent
-  const allocation = ctx.actions.data.allocation // 配置文件, 每一个有id的表单的配置文件都在这个对象下
+  const allocation = ctx.allocation // 配置文件, 每一个有id的表单的配置文件都在这个对象下
   const elements = ctx.elements('all')
   let isSelect = {}   // 注册所有的select到这个对象下
   let watchs = {}  // 所有联动的联动方法都会被注册到这个对下下
@@ -31,41 +31,54 @@ function select(_intent, ctx){
     if (watchs[param.id]) watchs[param.id]()
   }
 
-
-  /*
-   * radio子项动作
-   * change
-   */
-  const radios = $(that.ipt).find('.radioItem').find('input[type=radio]')
-  $(radios).change(function(){
-    that.form[this.name] = this.value;
-  })
-
-  /*
-   * checkbox子项动作
-   * chang
-   */
-  // $('.checkboxItem').find('input[type=checkbox]')
-  const ckboxs = $(that.ipt).find('.checkboxItem').find('input[type=checkbox]')
-  $(ckboxs).change(function(){
-    var _items = $('input[name='+this.name+']:checked');
-    if( _items.length ){
-      that.form[this.name] =_items.map( it => it.value )
+  function getrcBoxName(pdata){
+    let superID
+    if (_.isArray(pdata.name)) return P.name[0]
+    else {
+      return pdata.name
     }
-  })
+  }
+
+  // console.log(elements);
+  // console.log(allocation);
+
+  function dealRcbox(item){
+    const _name = getrcBoxName(item)
+    const lable = elements[_name]
+    const thisInput = $(lable).find('input[name='+_name+']')
+    $(thisInput).change(function(){
+      if (item.type == 'checkbox') {
+        let cbVal = []
+        thisInput.each( (ii, item) => {
+          if (item.checked) cbVal.push(item.value)
+        })
+        ctx.form[_name] = cbVal;
+      } else {
+        ctx.form[_name] = this.value;
+      }
+      const itMtd = item.itemMethod || item.attr.itemMethod
+      if (typeof itMtd == 'function') {
+        itMtd.call(this, thisInput)
+      }
+    })
+  }
 
   Object.keys(allocation).forEach( unit => {
     const item = allocation[unit]
-    let thisInput = elements['#'+item.id]
+    let thisInput
+    let lable
     switch (item.type) {
       case 'checkbox':
+        dealRcbox(item)
         break;
 
       case 'radio':
+        dealRcbox(item)
         break;
 
       case 'select':
-        const lable = elements[item.id]
+        thisInput = elements['#'+item.id]
+        lable = elements[item.id]
         const ddMenu = elements['+'+item.id]  //下拉菜单容器
         let change = true
 
@@ -93,7 +106,8 @@ function select(_intent, ctx){
             thisInput.setAttribute('data-value', _val)
             thisInput.value = this.innerHTML
 
-            if (isFunction(item.optionMethod)) item.optionMethod(this)
+            const itMtd = item.itemMethod || item.attr.itemMethod
+            if (isFunction(itMtd)) itMtd(this)  // ???
 
             const hasUnion = checkUnion({id: item.id}, dealWithUnion)
             if (hasUnion) {
@@ -104,14 +118,20 @@ function select(_intent, ctx){
         break;
 
       default:
+        thisInput = elements['#'+item.id]
         const hasUnion = checkUnion({id: item.id}, dealWithUnion);
+
+        const itMtd = item.itemMethod || item.attr.itemMethod
+
         if (hasUnion) {
           $(thisInput).on('input', function(e){
             ctx.form[item.id] = this.value
+            if (isFunction(itMtd)) itMtd(this)  // ???
             dealWatchs({id: thisInput.id})
           })
         } else {
           $(thisInput).on('input', function(e){
+            if (isFunction(itMtd)) itMtd(this)  // ???
             ctx.form[item.id] = this.value
           })
         }
@@ -145,24 +165,24 @@ function select(_intent, ctx){
         return
       }
 
-      if (unionObj.url){
-        if (unionObj.param){
-          var _str =  JSON.stringify(unionObj.param).replace('$value', data.val) .replace('$text', data.txt) .replace('$attr', data.attr)
-          unionObj.param = JSON.parse(_str)
-        }
+      // if (unionObj.url){
+      //   if (unionObj.param){
+      //     var _str =  JSON.stringify(unionObj.param).replace('$value', data.val) .replace('$text', data.txt) .replace('$attr', data.attr)
+      //     unionObj.param = JSON.parse(_str)
+      //   }
+      //
+      //   //关联select取回数据
+      //   ajax.get(unionObj.url, unionObj.param)
+      //   .then(function(data){
+      //     if (unionObj.target.type==='select'){
+      //       if (isFunction(unionObj.cb)) targetDom::unionObj.cb(_ctx)
+      //     } else {
+      //       if (isFunction(unionObj.cb)) targetDom::unionObj.cb(_ctx)
+      //     }
+      //   })
+      // }
 
-        //关联select取回数据
-        ajax.get(unionObj.url, unionObj.param)
-        .then(function(data){
-          if (unionObj.target.type==='select'){
-            if (isFunction(unionObj.cb)) targetDom::unionObj.cb(_ctx)
-          } else {
-            if (isFunction(unionObj.cb)) targetDom::unionObj.cb(_ctx)
-          }
-        })
-      }
-
-      else {
+      // else {
         // 清空关联项的数据
         let targetIt = {}
         targetIt[target_id] = '';
@@ -207,7 +227,7 @@ function select(_intent, ctx){
             ctx.values(targetValue)
           }
         }
-      }
+      // }
     })
   }
 }

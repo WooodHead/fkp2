@@ -88,7 +88,7 @@ function getItemAllocation(data, index){
   let allocation = {}
   assets.forEach( item => {
     const _name = getTypeName(item)
-    if (_name) allocation[getTypeName(item)] = item
+    if (_name) allocation[_name] = item
   })
 
   return allocation
