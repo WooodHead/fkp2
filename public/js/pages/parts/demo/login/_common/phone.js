@@ -8,26 +8,9 @@ import itemHlc from 'component/mixins/itemhlc'
 const Validator = validator()
 const STATE = SAX('Login')
 
-const valideButton = ()=>{
-  const Vb = itemHlc(<a className="btn btn-primary">获取动态码</a>, function(dom){
-    $(dom).click(function(){
-      const values = registerForm.values()
-      const stat = Validator($('#username').val(), 'noop', values::valideSome.username)()
-      if(stat){
-        $(dom).html('60秒后重新获取')
-        $(dom).addClass('disabled-link').attr('disabled','disabled')
-      }else {
-        registerForm.warning('username')
-        msgtips.toast('请输入手机号')
-      }
-      // alert(123)
-    })
-  })
-  return <Vb />
-}
 const configForm = [
   {title: '账号:', input:{id: 'username', type: 'text', placehold: '手机号/邮箱'} },
-  {title: '验证码:', input:{id: 'valide', type: 'text'}, desc: valideButton()},
+  {title: '验证码:', input:{id: 'valide', type: 'text'}, desc: <a id='valideButton' className="btn btn-primary">获取动态码</a>},
   {title: '密码:', input:{id: 'password', type: 'password', placehold:'请输入密码'} }
 ]
 const registerForm = Input({data: configForm})
@@ -40,57 +23,48 @@ const valideSome = {
 }
 
 registerForm.rendered = function(){
-  $('#username').blur(function(){
-    const values = registerForm.values()
-    const stat = Validator(this.value, 'noop', values::valideSome.username)()
-    if (stat) {
-      if (stat == 'mobile') {
-        $(registerForm.elements['valide']).addClass('block')
-      }
-      registerForm.warning('username', 'no')
-    } else {
-      registerForm.warning('username')
-    }
-  })
-  $('#password').blur(function(){
-    const stat = Validator(this.value, 'password')()
-    if (stat) registerForm.warning('password', 'no')
-    else {
-      registerForm.warning('password')
-      msgtips.toast('6位密码，包含字符串，数字和符号')
-    }
-  })
-}
-//otherInfo
+  // $('#username').blur(function(){
+  //   const values = registerForm.values()
+  //   const stat = Validator(this.value, 'noop', values::valideSome.username)()
+  //   if (stat) {
+  //     if (stat == 'mobile') {
+  //       $(registerForm.elements('valide')).addClass('block')
+  //     }
+  //     registerForm.addWarn('username', 'no')
+  //   } else {
+  //     registerForm.addWarn('username')
+  //   }
+  // })
 
-const submint = ()=> {
+  // $('#password').blur(function(){
+  //   const stat = Validator(this.value, 'password')()
+  //   if (stat) registerForm.addWarn('password', 'no')
+  //   else {
+  //     registerForm.addWarn('password')
+  //     msgtips.toast('6位密码，包含字符串，数字和符号')
+  //   }
+  // })
+  //
+  // $('#valideButton').click(function(){
+  //   const values = registerForm.values()
+  //   const stat = Validator($('#username').val(), 'noop', values::valideSome.username)()
+  //   if(stat){
+  //     $(this).html('60秒后重新获取')
+  //     $(this).addClass('disabled-link').attr('disabled','disabled')
+  //   }else {
+  //     registerForm.addWarn('username')
+  //     msgtips.toast('请输入手机号')
+  //   }
+  // })
+}
+
+const submint = () => {
   const Vb = itemHlc(
     <button className="btn btn-primary btn-center submit">登录</button>
-  ,function(dom){
-    $(dom).click(function(){
-      var getName = $('#username').val()
-      var getCode = $('#code').val()
-      var getPassword = $('#password').val()
-      let configs = {
-          "method": "login.do",
-          "appKey": "1234567",
-          "signMethod": "md5",
-          "sign": "fjdkslf",
-          "tocken": "",
-          "timestamp": "72320193021942",
-          "format": "json",
-          "userName": getName,
-          "password": getPassword,
-          "isVerify": "2",
-          "verifyCode": getCode,
-          "loginType": "1"
-      }
-      console.log(configs);
-      // ajax.post('http://10.10.10.109:8080/tp-web-api/login.do', configs)
-      // .then((data)=>{
-      //   console.log(data);
-      // })
-    })
+    ,function(dom){
+      $(dom).click(function(){
+        console.log(registerForm.values())
+      })
   })
   return <Vb />
 }

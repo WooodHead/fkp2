@@ -20,7 +20,6 @@ const valideButton = ()=>{
         registerForm.warning('username')
         msgtips.toast('请输入手机号')
       }
-      // alert(123)
     })
   })
   return <Vb />
@@ -53,59 +52,13 @@ const valideSome = {
   }
 }
 
-registerForm.rendered = function(){
-  $('#username').blur(function(){
-    const values = registerForm.values()
-    const stat = Validator(this.value, 'noop', values::valideSome.username)()
-    if (stat) {
-      if (stat == 'mobile') {
-        $(registerForm.elements['valide']).addClass('block')
-      }
-      registerForm.warning('username', 'no')
-    } else {
-      registerForm.warning('username')
-    }
-  })
-  $('#password').blur(function(){
-    const stat = Validator(this.value, 'password')()
-    if (stat) registerForm.warning('password', 'no')
-    else {
-      registerForm.warning('password')
-      msgtips.toast('6位密码，包含字符串，数字和符号')
-    }
-  })
-}
-//otherInfo
-
 const submint = ()=> {
   const Vb = itemHlc(
     <button className="btn btn-primary btn-center submit">登录</button>
-  ,function(dom){
-    $(dom).click(function(){
-      var getName = $('#username').val()
-      var getCode = $('#code').val()
-      var getPassword = $('#password').val()
-      let configs = {
-          "method": "login.do",
-          "appKey": "1234567",
-          "signMethod": "md5",
-          "sign": "fjdkslf",
-          "tocken": "",
-          "timestamp": "72320193021942",
-          "format": "json",
-          "userName": getName,
-          "password": getPassword,
-          "isVerify": "2",
-          "verifyCode": getCode,
-          "loginType": "1"
-      }
-      console.log(configs);
-      // ajax.post('http://10.10.10.109:8080/tp-web-api/login.do', configs)
-      // .then((data)=>{
-      //   console.log(data);
-      // })
-    })
-  })
+    ,function(dom){
+      console.log(dom);
+    }
+  )
   return <Vb />
 }
 
