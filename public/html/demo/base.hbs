@@ -1,0 +1,140 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <title>Hello World</title>
+    @@include('../_common/header/head.html')
+    <link rel="stylesheet" href="/css/t/iconfont.css">
+    <link rel="stylesheet" href="/css/m/steps.css">
+    <link rel="stylesheet" href="/css/m/rate.css">
+    <link rel="stylesheet" href="/css/t/boostrap_datepick.css">
+    <link rel="stylesheet" href="/css/m/badge.css">
+    <link rel="stylesheet" href="/css/m/progress.css">
+    <link rel="stylesheet" href="/css/m/table.css">
+    <link rel="stylesheet" href="/css/m/side.css">
+  </head>
+  <body>
+    <div class="container">
+      <h2>步骤条</h2>
+      <ul class="j-steps">
+        <li class="j-steps-status-finish">
+          <div class="j-steps-tail"><i></i></div>
+          <div class="j-steps-step">
+            <span class="j-steps-icon"></span>
+            <p class="j-steps-word">确认用户</p>
+          </div>
+        </li>
+        <li class="j-steps-status-process">
+          <div class="j-steps-tail"><i></i></div>
+          <div class="j-steps-step">
+            <span class="j-steps-icon">1</span>
+            <p class="j-steps-word">验证用户</p>
+          </div>
+        </li>
+        <li>
+          <div class="j-steps-step">
+            <span class="j-steps-icon">1</span>
+            <p class="j-steps-word">重置密码</p>
+          </div>
+        </li>
+      </ul>
+      <ul class="j-steps">
+        <li>
+          <div class="j-steps-tail"><i></i></div>
+          <div class="j-steps-step">
+            <span class="j-steps-icon">1</span>
+            <p class="j-steps-word">确认用户</p>
+          </div>
+        </li>
+        <li>
+          <div class="j-steps-tail"><i></i></div>
+          <div class="j-steps-step">
+            <span class="j-steps-icon">2</span>
+            <p class="j-steps-word">确认用户</p>
+          </div>
+        </li>
+        <li>
+          <div class="j-steps-tail"><i></i></div>
+          <div class="j-steps-step">
+            <span class="j-steps-icon">3</span>
+            <p class="j-steps-word">验证用户</p>
+          </div>
+        </li>
+        <li>
+          <div class="j-steps-step">
+            <span class="j-steps-icon">4</span>
+            <p class="j-steps-word">重置密码</p>
+          </div>
+        </li>
+      </ul>
+      <h2>评分</h2>
+      <ul class="j-rate">
+        <li class="j-rate-full"><i></i></li>
+        <li class="j-rate-full"><i></i></li>
+        <li><i></i></li>
+        <li><i></i></li>
+        <li><i></i></li>
+      </ul>
+      <h2>时间控件</h2>
+      <input type="text" class="some_class" value="" id="some_class_1"/>
+	    <input type="text" class="some_class" value="" id="some_class_2"/>
+      <h2>徽章</h2>
+      <h6>主要是用到了 j-badge（带数字） j-badge-dot（实心）</h6>
+      <div style="position: relative; width: 55px;height: 55px; display:inline-block; margin-right: 16px;">
+        <a style="width: 55px;height: 55px;border-radius: 6px;background: #eee;display: block;"></a>
+        <i class="j-badge">99+</i>
+      </div>
+      <div style="position: relative; width: 42px;height: 42px; display:inline-block; margin-right: 16px;">
+        <a style="width: 42px;height: 42px;border-radius: 6px;background: #eee;display: block;"></a>
+        <i class="j-badge">9</i>
+      </div>
+      <div style="position: relative; width: 55px;height: 55px; display:inline-block; margin-right: 16px;">
+        <a style="width: 55px;height: 55px;border-radius: 6px;background: #eee;display: block;"></a>
+        <i class="j-badge-dot"></i>
+      </div>
+      <div style="position: relative; width: 80px;height: 80px; display:inline-block; margin-right: 16px;">
+        <a style="width: 80px;height: 80px;border-radius: 6px;background: #eee;display: block;"></a>
+        <i class="j-badge">99</i>
+      </div>
+      <h2>进度条</h2>
+      <div class="j-progress-line">
+        <div class="j-progress-outer">
+          <div class="j-progress-inner">
+            <div class="j-progress-bg" style="width: 70%;"></div>
+          </div>
+        </div>
+        <span class="j-progress-text">70%</span>
+      </div>
+    </div>
+    <h2>表格</h2>
+    <div id="btTable" class="btTable"></div>
+
+    <div id="sides" style="margin: 20px;"></div>
+    @@include('../_common/footer/foot.html')
+    <script src="/js/t/boostrap_datepick.js"></script>
+    <script src="/js/t/bootstrap_datetimepicker.zh_CN.js"></script>
+
+    <script src="/js/parts-demo-table.js"></script>
+
+    <script src="/js/parts-demo-side.js"></script>
+    <script>
+      var stepsWid
+      $('.j-steps').each(function(){
+        stepsWid = 100/ ($(this).find('li').length -1) + '%'
+      })
+      var stepsEm =  $('.j-steps .j-steps-word').width()/2 + 2 +'px'
+      $('.j-steps li:not(:last-child)').css({marginRight: '-'+ stepsEm,width: stepsWid})
+      $('.j-steps .j-steps-tail').css({paddingRight: stepsEm})
+      // $('.j-steps li:last-child').css({marginRight: 0})
+      $('.some_class').datetimepicker({
+        minView: "month", //选择日期后，不会再跳转去选择时分秒
+        language: 'zh-CN',
+        format: "yyyy-mm-dd",                //格式化日期
+        autoclose: true,
+        startDate: "2017-03-02",
+        endDate: "2017-03-22",
+        todayBtn: true
+      });
+
+    </script>
+  </body>
+</html>
