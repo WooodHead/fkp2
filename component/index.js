@@ -24,13 +24,15 @@ function reallyReturn(wrap, isreact){
 export function item(props, isreact){
   let Item = require('./widgets/itemView/f_div')
   const Component = <Item {...props} />
-  return isClient ? reallyReturn(Component) : reallyReturn(Component, isreact)
+  return reallyReturn(Component, isreact)
+  // return isClient ? reallyReturn(Component) : reallyReturn(Component, isreact)
 }
 
 export function list(props, isreact){
   let List = require('./widgets/listView')
   const Component = <List {...props} />
-  return isClient ? reallyReturn(Component) : reallyReturn(Component, isreact)
+  return reallyReturn(Component, isreact)
+  // return isClient ? reallyReturn(Component) : reallyReturn(Component, isreact)
 }
 
 export function input(props, isreact){

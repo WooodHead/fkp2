@@ -3,4 +3,20 @@ import modal from './modules/modal'
 import sticky from './modules/sticky'
 import slip from './modules/slip'
 import router from './modules/router'
-export {tips, modal, sticky, slip, router}
+
+import itemHlc from './mixins/itemhlc'
+import * as Sync from './index'
+
+function wrapItem(comp, cb){
+  return itemHlc(comp, cb)
+}
+
+module.exports = {
+  tips,
+  modal,
+  sticky,
+  slip,
+  router,
+  wrapItem,
+  ...Sync
+}
