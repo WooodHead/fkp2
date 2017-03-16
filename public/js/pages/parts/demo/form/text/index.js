@@ -17,8 +17,6 @@ const formText = Input({data: configText})
 formText.render('form_text')
 
 
-
-
 // 表单合并
 const configText1 = [
   {
@@ -33,50 +31,25 @@ const formText1 = Input({data: configText1})
 formText1.render('form_text1')
 
 
-
-
-// 简单联动
-const configUnion = [
-  {title: '用户名:', input:{id: 'test', type: 'text', placehold: '用户名'}},
-  {title: '手机号码', input:{id: 'iphone', type: 'text', placehold:'手机号码', desc: '我在后面'} },
+// radio & checkbox
+const configBox = [
   {
-    title: '公司:',
-    input:{id: 'icompany', type: 'text', placehold:'公司'},
-    union: {
-      id: 'test',
-      cb: function(form){
-        $('#test').on('input',function(){
-          $('#icompany').val($('#test').val())
-        })
-      }
+    input: {
+      type: 'radio',
+      title: '什么',
+      name:  'ddd',
+      value: ['1', '2', '3'],
+    },
+  },
+  '分隔符',
+  {
+    input:{
+      type: 'checkbox',
+      name:  'www',
+      title: ['选项1', '选项2', '选项3'],
+      value: ['1', '2', '3'],
     }
-  }
+  },
 ]
-const formUni = Input({data: configUnion})
-formUni.render('form_uni')
-
-
-
-
-
-// Password 类型
-const configPwd = [
-  {title: '密码:', input:{id: 'password', type: 'password', placehold: '请输入密码'} },
-  {title: '再次输入:', input:{id: 'repassword', type: 'password', placehold:'请输入密码'} }
-]
-const formPwd = Input({data: configPwd})
-formPwd.render('form_pwd')
-
-
-
-
-
-// 分隔符
-const configSplit = [
-  '分割符',
-  {title: '密码:', input:{id: 'username1', type: 'text'} },
-  '华丽的分割符',
-  {title: '再次输入:', input:{id: 'username4', type: 'text'} },
-]
-const formSpl = Input({data: configSplit})
-formSpl.render('form_spl')
+const formBox = Input({data: configBox})
+formBox.render('demo-rcbox')
