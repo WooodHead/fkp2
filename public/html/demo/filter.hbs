@@ -3,68 +3,11 @@
     <head>
       <title>Hello World</title>
       @@include('../_common/header/head.html')
-      <style>
-        html{
-          width: 100%;
-          height: 100%;
-        }
-        body{
-          width: 100%;
-          height: 100%;
-        }
-        .boxer{
-          width: 100%;
-          height: 110%;
-          box-sizing: border-box;
-          display: table;
-          overflow: hidden;
-        }
-        .boxer .boxer-header{
-          height: 10em;
-          background-color: blue;
-          display: table-row;
-        }
-        .boxer .boxer-body{
-          display: table-row;
-          height: 550px;
-        }
-        .boxer-body .grids{
-          height: 100%;
-        }
-        .boxer .boxer-footer{
-          display: table-row;
-          background-color: #ececec;
-        }
-        .register-container{
-          position: relative;
-        }
-
-        #register{
-          position: absolute;
-          right: 2em;
-          top: 2em;
-          width: 330px;
-          height: 338px;
-          border: 1px solid #ececec;
-        }
-      </style>
+      <!-- <link rel="stylesheet" href="/css/m/filter.css"> -->
     </head>
     <body>
-      <div class="boxer">
-        <div class="boxer-header">
-          <div id='id-filtrate' style="margin-left: 1em; padding-left: 1em;background-color: #fff;box-sizing:border-box;">
-
-          </div>
-        </div>
-        <!-- <div class="boxer-body">
-          <div class="grids pure-g">
-            <div class="pure-u-1-2"><p>Thirds</p></div>
-            <div class="pure-u-1-2 register-container">
-              <div id="register"></div>
-            </div>
-          </div>
-        </div>
-        <div class="boxer-footer">1</div> -->
+      <div class="filter-box">
+        <div id='id-filtrate' style="margin: 1em;"></div>
       </div>
       @@include('../_common/footer/foot.html')
       <script src="/js/parts-demo-filter.js"></script>
