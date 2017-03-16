@@ -63,7 +63,7 @@ const submint = ()=> {
 }
 
 const registerBody =(
-  <div className="registerDom">
+  <div clclassName="registerDom">
     {registerForm.render()}
     <div className="other-info fo">
       <div className="fl">
