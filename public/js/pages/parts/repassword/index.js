@@ -1,6 +1,5 @@
 import {objtypeof, inject, validator } from 'libs'
-import { input as Input } from 'component'
-import { tips as msgtips } from 'component/client'
+import { tips as msgtips, input as Input } from 'component/client'
 const Validator = validator()
 const injectStatic = inject()
 injectStatic.css(`

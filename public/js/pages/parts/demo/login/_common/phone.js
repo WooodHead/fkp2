@@ -1,97 +1,65 @@
 import {validator} from 'libs'
-import { tips as msgtips } from 'component/client'
 import {
   input as Input,
   item as itemComp,
-} from 'component'
-import itemHlc from 'component/mixins/itemhlc'
-const Validator = validator()
-const STATE = SAX('Login')
+  tips as msgtips,
+  wrapItem
+} from 'component/client'
 
-const configForm = [
-  {title: '账号:', input:{id: 'username', type: 'text', placehold: '手机号/邮箱'} },
-  {title: '验证码:', input:{id: 'valide', type: 'text'}, desc: <a id='valideButton' className="btn btn-primary">获取动态码</a>},
-  {title: '密码:', input:{id: 'password', type: 'password', placehold:'请输入密码'} }
-]
-const registerForm = Input({data: configForm})
+const STATE = SAX('Login'),
+  Validator = validator(),
 
-const valideSome = {
-  username: function(val, regu) {
-    if (!val) return false
-    return regu.email.test(val) ? 'email' : regu.mobile.test(val) ? 'mobile' : undefined
-  }
-}
+  valideSome = {
+    username: function(val, regu) {
+      if (!val) return false
+      return regu.email.test(val) ? 'email' : regu.mobile.test(val) ? 'mobile' : undefined
+    }
+  },
 
-registerForm.rendered = function(){
-  // $('#username').blur(function(){
-  //   const values = registerForm.values()
-  //   const stat = Validator(this.value, 'noop', values::valideSome.username)()
-  //   if (stat) {
-  //     if (stat == 'mobile') {
-  //       $(registerForm.elements('valide')).addClass('block')
-  //     }
-  //     registerForm.addWarn('username', 'no')
-  //   } else {
-  //     registerForm.addWarn('username')
-  //   }
-  // })
+  configForm = [
+    {title: '账号:', input:{id: 'username', type: 'text', placehold: '手机号/邮箱'} },
+    {title: '验证码:', input:{id: 'valide', type: 'text'}, desc: <a id='valideButton' className="btn btn-primary">获取动态码</a>},
+    {title: '密码:', input:{id: 'password', type: 'password', placehold:'请输入密码'} }
+  ],
 
-  // $('#password').blur(function(){
-  //   const stat = Validator(this.value, 'password')()
-  //   if (stat) registerForm.addWarn('password', 'no')
-  //   else {
-  //     registerForm.addWarn('password')
-  //     msgtips.toast('6位密码，包含字符串，数字和符号')
-  //   }
-  // })
-  //
-  // $('#valideButton').click(function(){
-  //   const values = registerForm.values()
-  //   const stat = Validator($('#username').val(), 'noop', values::valideSome.username)()
-  //   if(stat){
-  //     $(this).html('60秒后重新获取')
-  //     $(this).addClass('disabled-link').attr('disabled','disabled')
-  //   }else {
-  //     registerForm.addWarn('username')
-  //     msgtips.toast('请输入手机号')
-  //   }
-  // })
-}
+  registerForm = Input({data: configForm}),
 
-const submint = () => {
-  const Vb = itemHlc(
+  Submiter = wrapItem(
     <button className="btn btn-primary btn-center submit">登录</button>
     ,function(dom){
       $(dom).click(function(){
         console.log(registerForm.values())
       })
-  })
-  return <Vb />
+    }
+  );
+
+registerForm.rendered = function(){
+
 }
 
 const registerBody =(
-  <div className="phoneForm">
-    {registerForm.render()}
-    <div className="other-info fo">
-      <div className="fl">
-        <p>是否自动登录</p>
+    <div className="phoneForm">
+      {registerForm.render()}
+      <div className="other-info fo">
+        <div className="fl">
+          <p>是否自动登录</p>
+        </div>
+        <a className="fr" href="#">忘记密码</a>
       </div>
-      <a className="fr" href="#">忘记密码</a>
+      <Submiter />
     </div>
-    {submint()}
-  </div>
-)
+  ),
 
-const registerDom = itemComp({
-  data:{
-    title: registerBody,
-    body: [
-      {
-        k: <span className='item-attribute fl'></span>,
-        v: <a className='item-attribute fr' href="#">注册新账号</a>
-      }
-    ]
-  }
-})
+  registerDom = itemComp({
+    data:{
+      title: registerBody,
+      body: [
+        {
+          k: <span className='item-attribute fl'></span>,
+          v: <a className='item-attribute fr' href="#">注册新账号</a>
+        }
+      ]
+    }
+  })
 
 export default registerDom

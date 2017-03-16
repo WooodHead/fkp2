@@ -1,10 +1,10 @@
 import {validator} from 'libs'
-import { tips as msgtips } from 'component/client'
 import {
   input as Input,
   item as itemComp,
-} from 'component'
-import itemHlc from 'component/mixins/itemhlc'
+  tips as msgtips
+} from 'component/client'
+
 const Validator = validator()
 
 // TEXT 类型

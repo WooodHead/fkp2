@@ -1,9 +1,9 @@
 import {validator} from 'libs'
-import { tips as msgtips } from 'component/client'
 import {
   input as Input,
   item as itemComp,
-} from 'component'
+  tips as msgtips
+} from 'component/client'
 const Validator = validator()
 
 const validCode = (

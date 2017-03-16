@@ -1,6 +1,5 @@
 import {inject} from 'libs'
-import {grids} from 'component'
-import {router} from 'component/client'
+import {grids, router} from 'component/client'
 import itemHlc from 'component/mixins/itemhlc'
 
 import page1 from './_common/page1'

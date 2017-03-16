@@ -1,10 +1,10 @@
 import {validator} from 'libs'
-import { tips as msgtips } from 'component/client'
 import {
+  tips as msgtips,
   input as Input,
   item as itemComp,
-} from 'component'
-import itemHlc from 'component/mixins/itemhlc'
+} from 'component/client'
+
 
 // Radio&Checkbox
 const configBox = [

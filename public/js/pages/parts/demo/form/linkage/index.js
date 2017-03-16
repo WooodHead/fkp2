@@ -1,10 +1,9 @@
-import itemHlc from 'component/mixins/itemhlc'
-import { tips as msgtips } from 'component/client'
 import Icon from 'component/widgets/icon'
 import {
+  tips as msgtips,
   input as Input,
   item as itemComp,
-} from 'component'
+} from 'component/client'
 
 
 // 简单联动
