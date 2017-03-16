@@ -63,27 +63,29 @@ function getItemAllocation(data, index){
   dft.attr = profile
 
   // 第二次设置attr，不能包含union，union不能在input里面设定
-  function resetAttr(item){
+  function resetAttr(item, isary){
     let _props = item.props||item
+    let attr = {}
     O.keys(dftAttr).forEach( attribut => {
-      if (attribut == 'itemClass' && _props[attribut]) {
-        dft.attr[attribut] = _props[attribut]
+      if (attribut == 'itemClass') {
+        attr[attribut] = _props[attribut]
         ? 'inputItem '+ _props[attribut]
         : 'inputItem'
       } else {
-        dft.attr[attribut] = _props[attribut] || dft.attr[attribut] || ''
+        attr[attribut] = isary
+        ? _props[attribut] || ''
+        : _props[attribut] || profile[attribut]
       }
       delete _props[attribut]
     })
-    return _props
+    return {..._props, attr}
   }
 
   let assets = []
   const inputs = data.input
   A.isArray(inputs)
-  ? assets = inputs.map( item => _.extend( dft, resetAttr(item)) )
-  : assets.push( _.extend(dft, resetAttr(inputs)) )
-
+  ? assets = inputs.map( item => _.merge({}, dft, resetAttr(item, true)) )
+  : assets.push( _.merge({}, dft, resetAttr(inputs)) )
   // map id to state.allocation
   let allocation = {}
   assets.forEach( item => {

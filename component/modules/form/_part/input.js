@@ -97,7 +97,7 @@ function mk_elements(item, ii){
   if (Array.isArray(inputs)) {
     const elements = inputs.map( (ele, jj) => {
       const _name = getTypeName(ele)
-      if (_name ) return mk_element(item, {key: _.uniqueId(ii+'_'+jj+'_'), index: ii})
+      if (_name ) return mk_element(_name, {key: _.uniqueId('grpinput_'), index: ii})
     })
 
     return (
@@ -129,8 +129,8 @@ function mk_element(item, _i){
       key
 
   if (typeof _i == 'object') {
-    index = _.index
-    _i = _.key
+    index = _i.index
+    _i = _i.key
   }
 
   P = typeof item == 'string'
