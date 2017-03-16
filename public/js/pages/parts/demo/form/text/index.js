@@ -7,7 +7,7 @@ import {
 
 const Validator = validator()
 
-// TEXT 类型
+// // TEXT 类型
 const configText = [
   {title: '用户名:', input:{id: 'username', type: 'text', placehold: '用户名'}},
   {title: '手机号码', input:{id: 'mobile', type: 'text', placehold:'手机号码', desc: '我在后面'} },
@@ -21,8 +21,8 @@ formText.render('form_text')
 const configText1 = [
   {
     input: [
-      {title: 'title1', id: 'usernamea', type: 'text', placehold: '用户名'},
-      {id: 'mobileb', type: 'text', placehold:'手机号码'},
+      {title: 'title1', id: 'usernamea1', type: 'text', placeholder: '用户名'},
+      {id: 'mobileb1', type: 'text', placeholder:'手机号码'},
       {id: 'btn', type: 'button', value: '按钮', desc: '按钮的描述'},
     ]
   }
@@ -52,4 +52,4 @@ const configBox = [
   },
 ]
 const formBox = Input({data: configBox})
-formBox.render('demo-rcbox')
+formBox.render('demo_rcbox')
