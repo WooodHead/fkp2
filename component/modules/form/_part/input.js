@@ -132,11 +132,10 @@ function mk_element(item, _i){
     index = _i.index
     _i = _i.key
   }
-
   P = typeof item == 'string'
   ? allocation[item]
-  : allocation[getTypeName(item.input)]
-  // : this.props.getItemAllocation(item, index)[getTypeName(item.input)]
+  : this.props.getItemAllocation(item, index)[getTypeName(item.input)]
+  // : allocation[getTypeName(item.input)]
 
   _title = P.attr.title
   _desc = P.attr.desc
