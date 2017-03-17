@@ -133,6 +133,7 @@ export default (ComposedComponent, options) => {
 
   let dft = {
     mouseWheel:true,     // probeType: 3
+    click: true,
     probeType: 3
   }
   const opts = _.merge(dft, (options||{}) )
