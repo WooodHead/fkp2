@@ -18,14 +18,6 @@ const Popstate = SAX('Popstate');
   }, false)
 }())
 
-/*
-  [
-    {title: 'xxx', content: 'yyy', idf: 'abc'},
-    {title: 'xxx', content: 'yyy', idf: 'abc'},
-    {title: 'xxx', content: 'yyy', idf: 'abc'},
-  ]
-*/
-
 const BaseRouter = require('./_component/_router')
 import BaseClass from 'component/class/base'
 import {urlparse, inject} from 'libs'
@@ -210,16 +202,17 @@ export default function router(opts){
   , dft = {
     data: [],
     rootUrl: location.href.split('#')[0],
-    withHash: true,
+    flag: true,
     select: 0,
-    menu: false,
+    menu: true,
+    scrollMenu: false,
     header: '',
     footer: '',
     treeHeader: '',
     treeFooter: '',
     container: '',
     globalName: _.uniqueId('Tabs_'),   // TabsModule
-    theme: '', // = /css/m/tabs
+    theme: 'router', // = /css/m/tabs
     cls: '',
     itemMethod: noop,
     listMethod: noop,

@@ -5,12 +5,15 @@
 import store from 'component/mixins/storehlc'
 import {BaseList, pure} from 'component/modules/list/base_list'
 import {tree} from 'component'
+import iscrollHlc from 'component/mixins/iscrollhlc'
 
 function pushState(props, nohash){
-	let uri = props.rootUrl + '#' + props.key
-	if (nohash) {
-		uri = props.rootUrl
-	}
+	const flag = props.flag ? (typeof props.flag == 'boolean' ? '#' : props.flag) : ''
+	const uri = flag ? props.rootUrl + flag + props.key : props.rootUrl
+	// let uri = props.rootUrl + flag + props.key
+	// if (nohash) {
+	// 	uri = props.rootUrl
+	// }
   window.history.pushState(props, '', uri)
 }
 
@@ -61,22 +64,22 @@ const animatecss = {
 	fade: {
 		in: ' fadeIn animated-faster',
 		rein: ' fadeIn animated-fastest',
-		out: ' fadeOut animated-fastest',
-		back: ' fadeOut animated-faster'
+		out: ' fadeOut contentHide animated-fastest',
+		back: ' fadeOut contentHide animated-faster'
 	},
 
 	left: {
 		in: ' fadeInLeft animated-faster',
 		rein: ' fadeIn animated-fastest',
-		out: ' fadeOut animated-fastest',
-		back: ' fadeOutLeft animated-faster'
+		out: ' fadeOut contentHide animated-fastest',
+		back: ' fadeOutLeft contentHide animated-faster'
 	},
 
 	right: {
 		in: ' fadeInRight animated-faster',
 		rein: ' fadeIn animated-fastest',
-		out: ' outHeight fadeOut animated-fastest',
-		back: ' outHeight fadeOutRight animated-faster',
+		out: ' outHeight fadeOut contentHide animated-fastest',
+		back: ' outHeight fadeOutRight contentHide animated-faster',
 	}
 
 }
@@ -96,7 +99,6 @@ class TapsApp extends React.Component {
 		this.state = {
 			data: [],
 			selectData: [],
-			// menus: [],
 			menu: false,
 			mulitple: false,
 			select: 0
@@ -104,30 +106,13 @@ class TapsApp extends React.Component {
 
 		if (this.props.opts) {
 			this.state = _.merge({}, this.state, this.props.opts)
-			// this.state = opts
-			// this.state.data = this.props.opts.data
 
 			if (this.state.animate) {
-				switch (this.state.animate) {
-					case 'fade':
-						this.animatein = animatecss.fade.in
-						this.animaterein = animatecss.fade.rein
-						this.animateout = animatecss.fade.out
-						this.animateback = animatecss.fade.back
-					break;
-					case 'left':
-						this.animatein = animatecss.left.in
-						this.animaterein = animatecss.left.rein
-						this.animateout = animatecss.left.out
-						this.animateback = animatecss.left.back
-					break;
-					case 'right':
-						this.animatein = animatecss.right.in
-						this.animaterein = animatecss.right.rein
-						this.animateout = animatecss.right.out
-						this.animateback = animatecss.right.back
-					break;
-				}
+				const animateType = this.state.animate  // fade, left, right
+				this.animatein = animatecss[animateType]['in']
+				this.animaterein = animatecss[animateType]['rein']
+				this.animateout = animatecss[animateType]['out']
+				this.animateback = animatecss[animateType]['back']
 			}
 		}
 
@@ -164,23 +149,35 @@ class TapsApp extends React.Component {
 			itemMethod: this.props.menuMethod
 		})
 
-		this.menus = _menus.render()
+		let xmenus = _menus.render()
+		if (this.state.scrollMenu) {
+			const Xmenus = iscrollHlc(xmenus)
+			xmenus = <Xmenus />
+		}
+		this.menus = xmenus
+		tapsapp.append({ menus: this.menus })
 	}
 
 	componentWillMount() {
-		if (this.props.opts.globalName) { this.actions() }
-		let contents = this.state.data.map((item, i)=> {
+		if (this.props.opts.globalName) this.actions()
+		let wheres = {}
+		let contents = this.state.data.map((item, ii)=> {
+			// 第一次访问，将记录存入history
+			if (ii == this.state.select) {
+				this.historyPush({
+					index: ii,
+					key: item.path,
+					data: {}
+				})
+			}
+
+			wheres[item.path] = {index: ii}
 			if (typeof item.content == 'function') {
 				return item.content(this.props.ctx)
 			}
+
 			return item.content
 		})
-
-		let wheres = {}
-		this.state.data.map((item, i)=> {
-			 wheres[item.path] = {index: i}
-		})
-
 		tapsapp.append({
 			contents: contents,
 			wheres: wheres
@@ -229,6 +226,8 @@ class TapsApp extends React.Component {
 							that.select(index, data, key)
 						}
 						return whereBack
+					} else {
+						pushState({rootUrl: this.state.rootUrl}, true)
 					}
 				}
 			},
@@ -253,7 +252,7 @@ class TapsApp extends React.Component {
 		let state = _history.pop()
 		let rightState;
 		if (!state) return false
-		if (this.state.withHash) {
+		if (this.state.flag) {
 			rightState = (state && state.preState)
 			if (rightState) {
 				pushState({
@@ -261,19 +260,20 @@ class TapsApp extends React.Component {
 					key: rightState.key,
 					data: rightState.data,
 					rootUrl: this.state.rootUrl,
-					preState: "curHistoryState"
+					preState: "curHistoryState",
+					flag: this.state.flag
 				})
 			}
 		} else {
 			rightState = _history.pop()
-			pushState({rootUrl: this.state.rootUrl}, true)
+			pushState({rootUrl: this.state.rootUrl, flag: this.state.flag}, true)
 		}
 
 		return rightState
 	}
 
 	historyPush(props){
-		if (this.state.withHash) {
+		if (this.state.flag) {
 			const curHistoryState = window.history.state
 			pushState({
 				index: props.index,
@@ -281,10 +281,11 @@ class TapsApp extends React.Component {
 				data: props.data,
 				rootUrl: this.state.rootUrl,
 				preState: curHistoryState,
-				timeLine: _historyCount
+				timeLine: _historyCount,
+				flag: this.state.flag
 			})
 		} else {
-			pushState({rootUrl: this.state.rootUrl}, true)
+			pushState({rootUrl: this.state.rootUrl, flag: this.state.flag}, true)
 		}
 
 		const preState = _history[_history.length-1]
@@ -477,9 +478,14 @@ class TapsApp extends React.Component {
 					{this.props.opts.footer}
 				</div>
 		)}
+
+		const _menus = this.state.menu
+		? <div className='routerMenus'>{treeHeader}{this.menus}{treeFooter}</div>
+		: ''
+
 		return (
       <div className={cls}>
-				<div className='routerMenus'>{treeHeader}{this.menus}{treeFooter}</div>
+				{_menus}
 				{content}
       </div>
     )
