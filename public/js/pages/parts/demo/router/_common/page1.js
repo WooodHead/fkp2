@@ -1,11 +1,10 @@
 import {inject} from 'libs'
-import {grids} from 'component'
-import itemHlc from 'component/mixins/itemhlc'
+import {wrapItem, grids} from 'component/client'
 
-function main(router){
-  const Btn = itemHlc(<button>路由跳转</button>, (dom)=>{
+function index(router){
+  const Btn = wrapItem(<button>路由跳转</button>, (dom)=>{
     $(dom).click(function(){
-      router.goto('page2')
+      router.goto('page2', {xxx: '123'})
     })
   })
 
@@ -22,7 +21,7 @@ function main(router){
 export default function(router){
   return {
     main: function(data){
-      return main(router)
+      return index(router)
     },
 
     enter: function(data){

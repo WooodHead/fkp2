@@ -1,7 +1,10 @@
 import {inject} from 'libs'
-import {grids} from 'component'
-import itemHlc from 'component/mixins/itemhlc'
+import {wrapItem, grids} from 'component/client'
 
 export default function(router){
-  return '456'
+  return (
+    <div>
+      我是最后一页
+    </div>
+  )
 }

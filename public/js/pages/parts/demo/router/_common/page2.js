@@ -1,7 +1,25 @@
 import {inject} from 'libs'
-import {grids} from 'component'
-import itemHlc from 'component/mixins/itemhlc'
+import {wrapItem, grids} from 'component/client'
 
 export default function(router){
-  return '123'
+  return {
+    main: function(data){
+      return (
+        <div>
+          good man
+        </div>
+      )
+    },
+
+    enter: function(data){
+      return this.main(data)
+    },
+
+    leave: function(){
+    },
+
+    loaded: function(dom){
+
+    }
+  }
 }
