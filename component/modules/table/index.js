@@ -1,5 +1,5 @@
 import { inject, objtypeof } from 'libs'
-import {BootstrapTable} from './_component/table'
+import itemHlc from 'component/mixins/itemhlc'
 import Base from 'component/class/base'
 
 let bsCount = 0
@@ -35,13 +35,9 @@ class _BoostrapTbale extends Base {
   componentWill(){
     const dft = this.config
 
-    this.eles = <BootstrapTable
-      itemDefaultMethod={itemDefaultMethod}
-      itemMethod={dft.itemMethod}
-      listMethod={dft.listMethod}
-      itemClass={dft.itemClass}
-      listClass={dft.listClass}
-    />
+    const Tablehtml = itemHlc( <table className="" data-toggle="table"></table> )
+
+    this.eles = <Tablehtml itemMethod={itemDefaultMethod}/>
   }
 }
 
