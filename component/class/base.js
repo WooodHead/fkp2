@@ -15,7 +15,7 @@ function rendered(cb){
 export default class {
   constructor(config){
     const dft = {
-      autoinjec: true
+      autoinject: true
     }
     this.config = _.merge(dft, config)
     this.data = this.config.data
@@ -41,7 +41,7 @@ export default class {
   inject(src){
     if (this.client) {
       const ij = inject()
-      if (this.config.theme && this.config.autoinjec) {
+      if (this.config.theme && this.config.autoinject) {
         ij.css(['/css/m/'+this.config.theme])  //注入样式
       }
       if (typeof src == 'function') {
