@@ -73,7 +73,7 @@ const _data = {
     },
     {
       "id": 9,
-      "name": "Item 1",
+      "name": "Item 9",
       "price": "$9"
     }
   ]
