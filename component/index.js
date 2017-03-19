@@ -135,3 +135,11 @@ export function htree(props, isreact){
     return reallyReturn(Component, isreact)
   }
 }
+
+export function dropdown(props, isreact){
+  const _rct = require('./modules/dropdown')
+  if (_rct.pure) {
+    const Component = _rct.pure(props)
+    return reallyReturn(Component, isreact)
+  }
+}
