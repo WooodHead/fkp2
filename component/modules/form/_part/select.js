@@ -95,11 +95,16 @@ function select(_intent, ctx){
           $(ddMenu).toggle()
         })
 
+        const _ctx = {
+          toggle: function(){
+            $(ddMenu).toggle()
+          }
+        }
+
         $(ddMenu).on('click', '.fkp-dd-option', function(e){
           e.stopPropagation()
           const _val = this.getAttribute('data-value')
           change = ctx.form[item.id] == _val ? false : true
-          $(ddMenu).toggle()
 
           if (change) {
             ctx.form[item.id] = _val
@@ -107,7 +112,10 @@ function select(_intent, ctx){
             thisInput.value = this.innerHTML
 
             const itMtd = item.itemMethod || item.attr.itemMethod
-            if (isFunction(itMtd)) itMtd(this)  // ???
+            if (isFunction(itMtd)) itMtd(this, _ctx)  // ???
+            else {
+              $(ddMenu).toggle()
+            }
 
             const hasUnion = checkUnion({id: item.id}, dealWithUnion)
             if (hasUnion) {
