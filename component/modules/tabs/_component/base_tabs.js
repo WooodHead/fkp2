@@ -132,7 +132,7 @@ class TapsApp extends React.Component {
 		const content = this.getContent()
 
 		// className
-		const cls = !opts.cls ? 'tabsGroup tabsGroupX' : 'tabsGroup tabsGroupX ' + opts.cls
+		const cls = !opts.cls ? 'tabsGroup ' : 'tabsGroup ' + opts.cls
     const boxes_cls = !opts.mulitple ? 'tabsBoxes' : 'tabsBoxes mulitple'
 
 		const treeHeader = this.props.opts.treeHeader

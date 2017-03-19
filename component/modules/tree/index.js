@@ -39,7 +39,7 @@ class App extends ListClass {
 
   componentWill(){
     const dft = this.config
-    const cls = !dft.cls ? 'treeGroup treeGroupY' : 'treeGroup treeGroupY ' + dft.cls
+    const cls = !dft.cls ? 'treeGroup' : 'treeGroup ' + dft.cls
     const List = this.createList(dft.globalName)
     // itemMethod={dft.itemMethod}
     const treeComponent = <List
@@ -90,7 +90,7 @@ export function tree(opts){
     container: '',
     globalName: _.uniqueId('Trees_'),   // TabsModule
     theme: 'tree', // = /css/m/tabs
-    cls: '',
+    cls: 'treeGroupY',
     itemClass: 'tree-menu',
     listClass: 'tree-menu-body',
     itemMethod: noop,
