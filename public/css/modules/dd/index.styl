@@ -1,0 +1,34 @@
+// 下拉菜单 fkp-dropdown 的缩写
+.dropdownContainer{}
+.dropdownGroup{}
+.dropdownGroupY{}
+.dropdown-menu-body-parent{}
+.dropdown-menu-body{}
+.itemroot{}
+
+.itemCategory
+  position: relative;
+
+.itemrootCkb
+  width: 100%
+  height: 1.5em
+  opacity: 0
+  position: absolute;
+  left: 0
+  top: 0
+.caption{}
+
+.dropdown-menu-body
+  font-size: 1.2em
+  .itemCategory
+    >.itemrootCkb
+      ~ul
+        display: none;
+  .selected
+    .itemCategory
+      >.itemrootCkb
+        ~ul
+          display: block;
+        &:checked
+          ~ul
+            display: block
