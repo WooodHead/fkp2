@@ -5,19 +5,18 @@ function select(idx, dom, data){
   const config = this.config
   idx = idx||0
   dom = dom || (this.items[idx]&&this.items[idx].dom)
-
   if (!dom) return
 
   this.items.forEach( item => {
     $(item.dom).removeClass('itemSelected')
     if (dom.itemroot) $(item.dom).removeClass('selected')
   })
+
   if (dom.itemroot) $(dom).addClass('selected')
   else {
     $(dom).addClass('itemSelected')
   }
 }
-
 
 class App extends ListClass {
   constructor(config) {
@@ -49,7 +48,7 @@ class App extends ListClass {
       }
 
       if (config.fold) {
-        $(dom).find('.itemCategory > ul').addClass('none')
+        $(dom).find('.itemCategory > ul').addClass('disN')
       }
 
       this.group.forEach( (line, jj) => {
@@ -79,7 +78,7 @@ class App extends ListClass {
 
   componentWill(){
     const dft = this.config
-    const cls = !dft.cls ? 'treeGroup treeGroupY' : 'treeGroup treeGroupY ' + dft.cls
+    const cls = !dft.cls ? 'treeGroup' : 'treeGroup ' + dft.cls
     const List = this.createList(dft.globalName)
     // itemMethod={dft.itemMethod}
     const treeComponent = <List
