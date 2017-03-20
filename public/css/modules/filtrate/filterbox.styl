@@ -1,39 +1,113 @@
+defaultBg()
+  background: #2577e3
+  color: #fff
 
-
-.filter-box
-  border: 1px solid #d9e8ff
-  .treeGroupY
-    // li.itemroot
-    //   position: initial;
-    //
-    // .itemCategory
-    //   position: initial;
-  .hlist
-    li
-      line-height: 20px;
-      font-size: 12px;
-      padding: 0 0.6em;
-    >li
-      border-bottom: 1px solid #ececec
-      padding-top: 6px
-      padding-bottom: 6px
-  .level0
-    >.itemCategory
-      >span
-        color: #999
-      >ul
+.filterGroup
+  li
+    padding: 0 8px
+    ul
+      font-size: 0
+      li
+        display: inline-block;
+        cursor: pointer;
+    &.level0
+      border-bottom: 1px solid #ddd
+      padding: 12px 0;
+      >.itemCategory
         position: relative;
-        >li
-          &:first-child
-            background: #2577e3
-            color: #fff
+        >span
+          float: left;
+          color: #999
+          margin-right: 20px
+        >ul
+          float: left;
 
-  .level1
-    &.selected
-      // margin-bottom: 50px
-    >.itemCategory
-      // >ul
-      //   position: absolute;
-      //   top: 40px;
-      //   left: 0;
-      //   width: 100%
+          >li
+            &:first-child
+              defaultBg()
+              &:hover
+                color: #fff
+          li
+            margin-right: 10px
+            &:hover
+              color: #2577e3
+            &.selected      //selected: 每一列 点击后添加的 class      上面 li的 hover事件会影响到 li 下面的 ul>li
+              &:hover
+                color: #333
+            &.itemSelected        //itemSelected: 每一列下的ul>li 点击后添加的 class
+              defaultBg()
+            &.active
+              background: none
+              color: #2577e3
+          li[data-xxx]            //点击地铁时 data-xxx 通过数据 attr:{xxx: '111'}
+            width: 99.5%;
+            margin-right: 0;
+            padding: 0
+            &:hover
+              color: #333
+            &.itemSelected
+              background: none
+              color: #333
+
+        &:after
+          content: ""
+          display:block;
+          height:0;
+          clear:both;
+          visibility:hidden;
+    &.level1
+      .disN
+        display: none
+      &.selected
+        margin-bottom: 100px
+        .caption
+          color: #2577e3
+        .disN
+          display: block
+        >.itemCategory
+          &:after
+            border-bottom: 5px solid #2577e3;
+            border-top: 5px solid transparent;
+            top: 5px;
+          >ul
+            position: absolute;
+            top: 40px;
+            left: 48px
+            width: 97.5%
+      .itemCategory
+        &:after
+          content: ""
+          width:0;
+          height:0;
+          border-left: 5px solid transparent;
+          border-right: 5px solid transparent;
+          border-top: 5px solid #2577e3;
+          position: absolute;
+          top: 10px
+          margin-left: 4px
+
+
+  .hlist      //hlist 设置了默认的字体大小是16px
+    li
+      font-size: 14px;
+    .itemCategory
+      position: initial
+    .itemrootCkb
+      position: initial
+      height: 16px;
+      width: auto;
+  .disN
+    display: block;
+
+  .mtro
+    // width: 95%;
+    // position: absolute;
+    .list-wrap
+      margin-bottom: 20px
+      li
+        height: 20px;
+        line-height: 20px;
+
+  .mtro-head    //第三层结构
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 15px
