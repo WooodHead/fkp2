@@ -4,12 +4,15 @@ import sticky from './modules/sticky'
 import slip from './modules/slip'
 import router from './modules/router'
 
-import itemHlc from './mixins/itemhlc'
+// import itemHlc from './mixins/itemhlc'
+import combinex from './mixins/combinex'
 import * as Sync from './index'
 
-function wrapItem(comp, cb){
-  return itemHlc(comp, cb)
+function wrapItem(comp, opts, cb){
+  return combinex(comp, opts, cb)
 }
+
+const combineX = wrapItem
 
 module.exports = {
   tips,
@@ -18,5 +21,6 @@ module.exports = {
   slip,
   router,
   wrapItem,
+  combineX,
   ...Sync
 }
