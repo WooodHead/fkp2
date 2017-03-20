@@ -1,8 +1,9 @@
-import { list, tabs } from 'component'
+import { list, tabs, item, grids, wrapItem, baselist } from 'component/client'
 import {filtrate} from 'component/modules/filtrate'
 
-// const tempData = [ '站1', '站2', '站3', '站4', '站5', '站6' ]
-//
+// const tempData = [ '一号线', '二号线', '三号线', '四号线', '五号线', '六号线' ]
+const tempData0 = [ '站1', '站2', '站3', '站4', '站5', '站6' ]
+const tempData1 = [ '站21', '站22', '站23', '站24', '站25', '站26' ]
 // const line1 = list({
 //   data: tempData
 // })
@@ -22,20 +23,69 @@ import {filtrate} from 'component/modules/filtrate'
 // const line5 = list({
 //   data: tempData
 // })
-//
+// //
 // // 地铁线路结构
-// const subwaysData = [
-//   // 三级
-//   {title: '一号线', content: line1.render(), idf: 'line1'},  // level 3
-//   {title: '二号线', content: line2.render(), idf: 'line2'},  // level 3
-//   {title: '三号线', content: line3.render(), idf: 'line3'},  // level 3
-//   {title: '四号线', content: line4.render(), idf: 'line4'},  // level 3
-//   {title: '五号线', content: line5.render(), idf: 'line5'}  // level 3
-// ]
+const subwaysData = [
+  // 三级
+  {title: '一号线', content: 'line1', idf: 'line1', li:['站1', '站2', '站3', '站4', '站5', '站6' ]},  // level 3
+  {title: '二号线', content: 'line2', idf: 'line2', li:['站21', '站22', '站23', '站24', '站25', '站2' ]},  // level 3
+  {title: '三号线', content: 'line3', idf: 'line3', li:['站31', '站22', '站23', '站24', '站25', '站2' ]},  // level 3
+  {title: '四号线', content: 'line4', idf: 'line4', li:['站41', '站22', '站23', '站24', '站25', '站2' ]},  // level 3
+  {title: '五号线', content: 'line5', idf: 'line5', li:['站51', '站22', '站23', '站24', '站25', '站2' ]}  // level 3
+]
 //
 // const metroList = tabs({
 //   data: subwaysData
 // })
+
+
+const mtrohead = []
+subwaysData.map(function(item, i){
+  const Seconddata = wrapItem(
+    <li id={item.idf} key={'sub'+i}>{item.title}</li>
+    ,function(dom){
+      $(dom).click(function(){
+        $(dom).addClass('active').siblings().removeClass('active')
+        if(item.li){
+          const secondData = item.li.map( (item, jj) => {
+            const ThreeDatahtml = wrapItem(
+              <span key={'xx'+jj}>{item}</span>,
+              function(dom){
+                $(dom).click(function(e){
+                  $(dom).parent('li').addClass('itemSelected').siblings().removeClass('itemSelected')
+                })
+              }
+            )
+            return <ThreeDatahtml />
+          })
+          blist.update(secondData)
+        }
+      })
+    }
+  )
+  mtrohead.push(<Seconddata />)
+})
+
+const blist = baselist({
+  data: tempData0
+})
+
+const Mtro = (
+  <div className="mtro">
+    <ul className="mtro-head">{mtrohead}</ul>
+    {blist.render()}
+  </div>
+)
+
+
+
+// if(document.getElementById('list')){
+//   React.render(StructureBig, document.getElementById('list'))
+// }
+
+
+
+
 // metro end
 
 
@@ -89,7 +139,8 @@ const treeData = [
   {title: '浦东机场', content: '', parent: 'bzone'},
   {title: '虹口区', content: '', parent: 'district'},
   {title: '上海浦东国际机场', content: '', parent: 'station'},
-  {title: 'metroList.render()', content: '', parent: 'metro'},  // level 3
+  {title: '上海浦东国际机场2', content: '', parent: 'station'},
+  {title: Mtro, content: '', parent: 'metro', attr:{xxx: '123'}},  // level 3
   {title: '外滩', content: '', parent: 'field'},
   {title: '上海海洋大学', content: '', parent: 'university'},
   {title: '瑞金医院', content: '', parent: 'hospital'},
@@ -99,6 +150,7 @@ const treeData = [
 
 const filtR = filtrate({
   data: treeData,
+  cls: 'filterGroup',
   itemMethod: function(dom, index){
     $(dom).click((e)=>{
       e.stopPropagation()
