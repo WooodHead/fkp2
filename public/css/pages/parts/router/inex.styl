@@ -1,0 +1,173 @@
+html,body
+  height: 100%;
+
+  /**
+   * 以下是左侧边栏的样式
+   */
+iconfont()
+  font-family:"iconfont" !important;
+  font-size:16px;
+  font-style:normal;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-stroke-width: 0.2px;
+  -moz-osx-font-smoothing: grayscale;
+
+hoverbg()
+  background: #212735;
+  box-shadow: 0px 0px 1px #4E6BAF;
+  border-left-color: #3c8dbc;
+  color: #fff
+  transition: all 0.3s ease-in-out;
+
+iscroll()
+  position: absolute;       //添加这个可以出现滚动效果
+  z-index: 1;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  width: 100%;
+  transform: translateZ(0);
+  user-select: none;
+  text-size-adjust: none;
+
+//文字左边的 icon
+icon-l()
+  border-left: 3px solid transparent;
+  &:hover
+      hoverbg()
+  &:before                  //一级栏目  左边的 icon
+    position: absolute;
+    left: 14px;
+    content: '\e652'
+icon-l2()
+  &:before
+    content: '\e664'
+icon-l3()
+  &:before
+    content: '\e665'
+icon-l4()
+  &:before
+    content: '\e666'
+icon-l5()
+  &:before
+    content: '\e667'
+
+#side-content
+  height: 100%;
+  .routerGroup
+    height: 100%;
+    overflow: hidden;   //如果启用 iscroll 这个可以清除滚动条
+  .routerMenus
+    border-right: 1px solid #ddd;
+    background: #2c3144;
+    color: #fff;
+    height: 100%;
+    width: 14em;
+    flex-direction: column;
+    /**
+     * 侧边栏公共部分
+     */
+    a
+      color: #fff;
+      display: block
+    .itemrootCkb
+      display: none;
+    .caption,.tree-menu
+      display: block;
+      height: 44px;
+      line-height: 44px;
+      cursor: pointer;
+      padding-left: 40px;
+      position: relative;
+      transform: scaleY(1);
+      iconfont()
+      &.fold              //一级栏目  右边的 icon 点击后
+        &:after
+          content: "\e6a3"
+      &:after
+        content: "\e616"    //一级栏目  右边的 icon
+        position: absolute;
+        right: 14px;
+    .treeContainer
+      position: relative;
+    .treeGroup
+      iscroll()
+    li
+      &.tree-menu         //只有一级栏目时
+        icon-l()
+        &:after
+          content: "\e6a3"    //一级栏目  右边的 icon
+          position: absolute;
+          right: 14px;
+        &:nth-child(2)
+          icon-l2()
+        &:nth-child(3)
+          icon-l3()
+        &:nth-child(4)
+          icon-l4()
+        &:nth-child(5)
+          icon-l5()
+
+    /**
+     * 侧边栏头部部分
+     */
+    .left-sidebar-head
+      border-bottom: 1px solid #ddd;
+      background: #2c3144;
+      position: relative;
+      z-index: 3;
+    .left-sidebar-img
+      width: 28%;
+      margin: 8% auto;
+      img
+        border-radius: 100%;
+    /**
+     * 侧边栏main部分
+     */
+    .treeContainer
+      margin: 8% 0
+      flex: auto;
+    .level0
+      ul
+        height: 100%;
+        &.none
+          height: 0
+          transform: scaleY(0);
+      li
+        cursor: pointer;
+        color: #8aa4af
+        font-size: 14px;
+        height: 40px;
+        line-height: 40px;
+        padding-left: 42px;
+        &:hover
+          color: #fff
+          box-shadow: 0px 0px 1px #4E6BAF;
+          transition: all 0.3s ease-in-out;
+      >.itemCategory
+        >.caption
+          icon-l()
+      &:nth-child(2)
+        >.itemCategory
+          >.caption
+            icon-l2()
+      &:nth-child(3)
+        >.itemCategory
+          >.caption
+            icon-l3()
+      &:nth-child(4)
+        >.itemCategory
+          >.caption
+            icon-l4()
+      &:nth-child(5)
+        >.itemCategory
+          >.caption
+            icon-l5()
+
+//以上是左侧边栏的样式
+
+
+/**
+* 以下是右侧边栏的样式
+*/
+.routerBoxes
+  background-color: #ecf0f5;
+  padding: 20px;
