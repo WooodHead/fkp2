@@ -467,21 +467,24 @@ class TapsApp extends React.Component {
 		const treeHeader = this.props.opts.treeHeader
 		const treeFooter = this.props.opts.treeFooter
 
+		const _menus = this.state.menu
+		? <div className='routerMenus'>{treeHeader}{this.menus}{treeFooter}</div>
+		: '';
+
 		if (this.props.opts.header ||
 			this.props.opts.footer ) {
 			return (
 				<div className="routerContainer">
 					{this.props.opts.header}
 					<div className={cls}>
+						{_menus}
 		        {content}
 		      </div>
 					{this.props.opts.footer}
 				</div>
 		)}
 
-		const _menus = this.state.menu
-		? <div className='routerMenus'>{treeHeader}{this.menus}{treeFooter}</div>
-		: ''
+
 
 		return (
       <div className={cls}>
