@@ -6,14 +6,20 @@
 .routerMenus
   background: #fff
   display: flex;
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 14em;
   z-index: 2;
 
 
 .routerBoxes
   position: relative;
   flex: 1
+  margin-left: 14em             //这个的值是对应 routerMenus 的 width 值
   z-index: 1;
+  min-height: 400px;
 
 .routerGroupX
   position: relative;
