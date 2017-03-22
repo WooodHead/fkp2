@@ -105,6 +105,7 @@ class TmpApp extends React.Component {
 
 			if(items.length){
 				var group = _.uniqueId('group-')
+
 				return (
 					<ul key={group} className={cls}>
 						{items}
@@ -128,14 +129,22 @@ class TmpApp extends React.Component {
 		if(this.props.listStyle){
 			sty = this.props.listStyle;
 		}
-		return (
-			<div className={_cls} style={sty}>
-				{this.props.header}
-				{fills}
-				{this.props.footer}
-				{this.props.children}
-			</div>
-		)
+		if (this.props.header || this.props.footer || this.props.children) {
+			return (
+				<div className={_cls} style={sty}>
+					{this.props.header}
+					{fills}
+					{this.props.footer}
+					{this.props.children}
+				</div>
+			)
+		} else {
+			const fill = fills[0]
+			const ulclass = `hlist ${this.props.listClass}`
+			const _props = {...fill.props }
+			_props.className = ulclass
+			return React.createElement(fill.type, _props, fill.props.children)
+		}
 	}
 
 
