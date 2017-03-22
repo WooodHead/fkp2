@@ -20,7 +20,29 @@ formSimple.render('demo_simple')
 
 
 const formAsset1 = [
-  {title: '用户名:', input:{id: 'ddd', type: 'text', placeholder: '用户名'} },
+  {title: '时间:', input:{id: 'dpicker', type: 'date', placeholder: '请选择时间'},
+    assets: {
+      startDate: "2017-03-02",
+      endDate: "2017-03-22"
+    }
+  },
+
+  {title: '到达时间:', input:{id: 'dpicker2', type: 'date', placeholder: '请选择时间'},
+    assets: {
+      // startDate: "2017-03-02",
+      // endDate: "2017-03-22"
+    },
+    union: {
+      id: 'dpicker',
+      cb: function(ctx){
+        let val = ctx.src.value
+        this.refresh({
+          startDate: val
+        })
+      }
+    }
+  },
+
   {title: '手机号码', input:{id: 'eee', type: 'text', placeholder:'手机号码', desc: '我在后面'} },
   {title: '公司:',
     input:{id: 'fff', type: 'text', placeholder:'公司'},

@@ -63,11 +63,43 @@ function select(_intent, ctx){
     })
   }
 
+  function dealDatePicker(item){
+    const thisInput = elements['#'+item.id]
+    if (!thisInput) return
+    if (!item.attr.union) {
+      let dftAssets = {
+        minView: "month", //选择日期后，不会再跳转去选择时分秒
+        language: 'zh-CN',
+        format: "yyyy-mm-dd",                //格式化日期
+        autoclose: true
+      }
+      dftAssets = _.extend(dftAssets, item.attr.assets)
+      ctx.actions.setActions({
+        datapicker: function(){
+          $(thisInput).datetimepicker(dftAssets);
+        }
+      })
+    }
+
+    $(thisInput).on('change', function(){
+      let targetIt = {}
+      targetIt[item.id] = this.value;
+      ctx.values(targetIt)
+      const hasUnion = checkUnion({id: item.id}, dealWithUnion)
+      if (hasUnion) {
+        dealWatchs({id: thisInput.id})
+      }
+    })     
+  }
+
   Object.keys(allocation).forEach( unit => {
     const item = allocation[unit]
     let thisInput
     let lable
     switch (item.type) {
+      case 'date':
+        dealDatePicker(item)
+        break;
       case 'checkbox':
         dealRcbox(item)
         break;
@@ -173,69 +205,69 @@ function select(_intent, ctx){
         return
       }
 
-      // if (unionObj.url){
-      //   if (unionObj.param){
-      //     var _str =  JSON.stringify(unionObj.param).replace('$value', data.val) .replace('$text', data.txt) .replace('$attr', data.attr)
-      //     unionObj.param = JSON.parse(_str)
-      //   }
-      //
-      //   //关联select取回数据
-      //   ajax.get(unionObj.url, unionObj.param)
-      //   .then(function(data){
-      //     if (unionObj.target.type==='select'){
-      //       if (isFunction(unionObj.cb)) targetDom::unionObj.cb(_ctx)
-      //     } else {
-      //       if (isFunction(unionObj.cb)) targetDom::unionObj.cb(_ctx)
-      //     }
-      //   })
-      // }
+      let targetIt = {}
+      targetIt[target_id] = '';
+      ctx.values(targetIt)
 
-      // else {
-        // 清空关联项的数据
-        let targetIt = {}
-        targetIt[target_id] = '';
-        ctx.values(targetIt)
+      // target 为select类型
+      function options(data, text){
+        let xxx = isSelect[target_id]
+        ctx.actions.roll('UPDATE', {
+          index: xxx._index,
+          options: data
+        })
+      }
 
-        // target 为select类型
-        function options(data, text){
-          let xxx = isSelect[target_id]
-          ctx.actions.roll('UPDATE', {
-            index: xxx._index,
-            options: data
-          })
-        }
-
-        let xctx = {
-          value: function(val, text){
-            let targetValue = {}
-            targetValue[target_id] = val
-            if (isSelect[target_id]) options(val, text)  // 目标对象是 select类型
-            else {
-              ctx.values(targetValue)
-            }
-          }
-        }
-
-
-        if (isFunction(unionObj.cb)) unionObj.cb.call(xctx, _ctx)
-        else {
+      let xctx = {
+        value: function(val, text){
           let targetValue = {}
-          targetValue[target_id] = srcDom.value
-          if (isSelect[target_id]) {
-            switch (allocation[src_id].type) {
-              case 'select':
-                /* 不应该到这里来，应该去cb */
-              break;
-              default:
-                /* 不应该到这里来，应该去cb */
-                targetDom.value = srcDom.value
-                targetDom.setAttribute('data-value', srcDom.value)
-            }
-          } else {
+          targetValue[target_id] = val
+          if (isSelect[target_id]) options(val, text)  // 目标对象是 select类型
+          else {
             ctx.values(targetValue)
           }
         }
-      // }
+      }
+
+      let dpickerAssets = {
+        minView: "month", //选择日期后，不会再跳转去选择时分秒
+        language: 'zh-CN',
+        format: "yyyy-mm-dd",                //格式化日期
+        autoclose: true
+      }
+      let dpickerCtx = {
+        refresh: function(asset){
+          dpickerAssets = _.extend(dpickerAssets, asset)
+          $(targetDom).datetimepicker(dpickerAssets);
+        }
+      }
+      if (unionObj.target.type == 'date') {
+        xctx = dpickerCtx
+      }
+
+
+      if (isFunction(unionObj.cb)) unionObj.cb.call(xctx, _ctx)
+      else if(unionObj.target.type == 'date'){
+        console.log('======= xxxxx');
+        return
+      }
+      else {
+        let targetValue = {}
+        targetValue[target_id] = srcDom.value
+        if (isSelect[target_id]) {
+          switch (allocation[src_id].type) {
+            case 'select':
+              /* 不应该到这里来，应该去cb */
+            break;
+            default:
+              /* 不应该到这里来，应该去cb */
+              targetDom.value = srcDom.value
+              targetDom.setAttribute('data-value', srcDom.value)
+          }
+        } else {
+          ctx.values(targetValue)
+        }
+      }
     })
   }
 }

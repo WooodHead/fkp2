@@ -1,7 +1,8 @@
-let Input = require('../_part/input')
+import {inject} from 'libs'
+const Input = require('../_part/input')
 import BaseClass from 'component/class/base'
 
-const $text_type = ['text', 'password', 'select', 'tel']
+const $text_type = ['text', 'password', 'select', 'tel', 'date']
     , $phold_type = ['text', 'password']
     , $radio_check = ['radio','checkbox']
     , $button_type = ['button','submit']
@@ -132,6 +133,13 @@ class FormInput extends BaseClass{
   }
 
   componentWill(){
+    inject().css('/css/t/boostrap_datepick.css')
+    .js('/js/t/boostrap_datepick.js', ()=>{
+      _.delay(()=>{
+        this.actions.roll('datapicker')
+      }, 1000)
+    })
+
     const dft = this.config
     let Inputs = Input(dft.globalName)
     this.eles = (
