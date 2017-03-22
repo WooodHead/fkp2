@@ -42,16 +42,17 @@ function normalItem(obj){
         title = <a href={obj.url} >{obj.title}</a>
       }
       if (obj.li){
+        let _title = title
         if (typeof title == 'string' || typeof title == 'number') {
-          title =
-          (
-            <div className='itemCategory'>
-              {itemrootCkb}
-              <span className="caption">{title}</span>
-              {dealWithLi(obj.li)}
-            </div>
-          )
+          _title = <span className="caption">{title}</span>
         }
+        title = (
+          <div className='itemCategory'>
+            {itemrootCkb}
+            {_title}
+            {dealWithLi(obj.li)}
+          </div>
+        )
       }
       return title;
     }
