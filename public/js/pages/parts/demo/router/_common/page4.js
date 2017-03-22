@@ -57,15 +57,6 @@ function index(router){
           </li>
         </ul>
     </div>
-    ,function(dom){
-      let stepsWid
-      $('.j-steps').each(function(){
-        stepsWid = 100/ ($(this).find('li').length -1) + '%'
-      })
-      let stepsEm =  $('.j-steps .j-steps-word').width()/2 + 2 +'px'
-      $('.j-steps li:not(:last-child)').css({marginRight: '-'+ stepsEm,width: stepsWid})
-      $('.j-steps .j-steps-tail').css({paddingRight: stepsEm})
-    }
   )
   return <Page/>
 }
