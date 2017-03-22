@@ -30,6 +30,7 @@ function itdMethod(ctx){
     dom.firstroot = true
     dom.itemroot = true
     ctx.rootdom = dom
+    _ctx.select = dom
     ctx.captiondom = $(dom).find('.caption')[0]
     $(dom).off('click').on('click', function(e){
       $(this).toggleClass('selected')
