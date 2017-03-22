@@ -159,7 +159,8 @@ export function dropdown(opts){
     itemMethod: noop,
     listMethod: noop,
     fold: true,
-    evt: 'click'
+    evt: 'click',
+    placeholder: ''
   }
   dft = _.extend(dft, opts)
 
@@ -167,8 +168,16 @@ export function dropdown(opts){
     item.parent = 'top'
   })
 
-  const defaultTitile = dft.data[dft.select]['title']
-  dft.data.unshift({title: defaultTitile, idf: 'top'})
+  let firstText
+  let defaultTitile = dft.data[dft.select]['title']
+  if (dft.placeholder) defaultTitile = dft.placeholder
+  if (typeof defaultTitile == 'string' || typeof defaultTitile == 'number') {
+    firstText = <span className="caption">{defaultTitile}<i></i></span>
+  } else {
+    firstText = defaultTitile
+  }
+
+  dft.data.unshift({title: firstText, idf: 'top'})
   dft.data = Tree(dft.data)
   return new App(dft)
 }
