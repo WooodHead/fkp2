@@ -16,7 +16,6 @@ function index(router){
     <div className="content-container">
       <h2>进度条</h2>
       <Jdt/>
-      <button>下一章</button>
     </div>
   )
   return <Page/>

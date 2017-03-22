@@ -5,7 +5,7 @@ function index(router){
   // <i className="j-badge">99+</i>    主要添加这个样式就好了
   const Page = wrapItem(
     <div className="content-container">
-      <h2>进度条</h2>
+      <h2>徽标数</h2>
         <div style={{position: 'relative', width: '55px',height: '55px', display:'inline-block', marginRight: '16px'}}>
           <a style={{width: '55px',height: '55px',borderRadius: '6px', background: 'red',display: 'block'}}></a>
           <i className="j-badge">99+</i>
