@@ -118,6 +118,7 @@ class App extends ListClass {
         listClass={dft.listClass}
         header={dft.header}
         itemMethod={itdMethod(this)}
+        listMethod={dft.listMethod}
       >
         {dft.footer}
       </List>
