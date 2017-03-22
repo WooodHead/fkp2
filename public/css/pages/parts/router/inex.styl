@@ -1,12 +1,16 @@
-// html,body
-//   height: 100%;
+html,body
+  height: 100%;
+
+  /**
+   * 以下是左侧边栏的样式
+   */
 iconfont()
   font-family:"iconfont" !important;
+  font-size:16px;
   font-style:normal;
   -webkit-font-smoothing: antialiased;
   -webkit-text-stroke-width: 0.2px;
   -moz-osx-font-smoothing: grayscale;
-  font-size: 16px
 
 hoverbg()
   background: #212735;
@@ -24,15 +28,39 @@ iscroll()
   user-select: none;
   text-size-adjust: none;
 
+//文字左边的 icon
+icon-l()
+  border-left: 3px solid transparent;
+  &:hover
+      hoverbg()
+  &:before                  //一级栏目  左边的 icon
+    position: absolute;
+    left: 14px;
+    content: '\e652'
+icon-l2()
+  &:before
+    content: '\e664'
+icon-l3()
+  &:before
+    content: '\e665'
+icon-l4()
+  &:before
+    content: '\e666'
+icon-l5()
+  &:before
+    content: '\e667'
+
 #side-content
   height: 100%;
   .routerGroup
     height: 100%;
     overflow: hidden;   //如果启用 iscroll 这个可以清除滚动条
   .routerMenus
-    box-shadow: 0 0 1px #ddd;
+    border-right: 1px solid #ddd;
     background: #2c3144;
     color: #fff;
+    height: 100%;
+    width: 14em;
     flex-direction: column;
     /**
      * 侧边栏公共部分
@@ -42,6 +70,22 @@ iscroll()
       display: block
     .itemrootCkb
       display: none;
+    .caption,.tree-menu
+      display: block;
+      height: 44px;
+      line-height: 44px;
+      cursor: pointer;
+      padding-left: 40px;
+      position: relative;
+      transform: scaleY(1);
+      iconfont()
+      &.fold              //一级栏目  右边的 icon 点击后
+        &:after
+          content: "\e6a3"
+      &:after
+        content: "\e616"    //一级栏目  右边的 icon
+        position: absolute;
+        right: 14px;
     .treeContainer
       position: relative;
     .treeGroup
@@ -66,7 +110,7 @@ iscroll()
      * 侧边栏头部部分
      */
     .left-sidebar-head
-      box-shadow: 0 0 1px #ddd;
+      border-bottom: 1px solid #ddd;
       background: #2c3144;
       position: relative;
       z-index: 3;
@@ -91,74 +135,32 @@ iscroll()
         cursor: pointer;
         color: #8aa4af
         font-size: 14px;
+        height: 40px;
         line-height: 40px;
         padding-left: 42px;
         &:hover
           color: #fff
           box-shadow: 0px 0px 1px #4E6BAF;
           transition: all 0.3s ease-in-out;
-          i
-            color: #fff
-        &.level1
-          &:hover
-            box-shadow: none;
-
       >.itemCategory
         >.caption
-          border-left: 3px solid transparent;
-          display: block;
-          height: 44px;
-          line-height: 44px;
-          cursor: pointer;
-          padding-left: 40px;
-          position: relative;
-          &:hover
-            hoverbg()
-          i
-            iconfont()
-            position: absolute;
-            top: 0
-            &:first-child
-              left: 5%
-            &:last-child
-              right: 5%
-          &.fold              //一级栏目  右边的 icon 展开后
-            i
-              &:last-child
-                &:before
-                  content: "\e6a3"
-
-    .level1
-      padding-left: 0!important;
-      &:hover
-        span
-          color: #8aa4af
-      span
-        display: block;
-        font-size: 14px
-        padding-left: 42px
-        position: relative;
-        i
-          position: absolute;
-          top: 0
-          right: 5%
-          iconfont()
-        &.fold              //二级栏目  右边的 icon 展开后
-          i
-            &:before
-              content: "\e6a3"
-        &:hover
-          color: #fff
-          box-shadow: 0px 0px 1px #4E6BAF;
-          transition: all 0.3s ease-in-out;
-      li
-        padding-left: 52px;
-        line-height: 38px;
-        font-size: 12px;
-        &:hover
-          box-shadow: 0px 1px 0px #353B52;
-
-
+          icon-l()
+      &:nth-child(2)
+        >.itemCategory
+          >.caption
+            icon-l2()
+      &:nth-child(3)
+        >.itemCategory
+          >.caption
+            icon-l3()
+      &:nth-child(4)
+        >.itemCategory
+          >.caption
+            icon-l4()
+      &:nth-child(5)
+        >.itemCategory
+          >.caption
+            icon-l5()
 
 //以上是左侧边栏的样式
 
@@ -167,5 +169,5 @@ iscroll()
 * 以下是右侧边栏的样式
 */
 .routerBoxes
-  // background-color: #ecf0f5;
+  background-color: #ecf0f5;
   padding: 20px;
