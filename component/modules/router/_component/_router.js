@@ -124,22 +124,19 @@ class TapsApp extends React.Component {
 
 	_menus(){
 		let data = []
-		this.state.data.map( (item, ii)=>{
-			if (item.title) {
-				if (item.parent) {
-					const _parent = _.find(this.state.data, function(o){return o.idf == item.parent})
-					if (_parent && _parent.title) {
-						data.push({ index: ii, title: item.title, parent: item.parent, attr: {'data-treeid':ii, 'data-path':item.path} })
-					}
-				} else {
-					const _item = { index: ii, title: item.title, attr: {'data-treeid':ii, 'data-path':item.path} }
-					if (item.idf) {
-						_item.idf = item.idf
-						delete _item.attr['data-path']
-					}
-					data.push(_item)
-				}
+		this.state.data.forEach( (item, ii) => {
+			let _item = {index: ii, title: item.title, attr: {treeid: ii, path: item.path}, idf: item.idf, parent: item.parent}
+			if (item.idf) {
+				delete _item.attr['path']
+			} else {
+				delete _item['idf']
 			}
+
+			if (!item.parent) {
+				delete _item['parent']
+			}
+
+			data.push(_item)
 		})
 
 		const _menus = tree({

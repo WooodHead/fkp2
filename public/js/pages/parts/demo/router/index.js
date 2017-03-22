@@ -70,7 +70,9 @@ if ($('#side-content').length) {
       {title: 'Steps 步骤条', content: page4, path: 'page4', parent: 'ui'},
       {title: 'Time 日期选择', content: page5, path: 'page5', parent: 'ui'},
       {title: 'Badge 徽标数', content: page6, path: 'page6', parent: 'ui'},
-      {title: 'Side 侧边栏', content: page7, path: 'page7', parent: 'ui'},
+      {title: 'Side 侧边栏', content: page7, path: 'page7', parent: 'ui', idf: 'xxx'},
+      {title: 'Side 侧边栏', content: 'page7', path: 'page7', parent: 'xxx'},
+      {title: 'Side 侧边栏', content: 'page8', path: 'page7', parent: 'xxx'},
 
       {title: 'Forms', content: page1, path: 'page1', idf: 'forms'},
       {title: 'Tables', content: page1, path: 'page1', idf: 'tables'},
