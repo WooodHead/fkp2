@@ -18,7 +18,7 @@ const formAsset = [
 ]
 
 let loginFormStructor = Input({
-  autoinjec: false,
+  autoinject: false,
   data: formAsset,
   rendered: loginFormAction
 })

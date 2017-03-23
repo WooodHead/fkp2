@@ -31,7 +31,7 @@ class G extends ListClass {
       : ' '
     _data.itemStyle = {width: data.width||this.style.width}
     dft.data[index] = _data
-    if (this.stat == 'finish' || this.stat == 'done') {
+    if (this.stat == 'finish') {
       this.actions.roll('EDIT', {index: index, data: _data})
     }
     else {

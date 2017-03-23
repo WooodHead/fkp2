@@ -49,7 +49,7 @@ BLOG.setActions({
 BLOG.append({
   // tabs menu的头部是否登录结构
   treeHeader: Cards({
-    autoinjec: false,
+    autoinject: false,
     theme: 'cards/blog',
     data: [
       { img: '/images/logo128-1.png',
@@ -144,16 +144,16 @@ BLOG.append({
 */
 BLOG.append({
   main: Grids({
-    autoinjec: false,
+    autoinject: false,
     data : ['main'],
     theme: 'grids/blog'
   }),
 
   grids:{
-    start: Grids({ data: [ 'start' ], autoinjec: false }),
-    docker: Grids({ data: [ 'docker' ], autoinjec: false }),
-    toolbar: Grids({ data: [ ' ' ], autoinjec: false }),
-    tags: Grids({ data: [ 'bbb' ], autoinjec: false })
+    start: Grids({ data: [ 'start' ], autoinject: false }),
+    docker: Grids({ data: [ 'docker' ], autoinject: false }),
+    toolbar: Grids({ data: [ ' ' ], autoinject: false }),
+    tags: Grids({ data: [ 'bbb' ], autoinject: false })
   }
 })
 
@@ -286,7 +286,7 @@ async function startIndex(){
   ]
 
   const tabs = Tabs({
-    autoinjec: false,
+    autoinject: false,
     data: tabsConfig,
     select: 1,
     treeHeader: Config.treeHeader.render(),

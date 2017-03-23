@@ -1,4 +1,4 @@
-import itemHlc from 'component/mixins/itemhlc'
+import {wrapItem} from 'component/client'
 import { input as Input, baselist} from 'component'
 const RUNTIME = SAX('Runtime')
 
@@ -56,7 +56,7 @@ const myItemAction = {
     ]
     const fi = Input({
       data: formConfig,
-      autoinjec: false
+      autoinject: false
     })
 
     $(dom).click(function(){
@@ -86,7 +86,7 @@ const myItemAction = {
 
 
 export function start(){
-  return itemHlc( <button className="btn" id="for-admin" style={{marginTop:'0.5em'}}>我的</button> )
+  return wrapItem( <button className="btn" id="for-admin" style={{marginTop:'0.5em'}}>我的</button> )
 }
 
 export function main(stickys){
@@ -126,7 +126,7 @@ export function main(stickys){
 
 
   // return Input({
-  //   autoinjec: false,
+  //   autoinject: false,
   //   listClass: 'formSearch',
   //   data: [{ input:
   //       {type: 'text',id:'search', placeholder: 'xxx', style: {width: '8em'}, desc: btns.render()}
@@ -136,13 +136,13 @@ export function main(stickys){
 
 export function my(){
   return [
-    wrapItem(myItem.mylist, myItemAction.mylist),
+    wrapItems(myItem.mylist, myItemAction.mylist),
     myItem.add,
-    wrapItem(myItem.back, myItemAction.back)
+    wrapItems(myItem.back, myItemAction.back)
   ]
 }
 
-function wrapItem(item, cb){
-  const Item = itemHlc(item, cb)
+function wrapItems(item, cb){
+  const Item = wrapItem(item, cb)
   return <Item />
 }
