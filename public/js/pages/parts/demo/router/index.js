@@ -8,8 +8,9 @@ import page4 from './_common/page4'
 import page5 from './_common/page5'
 import page6 from './_common/page6'
 import page7 from './_common/page7'
+import page8 from './_common/page8'
+import page9 from './_common/page9'
 // const  Page4 = wrapItem( <div>我才是最后一页</div>, function(dom){ $(dom).click(function(){alert(1)}) } )
-
 
 
 const Test1 = wrapItem(
@@ -71,12 +72,23 @@ if ($('#side-content').length) {
       {title: 'Time 日期选择', content: page5, path: 'page5', parent: 'ui'},
       {title: 'Badge 徽标数', content: page6, path: 'page6', parent: 'ui'},
       {title: 'Side 侧边栏', content: page7, path: 'page7', parent: 'ui'},
+      {title: 'Dropdown 下拉菜单', content: page8, path: 'page8', parent: 'ui'},
+      {title: 'Button 按钮', content: page9, path: 'page9', parent: 'ui'},
 
-      {title: 'Forms', content: page1, path: 'page1', idf: 'forms'},
-      {title: 'Tables', content: page1, path: 'page1', idf: 'tables'},
-      {title: 'ECharts', content: page1, path: 'page1', idf: 'echarts'},
-      {title: 'Map', content: page1, path: 'page1', idf: 'map'},
-      {title: 'Forms', content: page1, path: 'page1', idf: 'forms'},
+      {title: <span className="caption"><i className='icon-circle'></i>Forms 表单<i className="icon-arrow_down"></i></span>, content: page1, path: 'a1', idf: 'forms'},
+      {title: <span className="caption"><i className='icon-recordfill'></i>Tables 表格<i className="icon-arrow_down"></i></span>, content: page1, path: 'a2', idf: 'tables'},
+      {title: <span className="caption"><i className='icon-weblock'></i>ECharts 图表<i className="icon-arrow_down"></i></span>, content: page1, path: 'a3', idf: 'echarts'},
+      {title: <span className="caption"><i className='icon-my'></i>Map 地图<i className="icon-arrow_down"></i></span>, content: page1, path: 'a4', idf: 'map'},
+
+      {title: <span className="caption"><i className='icon-write'></i>测试<i className="icon-arrow_down"></i></span>, content: page1, path: 'a5', idf: 'test'},
+      {title: <span className="caption">测试2<i className="icon-arrow_down"></i></span>, content: page7, path: 'a6', parent: 'test', idf: 'xxx'},
+      {title: 'Side 侧边栏1', content: 'page7', path: 'a7', parent: 'xxx'},
+      {title: 'Side 侧边栏2', content: 'page7', path: 'a7', parent: 'xxx'},
+      {title: 'Side 侧边栏3', content: 'page8', path: 'a8', parent: 'xxx', idf: 'yyy'},
+      {title: 'Side 侧边栏31', content: 'page8', path: 'a9', parent: 'yyy'},
+      {title: 'Side 侧边栏32', content: 'page8', path: 'a10', parent: 'yyy'},
+      {title: 'Side 侧边栏33', content: 'page8', path: 'a11', parent: 'yyy'},
+      {title: 'Side 侧边栏34', content: 'page8', path: 'a12', parent: 'yyy'},
 
     ],
     treeHeader: <div className="left-sidebar-head"><div className="left-sidebar-img"><img src="http://www.vsochina.com/data/avatar/003/44/63/00_avatar_middle.jpg?1490057834"/></div></div>,
