@@ -30,6 +30,7 @@ function itdMethod(ctx){
     dom.firstroot = true
     dom.itemroot = true
     ctx.rootdom = dom
+    _ctx.select = dom
     ctx.captiondom = $(dom).find('.caption')[0]
     $(dom).off('click').on('click', function(e){
       $(this).toggleClass('selected')
@@ -117,6 +118,7 @@ class App extends ListClass {
         listClass={dft.listClass}
         header={dft.header}
         itemMethod={itdMethod(this)}
+        listMethod={dft.listMethod}
       >
         {dft.footer}
       </List>
@@ -159,7 +161,8 @@ export function dropdown(opts){
     itemMethod: noop,
     listMethod: noop,
     fold: true,
-    evt: 'click'
+    evt: 'click',
+    placeholder: ''
   }
   dft = _.extend(dft, opts)
 
@@ -167,8 +170,16 @@ export function dropdown(opts){
     item.parent = 'top'
   })
 
-  const defaultTitile = dft.data[dft.select]['title']
-  dft.data.unshift({title: defaultTitile, idf: 'top'})
+  let firstText
+  let defaultTitile = dft.data[dft.select]['title']
+  if (dft.placeholder) defaultTitile = dft.placeholder
+  if (typeof defaultTitile == 'string' || typeof defaultTitile == 'number') {
+    firstText = <span className="caption">{defaultTitile}<i></i></span>
+  } else {
+    firstText = defaultTitile
+  }
+
+  dft.data.unshift({title: firstText, idf: 'top'})
   dft.data = Tree(dft.data)
   return new App(dft)
 }
