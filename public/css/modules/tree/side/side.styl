@@ -1,0 +1,86 @@
+@import "_common/index"
+@import "themd/themd-fff"
+
+.routerGroup
+  height: 100%;
+  overflow: hidden;   //如果启用 iscroll 这个可以清除系统滚动条
+.routerMenus
+  box-shadow: 0 0 1px #ddd;
+  flex-direction: column;
+  {themd}
+  {spacing}
+  {fontSize}
+  /**
+   * 侧边栏公共部分
+   */
+  a
+    display: block
+    transition: all .3s ease;
+  .itemrootCkb
+    display: none;
+  .treeContainer
+    position: relative;
+  .treeGroup
+    iscroll()
+
+  /**
+   * 侧边栏头部部分
+   */
+  .left-sidebar-head
+    box-shadow: 0 0 1px #ddd;
+    position: relative;
+    z-index: 3;
+    .left-sidebar-img
+      width: 28%;
+      margin: 8% auto;
+      img
+        border-radius: 100%;
+
+  /**
+   * 侧边栏main部分
+   */
+  .treeContainer
+    margin: 8% 0
+    flex: auto;
+  .level0
+    ul
+      height: 100%;
+      &.none
+        height: 0
+        transform: scaleY(0);
+    li
+      cursor: pointer;
+      transition: all .3s ease-in-out;
+
+    >.itemCategory
+      >.caption
+        display: block;
+        cursor: pointer;
+        position: relative;
+        i
+          iconfont()
+          position: absolute;
+          top: 0
+          &:first-child
+            left: 5%
+          &:last-child
+            right: 5%
+        &.fold              //一级栏目  右边的 icon 展开后
+          i
+            &:last-child
+              &:before
+                content: "\e6a3"
+
+  .level1
+    span
+      display: block;
+      position: relative;
+      i
+        position: absolute;
+        top: 0
+        right: 6%
+        iconfont()
+      &.fold              //二级栏目  右边的 icon 展开后
+        i
+          &:before
+            content: "\e6a3"

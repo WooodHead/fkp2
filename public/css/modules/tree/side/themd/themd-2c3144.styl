@@ -1,0 +1,77 @@
+/**
+ * 控制背景颜色、字体颜色等版本
+ * 调用： {themd}
+ */
+themd = {
+  background: #2c3144,
+  color: #8aa4af,
+  '.level0 li:hover,.level1 span:hover':{
+    color: #fff
+  },
+  '.level1 li,.level1 span':{         //leven1=========二级菜单有三级列表
+    color: #8aa4af
+  },
+  '.level1 li:before': {              //这个控制三四级的的小圆点颜色
+    background: #8aa4af
+  }
+  '.level0>.itemCategory>span':{
+    border-left: 3px solid transparent
+  },
+  '.level0>.itemCategory>span:hover':{
+    background: #212735
+    border-left-color: #3c8dbc
+    color: #fff
+    transition: all 0.3s ease-in-out
+  },
+  '.left-sidebar-head':{
+    background: #2c3144
+  }
+}
+/**
+ * 控制整体的间距 行高等
+ * 调用： {spacing}
+ */
+spacing = {
+  '.level0 li,.level0 span':{
+      padding-left: 42px
+      line-height: 44px
+  }
+  '.level1 li,.level1 span':{
+    line-height: 38px
+  }
+  '.level1 li,.level1 span':{
+    padding-left: 0
+    line-height: 38px
+    position: relative
+  }
+  '.level1 li:before':{                       //这里是给三四级菜单添加小圆点
+    content: ""
+    border-radius: 5px
+    position: absolute
+    top: 45%
+    left: -1px
+    width: 5px
+    height: 5px
+  }
+  '.level1.itemroot:before':{
+    top: 9%
+  }
+  '.level1 li':{
+    padding-left: 12px
+  }
+}
+/**
+ * 控制整体的字体
+ * 调用： {fontSize}
+ */
+fontSize = {
+  '.level0>.itemCategory>span':{
+    font-size: 16px
+  },
+  '.level0 li': {
+    font-size: 14px
+  },
+  '.level1 li':{
+    font-size: 12px
+  }
+}
