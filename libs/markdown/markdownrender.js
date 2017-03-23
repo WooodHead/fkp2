@@ -26,9 +26,8 @@ function unescape(html) {
 }
 
 function customParse(str, spec){
-  console.log('============ modules/common/mdrender.js\n');
   // var re = /[\s]?\{(.*?)\}/;    // "fjdskg  {abc: xxx} {xyz: yyy}" 取 " {....}"
-  var re = / *?\{(.*?)\} *(?:\n+|$)/;    // "fjdskg  {abc: xxx} {xyz: yyy}" 取 " {....}"
+  var re = / +\{(.*?)\} *(?:\n+|$)/;    // "fjdskg  {abc: xxx} {xyz: yyy}" 取 " {....}"
   var re_g = / \{(.*)\}/g;
   var re_g_li = /<li>(\{.*?\})\s*<\/li>\s*/;
   // var re_whiteList = /(id|class|div|excute):[\w@;: \-_]+/ig;    //只允许id 和 class
@@ -54,7 +53,7 @@ function customParse(str, spec){
   function getAsset(_str){
     var key, val, obj={},
       tmp = _str.match(re),
-      _tmp = _(tmp[0]).chain().thru(function(val){ return val.match(re_whiteList) }).value()
+      _tmp = tmp && _(tmp[0]).chain().thru(function(val){ return val.match(re_whiteList) }).value()
 
     if (_tmp && _tmp.length){
       _tmp.map(function(item, i){
@@ -192,9 +191,11 @@ export default function(render){
     if (body) {
       if (body.indexOf('<li>{')>-1){
         var rtn = customParse(body, 'ul')
-        body = rtn[0]
-        asset = rtn[1]
-      } else asset={}
+        if (rtn) {
+          body = rtn[0]
+          asset = rtn[1]
+        }
+      }
     }
 
     var type = ordered ? 'ol' : 'ul';
