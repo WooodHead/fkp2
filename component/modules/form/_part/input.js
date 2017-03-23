@@ -8,7 +8,7 @@ const A = Array, O = Object
 const rcbox = require('./radio')
 let saxer, context
 
-const $text_type = ['text', 'password', 'select', 'tel']
+const $text_type = ['text', 'password', 'select', 'tel', 'date']
   , $phold_type = ['text', 'password']
   , $radio_check = ['radio','checkbox']
   , $button_type = ['button','submit']
@@ -44,10 +44,24 @@ function mk_select(P){
   return __select(P)
 }
 
+function __datapicker(P){
+  return (
+    <span className="iconfont form-datepicker">
+      <input ref={'#'+P.id} type='text' className="form_control" placeholder={P.placeholder} name={P.name} id={P.id} defaultValue='' />
+    </span>
+  )
+}
+
+function mk_datepicker(P){
+  let _select;
+  return __datapicker(P)
+}
+
 // 'text', 'password', 'select', 'tel'
 function whatTypeElement(P){
   if (_.indexOf($text_type, P.type)>-1){
     if (P.type === 'select') return mk_select(P)
+    if (P.type == 'date') return mk_datepicker(P)
     if (_.indexOf($phold_type, P.type)>-1){
       return <input
         ref={'#'+(P.id||P.name)}
