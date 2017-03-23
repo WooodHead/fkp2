@@ -109,7 +109,6 @@
     <div id="sides" style="margin: 20px;"></div>
     @@include('../_common/footer/foot.html')
     <script src="/js/t/boostrap_datepick.js"></script>
-    <script src="/js/t/bootstrap_datetimepicker.zh_CN.js"></script>
 
     <script src="/js/parts-demo-table.js"></script>
 
@@ -123,6 +122,7 @@
       $('.j-steps li:not(:last-child)').css({marginRight: '-'+ stepsEm,width: stepsWid})
       $('.j-steps .j-steps-tail').css({paddingRight: stepsEm})
       // $('.j-steps li:last-child').css({marginRight: 0})
+
       $('.some_class').datetimepicker({
         minView: "month", //选择日期后，不会再跳转去选择时分秒
         language: 'zh-CN',
@@ -130,7 +130,7 @@
         autoclose: true,
         startDate: "2017-03-02",
         endDate: "2017-03-22",
-        todayBtn: true
+        // todayBtn: true
       });
 
     </script>
