@@ -13,8 +13,10 @@ const findDOMNode = React.findDOMNode
 const uniqueId = _.uniqueId
 const merge = _.merge
 
-const globalName = uniqueId('Combinex_')
-const queryer = SAX(globalName)
+let originalState
+    , globalName
+    , queryer
+    , isClient = (() => typeof window !== 'undefined')()
 
 function _store(sax){
   try {
@@ -25,6 +27,7 @@ function _store(sax){
         constructor(props) {
           super(props)
           this.state.globalName = id
+          originalState = JSON.stringify(this.state)
         }
         componentWillMount() {
           sax.bind(id, this)
@@ -39,7 +42,7 @@ function _store(sax){
 }
 const store = _store(SAX)
 
-export default (ComposedComponent, opts, cb) => {
+function combineX(ComposedComponent, opts, cb){
   if (typeof opts == 'function') {
     cb = opts
     opts = undefined
@@ -52,6 +55,15 @@ export default (ComposedComponent, opts, cb) => {
     Array.isArray(ComposedComponent)
   ) { return }
 
+  globalName = uniqueId('Combinex_')
+  queryer = SAX(globalName)
+
+  console.log(globalName);
+  /**
+   * ComposedComponent 为 React element
+   * @param  {[type]} React [description]
+   * @return [type]         [description]
+   */
   if (React.isValidElement(ComposedComponent)) {
     return class extends React.Component {
       constructor(props){
@@ -100,14 +112,32 @@ export default (ComposedComponent, opts, cb) => {
     }
   }
 
+
+
+  /**
+   * ComposedComponent 为 React class
+   * @type {[type]}
+   */
   const CC = store(globalName, ComposedComponent)
   queryer.append(opts||{})
-  function dispatch(key){
+
+  function dispatcher(key, props){
     const ctx = queryer.store.ctx[globalName]
-    const stateAsset = ctx.state
-    const queryData = queryer.data
-    if (queryData[key]) {
-      const target = merge({}, stateAsset, queryData[key]())
+    const stateAsset = merge({}, ctx.state)
+
+    const liveState = merge({}, ctx.state)
+    const oState = JSON.parse(originalState)
+
+    const queryActions = queryer.data
+
+    const _state = {
+      live: liveState,
+      origin: oState
+    }
+
+    if (queryActions[key]) {
+      // const target = merge({}, liveState, queryActions[key](_state, props))
+      const target = merge({}, oState, queryActions[key](oState, props))
       ctx.setState(target)
     }
   }
@@ -124,7 +154,7 @@ export default (ComposedComponent, opts, cb) => {
 			let that = findDOMNode(this);
 
       const _ctx = {
-        dispatch: dispatch,
+        dispatch: dispatcher,
         refs: this.refs
       }
 
@@ -147,17 +177,20 @@ export default (ComposedComponent, opts, cb) => {
   class Query {
     constructor(config){
       this.element = Temp
+      this.saxer = queryer
       this.setActions = queryer.setActions
       this.roll = queryer.roll
     }
 
-    dispatch(key){
+    dispatch(key, props){
       clearTimeout(timer)
       timer = setTimeout(function() {
-        if (ReactComponentMonuted) dispatch(key)
+        if (ReactComponentMonuted) dispatcher(key, props)
       }, 100);
     }
   }
 
   return new Query()
 }
+
+module.exports = combineX
