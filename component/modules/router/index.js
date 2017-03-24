@@ -123,11 +123,14 @@ function menuMethod(dom){
     $(dom).click( e => {
       e.stopPropagation()
       if ($(dom).hasClass('itemroot')) {
+        $(dom).addClass('.activeroot')
         $(dom).find('.caption:first').toggleClass('fold')
         $(dom).find('ul:first').toggleClass('none')
       }
+      $(dom).addClass('.active')   
       this.actions.roll('GOTO', {key: _path})
     })
+    // if (typeof this.config.itemMethod == 'function') this.config.itemMethod.call(this, dom)
   }, 500)
 }
 
