@@ -1,76 +1,4 @@
-/*
-    button 的默认样式
-    来自bootstrap
-*/
-.touchAction(){
-  -webkit-touch-action: manipulation;
-  -moz-touch-action: manipulation;
-  -ms-touch-action: manipulation;
-  touch-action: manipulation;
-}
-.tapHignLight(){
-  -webkit-tap-highlight-color:rgba(0, 0, 0, 0);
-  -moz-tap-highlight-color:rgba(0, 0, 0, 0);
-  -ms-tap-highlight-color:rgba(0, 0, 0, 0);
-  -o-tap-highlight-color:rgba(0, 0, 0, 0);
-  tap-highlight-color:rgba(0, 0, 0, 0);
-}
-.userSelect(){
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
 .btn{
-  // width: 5em;
-  // display: inline-block;
-  // padding: 6px 12px;
-  // margin-bottom: 0;
-  // font-size: 12px;
-  // font-weight: 400;
-  // line-height: 1.42857143;
-  // text-align: center;
-  // white-space: nowrap;
-  // vertical-align: middle;
-  // .touchAction();
-  // cursor: pointer;
-  // .userSelect();
-  // background-image: none;
-  // border: 1px solid #d1cece;
-  // border-radius: 4px;
-  // outline: none;
-  // -webkit-appearance: none;
-  // .tapHignLight();
-  //
-  // &:active{
-  //   transition: all 0.02 ease;
-  //   transform: scale(.97);
-  //   opacity: .75;
-  //
-  //   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
-  //   text-decoration: none;
-  //   background-color: #eeeeee;
-  //   border-color: #cfcfcf;
-  //   color: #d4d4d4;
-  //   box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.2);
-  //
-  //   &:focus{
-  //     outline: none;
-  //     outline-offset: none;
-  //   }
-  // }
-  // &:focus{
-  //   outline: none;
-  //   outline-offset: none;
-  // }
-  // &:hover{
-  //   // background-color: #fdfdfd;
-  //   transition: all 60ms ease;
-  //   opacity: .85;
-  // }
-  // &+span[class="fkp-input-box"]{
-  //   display: none;
-  // }
   display: inline-block;
   padding: .4em 1em;
   font-size: 14px;
@@ -83,29 +11,31 @@
   text-decoration: none;
   &:hover{
     filter: unquote('progid:DXImageTransform.Microsoft.Alpha(opacity=90)');
-    // filter: Alpha(opacity=90);
-    opacity: 0.9;
-    background-image: -webkit-linear-gradient(transparent,rgba(0,0,0,.05) 40%,rgba(0,0,0,.1));
-    background-image: linear-gradient(transparent,rgba(0,0,0,.05) 40%,rgba(0,0,0,.1))
+    // opacity: 0.9;
+    background-image: linear-gradient(transparent,rgba(0,0,0,.09) 40%,rgba(0,0,0,.1))
   }
   &:active{
-    filter: unquote('progid:DXImageTransform.Microsoft.Alpha(opacity=90)');
-    // filter: Alpha(opacity=80);
-    opacity: 0.8;
-    background-image: -webkit-linear-gradient(transparent,rgba(0,0,0,.08) 40%,rgba(0,0,0,.1));
+    filter: unquote('progid:DXImageTransform.Microsoft.Alpha(opacity=80)');
+    // opacity: 0.8;
     background-image: linear-gradient(transparent,rgba(0,0,0,.08) 40%,rgba(0,0,0,.1))
   }
-  &.btn-default{
+
+}
+
++ prefix-classes('btn-')
+  .defalut
+    @extends .btn
     color: #333;
     background-color: #fff;
     border-color: #ccc;
-  }
-  &.btn-primary{
+
+  .primary
+    @extends .btn
     color: #fff;
     background-color: #0078e7;
     border-color: #0078e7;
-  }
-}
+
+
 
 
 .inputGroup{
