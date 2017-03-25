@@ -60,6 +60,13 @@ export function grids(props, isreact){
   }
 }
 
+export function gridsx(props, isreact){
+  const _rct = require('./modules/grids/nindex.js')
+  if (_rct.pure) {
+    return _rct.pure(props)
+  }
+}
+
 export function baselist(props, isreact){
   const _rct = require('./modules/list/base_list')
   if (_rct.pure) {

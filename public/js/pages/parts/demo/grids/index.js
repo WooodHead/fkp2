@@ -1,4 +1,4 @@
-import {wrapItem, grids} from 'component/client'
+import {wrapItem, gridsx as grids} from 'component/client'
 
 const Buton = wrapItem(<button className='btn'>haha</button>, function(dom){
   $(dom).click(function(){
@@ -6,7 +6,7 @@ const Buton = wrapItem(<button className='btn'>haha</button>, function(dom){
   })
 })
 
-const autoinject
+const autoinject=false;
 const Grids = {
   g1: grids({ autoinject }),
   g2: grids({ autoinject })
