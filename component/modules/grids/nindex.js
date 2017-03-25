@@ -3,7 +3,6 @@
  */
 
 import BaseX from 'component/class/basex'
-import combineX from 'component/mixins/combinex'
 const isClient = (() => typeof window !== 'undefined')()
 
 class GridsBase extends React.Component {
@@ -50,11 +49,7 @@ const Actions = {
 class App extends BaseX {
   constructor(config) {
     super(config)
-    const CombX = combineX(GridsBase, Actions)
-    this.x = CombX.element
-    this.dispatch = CombX.dispatch
-    this.setActions = CombX.saxer.setActions
-    this.roll = CombX.saxer.roll
+    this.combinex(GridsBase, Actions)
   }
 
   replace(props){
@@ -66,7 +61,9 @@ export function grids(opts){
   let noop = function(){}
   let dft = {
     theme: 'grids',
-    autoinject: true
+    autoinject: true,
+    props: false,
+    container: false
   }
   if (typeof opts == 'object') dft = _.merge(dft, opts)
   return new App(dft)
