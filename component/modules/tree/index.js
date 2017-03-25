@@ -24,14 +24,20 @@ class App extends ListClass {
       }
 
       that.items = []
+      const context = {
+        parent: dom,
+        select: this.select,
+        siblings: that.items
+      }
       let menusBody = $(dom).find('.'+config.listClass)
       menusBody.find('li').each(function(ii, item){
         that.items.push(item)
         if ($(item).hasClass('itemroot')) {
+          item.itemroot = 'true'
           if (config.fold) $(item).find('.itemCategory ul').addClass('none')
         }
         if (typeof itemFun == 'function') {
-          itemFun.call(that, item, ii)
+          itemFun.call(context, item, ii)
         }
       })
     }
