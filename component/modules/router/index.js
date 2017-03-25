@@ -117,21 +117,25 @@ inject().css(`
 //   })
 // }
 
-function menuMethod(dom){
-  setTimeout(()=>{
+function menuMethod(){
+  const that = this
+  return function(dom){
+    const self = this
     let _path = $(dom).attr('data-path')
-    $(dom).click( e => {
+    $(dom).click( function(e){
       e.stopPropagation()
+      $(self.siblings).removeClass('activeroot').removeClass('active')
       if ($(dom).hasClass('itemroot')) {
-        $(dom).addClass('.activeroot')
+        $(dom).addClass('activeroot')
         $(dom).find('.caption:first').toggleClass('fold')
         $(dom).find('ul:first').toggleClass('none')
+      } else {
+        $(dom).addClass('active')   
       }
-      $(dom).addClass('.active')   
-      this.actions.roll('GOTO', {key: _path})
+      that.actions.roll('GOTO', {key: _path})
     })
     // if (typeof this.config.itemMethod == 'function') this.config.itemMethod.call(this, dom)
-  }, 500)
+  }
 }
 
 
@@ -147,7 +151,12 @@ class App extends BaseClass {
   componentWill(){
     const dft = this.config
     const Router = BaseRouter(this.config.globalName)   // = this.createList(this.config.globalName)
-    this.eles = <Router opts={this.config} menuMethod={menuMethod} ctx={this}/>
+    this.eles = <Router 
+      opts={this.config} 
+      menuMethod={menuMethod()} 
+      listMethod={this.config.listMethod}
+      ctx={this}
+    />
   }
 
   append(item){

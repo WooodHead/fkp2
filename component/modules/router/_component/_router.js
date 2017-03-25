@@ -143,7 +143,8 @@ class TapsApp extends React.Component {
 			data: data,
 			autoinject: false,
 			fold: false,
-			itemMethod: this.props.menuMethod
+			itemMethod: this.props.menuMethod,
+			listMethod: this.props.listMethod
 		})
 
 		let xmenus = _menus.render()
