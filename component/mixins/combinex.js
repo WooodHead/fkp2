@@ -24,7 +24,7 @@ const store = ( sax => {
           super(props)
           this.globalName = id
           const queryer = sax(id)
-          queryer.data.originalState 
+          queryer.data.originalState
           ? queryer.data.originalState[id] = JSON.stringify(this.state)
           : ( ()=>{
             let temp = {}; temp[id] = JSON.stringify(this.state)
@@ -181,7 +181,7 @@ function combineX(ComposedComponent, opts, cb){
       clearTimeout(timer)
       timer = setTimeout(function() {
         if (ReactComponentMonuted) dispatcher(key, props)
-      }, 100);
+      }, 0);
     }
   }
 
