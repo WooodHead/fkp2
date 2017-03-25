@@ -144,8 +144,6 @@ function storeAction(key){
 			if (!this||!this.state) return
 			const {index, data} = edata
 			let tmpState = this.state.data
-			console.log(tmpState[index]);
-			console.log(edata);
 			return
 			tmpState[index] = data
 			this.setState({
