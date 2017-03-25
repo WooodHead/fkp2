@@ -12,12 +12,22 @@ const Grids = {
   g2: grids({ autoinject })
 }
 
-const container = (
-  <div className="boxer">
-    <Grids.g1.x data={[<span>111</span>,'2']} />
-    <Buton />
-    <Grids.g2.x data={['4','5']} />
-  </div>
-)
+const G3 = grids({ autoinject })
+React.render(<G3.x data={['tttt', 'ggggg']}/> , document.getElementById('test'))
 
-React.render(container, document.querySelector('#test'))
+setTimeout(function() {
+  G3.replace({
+    index: 1,
+    content: '0000'
+  })
+}, 3000);
+
+// const container = (
+//   <div className="boxer">
+//     <Grids.g1.x data={[<span>111</span>,'2']} />
+//     <Buton />
+//     <Grids.g2.x data={['4','5']} />
+//   </div>
+// )
+
+// React.render(container, document.querySelector('#test'))
