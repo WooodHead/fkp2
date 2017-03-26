@@ -38,7 +38,7 @@ class Sticky extends PopClass {
   msgBox(stat){
     let pos = 'fadeInDown'
     if (stat && objtypeof(stat)=='object') {
-      pos = stat.pos
+      pos = stat.pos||''
     }
     var dom = '<div class="sticky-container '+pos+' animated-faster" id="'+this.uuid+'"></div>'
     return $('#'+this.uuid).length ? $('#'+this.uuid)[0] : $(dom)[0]
