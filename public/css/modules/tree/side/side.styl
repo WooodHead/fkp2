@@ -1,11 +1,15 @@
 @import "_common/index"
-@import "themd/themd-fff-1"
+@import "themd/themd-E6F3F6"
 
 .routerGroup
   height: 100%;
   overflow: hidden;   //如果启用 iscroll 这个可以清除系统滚动条
-.routerMenus
-  box-shadow: 0 0 1px #ddd;
+.treeContainer
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  z-index: 2;
   flex-direction: column;
   {themd}
   {spacing}
@@ -21,7 +25,7 @@
   .treeContainer
     position: relative;
   .treeGroup
-    iscroll()
+    // iscroll()    //如果启用 iscroll 需要清除这个注释
 
   /**
    * 侧边栏头部部分
@@ -61,10 +65,12 @@
           iconfont()
           position: absolute;
           top: 0
-          &:first-child
-            left: 5%
-          &:last-child
-            right: 5%
+          &.first-icon
+            left: 9%
+          // &:first-child
+          //   left: 5%
+          // &:last-child
+          //   right: 5%
         &.fold              //一级栏目  右边的 icon 展开后
           i
             &:last-child
