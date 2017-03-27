@@ -13,15 +13,38 @@ const $text_type = ['text', 'password', 'select', 'tel', 'date']
   , $radio_check = ['radio','checkbox']
   , $button_type = ['button','submit']
 
+const inputAttributs ={
+  placeholder: '',
+  name: '',
+  id: '',
+  disabled: '',
+  value: '',
+  type: 'text'
+}
+
+function mkAttributs(p){
+  let attrs = {}
+  for (var attr in inputAttributs) {
+    if (attr == 'value') {
+      attrs['defaultValue'] = p[attr]
+    } else {
+      attrs[attr] = p[attr]
+    }
+  }
+  return attrs
+}
+
 /*
  * 生成select的表单
  * item 配置
 */
 
 function __select(P, options){
+  const attrs = mkAttributs(P)
   return (
     <span className="iconfont fkp-dd">
-      <input ref={'#'+P.id} type='text' className="form_control fkp-dd-input" placeholder={P.placeholder} name={P.name} id={P.id} defaultValue='' />
+      // <input ref={'#'+P.id} type='text' className="form_control fkp-dd-input" placeholder={P.placeholder} name={P.name} id={P.id} defaultValue='' />
+      <input ref={'#'+P.id} type='text' className="form_control fkp-dd-input" {...attrs} />
       <div ref={'+'+P.id} className='fkp-dd-list'>
         {options ? options : ''}
       </div>
@@ -45,51 +68,46 @@ function mk_select(P){
 }
 
 function __datapicker(P){
+  const attrs = mkAttributs(P)
   return (
     <span className="iconfont form-datepicker">
-      <input ref={'#'+P.id} type='text' className="form_control" placeholder={P.placeholder} name={P.name} id={P.id} defaultValue='' />
+      // <input ref={'#'+P.id} type='text' className="form_control" placeholder={P.placeholder} name={P.name} id={P.id} defaultValue='' />
+      <input ref={'#'+P.id} type='text' className="form_control" {...attrs} />
     </span>
   )
 }
 
 function mk_datepicker(P){
-  let _select;
   return __datapicker(P)
 }
 
 // 'text', 'password', 'select', 'tel'
 function whatTypeElement(P){
+  const attrs = mkAttributs(P)
   if (_.indexOf($text_type, P.type)>-1){
     if (P.type === 'select') return mk_select(P)
     if (P.type == 'date') return mk_datepicker(P)
     if (_.indexOf($phold_type, P.type)>-1){
       return <input
         ref={'#'+(P.id||P.name)}
-        placeholder={P.placeholder}
-        type={P.type}
-        name={P.name}
-        id={P.id}
-        defaultValue={P.value}
-        className='form_control'/>
+        className='form_control'
+        {...attrs}
+        />
     }
 
     return <input
       ref={'#'+(P.id||P.name)}
-      type={P.type}
-      name={P.name}
-      id={P.id}
-      defaultValue={P.value}
-      className='form_control'/>
+      className='form_control'
+      {...attrs}
+      />
   }
 
   if (_.indexOf($button_type, P.type)>-1){
     return <input
       ref={'#'+(P.id||P.name)}
-      type={P.type}
-      name={P.name}
-      id={P.id}
-      defaultValue={P.value}
-      className='btn'/>
+      className='btn'
+      {...attrs}
+      />
   }
 }
 
