@@ -43,7 +43,6 @@ function __select(P, options){
   const attrs = mkAttributs(P)
   return (
     <span className="iconfont fkp-dd">
-      // <input ref={'#'+P.id} type='text' className="form_control fkp-dd-input" placeholder={P.placeholder} name={P.name} id={P.id} defaultValue='' />
       <input ref={'#'+P.id} type='text' className="form_control fkp-dd-input" {...attrs} />
       <div ref={'+'+P.id} className='fkp-dd-list'>
         {options ? options : ''}
@@ -71,7 +70,6 @@ function __datapicker(P){
   const attrs = mkAttributs(P)
   return (
     <span className="iconfont form-datepicker">
-      // <input ref={'#'+P.id} type='text' className="form_control" placeholder={P.placeholder} name={P.name} id={P.id} defaultValue='' />
       <input ref={'#'+P.id} type='text' className="form_control" {...attrs} />
     </span>
   )
@@ -169,8 +167,8 @@ function mk_element(item, _i){
   : this.props.getItemAllocation(item, index)[getTypeName(item.input)]
   // : allocation[getTypeName(item.input)]
 
-  _title = P.attr.title
-  _desc = P.attr.desc
+  _title = P.profile.title || P.attr.title || ''
+  _desc = P.profile.desc || P.attr.desc || ''
   _class = P.attr.itemClass
   _union = P.attr.union
 
