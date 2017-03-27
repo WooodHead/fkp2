@@ -1,6 +1,7 @@
 import {baselist, iscroll} from 'component'
 import {tips as msgtips} from 'component/client'
 import itemHlc from 'component/mixins/itemhlc'
+import boomAdapater from 'component/adapter/pushboom'
 import Wsocket from 'libs/wsocket'
 
 const inputxxx = $('#agzgzNav').find('input')
@@ -25,6 +26,7 @@ const wsOnConfig = {
     pushboomHis = baselist({ data: pushBoomHistoryData, listClass: 'history' })
 
     // boom body
+    treeVal = boomAdapater(treeVal)
     pushboom = iscroll({
       data: treeVal,
       listClass: 'pushboomBody',

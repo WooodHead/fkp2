@@ -1,6 +1,7 @@
 "use strict";
 let debug = Debug('pages:hello')
 import pushboomDb from './common/pushboom'
+import boomAdapter from 'component/adapter/pushboom'
 
 SIO.on('hello', function(data, socket, client) {
   var _io = this.io
@@ -89,7 +90,7 @@ function hello(oridata) {
         <a className="iconfont icon-goods_new_fill_light"></a>,
         <a className="iconfont icon-video_fill_light"></a>,
       ]
-      
+
       const list1 = component.baselist({
               data: titles1,
               theme: 'list/books',
@@ -105,7 +106,7 @@ function hello(oridata) {
               ]
             }),
 
-            treeVal = pushboomDb.find().reverse(),
+            treeVal = boomAdapter(pushboomDb.find().reverse()),
             PushboomList = component.iscroll({
               data: treeVal||[],
               listClass: 'pushboomBody',
