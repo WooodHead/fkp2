@@ -147,6 +147,7 @@ function _inject() {
 // 动态注入js或者css
 // window.onload后促发，不影响首屏显示
 function _initInject(type, src, cb){
+  var that = this
   var args, _thirdPartJs = SAX.get('thirdPartJs')||{};
   if (!type || (typeof type==='object' && !type.concat)) type = 'css'
 
