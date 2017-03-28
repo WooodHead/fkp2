@@ -69,7 +69,9 @@ const formAsset2 = [
       {title: 'bbb', attr: {'value': 2}},
       {title: 'ccc', attr: {'value': 3}},
     ],
-    itemMethod: function(dom){ },
+    itemMethod: function(dom){
+      this.toggle()
+    },
     placeholder: '请选择'
   }
 },

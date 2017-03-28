@@ -23,6 +23,11 @@ function itdMethod(ctx){
     },
     value: function(val){
       ctx.value = val
+    },
+    refresh: function(){
+      /*
+        ..... do something
+      */
     }
   }
 
@@ -165,23 +170,27 @@ export function dropdown(opts){
     placeholder: ''
   }
   dft = _.extend(dft, opts)
+  try {
+    dft.data.forEach( item => {
+      item.parent = 'top'
+    })
 
-  dft.data.forEach( item => {
-    item.parent = 'top'
-  })
+    let firstText
+    let defaultTitile = dft.data[dft.select]['title']
+    if (dft.placeholder) defaultTitile = dft.placeholder
+    if (typeof defaultTitile == 'string' || typeof defaultTitile == 'number') {
+      firstText = <span className="caption">{defaultTitile}<i></i></span>
+    } else {
+      firstText = defaultTitile
+    }
 
-  let firstText
-  let defaultTitile = dft.data[dft.select]['title']
-  if (dft.placeholder) defaultTitile = dft.placeholder
-  if (typeof defaultTitile == 'string' || typeof defaultTitile == 'number') {
-    firstText = <span className="caption">{defaultTitile}<i></i></span>
-  } else {
-    firstText = defaultTitile
+    dft.data.unshift({title: firstText, idf: 'top'})
+    dft.data = Tree(dft.data)
+    return new App(dft)
+  } catch (error) {
+    // console.log(error);
   }
-
-  dft.data.unshift({title: firstText, idf: 'top'})
-  dft.data = Tree(dft.data)
-  return new App(dft)
+  
 }
 
 export function hdropdown(opts) {

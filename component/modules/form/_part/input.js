@@ -8,7 +8,7 @@ const A = Array, O = Object
 const rcbox = require('./radio')
 let saxer, context
 
-const $text_type = ['text', 'password', 'select', 'tel', 'date']
+const $text_type = ['text', 'password', 'select', 'tel', 'date', 'span']
   , $phold_type = ['text', 'password']
   , $radio_check = ['radio','checkbox']
   , $button_type = ['button','submit']
@@ -52,7 +52,6 @@ function __select(P, options){
 }
 
 function mk_select(P){
-  let _select;
   let options;
 
   if (P.options) {
@@ -66,8 +65,9 @@ function mk_select(P){
   return __select(P)
 }
 
-function __datapicker(P){
-  const attrs = mkAttributs(P)
+function mk_datepicker(P){
+  let attrs = mkAttributs(P)
+  attrs.type = 'text'
   return (
     <span className="iconfont form-datepicker">
       <input ref={'#'+P.id} type='text' className="form_control" {...attrs} />
@@ -75,8 +75,13 @@ function __datapicker(P){
   )
 }
 
-function mk_datepicker(P){
-  return __datapicker(P)
+function mk_span(P){
+  const attrs = mkAttributs(P)
+  return (
+    <span className="iconfont form-span">
+      {P.value}
+    </span>
+  )
 }
 
 // 'text', 'password', 'select', 'tel'
@@ -85,27 +90,34 @@ function whatTypeElement(P){
   if (_.indexOf($text_type, P.type)>-1){
     if (P.type === 'select') return mk_select(P)
     if (P.type == 'date') return mk_datepicker(P)
+    if (P.type == 'span') return mk_span(P)
     if (_.indexOf($phold_type, P.type)>-1){
-      return <input
+      return (
+        <input
+          ref={'#'+(P.id||P.name)}
+          className='form_control'
+          {...attrs}
+        />
+      )
+    }
+
+    return (
+      <input
         ref={'#'+(P.id||P.name)}
         className='form_control'
         {...attrs}
-        />
-    }
-
-    return <input
-      ref={'#'+(P.id||P.name)}
-      className='form_control'
-      {...attrs}
       />
+    )
   }
 
   if (_.indexOf($button_type, P.type)>-1){
-    return <input
-      ref={'#'+(P.id||P.name)}
-      className='btn'
-      {...attrs}
+    return (
+      <input
+        ref={'#'+(P.id||P.name)}
+        className='btn'
+        {...attrs}
       />
+    )
   }
 }
 
@@ -170,8 +182,7 @@ function mk_element(item, _i){
   _title = P.profile.title || P.attr.title || ''
   _desc = P.profile.desc || P.attr.desc || ''
   _class = P.attr.itemClass
-  _union = P.attr.union
-
+  _union = P.profile.union||P.attr.union
   if (_union && !tmp_P[P.id]) {
     tmp_P[P.id] = 'true'
     _union.target = {
@@ -196,11 +207,11 @@ function mk_element(item, _i){
   })()
 
   : <lable ref={(P.id||P.name)} key={"lable"+_i} className={_class + ' for-' + (P.id||P.name||'')}>
-      {_title ? <span className="fkp-title">{_title}</span> : false}
+      {_title ? <span className="fkp-title">{_title}</span> : ''}
       {this::whatTypeElement(P)}
       {P.required ? <span className="fkp-input-required" /> : ''}
       {<span className="fkp-input-error" />}
-      {_desc ? <span className="fkp-desc">{_desc}</span> : false}
+      {_desc ? <span className="fkp-desc">{_desc}</span> : ''}
     </lable>
 }
 
@@ -226,9 +237,6 @@ class Input extends React.Component {
     mk_elements = this::mk_elements
     mk_element = this::mk_element
   }
-
-  componentWillMount() {}
-  componentDidMount() {}
 
   _preRender(){
     return this.state.data.map( (item, i) => {
@@ -262,7 +270,7 @@ function storeAction(key){
       this.setState({ data: sdata })
     },
 
-    UPDATE: function(record){
+    UPDATESELECT: function(record){
       if (!record) return
       const {index, options} = record
       let sdata = Array.from(this.state.data)
