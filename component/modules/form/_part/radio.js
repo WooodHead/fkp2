@@ -39,7 +39,7 @@ function rcbox(pdata, opts){
   } else {
     superID = pdata.name
   }
-
+  
   const fill = values.map( (val, ii) => {
     let checked = false
 
@@ -51,7 +51,8 @@ function rcbox(pdata, opts){
       else {
         titles.push(pdata.attr.title[ii]||'')
       }
-      pdata.attr.title = ''
+    } else {
+      ii == 0 ? titles.push(pdata.attr.title) : titles.push('')
     }
 
     // desc
@@ -60,7 +61,8 @@ function rcbox(pdata, opts){
       else {
         descs.push(pdata.attr.desc[ii]||'')
       }
-      pdata.attr.desc = ''
+    } else {
+      ii == 0 ? descs.push(pdata.attr.desc) : descs.push('')
     }
 
     const resault = {
@@ -85,6 +87,11 @@ function rcbox(pdata, opts){
       </lable>
     )
   })
+
+  pdata.attr.title = pdata.profile.title || ''
+  pdata.attr.desc = pdata.profile.desc || ''
+  
+
 
   const groupClass = pdata.type === 'radio' ? 'radioGroup' : 'checkboxGroup'
   return {

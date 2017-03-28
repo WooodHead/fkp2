@@ -61,7 +61,8 @@ function getItemAllocation(data, index){
   })
 
   // 第一次设置attr，可能包含了union
-  dft.attr = profile
+  // dft.attr = profile
+  dft.profile = profile
 
   // 第二次设置attr，不能包含union，union不能在input里面设定
   function resetAttr(item, isary){
@@ -75,7 +76,8 @@ function getItemAllocation(data, index){
       } else {
         attr[attribut] = isary
         ? _props[attribut] || ''
-        : _props[attribut] || profile[attribut]
+        : _props[attribut] || ''
+        // : _props[attribut] || profile[attribut]
       }
       delete _props[attribut]
     })

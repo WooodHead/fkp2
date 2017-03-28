@@ -34,6 +34,16 @@ formText1.render('form_text1')
 // radio & checkbox
 const configBox = [
   {
+    input:{
+      title: 'xxabc',
+      id: 'nimei',
+      type: 'text',
+      placeholder: 'a ha'
+    }
+  },
+  {
+    title: 'ni hao a',
+    desc: 'what',
     input: {
       type: 'radio',
       title: '什么',
@@ -43,6 +53,7 @@ const configBox = [
   },
   '分隔符',
   {
+    title: 'xxxx',
     input:{
       type: 'checkbox',
       name:  'www',
@@ -52,4 +63,4 @@ const configBox = [
   },
 ]
 const formBox = Input({data: configBox})
-formBox.render('demo_rcbox')
+formBox.render('demo_dd')
