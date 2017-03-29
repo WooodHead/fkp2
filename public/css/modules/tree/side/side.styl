@@ -1,16 +1,29 @@
-@import "_common/index"
-@import "themd/themd-E6F3F6"
+/**
+ * iconfont
+ */
+iconfont()
+  font-family:"iconfont" !important;
+  font-style:normal;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-stroke-width: 0.2px;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 16px
+/**
+ * 搭配滚动效果
+ */
+iscroll()
+  position: absolute;       //添加这个可以出现滚动效果
+  z-index: 1;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  width: 100%;
+  transform: translateZ(0);
+  user-select: none;
+  text-size-adjust: none;
 
-.routerGroup
-  height: 100%;
-  overflow: hidden;   //如果启用 iscroll 这个可以清除系统滚动条
+
+
 .treeContainer
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  z-index: 2;
-  flex-direction: column;
+  width: 100%;
   {themd}
   {spacing}
   {fontSize}
@@ -22,14 +35,11 @@
     transition: all .3s ease;
   .itemrootCkb
     display: none;
-  .treeContainer
-    position: relative;
-  .treeGroup
-    // iscroll()    //如果启用 iscroll 需要清除这个注释
+
 
   /**
-   * 侧边栏头部部分
-   */
+  * 侧边栏头部部分
+  */
   .left-sidebar-head
     box-shadow: 0 0 1px #ddd;
     position: relative;
@@ -43,9 +53,6 @@
   /**
    * 侧边栏main部分
    */
-  .treeContainer
-    margin: 8% 0
-    flex: auto;
   .level0
     ul
       height: 100%;
@@ -65,8 +72,12 @@
           iconfont()
           position: absolute;
           top: 0
+          left: 5%
           &.first-icon
             left: 9%
+          &.right-icon
+            left: auto;
+            right: 5%
           // &:first-child
           //   left: 5%
           // &:last-child
