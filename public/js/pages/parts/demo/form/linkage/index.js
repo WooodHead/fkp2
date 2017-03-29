@@ -86,12 +86,24 @@ const formAsset2 = [
   union: {
     id: 'select',
     cb: function(ctx){
+      console.log(ctx.src.value);
+      
       const data = [   // options 选项
         {title: 'xxx', attr: {'value': 4}},
         {title: 'yyy', attr: {'value': 5}},
         {title: 'zzz', attr: {'value': 6}},
       ]
-      this.value(data)
+
+      const data2 = [   // options 选项
+        {title: 'nimei', attr: {'value': 4}},
+        {title: 'nihao', attr: {'value': 5}},
+        {title: 'nizai', attr: {'value': 6}},
+      ]
+      if (ctx.src.value == 'aaa') this.value(data)
+      if (ctx.src.value == 'bbb') {
+        console.log('======== 1111');
+        this.value(data2)
+      }
     }
   }
 }]
