@@ -1,6 +1,7 @@
 import {inject} from 'libs'
 import {grids, router, wrapItem} from 'component/client'
 
+
 import page1 from './_common/page1'
 import page2 from './_common/page2'
 import page3 from './_common/page3'
@@ -11,6 +12,7 @@ import page7 from './_common/page7'
 import page8 from './_common/page8'
 import page9 from './_common/page9'
 // const  Page4 = wrapItem( <div>我才是最后一页</div>, function(dom){ $(dom).click(function(){alert(1)}) } )
+
 
 
 const Test1 = wrapItem(
@@ -65,7 +67,8 @@ if ($('#side-content').length) {
       // {title: '修改支付密码', content: <Page4 />, path: 'page4', parent: 'integral'},
       //
       // {title: 'Widgets', content: page1, path: 'page1'},
-      {title: 'UI Elements', idf: 'ui'},
+      {title: <span className="caption"><i className='icon-time'></i>UI 元素<i className="icon-arrow_down right-icon"></i></span>, idf: 'ui'},
+      {title: 'Rate 星星评分', content: page1, path: 'page1', parent: 'ui'},
       {title: 'Progress bars 进度条', content: page2, path: 'page2', parent: 'ui'},
       {title: 'Table 表格', content: page3, path: 'page3', parent: 'ui'},
       {title: 'Steps 步骤条', content: page4, path: 'page4', parent: 'ui'},
@@ -73,25 +76,22 @@ if ($('#side-content').length) {
       {title: 'Badge 徽标数', content: page6, path: 'page6', parent: 'ui'},
       {title: 'Side 侧边栏', content: page7, path: 'page7', parent: 'ui'},
       {title: 'Dropdown 下拉菜单', content: page8, path: 'page8', parent: 'ui'},
-      {title: 'Button 按钮', content: page9, path: 'page9', parent: 'ui'},
+      {title: 'Button 按钮', content: page9, path: 'page9', parent: 'button'},
 
-      {title: <span className="caption"><i className='icon-circle'></i>Forms 表单<i className="icon-arrow_down"></i></span>, content: page1, path: 'a1', idf: 'forms'},
-      {title: <span className="caption"><i className='icon-recordfill'></i>Tables 表格<i className="icon-arrow_down"></i></span>, content: page1, path: 'a2', idf: 'tables'},
-      {title: <span className="caption"><i className='icon-weblock'></i>ECharts 图表<i className="icon-arrow_down"></i></span>, content: page1, path: 'a3', idf: 'echarts'},
-      {title: <span className="caption"><i className='icon-my'></i>Map 地图<i className="icon-arrow_down"></i></span>, content: page1, path: 'a4', idf: 'map'},
+      {title: <span className="caption"><i className='icon-circle'></i>Forms 表单<i className="icon-arrow_down right-icon"></i></span>, content: page1, path: 'a1', idf: 'forms'},
+      {title: <span className="caption"><i className='icon-recordfill'></i>Tables 表格<i className="icon-arrow_down right-icon"></i></span>, content: page1, path: 'a2', idf: 'tables'},
+      {title: <span className="caption"><i className='icon-weblock'></i>ECharts 图表<i className="icon-arrow_down right-icon"></i></span>, content: page1, path: 'a3', idf: 'echarts'},
+      {title: <span className="caption"><i className='icon-my'></i>Map 地图<i className="icon-arrow_down right-icon"></i></span>, content: page1, path: 'a4', idf: 'map'},
 
-      {title: <span className="caption"><i className='icon-write'></i>测试<i className="icon-arrow_down"></i></span>, content: page1, path: 'a5', idf: 'test'},
-      {title: <span className="caption">测试2<i className="icon-arrow_down"></i></span>, content: page7, path: 'a6', parent: 'test', idf: 'xxx'},
-      {title: 'Side 侧边栏1', content: 'page7', path: 'a7', parent: 'xxx'},
-      {title: 'Side 侧边栏2', content: 'page7', path: 'a7', parent: 'xxx'},
-      {title: 'Side 侧边栏3', content: 'page8', path: 'a8', parent: 'xxx', idf: 'yyy'},
-      {title: 'Side 侧边栏31', content: 'page8', path: 'a9', parent: 'yyy'},
-      {title: 'Side 侧边栏32', content: 'page8', path: 'a10', parent: 'yyy'},
-      {title: 'Side 侧边栏33', content: 'page8', path: 'a11', parent: 'yyy'},
-      {title: 'Side 侧边栏34', content: 'page8', path: 'a12', parent: 'yyy'},
+      {title: <span className="caption"><i className='icon-write'></i>测试<i className="icon-arrow_down right-icon"></i></span>, content: page1, path: 'a5', idf: 'test'},
+      {title: <span className="caption">测试2<i className="icon-arrow_down right-icon"></i></span>, content: page7, path: 'a6', parent: 'test', idf: 'xxx'},
+      {title: 'Side 侧边栏', content: 'page7', path: 'a7', parent: 'xxx'},
+      {title: 'Side 侧边栏', content: 'page8', path: 'a8', parent: 'xxx'},
+
 
     ],
-    treeHeader: <div className="left-sidebar-head"><div className="left-sidebar-img"><img src="http://www.vsochina.com/data/avatar/003/44/63/00_avatar_middle.jpg?1490057834"/></div></div>,
+    treeHeader: <div className="left-sidebar-head"><div className="left-sidebar-img"><img src="/images/logo128.png"/></div></div>,
+    theme: 'router/scroll'
   })
   rter.render()
 }
