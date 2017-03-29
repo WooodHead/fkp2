@@ -1,0 +1,19 @@
+display-flex(dir, content)
+  display: flex
+  if dir == row
+    flex-direction: row
+
+  else if dir == column
+    flex-direction: column
+
+  if content == center
+    justify-content: center
+
+  else if content == flex-start
+    justify-content: flex-start
+
+  else if content == space-between
+    justify-content: space-between
+
+  else if content == space-around
+    justify-content: space-around;
