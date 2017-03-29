@@ -46,10 +46,21 @@ function getMenusAsset(_data){
         ctx.text(this.innerHTML)
         ctx.value(this.innerHTML)
         ctx.toggle()
-
         const apiIndex = $(this).attr('data-id')
-        that.relativeZone.replace('777777')
-        that.api = that.apis[apiIndex]
+
+        if (that.apis[apiIndex]) {
+          that.api = that.apis[apiIndex]
+        }
+
+        if (that.relatives[apiIndex]){
+          const relItem = that.relatives[apiIndex]
+          let resault = relItem
+          if (typeof relItem == 'function') {
+            resault = relItem()
+          }
+          that.relativeZone.replace(resault)
+        }
+
       })
     }
   }
@@ -62,16 +73,17 @@ class SearchBase extends React.Component {
     super(props)
     this.timer
     this.state = {
-      data: this.props.data||[],
-      options: this.props.options||[]
+      data: this.props.data||[]
     }
   }
   componentWillMount() {
     try {
       let assets = {},
         menusData = [], 
-        apis = []
-    
+        apis = [],
+        relatives = [];
+      
+      this.menus = ''
       if (this.state.data.length) {
         this.state.data.map( (item, ii) => {
           assets[ii] = {
@@ -79,18 +91,25 @@ class SearchBase extends React.Component {
             api: item.api
           }
           menusData.push({title: item.title, attr:{id: ii}})
-          apis.push(item.api)
+          apis.push(item.api||'')
+          relatives.push(item.relative||'')
         })
       }
+      
       this.apis = apis
-      this.menusData = menusData
+      this.relatives = relatives
       this.relativeZone = grids(relativeAsset)
-      this.optionsZone = grids(optionsAsset)
-      this.menus = dropdown(getMenusAsset.call(this, this.menusData)).render()
+
+      if (menusData.length) {
+        if (menusData.length > 1) {
+          this.menus = dropdown(getMenusAsset.call(this, menusData)).render()
+        } else {
+          this.api = this.apis[0]
+        }
+      }
     } catch (error) {
       // console.log(error);
     }
-    
   }
   render(){
     const that = this
@@ -99,15 +118,14 @@ class SearchBase extends React.Component {
 
     const searchInputAsset = 
     [{
-      title: this.menus,
       desc: <button>搜索</button>,
       input:{
         id:    'autoCompleteSearch',
         type:  'select',
         placeholder: '请选择',
         itemMethod: function(dom){
-          if (typeof that.props.optionMethod == 'function') {
-            that.props.optionMethod.call(this, dom)
+          if (typeof that.props.searchOptionMethod == 'function') {
+            return that.props.searchOptionMethod.call(this, dom)
           }
         }
       },
@@ -116,16 +134,11 @@ class SearchBase extends React.Component {
         cb: function(dom){
           clearTimeout(that.timer)
           that.timer = setTimeout(()=>{
-            if (typeof that.props.searchMethd == 'function') {
-              const newOptions = that.props.searchMethd.call(this, dom)
-              this.value(newOptions)
+            if (typeof that.props.searchMethod == 'function') {
+              const newOptions = that.props.searchMethod.call(this, dom)
+              if (newOptions) this.value(newOptions)
             }
-            // this.value([
-            //   {title: 'xxxx', attr: {value: '111'}},
-            //   {title: 'yyyy', attr: {value: '222'}},
-            //   {title: 'zzzz', attr: {value: '333'}}
-            // ])
-          }, 1000);
+          }, 300);
         }
       },
       watch: true
@@ -137,6 +150,7 @@ class SearchBase extends React.Component {
 
     return (
       <div className={"search_wrap "+(listClassName ? listClassName+'_parent':'')}>
+        {this.menus}
         {searchInput}
       </div>
     )
@@ -167,9 +181,8 @@ export function search(opts){
     data: [],
     options: [],
 
-    menuMethod: '',
-    optionMethod: '',
-    searchMethd: '',
+    searchOptionMethod: '',
+    searchMethod: '',
 
     select: 0,
     header: '',
