@@ -57,10 +57,7 @@ class fox extends React.Component {
 	}
 
 	componentWillMount() {
-		let state = this.state.toJS()
-		this.resault = this.dealWithData(state)
-		this.idf = this.state.get('idf')
-		this.parent = this.props.operate&&this.props.operate.parent
+
 	}
 
 	componentDidMount() {
@@ -76,7 +73,15 @@ class fox extends React.Component {
          !(this.state === nextState || im.is(this.state, nextState));
 	}
 
+	_preRender(){
+		let state = this.state.toJS()
+		this.resault = this.dealWithData(state)
+		this.idf = this.state.get('idf')
+		this.parent = this.props.operate&&this.props.operate.parent
+	}
+
 	render(){
+		this._preRender()
 		const self = this
 		let {ref, k1, v1, k2, v2, clsName, sty, fill} = this.resault
 		let data_attr = {}

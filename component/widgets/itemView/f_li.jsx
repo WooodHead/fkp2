@@ -7,7 +7,7 @@ import itemHlc from 'component/mixins/itemhlc'
 var dealWithDataMethod = require('./_common/itemDealWithData')
 
 function getClass(resault){
-	const state = this.state.toJS()
+	const state = this.props
 	const data = state.data
 	let cls = resault.clsName
 	if (data) {
@@ -37,50 +37,25 @@ function getClass(resault){
 class fox extends React.Component {
 	constructor(props) {
 		super(props)
-		this.state = im.fromJS(this.props).delete('operate')
-
 		this.dealWithData = this::dealWithDataMethod
-		this.updateState = this::this.updateState
-		this.getState = this::this.getState
 	}
 
-	getState(){
-		let _state = this.state.toJS()
-		return _state
-	}
-
-	updateState(state){
-		if (!data) return
-		let _state = this.state.merge(im.fromJS(state))
-		this.setState(_state)
-	}
-
-	componentWillMount() {
-		let state = this.state.toJS()
-		this.resault = this.dealWithData(state)
-		this.idf = this.state.get('idf')
+	_preRender(){
+		let _props = _.clone(this.props)
+		delete _props.operate
+		this.resault = this.dealWithData(_props)
+		this.idf = _props.idf
 		this.parent = this.props.operate.parent
 	}
 
-	componentDidMount() {
-
-	}
-
-	componentWillReceiveProps(nextProps) {
-
-	}
-
-	shouldComponentUpdate(nextProps, nextState) {
-		return !(this.props === nextProps || im.is(this.props, nextProps)) ||
-         !(this.state === nextState || im.is(this.state, nextState));
-	}
-
 	render(){
+		this._preRender()
 		const self = this
 		let {ref, k1, v1, k2, v2, clsName, sty, fill} = this.resault
 		let data_attr = {}
-		const state = this.state.toJS()
-		const stateData = state.data
+		
+		const stateData = this.props.data
+		
 		if (typeof stateData == 'object') {
 			Object.keys(stateData).map( key => {
 				const value = stateData[key]

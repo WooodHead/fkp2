@@ -23,9 +23,9 @@ class TmpApp extends React.Component {
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
-		// return !(this.props === nextProps || im.is(this.props, nextProps)) ||
-		// 		 !(this.state === nextState || im.is(this.state, nextState));
-		return !im.is(this.state.data, nextState.data)
+		return !(this.props === nextProps || im.is(this.props, nextProps)) ||
+				 !(this.state === nextState || im.is(this.state, nextState));
+		// return !im.is(this.state.data, nextState.data)
 	}
 
 	componentWillMount() {
