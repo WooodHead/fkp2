@@ -39,29 +39,27 @@ function mkAttributs(p){
  * item 配置
 */
 
-function __select(P, options){
+function __select(P){
   const attrs = mkAttributs(P)
+  let options
+  if (P.options) {
+    const _data = tree(P.options)
+    options = list({
+      data: _data,
+      itemClass: 'fkp-dd-option',
+    })
+  }
   return (
     <span className="iconfont fkp-dd">
       <input ref={'#'+P.id} type='text' className="form_control fkp-dd-input" {...attrs} />
       <div ref={'+'+P.id} className='fkp-dd-list'>
-        {options ? options : ''}
+        {options}
       </div>
     </span>
   )
 }
 
 function mk_select(P){
-  let options;
-
-  if (P.options) {
-    const _data = tree(P.options),
-    options = list({
-      data: _data,
-      itemClass: 'fkp-dd-option',
-    })
-    return __select(P, options)
-  }
   return __select(P)
 }
 
@@ -198,7 +196,7 @@ function mk_element(item, _i){
   ? ( ()=>{
     const resault = rcbox(P)
     return (
-      <div ref={resault.superID} className={resault.groupClass}>
+      <div ref={resault.superID} key={"lable"+_i} className={resault.groupClass}>
         {resault.title ? <span className="fkp-title">{resault.title}</span> : ''}
         {resault.fill}
         {resault.desc ? <span className="fkp-desc">{resault.desc}</span> : ''}

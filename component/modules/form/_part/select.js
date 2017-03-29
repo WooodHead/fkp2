@@ -151,7 +151,6 @@ function select(_intent, ctx){
         const _ctx = {
           toggle: function(){
             $(ddMenu).toggle()
-            // $(elements[item.id]).trigger('toggledd')
           },
           value: function(val){
             ctx.form[item.id] = val
@@ -161,22 +160,17 @@ function select(_intent, ctx){
         }
 
         $(elements[item.id]).on('toggledd', function(){
-          // if (isFunction(itMtd)) itMtd.call(_ctx, this)  // ???
-          // else {
-          // }
-
           if (isFunction(itMtd)) {
-            itMtd.call(_ctx, this)
+              const willToggle = itMtd.call(_ctx, elements['+'+item.id])
+              if (willToggle) $(ddMenu).toggle()
           } else {
             $(ddMenu).toggle()
           }
-
         })
 
-        $(elements[item.id]).on('click', function(e){
+        $(thisInput).on('click', function(e){
           e.stopPropagation()
           $(elements[item.id]).trigger('toggledd')
-          // $(ddMenu).toggle()
           if (watch) {
             forceDealWithUnion(item)
           }
