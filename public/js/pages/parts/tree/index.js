@@ -1,4 +1,5 @@
 import {queryString} from 'libs'
+import iscrollHlc from 'component/mixins/iscrollhlc'
 
 let query = queryString()
 
@@ -6,6 +7,13 @@ const config = {
   fold: false
 }
 let items = []
+// iscrollHlc($('.docs-tree')[0], {
+//   scrollbars: true,
+//   fadeScrollbars: true,
+//   interactiveScrollbars: true,
+//   resizeScrollbars: true
+// })
+
 $('.tree-menu-body').find('li').each(function(ii, dom){
   if ($(dom).hasClass('itemroot')) {
     if (config.fold) $(dom).find('.itemCategory ul').addClass('none')
@@ -20,8 +28,6 @@ $('.tree-menu-body').find('li').each(function(ii, dom){
     }
   }
 
-
-
   $(dom).click(function(e){
     e.stopPropagation()
     $(items).removeClass('selected')
@@ -32,5 +38,4 @@ $('.tree-menu-body').find('li').each(function(ii, dom){
       $(this).addClass('selected')
     }
   })
-
 })
