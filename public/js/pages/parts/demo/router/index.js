@@ -90,7 +90,7 @@ if ($('#side-content').length) {
 
 
     ],
-    treeHeader: <div className="left-sidebar-head"><div className="left-sidebar-img"><img src="/images/logo128.png"/></div></div>,
+    treeHeader: <div className="tree-head"><div className="left-sidebar-img"><img src="/images/logo128.png"/></div></div>,
     theme: 'router/scroll'
   })
   rter.render()
