@@ -2,7 +2,7 @@ import {inject} from 'libs'
 const Input = require('../_part/input')
 import BaseClass from 'component/class/base'
 
-const $text_type = ['text', 'password', 'select', 'tel', 'date']
+const $text_type = ['text', 'password', 'select', 'tel', 'date', 'span']
     , $phold_type = ['text', 'password']
     , $radio_check = ['radio','checkbox']
     , $button_type = ['button','submit']

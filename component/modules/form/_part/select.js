@@ -73,14 +73,8 @@ function select(_intent, ctx){
   function dealDatePicker(item){
     const thisInput = elements['#'+item.id]
     if (!thisInput) return
-    if (!item.attr.union) {
-      // let dftAssets = {
-      //   minView: "month", //选择日期后，不会再跳转去选择时分秒
-      //   language: 'zh-CN',
-      //   format: "yyyy-mm-dd",                //格式化日期
-      //   autoclose: true
-      // }
-      const dftAssets = _.extend(dpickerAssets, item.attr.assets)
+    if (!item.profile.union) {
+      const dftAssets = _.extend(dpickerAssets, item.profile.assets)
       ctx.actions.setActions({
         datapicker: function(){
           $(thisInput).datetimepicker(dftAssets);
@@ -96,11 +90,20 @@ function select(_intent, ctx){
       if (hasUnion) {
         dealWatchs({id: thisInput.id})
       }
-    })     
+    })
+  }
+
+  function forceDealWithUnion(item){
+    const hasUnion = checkUnion({id: item.id}, dealWithUnion)
+    if (hasUnion) {
+      dealWatchs({id: item.id})
+    }
   }
 
   Object.keys(allocation).forEach( unit => {
     const item = allocation[unit]
+    const itMtd = item.itemMethod || item.attr.itemMethod
+
     let thisInput
     let lable
     switch (item.type) {
@@ -116,6 +119,8 @@ function select(_intent, ctx){
         break;
 
       case 'select':
+        const watch = item.profile.watch
+
         thisInput = elements['#'+item.id]
         lable = elements[item.id]
         const ddMenu = elements['+'+item.id]  //下拉菜单容器
@@ -129,37 +134,59 @@ function select(_intent, ctx){
           $(ddMenu).hide()
         })
 
-        $(thisInput).on('click', function(e){
+        if (watch) {
+          $(thisInput).on('input', function(){
+            forceDealWithUnion(item)
+          })
+        }
+
+        $(thisInput).on('change', function(e){
           e.stopPropagation()
-          $(ddMenu).toggle()
+          const hasUnion = checkUnion({id: item.id}, dealWithUnion)
+          if (hasUnion) {
+            dealWatchs({id: thisInput.id})
+          }
         })
 
         const _ctx = {
           toggle: function(){
             $(ddMenu).toggle()
+          },
+          value: function(val){
+            ctx.form[item.id] = val
+            thisInput.setAttribute('data-value', val)
+            thisInput.value = val
           }
         }
+
+        $(elements[item.id]).on('toggledd', function(){
+          if (isFunction(itMtd)) {
+              const willToggle = itMtd.call(_ctx, elements['+'+item.id])
+              if (willToggle) $(ddMenu).toggle()
+          } else {
+            $(ddMenu).toggle()
+          }
+        })
+
+        $(thisInput).on('click', function(e){
+          e.stopPropagation()
+          $(elements[item.id]).trigger('toggledd')
+          if (watch) {
+            forceDealWithUnion(item)
+          }
+        })
 
         $(ddMenu).on('click', '.fkp-dd-option', function(e){
           e.stopPropagation()
           const _val = this.getAttribute('data-value')
           change = ctx.form[item.id] == _val ? false : true
 
+          $(elements[item.id]).trigger('toggledd')
           if (change) {
             ctx.form[item.id] = _val
             thisInput.setAttribute('data-value', _val)
             thisInput.value = this.innerHTML
-
-            const itMtd = item.itemMethod || item.attr.itemMethod
-            if (isFunction(itMtd)) itMtd(this, _ctx)  // ???
-            else {
-              $(ddMenu).toggle()
-            }
-
-            const hasUnion = checkUnion({id: item.id}, dealWithUnion)
-            if (hasUnion) {
-              dealWatchs({id: thisInput.id})
-            }
+            $(thisInput).trigger('change')
           }
         })
         break;
@@ -167,9 +194,6 @@ function select(_intent, ctx){
       default:
         thisInput = elements['#'+item.id]
         const hasUnion = checkUnion({id: item.id}, dealWithUnion);
-
-        const itMtd = item.itemMethod || item.attr.itemMethod
-
         if (hasUnion) {
           $(thisInput).on('input', function(e){
             ctx.form[item.id] = this.value
@@ -207,19 +231,17 @@ function select(_intent, ctx){
         values: ctx.values
       }
 
-      if (src_id == target_id) {
-        if (isFunction(unionObj.cb)) unionObj.cb.call(targetDom, _ctx)
-        return
+      // 清空目标的值
+      if (src_id != target_id) {
+        let targetIt = {}
+        targetIt[target_id] = '';
+        ctx.values(targetIt)
       }
-
-      let targetIt = {}
-      targetIt[target_id] = '';
-      ctx.values(targetIt)
 
       // target 为select类型
       function options(data, text){
         let xxx = isSelect[target_id]
-        ctx.actions.roll('UPDATE', {
+        ctx.actions.roll('UPDATESELECT', {
           index: xxx._index,
           options: data
         })
@@ -235,7 +257,7 @@ function select(_intent, ctx){
           }
         }
       }
-      
+
       let ctx_dpicker = {
         refresh: function(asset){
           const dftAssets = _.extend(dpickerAssets, asset)
@@ -247,10 +269,14 @@ function select(_intent, ctx){
         xctx = ctx_dpicker
       }
 
+      // 执行关联方法
+      if (src_id == target_id) {
+        if (isFunction(unionObj.cb)) unionObj.cb.call(xctx, _ctx.src)
+        return
+      }
 
       if (isFunction(unionObj.cb)) unionObj.cb.call(xctx, _ctx)
       else if(unionObj.target.type == 'date'){
-        console.log('======= xxxxx');
         return
       }
       else {

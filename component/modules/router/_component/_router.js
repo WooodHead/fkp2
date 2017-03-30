@@ -139,8 +139,13 @@ class TapsApp extends React.Component {
 			data.push(_item)
 		})
 
+		const treeHeader = this.props.opts.treeHeader
+		const treeFooter = this.props.opts.treeFooter
+
 		const _menus = tree({
 			data: data,
+			header: treeHeader,
+			footer: treeFooter,
 			autoinject: false,
 			fold: false,
 			itemMethod: this.props.menuMethod,
@@ -462,11 +467,8 @@ class TapsApp extends React.Component {
 		}
 		this.leaveContent()
 
-		const treeHeader = this.props.opts.treeHeader
-		const treeFooter = this.props.opts.treeFooter
-
 		const _menus = this.state.menu
-		? <div className='routerMenus'>{treeHeader}{this.menus}{treeFooter}</div>
+		? <div className='routerMenus'>{this.menus}</div>
 		: '';
 
 		if (this.props.opts.header ||

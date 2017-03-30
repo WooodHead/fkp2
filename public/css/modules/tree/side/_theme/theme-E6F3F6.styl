@@ -2,20 +2,16 @@
  * 控制背景颜色、字体颜色等版本
  * 调用： {themd}
  */
-.routerMenus
-  .treeContainer
-    position: relative;             //去除 fixed
-    width: 100%;
 themd = {
   background: #fff,
   '.level0 li:hover,.level1 span:hover':{
     color: #f4b027
   },
-  '.level1 li,.level1 span':{         //leven1=========二级菜单有三级列表
+  '.level0 li,.level1 li,.level1 span':{         //leven1=========二级菜单有三级列表
     color: #666
   },
   '.level0>.itemCategory>span':{
-    background: #E6F3F6
+    background: #eef5fb
     color: #6095BA
   },
 }

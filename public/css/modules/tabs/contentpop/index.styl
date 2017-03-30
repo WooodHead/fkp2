@@ -1,0 +1,66 @@
+@import "../../_common/index"
+/**
+ * 类似弹出层的内容框
+ *
+ */
+.form-container
+  position: relative
+  >div
+    // position: absolute
+    // right: 2em
+    // top: 2em
+    background: #fff
+    width: 400px
+    height: 338px
+  .tabsGroupY
+    border-radius: 4px
+    .tabsMenus
+      border-bottom: 1px solid #e3e3e3
+      overflow: hidden
+    .tabsBoxes
+      border: none
+      padding: 1em 0
+      overflow: inherit
+  .inputGroup
+    input
+      width: 17em
+
+.tabs-menu-body
+  display-flex(row, flex-start)
+  align-items: center;
+  align-content: center;
+  height: 50px;
+  text-align: center;
+  li
+    cursor: pointer;
+    flex: 1
+    position: relative;
+    height: 50px
+    line-height: 50px
+    &:before
+      content: ''
+      border-bottom: 2px solid transparent
+      position: absolute;
+      bottom: 0px;
+      left: 0;
+      width: 100%;
+    &.selected,&:hover
+      &:before
+        border-bottom-color: #999999
+
+  // .list-wrap
+  //   height: 100%
+  //   .hlist
+  //     display-flex(column, center)
+  //     align-items: center;
+  //     align-content: center;
+  //     height: 100%;
+  //     margin-left: -1px
+  //     text-align: center;
+  //     li
+  //       width: 50%
+  //       height: 100%
+  //       border-left: 1px solid #ddd
+  //       padding: 0
+  //       &:hover
+  //         border-bottom: 2px solid #2db7f5;

@@ -2,17 +2,13 @@
  * 控制背景颜色、字体颜色等版本
  * 调用： {themd}
  */
-.routerMenus
-  .treeContainer
-    position: relative;             //去除 fixed
-    width: 100%;
 themd = {
   background: #fff,
   color: #666,
-  '.level0 li,.level1 span':{
+  '.level0 li,.level1>.itemCategory>span':{
     border-left: 3px solid transparent
   },
-  '.level0 li:hover,.level1 span:hover':{
+  '.level0 li:hover,.level1>.itemCategory>span:hover':{
     background: #ecf6fd
     border-left-color: #108ee9
     color: #108ee9
@@ -27,6 +23,12 @@ themd = {
   '.level0>.itemCategory>span:hover':{
     color: #108ee9
   },
+  '.level0 .level1,.level1 li':{
+    border-left: none
+  },
+  '.level0 .level1:hover,.level1 li:hover':{
+    background: none
+  },
   '.left-sidebar-head':{
     background: #fff
   }
@@ -40,13 +42,10 @@ spacing = {
       padding-left: 42px
       line-height: 44px
   }
-  '.level1 li,.level1 span':{
-    line-height: 38px
-  }
-  '.level1 li,.level1 span':{
+  // '.level0 .level1,.level1 li,.level1 span':{
+  '.level0 .level1':{
     padding-left: 0
     line-height: 38px
-    position: relative
   }
   '.level1 li:before':{                       //这里是给三四级菜单添加小圆点
     content: ""
@@ -61,7 +60,11 @@ spacing = {
     top: 9%
   }
   '.level1 li':{
+    position: relative
     padding-left: 12px
+  },
+  '.level1 ul':{
+    margin-left: 50px
   }
 }
 /**
