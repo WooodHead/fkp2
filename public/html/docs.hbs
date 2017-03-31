@@ -10,32 +10,26 @@
         {{#if docs.docindex }}
           <div class="col-xs col-sm col-md col-lg docs-index">
             <div class="markdown-body">
-              {{{docs.docindex.cnt}}}               
+              {{{docs.docindex.cnt}}}
             </div>
           </div>
         {{else}}
-          <!-- <div class="docs-menu">
-            <input type="checkbox" />
-            <span/>
-          </div> -->
-          <input type="checkbox" class="docs-trigger"/>
-          <div class="docs-tree">
-            {{{docs.menutree}}}
-          </div>
-          <div class="docs-body">
-            <div class="markdown-body u-clearfix">
-              {{# if docs.home}}
-                <p>
-                  {{{docs.home.cnt}}}
-                </p>
-              {{/if}}
-              {{# if docs.mdcontent}}
-                <p>
-                  {{{docs.mdcontent.cnt}}}
-                </p>
-              {{/if}}
+          <div class="docs-container">
+            <input type="checkbox" class="docs-trigger"/>
+            <div class="docs-tree">
+              {{{docs.menutree}}}
             </div>
-          </div>
+            <div class="docs-body">
+              <div class="markdown-body u-clearfix">
+                {{# if docs.home}}
+                  {{{docs.home.cnt}}}
+                {{/if}}
+                {{# if docs.mdcontent}}
+                  {{{docs.mdcontent.cnt}}}
+                {{/if}}
+              </div>
+            </div>
+          </div>           
         {{/if}}
       </div>
         @@include('./_common/footer/foot.html')
