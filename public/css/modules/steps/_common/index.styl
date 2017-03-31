@@ -1,0 +1,54 @@
+step()
+  .steps
+    width: 100%
+    display-flex(row, flex-start)
+    li
+      position: relative
+      vertical-align: top
+      overflow: hidden
+      &.steps-status-finish
+        .steps-icon
+          position: relative
+          &:before
+            border-radius: 100%;
+            position: absolute;
+            width: 100%;
+            top: 0;
+            left: 0;
+        .steps-tail
+          i
+            &:after
+              width: 100%
+              transition: all .6s
+              opacity: 1
+
+    .steps-step
+      font-size: 14px
+      position: relative
+      z-index: 3
+      .steps-icon
+        background-color: #fff
+        border: 1px solid rgba(0,0,0,.25)
+        display: block
+        transition: background-color .3s ease,border-color .3s ease
+      p
+        margin-top: 6px
+
+    .steps-tail
+      position: absolute
+      top: 13px
+      left: 0
+      width: 100%
+      i
+        display: inline-block
+        height: 3px
+        border-radius: 1px
+        width: @width
+        vertical-align: top
+        &:after
+          position: absolute
+          content: ""
+          top: 0
+          width: 0
+          height: @height
+          opacity: 0
