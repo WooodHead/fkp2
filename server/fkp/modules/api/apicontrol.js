@@ -2,6 +2,13 @@ import router from '../../route'
 
 export default async function(ctx, next){
   let route = router.makeRoute(ctx)
+  const fkp = ctx.fkp
+  const isAjax = fkp.isAjax()
   route = route.replace('api/', '')
-  ctx.body  = await Fetch.get(route)
+
+  if (ctx.method == 'GET') {
+    if (isAjax) ctx.body = await Fetch.get(route, ctx.query)
+  } else {
+    ctx.body = await Fetch.post(route, ctx.request.body)
+  }
 }

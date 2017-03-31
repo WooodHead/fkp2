@@ -81,25 +81,25 @@ module.exports = function(){
         this.fetchRemote = true
         method = 'get'
         url = api
-        if (param && param.method) {
-          method = param.method
-          delete param.method
-        }
+        // if (param && param.method) {
+        //   method = param.method
+        //   delete param.method
+        // }
       }
 
       else {
         url = this.apilist.list[api]
         if( !url ) return [null, null]
-        if (param && param.method){
-          method = param.method
-          delete param.method
-        }
+        // if (param && param.method){
+        //   method = param.method
+        //   delete param.method
+        // }
       }
 
       let query=undefined
       method = method.toLowerCase();
       if (method==='get')  query = {json: param}
-      if (method==='post') query = {form: param}
+      if (method==='post') query = {json: param}
       return [url, query]
     },
 
