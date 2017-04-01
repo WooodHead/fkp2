@@ -79,7 +79,7 @@ function getItemAllocation(data, index){
         : _props[attribut] || ''
         // : _props[attribut] || profile[attribut]
       }
-      delete _props[attribut]
+      // delete _props[attribut]
     })
     return {..._props, attr}
   }
