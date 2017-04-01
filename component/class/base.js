@@ -9,7 +9,7 @@ function delay(cb, timer){
 }
 
 function rendered(cb){
-  delay(cb, 17)
+  delay(cb, 1000)
 }
 
 export default class {

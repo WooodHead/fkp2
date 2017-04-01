@@ -2,17 +2,29 @@
 @import "../../radio/index";
 @import "../../button/index";
 
-
 a
   text-decoration: underline;
+  color: #144bff
 
 .inputGroup
+  .none
+    display: none
   lable,.inputItem
     padding: 0 0 1em 0;
   .fkp-input-error
     position: absolute;
-    bottom: 0;
-    left: 1em;
+    bottom: 4px;
+    left: 8em;
+    // border: 1px solid #f1e4ac;
+    // background: #fef6d4;
+    // display: block;
+    // margin-left: 0;
+    // padding: 0.4em 0.8em;
+    // min-width: 200px;
+    // &:before
+    //   content: '\e60e'
+    //   margin-right: 6px;
+
   .for-code         //图片验证码
     input
       width: 12em
@@ -33,21 +45,17 @@ a
   margin: 1em 0
   font-size: 16px;
 
-.hbody
-  overflow: hidden;
+.item-other-login-list
+  margin-top: 10px;
+  li
+    display: inline-block;
+    margin-right: 10px;
+    transition: all 1s ease-in-out
+    &:hover
+      transform: translate(0,-3px);
   a
-    color: #144bff
-  .item-other-login-list
-    margin-top: 10px;
-    li
-      display: inline-block;
-      margin-right: 10px;
-      transition: all 1s ease-in-out
-      &:hover
-        transform: translate(0,-3px);
-    a
-      color: inherit;
-      text-decoration: none;
+    color: inherit;
+    text-decoration: none;
 
 .qrcode
   text-align: center;

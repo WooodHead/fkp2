@@ -1,5 +1,6 @@
 @import "../dropdown/index";
 @import "../button/index";
+@import "../_common/index"
 
 input,button,select,textarea{
   outline:none
@@ -8,19 +9,21 @@ input,button,select,textarea{
   font-size: 16px;
   lable, .inputItem{
     position: relative;
-    display: block;
+    // display: block;
     padding: 0.4em;
+    display-flex(row, flex-start)
+    align-items: center;
   }
   .inputMultiply{
     lable{
       margin-left: 0.3em;
+      display-flex(row, flex-start)
     }
     .inputItem{
-      display: inline-block;
       padding: 0.2em;
     }
     .checkboxGroup{
-      display: inline-block;
+      // display: inline-block;
     }
   }
   input, .fkp-dd-input{
@@ -40,11 +43,9 @@ input,button,select,textarea{
   }
   span{
     position: relative;
-    display: inline-block;
     vertical-align: -webkit-baseline-middle;
     vertical-align: middle;
     font-size: 0.9em;
-
     // fkp-title
     &:first-child{
       margin-right: 0.6em;
@@ -61,7 +62,7 @@ input,button,select,textarea{
     }
   }
   .fkp-title{
-    width: 6em;
+    min-width: 5em;
     text-align: right;
     white-space: nowrap;
   }
@@ -96,7 +97,6 @@ input,button,select,textarea{
 
 /* input的默认样式，来自bootstrap */
 .form_control{
-  display: inline-block;
   // width: 100%;
   height: 34px;
   padding: 6px 12px;

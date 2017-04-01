@@ -1,77 +1,38 @@
-ul
-  margin: 0
-  padding: 0
+@import "./_common/index"
 
-.j-steps
-  font-size: 0
-  width: 100%
+step()
+
+.steps
   li
-    display: inline-block
-    position: relative
-    vertical-align: top
-    overflow: hidden
-    &.j-steps-status-process
-      .j-steps-icon
-        background: #108ee9
-        border: 1px solid #108ee9
-        color: #fff
-    &.j-steps-status-finish
-      .j-steps-icon
+    // width: 33.333%         这个宽度要根据 li的数量来定
+    &.steps-status-finish
+      .steps-icon
         position: relative
-        font-family:"iconfont" !important;
         &:before
+          background: #108ee9
           content: "\e6a3"
-          color: #000
-      .j-steps-tail
+          color: #fff
+      .steps-tail
         i
           &:after
-            width: 100%
             background: #108ee9
-            -webkit-transition: all .6s
-            transition: all .6s
-            opacity: 1
 
-  .j-steps-step
-    // position: relative
+  .steps-step
     font-size: 14px
     width: 120px
-    text-align: center
-    .j-steps-icon
-      background: #fff
-      display: block
-      border: 1px solid rgba(0,0,0,.25)
+    text-align: left;
+    .steps-icon
       width: 26px
-      height: 26px
-      line-height: 23px
+      height: @width
+      line-height: 24px
       text-align: center
-      border-radius: 26px
-      // margin-right: 8px
-      margin: auto
-      -webkit-transition: background-color .3s ease,border-color .3s ease
-      transition: background-color .3s ease,border-color .3s ease
+      border-radius: @width
     p
       color: #333
-      max-width: 120px
+      max-width: @width
 
-  .j-steps-tail
-    margin: 0 0 0 60px
-    position: absolute
-    top: 13px
-    left: 0
-    width: 100%
-    padding: 0 14px
+  .steps-tail
     i
-      display: inline-block
-      vertical-align: top
       background: #e9e9e9
-      height: 3px
-      border-radius: 1px
-      width: 100%
       &:after
-        position: absolute
-        content: ""
-        top: 0
-        width: 0
-        background: #e9e9e9
-        height: 100%
-        opacity: 0
+        background: @background

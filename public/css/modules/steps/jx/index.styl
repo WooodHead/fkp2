@@ -1,0 +1,46 @@
+@import "../_common/index"
+
+step()
+
+_background = #2585cf
+
+.steps
+  li
+    width: 33.33%
+    &.steps-status-finish
+      .steps-icon
+        border: 1px solid transparent
+        background: _background
+        color: #fff
+        // &:before
+        //   background: _background
+        //   content: "\e6a3"
+        //   color: #fff
+
+      .steps-tail
+        i
+          &:after
+            background: _background
+      p
+        color: #2585cf
+
+  .steps-step
+    margin: 0 auto
+    width: 120px
+    text-align: center;
+    .steps-icon
+      margin: @margin
+      width: 26px
+      height: @width
+      line-height: 24px
+      text-align: center
+      border-radius: @width
+    p
+      color: #999999
+      max-width: @width
+
+  .steps-tail
+    i
+      background: #cccccc
+      &:after
+        background: @background
