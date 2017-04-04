@@ -3,15 +3,17 @@
     <head>
         <title>Hello World</title>
         @@include('./_common/header/h5_scale_1.html')
-        <link rel="stylesheet" href="/css/t/markdown.css" />
+        <!-- <link rel="stylesheet" href="/css/t/markdown.css" /> -->
     </head>
     <body>
       <div class="container-full">
         {{#if docs.docindex }}
           <div class="col-xs col-sm col-md col-lg docs-index">
-            <div class="markdown-body">
-              {{{docs.docindex.cnt}}}
-            </div>
+            <div class="docs-container">
+              <div class="markdown-body">
+                {{{docs.docindex.cnt}}}
+              </div>
+          </div>
           </div>
         {{else}}
           <div class="docs-container">
@@ -29,7 +31,7 @@
                 {{/if}}
               </div>
             </div>
-          </div>           
+          </div>
         {{/if}}
       </div>
         @@include('./_common/footer/foot.html')
