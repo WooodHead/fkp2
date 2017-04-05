@@ -119,7 +119,6 @@ function combineX(ComposedComponent, opts, cb){
 
   function dispatcher(key, props){
     const ctx = queryer.store.ctx[globalName]
-    const stateAsset = merge({}, ctx.state)
 
     const liveState = merge({}, ctx.state)
     const oState = JSON.parse(queryer.data.originalState[globalName])
@@ -127,12 +126,11 @@ function combineX(ComposedComponent, opts, cb){
     const queryActions = queryer.data
 
     const _state = {
-      live: liveState,
-      origin: oState
+      curState: liveState,
     }
 
     if (queryActions[key]) {
-      const target = merge({}, oState, queryActions[key](oState, props))
+      const target = merge({}, oState, queryActions[key].call(_state, oState, props))
       ctx.setState(target)
     }
   }
