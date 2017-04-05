@@ -142,19 +142,10 @@ function index(fkp, type){
         else start.home = {cnt: '<h1>FKP-JS</h1><small>a full stack framwork</small>', title: 'FKP-JS', author: '天天修改'}
       }
 
-      // dir docs
-      // let _docs = _readdirs(doc_dir)
-      // let _docs = await fkp.parsedir(doc_dir)
-      // docs = {docs: _docs}
-      // let docsData = _.extend({}, opts.append, sitemap, docs, start);
-
-      // let _docs = await fkp.parsedir(doc_dir)
       docs = {docs: '_docs'}
       let docsData = _.extend({}, opts.append, sitemap, docs, start);
 
       if (opts.menutree){
-        // let _props = { data: _docs }
-        // let reactHtml = await fkp.parsereact('component/modules/menutree/index', _props)
         let _data = await fkp.analyzedir(doc_dir)
         let reactHtml = component.tree({data: _data})
         docsData.menutree = reactHtml[0]

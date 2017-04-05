@@ -31,14 +31,19 @@
     @extends .btn
     color: #fff;
     background-color: #0078e7;
-    border-color: #0078e7;
+    border-color: @background-color
 
   .fab427
     @extends .btn
     color: #fff;
     background-color: #fab427;
-    border-color: #fab427;
+    border-color: @background-color
 
+  .disabled
+    @extends .btn
+    color: #666666
+    background-color: #e3e3e3
+    border-color: @background-color
 
 
 .inputGroup{

@@ -3,6 +3,7 @@ import modal from './modules/modal'
 import sticky from './modules/sticky'
 import slip from './modules/slip'
 import router from './modules/router'
+import * as uploader from './modules/upload'
 
 // import itemHlc from './mixins/itemhlc'
 import combinex from './mixins/combinex'
@@ -22,5 +23,6 @@ module.exports = {
   router,
   wrapItem,
   combineX,
+  uploader,
   ...Sync
 }

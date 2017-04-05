@@ -1,4 +1,4 @@
-let marked = require('marked')
+let marked = require('./marked')
 let render = new marked.Renderer()
 let renderer = require('./markdownrender').default(render)
 // 自定义变量白名单
