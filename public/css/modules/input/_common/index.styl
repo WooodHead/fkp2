@@ -13,14 +13,20 @@ tap-highlight-color(n)
 
 /* input的默认样式，来自bootstrap */
 form_control()
+  // width: 100%;
   height: 34px;
   padding: 6px 12px;
+  font-size: 14px;
   line-height: 1.42857143;
+  color: #555;
   background-color: #fff;
   background-image: none;
   border: 1px solid #ccc;
   border-radius: 4px;
+  // -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
   box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  // -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+  // -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
   transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
   &:focus
     border-color: #66afe9;
@@ -34,6 +40,8 @@ input,button,select,textarea
 inputgroup()
   lable, .inputItem
     position: relative;
+    // display: block;
+    // padding: 0.4em;
     margin-bottom: 10px
     display-flex(row, flex-start)
     align-items: center;
@@ -55,8 +63,9 @@ inputgroup()
 
   span
     position: relative;
+    // vertical-align: -webkit-baseline-middle;
     vertical-align: middle;
-    // font-size: 0.9em;
+    font-size: 0.9em;
     // &:first-child
     //   margin-right: 0.6em;
     // &:last-child

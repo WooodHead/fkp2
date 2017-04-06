@@ -1,27 +1,27 @@
 @import "../../input/_common/index"
 @import "../../radio/index"
-@import "../../button/_jx/index"
+@import "../../button/index"
 @import "../../dropdown/_common/index"
 
-fontSize14 =  {
-  font-size: 14px
-}
-fontSize16 =  {
+fontSize =  {
   font-size: 16px
 }
-.radioGroup
-  margin-bottom: 24px
+
 .inputGroup
-  {fontSize14}
+  font-size: 16px
   inputgroup()
   fkp-dd()
   .none
     display: none
   lable,.inputItem
     // padding: 0
-    margin-bottom: 24px
+    // margin-bottom: 10px
     &.radioItem
-      margin-bottom: 0
+      padding: 0
+  .btn
+    padding: 5px 20px
+    min-width: 100px
+    height: initial
   input
     width: 18em
     border-radius: 4px
@@ -29,17 +29,24 @@ fontSize16 =  {
     padding: 6px 10px
     &[type='select']
       border-radius: 1px
-    &[type="submit"],&[type="button"]
-      width: auto
-      margin-top: 28px
-      @extend .btn-fab427
+    &[type="submit"]
+      background-color: #fab427;
+      border-color: #fab427;
+      box-shadow: initial;
+      color: #fff;
+      &:hover
+        opacity: 1;
+        background-image: initial
+        background-color: #ffbf13
+      &:active
+        background-image: initial
+        background-color: #ffa200
+
+    &:focus
+      border-color: #2585cf
+      box-shadow: inset 0 0px 1px rgba(0,0,0,.075),0 0 3px rgba(41, 157, 216,.6)
   span
-    {fontSize14}
-  .fkp-input-required             //require 必填项目，如果有 .fkp-input-required ,会在 fkp-titile:before 添加 *
-    +.fkp-title
-      &:before
-        content: '*'
-        color: red
+    {fontSize}
   .fkp-input-error
     position: absolute
     bottom: 4px
@@ -61,19 +68,16 @@ fontSize16 =  {
     min-width: 7em
     text-align: right
     img
-      // width: 56%
+      width: 56%
       vertical-align: middle
       display: inline-block
     a
       // color: #999
       display: inline-block
       text-decoration: none
-  .fkp-dd
-    width: 100px;
-    height: 34px;
-    min-height: 33px        //如果有需要类似 margin-top:1px的效果  这里可以定位 min-height, 下面 dropdown-ul(@min-height)
-    ul
-      dropdown-ul(@min-height)
+    .fkp-dd
+      ul
+        dropdown-ul()
   //     border-left: 1px solid #2585cf
   //     border-right: 1px solid #2585cf
   //     border-bottom: 1px solid #2585cf
@@ -94,7 +98,7 @@ fontSize16 =  {
 .form-submit
   width: 100%
   margin: 1em 0
-  {fontSize16}
+  {fontSize}
 
 .item-other-login-list
   margin-top: 10px
@@ -109,7 +113,7 @@ fontSize16 =  {
     text-decoration: none
 
 .qrcode
-  {fontSize16}
+  {fontSize}
   text-align: center
   margin-top: 60px
   margin-bottom: 22px
