@@ -30,7 +30,7 @@ class GridsBase extends React.Component {
 }
 
 const Actions = {
-  REPLACE: function(state, props){   // state = ostate, props=传进来的参数
+  REPLACE: function(state, props){   // state = ostate, props=replace 方法传进来的参数
     if (!props) return
     if (typeof props == 'string' || typeof props == 'number'){
       state.data[0] = props

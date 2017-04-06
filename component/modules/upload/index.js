@@ -1,5 +1,7 @@
 var libs = require('libs')
 
+let uploaderer
+
 function uploadAction2(btn, title, callback, type){
   if (typeof title === 'function'){
     callback = title;
@@ -36,7 +38,7 @@ function uploadAction2(btn, title, callback, type){
       // 只允许选择文件，可选。
       accept: {
         title: 'Images',
-        extensions: 'gif,jpg,jpeg,bmp,png',
+        extensions: 'gif,jpg,jpeg,png',
         mimeTypes: 'image/*'
       }
     });
@@ -102,7 +104,7 @@ function uploadAction2(btn, title, callback, type){
     // 文件上传失败，现实上传出错。
     uploader.on( 'uploadError', function( file, reason ) {
       var $li = $( '#'+file.id ),
-        $error = $li.find('div.error');
+          $error = $li.find('div.error');
 
       // 避免重复创建
       if ( !$error.length ) {
@@ -110,9 +112,6 @@ function uploadAction2(btn, title, callback, type){
       }
 
       $error.text('上传失败');
-
-      // console.log(file);
-      // console.log(reason);
 
       alert('上传失败')
     });
@@ -160,49 +159,62 @@ function uploadAction2(btn, title, callback, type){
     }
 }
 
-var webUploader = window.WebUploader
-
-function preUpload(btn, title, callback, type){
-  libs.inject().js(['/js/t/webuploader.js'], ()=>{
-    uploadAction2(btn, title, callback, type)
-  })
-}
-
 function render_uploader(name, title, cb, type){
   if (typeof title === 'function'){
     cb = title;
     title = false;
   }
-  try {
-    var exist_id = document.getElementById(name)
-    if (exist_id){
-      var _id = libs.guid('uploader')
-      if (type==='thumb'){
-        $(exist_id).append(' <div class="uploader-list"></div><div id="'+_id+'">上传文件</div> ')
-      } else{
-        $(exist_id).append(' <div id="'+_id+'">上传文件</div> ')
+
+  var exist_id = document.getElementById(name)
+  if (exist_id){
+    var _id = libs.guid('uploader')
+    if (type==='thumb'){
+      $(exist_id).append('<div class="uploader-list"></div><div id="'+_id+'">上传文件</div>')
+    } else{
+      $(exist_id).append('<div id="'+_id+'">上传文件</div>')
+    }
+    return new uploadAction2(_id, title, cb, type);
+  }
+}
+
+function preUpload(cb){
+  libs.inject().js('/js/t/webuploader.js', function(){
+    uploaderer = webUploader.create({
+      // 自动上传。
+      auto: true,
+
+      // swf文件路径
+      swf: '/images/Uploader.swf',
+
+      // 文件接收服务端。
+      server: '/upup',
+
+      // 只允许选择文件，可选。
+      accept: {
+        title: 'Images',
+        extensions: 'gif,jpg,jpeg,png',
+        mimeTypes: 'image/*'
       }
-      return new uploadAction2(_id, title, cb, type);
-    }
-    else {
-      throw "插入的容器不存在"
-    }
-  }
-  catch (e) {
-    console.log(e)
-  }
+    });
+  })
 }
 
 function button(name, title, cb){
-  return render_uploader(name, title, cb, 'button')
+  preUpload(function(){
+    return render_uploader(name, title, cb, 'button')
+  })
 }
 
 function thumb(name, title, cb){
-  return render_uploader(name, title, cb, 'thumb')
+  preUpload(function(){
+    return render_uploader(name, title, cb, 'thumb')
+  })
 }
 
 function custom(name, cb){
-  return new uploadAction2(name, false, cb, 'button')
+  preUpload(function(){
+    return new uploadAction2(name, false, cb, 'button')
+  })
 }
 
 module.exports = {
