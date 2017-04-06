@@ -1,23 +1,21 @@
-.j-progress-line
+.progress-line
   width: 100%
   font-size: 12px
   position: relative
-.j-progress-outer
+.progress-outer
   padding-right: 4%
   margin-right: -4%
   display: inline-block
   width: 96%
-
-  .j-progress-inner
+  .progress-inner
     display: inline-block
     width: 100%
     background-color: #f7f7f7
     border-radius: 100px
     vertical-align: middle
-  .j-progress-bg
+  .progress-bg
     border-radius: 100px
     background-color: #108ee9
-    -webkit-transition: all .4s cubic-bezier(.08,.82,.17,1) 0s
     transition: all .4s cubic-bezier(.08,.82,.17,1) 0s
     position: relative
     height: 10px      //这个高度也通过 js 去控制进度度的粗细
@@ -31,13 +29,11 @@
       bottom: 0
       background: #fff
       border-radius: 10px
-      -webkit-animation: ant-progress-active 2.4s cubic-bezier(.23,1,.32,1) infinite
       animation: ant-progress-active 2.4s cubic-bezier(.23,1,.32,1) infinite
 
-.j-progress-text
+.progress-text
   width: 3.5%
   font-size: 1em
-  // margin-left: 10px
   vertical-align: middle
   display: inline-block
   position: relative
