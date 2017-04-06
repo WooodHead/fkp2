@@ -40,8 +40,9 @@ function getMenusAsset(_data){
   return {
     data: _data,
     listClass: 'dropdown-item dropdown-link',
-    itemMethod: function(ctx){
-      $(this).click(function(e){
+    itemMethod: function(dom){
+      const ctx = this
+      $(dom).click(function(e){
         e.stopPropagation()
         ctx.text(this.innerHTML)
         ctx.value(this.innerHTML)
@@ -67,7 +68,7 @@ function getMenusAsset(_data){
 }
 
 
-// <Search data=[] /> 
+// <Search data=[] />
 class SearchBase extends React.Component {
   constructor(props){
     super(props)
@@ -79,10 +80,10 @@ class SearchBase extends React.Component {
   componentWillMount() {
     try {
       let assets = {},
-        menusData = [], 
+        menusData = [],
         apis = [],
         relatives = [];
-      
+
       this.menus = ''
       if (this.state.data.length) {
         this.state.data.map( (item, ii) => {
@@ -95,7 +96,7 @@ class SearchBase extends React.Component {
           relatives.push(item.relative||'')
         })
       }
-      
+
       this.apis = apis
       this.relatives = relatives
       this.relativeZone = grids(relativeAsset)
@@ -116,7 +117,7 @@ class SearchBase extends React.Component {
     const itemClassName = this.props.itemClass
     const listClassName = this.props.listClass
 
-    const searchInputAsset = 
+    const searchInputAsset =
     [{
       desc: <button>搜索</button>,
       input:{
