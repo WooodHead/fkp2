@@ -1,0 +1,47 @@
+/**
+ * 下拉层(dropdown,dd)，公用方法
+ * dropdown-ul()
+ */
+dropdown-ul()
+  border-radius: 0 0 2px 2px;
+  box-shadow: 0px 1px 2px #e6e5e5;
+  background: #fff;
+  height: initial;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  left: 0;
+  top: 2.8em;
+  width: 100%;
+  z-index: 999;
+  li, .fkp-dd-option
+    padding: 0 0.5em;
+    line-height: 2em;
+    cursor: pointer;
+    &:hover
+      background-color: #2585cf;
+      color: #fff
+
+
+fkp-dd()
+  .fkp-dd
+      width: 15.5em;
+      height: 2.8em;
+      line-height: 1.9;
+      position: relative;
+      &+span[class="fkp-input-box"]
+          display: none;
+      /* 下拉菜单选项 */
+      .fkp-dd-list
+        display: none;
+      ul
+        dropdown-ul()
+      &:after
+          content: '\e661';
+          display:block;
+          color:#d6d6d6;
+          padding-top: 0.1em;
+          position:absolute;
+          right:0.5em;
+          // top:0.35em;
+          top: 0;
