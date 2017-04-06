@@ -3,13 +3,13 @@ import {wrapItem, grids} from 'component/client'
 
 function index(router){
   const Jdt = wrapItem(
-    <div className="j-progress-line">
-      <div className="j-progress-outer">
-        <div className="j-progress-inner">
-          <div className="j-progress-bg" style={{width:'70%'}}></div>
+    <div className="progress-line">
+      <div className="progress-outer">
+        <div className="progress-inner">
+          <div className="progress-bg" style={{width:'70%'}}></div>
         </div>
       </div>
-      <span className="j-progress-text">70%</span>
+      <span className="progress-text">70%</span>
     </div>
   )
   const Page = wrapItem(
