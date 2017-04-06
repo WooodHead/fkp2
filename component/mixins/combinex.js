@@ -130,8 +130,11 @@ function combineX(ComposedComponent, opts, cb){
     }
 
     if (queryActions[key]) {
-      const target = merge({}, oState, queryActions[key].call(_state, oState, props))
-      ctx.setState(target)
+      const _tmp = queryActions[key].call(_state, oState, props)
+      if (_tmp) {
+        const target = merge({}, oState, _tmp)
+        ctx.setState(target)
+      }
     }
   }
 
@@ -152,14 +155,14 @@ function combineX(ComposedComponent, opts, cb){
       }
 
 			if( this.props.itemDefaultMethod ){
-				if (this.props.itemMethod) this.props.itemMethod.call(that, _ctx, self.intent)
+				if (this.props.itemMethod) this.props.itemMethod.call(_ctx, that, self.intent)
 				setTimeout(function(){
-					if( typeof self.props.itemDefaultMethod === 'function' ) self.props.itemDefaultMethod.call(that, _ctx, self.intent)
+					if( typeof self.props.itemDefaultMethod === 'function' ) self.props.itemDefaultMethod.call(_ctx, that, self.intent)
 				}, 17)
 			}
       else if (typeof cb == 'function' || this.props.itemMethod){
         const imd = cb ||this.props.itemMethod
-        imd.call(that, _ctx, self.intent)
+        imd.call(_ctx, that, self.intent)
 			}
       super.componentDidMount ? super.componentDidMount() : ''
       ReactComponentMonuted = true

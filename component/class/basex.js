@@ -17,8 +17,15 @@ export default class  {
     const CombX = combineX(GridsBase, Actions)
     this.x = CombX.element
     this.dispatch = CombX.dispatch
-    this.setActions = CombX.saxer.setActions
-    this.roll = CombX.saxer.roll
+    this.setActions = function(key, func){
+      const _actions = {}
+      _actions[key] = func
+      CombX.saxer.setActions(_actions)
+    }
+    this.roll = function(key, data){
+      CombX.saxer.roll(key, data)
+    }
+    this.on = this.setActions
   }
 
   inject(src){
@@ -42,7 +49,7 @@ export default class  {
           React.render(<X {...this.config.props}/>, document.getElementById(id))
         } else if (typeof id == 'object' && id.nodeType) {
           React.render(<X {...this.config.props}/>, id)
-        } 
+        }
       } else if (this.config.container) {
         React.render(<X {...this.config.props}/>, document.getElementById(this.config.container))
       } else {
