@@ -39,7 +39,7 @@ function rcbox(pdata, opts){
   } else {
     superID = pdata.name
   }
-  
+
   const fill = values.map( (val, ii) => {
     let checked = false
 
@@ -75,6 +75,7 @@ function rcbox(pdata, opts){
 
     return (
        <lable key={'rcbox'+ii} className={ lableClass }>
+        {pdata.attr.required ? <span className="fkp-input-required" /> : ''}
         {resault.title ? <span className="fkp-title">{resault.title}</span> : ''}
         {
           checked
@@ -82,7 +83,6 @@ function rcbox(pdata, opts){
           : <input ref={'#'+resault.id} type={pdata.type} name={resault.name} id={resault.id} value={resault.value}/>
         }
         <span className={_cls} />
-        {pdata.attr.required ? <span className="fkp-input-required" /> : ''}
         {resault.desc ? <span className="fkp-desc">{resault.desc}</span> : '' }
       </lable>
     )
@@ -90,7 +90,7 @@ function rcbox(pdata, opts){
 
   pdata.attr.title = pdata.profile.title || ''
   pdata.attr.desc = pdata.profile.desc || ''
-  
+
 
 
   const groupClass = pdata.type === 'radio' ? 'radioGroup' : 'checkboxGroup'

@@ -205,9 +205,9 @@ function mk_element(item, _i){
   })()
 
   : <lable ref={(P.id||P.name)} key={"lable"+_i} className={_class + ' for-' + (P.id||P.name||'')}>
+      {P.required ? <span className="fkp-input-required" /> : ''}
       {_title ? <span className="fkp-title">{_title}</span> : ''}
       {this::whatTypeElement(P)}
-      {P.required ? <span className="fkp-input-required" /> : ''}
       {<span className="fkp-input-error" />}
       {_desc ? <span className="fkp-desc">{_desc}</span> : ''}
     </lable>
