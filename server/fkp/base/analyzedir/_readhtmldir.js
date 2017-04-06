@@ -63,7 +63,7 @@ function analyzeDirMehtod(directory){
     const itemState = fs.statSync(subItem)
     const ext = extname(filename)
     let profile = {}
-    if (itemState.isFile() && filename.indexOf('_') !=0 ) {
+    if (itemState.isFile() && filename.indexOf('_') !=0 && filename.indexOf('.') !=0 ) {
       if (chkType(ext) == 'templet') {
         let content = fs.readFileSync(subItem, 'utf8')
         let title = getTempTitle(content)
@@ -117,7 +117,7 @@ function analyzeDirMehtod(directory){
       }
     }
 
-    if (itemState.isDirectory() && filename.indexOf('_') !=0 ) {
+    if (itemState.isDirectory() && filename.indexOf('_') !=0 && filename.indexOf('.') !=0 ) {
       let cn_filename
       if (docsConfig) {
         if (docsConfig.directory[filename]) {
