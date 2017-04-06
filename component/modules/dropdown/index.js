@@ -46,7 +46,8 @@ function itdMethod(ctx){
       }
       ctx.items.push(item)
       if (typeof itemFun == 'function') {
-        itemFun.call(item, _ctx)
+        // itemFun.call(item, _ctx)
+        itemFun.call(_ctx, item)
       }
     })
   }
@@ -61,55 +62,7 @@ class App extends ListClass {
     this.value = ''
   }
 
-  componentDid(){
-    // if (this.client) {
-    //   const that = this
-    //   const config = this.config
-    //   const itemFun = config.itemMethod
-    //   const listFun = config.listMethod
-    //   const [dom, intent] = this.aboutList
-    //   if (typeof listFun == 'function') {
-    //     listFun(dom, intent)
-    //   }
-    //
-    //   that.items = []
-    //   let menusBody = $(dom).find('.'+config.listClass)
-    //   menusBody.find('li').each(function(ii, item){
-    //     if ($(item).hasClass('itemroot')) {
-    //       item.itemroot = true
-    //       if (ii == 0) {
-    //         item.firstroot = true
-    //         that.rootdom = item
-    //         that.captiondom = $(item).find('.caption')[0]
-    //       }
-    //       if (config.fold) $(item).find('.itemCategory ul').addClass('none')
-    //     }
-    //     that.items.push(item)
-    //   })
-    //
-    //   const ctx = {
-    //     select: that.rootdom,
-    //     text: function(val){
-    //       if (!val) return that.captiondom.innerHTML
-    //       that.captiondom.innerHTML = val
-    //     },
-    //     value: function(val){
-    //       that.value = val
-    //     }
-    //   }
-    //
-    //   that.items.forEach( (item, ii) => {
-    //     if (item.firstroot) {
-    //       $(item)off('click').on('click', function(e){
-    //         $(this).toggleClass('selected')
-    //       })
-    //     }
-    //     if (typeof itemFun == 'function') {
-    //       itemFun.call(item, ctx)
-    //     }
-    //   })
-    // }
-  }
+  componentDid(){ }
 
   componentWill(){
     const dft = this.config
@@ -190,7 +143,7 @@ export function dropdown(opts){
   } catch (error) {
     // console.log(error);
   }
-  
+
 }
 
 export function hdropdown(opts) {
