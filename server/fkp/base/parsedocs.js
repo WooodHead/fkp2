@@ -22,7 +22,7 @@ function index(fkp, type){
         let filename = rootList[i]
         let path = dir + '/' + filename
         let _stat = await fkp.fileexist(path)
-        if (_stat.isDirectory() && filename.indexOf('_')!==0 && filename!=='images' ){
+        if (_stat.isDirectory() && filename.indexOf('_')!==0 && filename.indexOf('.')!==0 && filename!=='images' ){
           let doc = {
             name: filename,
             path: path
