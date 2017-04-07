@@ -75,7 +75,7 @@ function createScript(doc, headElement, id, src, cb){
   scripter.onload = scripter.onreadystatechange = function(){
     if( ! this.readyState || this.readyState=='loaded' || this.readyState=='complete' ){
       SAX.setter(id, 'finish');
-      if (cb && typeof cb==='function') cb()
+      if (typeof cb==='function') cb()
     }
   }
   scripter.setAttribute("type", 'text/javascript');
@@ -163,17 +163,35 @@ function _initInject(type, src, cb){
   if (args){
     var did = md5(args[0]).slice(22)
     if (args.length===1) args.push(did)
-    if (type=='js'){
-      if (_thirdPartJs[did] === 'finish'){
-        if (that._config.reload){
-          var _child = document.getElementById(did);
-            _child.parentNode.removeChild(_child);
-          delete _thirdPartJs[did];
-        } else {
-          if (typeof cb==='function') cb();
-          return true;
-        }
+    // if (type=='js'){
+    //   if (_thirdPartJs[did] === 'finish'){
+    //     if (that._config.reload){
+    //       var _child = document.getElementById(did);
+    //         _child.parentNode.removeChild(_child);
+    //       delete _thirdPartJs[did];
+    //     } else {
+    //       if (typeof cb==='function') cb();
+    //       return true;
+    //     }
+    //   }
+    // }
+
+    if (_thirdPartJs[did] === 'finish'){
+      if (that._config.reload){
+        var _child = document.getElementById(did);
+          _child.parentNode.removeChild(_child);
+        delete _thirdPartJs[did];
+      } else {
+        if (typeof cb==='function') cb();
+        return true;
       }
+    }
+
+    if (_thirdPartJs[did] === 'loadding'){
+      if (typeof cb==='function') {
+        SAX.set(did, null, cb)
+      }
+      return true;
     }
 
     // 注入js文件
@@ -223,7 +241,7 @@ function dealInject(doc){
     if (type){
       if (args) _inject.call(doc, type, args, cb)
       if (type === 'css'){
-        if (typeof cb==='function') cb()
+        if (typeof cb==='function') setTimeout(cb, 100)
       }
     } else{
       if (args) _inject.call(doc, args)
