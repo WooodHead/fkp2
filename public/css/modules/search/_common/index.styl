@@ -4,9 +4,6 @@
 @import "../../dd/_jx/index"
 @import "../../dropdown/index"
 search()
-  display-flex(row, flex-start)
-  border: 2px solid #2585cf
-  position: relative
   .dropdown-link-parent
     width: 80px
     .itemCategory
@@ -18,6 +15,7 @@ search()
     flex: 1
     label,.inputItem
       margin-bottom: 0
+      align-items: flex-start;
       &.for-autoCompleteReplaceZone
         position: initial
     input

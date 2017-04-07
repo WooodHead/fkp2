@@ -1,12 +1,28 @@
 @import "../_common/index"
+
+$defalutheight = 36px
 #search
   >div
     search()
+    display-flex(row, flex-start)
+    border: 2px solid #2585cf
+    position: relative
+    height: 40px;
+    .dropdown-link-parent
+      width: 80px
+      .itemCategory
+        .caption
+          line-height: $defalutheight
+        ul
+          dropdown-ul($defalutheight)
     .inputGroup
       input
-        height: 40px
+        height: $defalutheight
       .fkp-dd
-        min-height: 40px
+        min-height: $defalutheight
         height: 100%
         ul
           dropdown-ul(@min-height)
+
+    button
+      padding: 0.4em 1.7em;
