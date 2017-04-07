@@ -68,18 +68,58 @@ const Actions = {
   }
 }
 
+function uploaderEvent(){
+  const that = this
+  const uploader = this.uploader
+  uploader.on('beforeFileQueued', function( file ){ })
+  uploader.on('fileQueued', function( file ) {
+    uploader.makeThumb( file, function( error, src ) {
+      // that.append(file, src)
+      that.dispatch('APPEND', {id: file.id, name: file.name, src: src, progress: 0})
+    }, thumbnailWidth, thumbnailHeight );
+  })
+
+  uploader.on('startUpload', function(){})
+  uploader.on('fileDequeued', function(file){})
+  uploader.on('uploadFinished', function(){})  // 当所有文件上传结束时触发
+  uploader.on('uploadComplete', function(file){})  // 不管成功或者失败，文件上传完成时触发
+
+  uploader.on( 'uploadProgress', function( file, percentage ) {
+    // that.progress(file, percentage)
+    that.dispatch('PROGRESS', {id: file.id, name: file.name, progress: percentage})
+  });
+
+  uploader.on( 'uploadSuccess', function( file, ret ) {
+    // that.stat(file, 'success')
+    that.dispatch('STAT', {id: file.id, name: file.name, stat: 'success'})
+    if (typeof that.config.success == 'function') {
+      that.config.success(file, ret)
+    }
+  });
+
+  uploader.on( 'uploadError', function( file, reason ) {
+    // that.stat(file, 'faild')
+    that.dispatch('STAT', {id: file.id, name: file.name, stat: 'faild'})
+    if (typeof that.config.faild == 'function') {
+      that.config.faild(file, reason)
+    }
+  });
+}
 
 function idfMethod(context){
   const app = context
   return function(dom, intent){
     const self = this
-    app.on('DefaultMethod', function(data){
-      const uploader = context.uploader
-      const btn = self.refs['upBtn']
-      uploader.addButton({
-        id:  btn,
-        multiple: app.config.multiple
-      })
+    let uploader = app.uploader
+    if (!uploader) {
+      uploader = WebUploader.create(app.config.uploaderConfig)
+      app.uploader = uploader
+    }     
+    uploaderEvent.call(app)
+    const btn = self.refs['upBtn']
+    uploader.addButton({
+      id:  btn,
+      multiple: app.config.multiple
     })
   }
 }
@@ -99,50 +139,13 @@ class App extends BaseX {
         itemDefaultMethod: idfMethod(this)
       }
     }
-    setTimeout( ()=>{
-      this.injectStatic()
-    },500)
+    this.injectStatic()
   }
 
   injectStatic(){
     const that = this
     inject().js('/js/t/webuploader.js', ()=>{
-      this.uploader = WebUploader.create(this.config.uploaderConfig)
-      const uploader = this.uploader
-      uploader.on('beforeFileQueued', function( file ){ })
-      uploader.on('fileQueued', function( file ) {
-        uploader.makeThumb( file, function( error, src ) {
-          // that.append(file, src)
-          that.dispatch('APPEND', {id: file.id, name: file.name, src: src, progress: 0})
-        }, thumbnailWidth, thumbnailHeight );
-      })
-
-      uploader.on('startUpload', function(){})
-      uploader.on('fileDequeued', function(file){})
-      uploader.on('uploadFinished', function(){})  // 当所有文件上传结束时触发
-      uploader.on('uploadComplete', function(file){})  // 不管成功或者失败，文件上传完成时触发
-
-      uploader.on( 'uploadProgress', function( file, percentage ) {
-        // that.progress(file, percentage)
-        that.dispatch('PROGRESS', {id: file.id, name: file.name, progress: percentage})
-      });
-
-      uploader.on( 'uploadSuccess', function( file, ret ) {
-        // that.stat(file, 'success')
-        that.dispatch('STAT', {id: file.id, name: file.name, stat: 'success'})
-        if (typeof that.config.success == 'function') {
-          that.config.success(file, ret)
-        }
-      });
-
-      uploader.on( 'uploadError', function( file, reason ) {
-        // that.stat(file, 'faild')
-        that.dispatch('STAT', {id: file.id, name: file.name, stat: 'faild'})
-        if (typeof that.config.faild == 'function') {
-          that.config.faild(file, reason)
-        }
-      });
-      that.roll('DefaultMethod', {})
+      if (window.WebUploader) this.uploader = WebUploader.create(this.config.uploaderConfig)
     })
   }
 
