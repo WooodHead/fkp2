@@ -28,10 +28,11 @@ class thumbUp extends React.Component {
     })
 
     const title = this.props.title || '上传文件'
+    const id  = this.props.id
     return this.state.preview
     ? ( <div className='uploader-wrap'>
-        <div className='uploader-list'>
-          { imglist.length ? <ul> {imglist} </ul> : '' }
+        <div className='uploader-list' id={id}>
+          { imglist.length ? <ul> {imglist} </ul> : <i></i> }
         </div>
         <div ref={'upBtn'} className='uploader-button'>{title}</div>
       </div> )
@@ -114,7 +115,7 @@ function idfMethod(context){
     if (!uploader) {
       uploader = WebUploader.create(app.config.uploaderConfig)
       app.uploader = uploader
-    }     
+    }
     uploaderEvent.call(app)
     const btn = self.refs['upBtn']
     uploader.addButton({
@@ -136,6 +137,7 @@ class App extends BaseX {
       this.config.props = {
         preview: this.config.preview,
         title: this.config.title,
+        id: this.config.id,
         itemDefaultMethod: idfMethod(this)
       }
     }
@@ -185,6 +187,7 @@ export default function(opts){
     faild: function(){},
     preview: true,
     title: '上传文件',
+    id: '',
     props: false,
     multiple: false,
     uploaderConfig: {
