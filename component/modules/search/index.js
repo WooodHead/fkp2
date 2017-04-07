@@ -40,6 +40,7 @@ function getMenusAsset(_data){
   return {
     data: _data,
     listClass: 'dropdown-item dropdown-link',
+    autoinject: false,
     itemMethod: function(dom){
       const ctx = this
       $(dom).click(function(e){
@@ -147,7 +148,7 @@ class SearchBase extends React.Component {
       title: ' ',
       input: {type: 'span', value: this.relativeZone.render(), id: 'autoCompleteReplaceZone'}
     }]
-    const searchInput = input({data: searchInputAsset}).render()
+    const searchInput = input({data: searchInputAsset, autoinject: false}).render()
 
     return (
       <div className={"search_wrap "+(listClassName ? listClassName+'_parent':'')}>
