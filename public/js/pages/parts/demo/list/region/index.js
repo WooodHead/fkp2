@@ -540,7 +540,7 @@ const regionData = [
 
 ]
 
-inject().css('/css/m/form/regionlist')
+inject().css('/css/m/list/regionlist')
 const regionTree = tree(regionData);
 console.log(regionTree);
 const regionList = list({
