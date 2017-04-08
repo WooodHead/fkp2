@@ -105,10 +105,6 @@ class TapsApp extends React.Component {
 		}
 
 		if (this.props.opts) {
-			if (typeof this.props.opts.select == 'string') {
-				const whichIndex = this.getIndex(this.props.opts.select)
-				this.props.opts.select = whichIndex['index']
-			}
 			this.state = _.merge({}, this.state, this.props.opts)
 
 			if (this.state.animate) {
@@ -170,12 +166,21 @@ class TapsApp extends React.Component {
 		let wheres = {}
 		let contents = this.state.data.map((item, ii)=> {
 			// 第一次访问，将记录存入history
-			if (ii == this.state.select) {
+			if (typeof this.state.select == 'number' && ii == this.state.select) {
 				this.historyPush({
 					index: ii,
 					key: item.path,
 					data: {}
 				})
+			}
+
+			if (typeof this.state.select == 'string' && item.path == this.state.select) {
+				this.historyPush({
+					index: ii,
+					key: item.path,
+					data: {}
+				})
+				this.setState({select: ii})
 			}
 
 			wheres[item.path] = {index: ii}
