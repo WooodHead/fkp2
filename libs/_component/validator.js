@@ -194,13 +194,17 @@ function form_valide(opts) {
       return _fun(query, _errs)
     }
 
-    if (!reg || !nblock[reg]) return errs['100']
+    if (!reg || !nblock[reg]) {
+      if (typeof cb != 'function') return errs['100']
+    }
+
     args[ii] = reg
 
-    ckstat = check(value, reg, nblock)
     if (typeof cb == 'function') {
       var cb_result = cb(value, nblock, errs)
       ckstat = cb_result
+    } else {
+      ckstat = check(value, reg, nblock)
     }
     query[ii] = ckstat
     ii++
