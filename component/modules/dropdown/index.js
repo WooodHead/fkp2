@@ -132,7 +132,7 @@ export function dropdown(opts){
     let defaultTitile = dft.data[dft.select]['title']
     if (dft.placeholder) defaultTitile = dft.placeholder
     if (typeof defaultTitile == 'string' || typeof defaultTitile == 'number') {
-      firstText = <span className="caption">{defaultTitile}<i></i></span>
+      firstText = <span className="caption">{defaultTitile}</span>
     } else {
       firstText = defaultTitile
     }
