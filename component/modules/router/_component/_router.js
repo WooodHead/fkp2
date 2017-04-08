@@ -105,6 +105,10 @@ class TapsApp extends React.Component {
 		}
 
 		if (this.props.opts) {
+			if (typeof this.props.opts.select == 'string') {
+				const whichIndex = this.getIndex(this.props.opts.select)
+				this.props.opts.select = whichIndex['index']
+			}
 			this.state = _.merge({}, this.state, this.props.opts)
 
 			if (this.state.animate) {
