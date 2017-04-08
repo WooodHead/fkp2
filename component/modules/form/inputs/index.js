@@ -110,6 +110,10 @@ function defMenthod(ctx){
       if (id.charAt(0) == '#' || id.charAt(0) == '+') return elements[id]
       return lable ? elements[id] : elements['#'+id]
     }
+    ctx.getElements = function(id){
+      if (!id) return elements
+      return elements[id]
+    }
     require('../_part/select')(ctx, intent)  // 引入select
     if (typeof dft.callback == 'function') dft.callback.call(dom, ctx)
   }
