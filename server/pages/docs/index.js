@@ -77,6 +77,13 @@ function docs(oridata) {
 
         let fdocs = await ctx.fkp.docs(_path, docsConfig)
         oridata.docs = _.extend({}, fdocs)
+        if (oridata.docs.params) {
+          oridata.docs.params.js && oridata.docs.params.js.length
+          ? oridata.docs.params.js = '/js/parts/tree,'+oridata.docs.params.js
+          :oridata.docs.params.js = '/js/parts/tree'
+        } else {
+          oridata.docs.params = {js: '/js/parts/tree'}
+        }
 
         // 解析文章
         if (id || title) {
@@ -88,13 +95,13 @@ function docs(oridata) {
           } else {
             return ctx.redirect('/404')
           }
-          if (oridata.docs.params) {
-            oridata.docs.params.js && oridata.docs.params.js.length
-            ? oridata.docs.params.js = '/js/parts/tree,'+oridata.docs.params.js
-            :oridata.docs.params.js = '/js/parts/tree'
-          }
-          attachStatics = await injectStatic(ctx.fkp, oridata.docs.params)
+          // if (oridata.docs.params) {
+          //   oridata.docs.params.js && oridata.docs.params.js.length
+          //   ? oridata.docs.params.js = '/js/parts/tree,'+oridata.docs.params.js
+          //   :oridata.docs.params.js = '/js/parts/tree'
+          // }
         }
+        attachStatics = await injectStatic(ctx.fkp, oridata.docs.params)
       }
 
       else {
