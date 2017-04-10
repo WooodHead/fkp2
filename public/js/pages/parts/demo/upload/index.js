@@ -40,11 +40,59 @@
 //   })
 // }
 
-
+import {inject} from 'libs'
+import { htabs as Tabs } from 'component/client'
 import uploader from 'component/modules/uploader'
-const upld = uploader.thumb({
+
+
+inject().css(`
+  #test{
+    width: 400px;
+    height: 600px;
+  }
+`)
+
+const upld = uploader({
   success: function(file, ret){
+    console.log('========== 11111111');
     console.log(ret);
   }
 })
-upld.render('test')
+
+const upld1 = uploader({
+  success: function(file, ret){
+    console.log('========== 2222222');
+    console.log(ret);
+  }
+})
+
+const abc = (
+  <div className="xcontainer">
+    <div className="up1">
+      123
+      {upld.render()}
+    </div>
+    <div className="up2">
+      456
+      {upld1.render()}
+    </div>
+  </div>
+)
+
+const configTabs = [
+  {title: '账号登录', content: 'partForm'},
+  {title: '微信/QQ登录', content: abc},
+]
+
+const tabsxx = Tabs({
+  data: configTabs,
+  theme: 'tabs/contentpop',
+  itemMethod: function(dom, index){
+    $(dom).click( e => {
+      e.stopPropagation()
+      this.select(index)
+    })
+  }
+})
+
+tabsxx.render('test')

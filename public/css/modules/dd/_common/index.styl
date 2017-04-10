@@ -1,0 +1,99 @@
+@import "../../_common/index"
+@import "../../dropdown/_common/index"
+
+
+$hei = 46px
+
+.dropdown-item
+  .itemrootCkb
+    display: none;
+  .caption
+    display: block;
+    line-height: 42px;
+    padding: 0 5%
+    position: relative;
+    cursor: pointer;
+    color: #333
+    &:before
+      position: absolute;
+      top: 0
+      right: 5%
+      width: 14px;
+      height: 14px;
+      content: "\e616"
+
+
+  .itemCategory
+    position: relative;
+    min-height: 42px     //这个值跟.caption的 height是一样的
+    ul
+      display: none;
+      dropdown-ul($hei)
+
+      // li
+      //   border-bottom: 1px solid #ddd
+      //   // line-height: 38px
+      //   &:hover
+      //     background: #ecf6fd
+  .selected
+    .caption
+      &:before
+        content: "\e6a3"
+    ul
+      display: block;
+      // transform: translateY(100);
+      // transition: height 0.5s ease-in-out;
+
+
+/**
+ * 按钮类型
+ */
+.dropdown-button
+    .caption
+      border: 1px solid #ddd
+      border-radius: 4px
+
+/**
+ * 按钮类型2,icon左边有边线
+ */
+.dropdown-button-icon-border
+    .caption
+      border: 1px solid #ddd
+      border-radius: 4px
+      i
+        border-left: 1px solid #ddd
+        padding-left: 5%
+
+/**
+ * 链接类型
+ */
+.dropdown-link
+  .caption
+    color: #108ee9
+    i
+      position: initial
+      margin-left: 10px;
+  .itemCategory
+    ul
+      margin-top: 0px;
+      li
+        border-bottom: none
+  &:hover
+    .caption
+      color: #49a9ee
+      i
+        &:before
+          content: "\e6a3"
+      ~ul
+        display: block
+  .selected
+    ul
+      display: none;
+
+
+
+.dropdown-list                    //如果需求多个 dropdown,可以在外边的 div 添加这个 class
+  .dropdown-item-parent
+    display: inline-block;
+    margin-right: 4%
+    min-width: 200px

@@ -1,20 +1,11 @@
 .radioGroup{
-    font-size: 16px;
-    // display:-moz-box;
-    // display:-webkit-box;
     display:flex;
     align-items: center;
     lable, .radioItem{
       position: relative;
-      // display:-moz-box;
-      // display:-webkit-box;
       display:flex;
       align-items: center;
       margin-right:1em;
-      // -moz-box-align:center;
-      // -webkit-box-align:center;
-      // -o-box-align:center;
-      // box-align:center;
     }
     input{
       position: absolute;
@@ -28,21 +19,15 @@
       z-index: 999;
       &:checked{
         &+.fkp-radio-box:after{
-          // -webkit-transform:scale(0);
-          // -moz-transform:scale(0);
           transform: scale(0);
         }
         &+.fkp-radio-box:before{
-          // -webkit-transform:scale(1);
-          // -moz-transform:scale(1);
           transform: scale(1);
         }
       }
     }
     span{
       display: block;
-      font-size: .875em;
-
       /* = fkp-title */
       &:first-child{
         margin-right: .3125em;
@@ -54,8 +39,6 @@
       }
       &.fkp-radio-box{
         position: relative;
-        font-family: iconfont!important;
-        font-size: 2em;
         &:after{
           content: '\e6d7';
           display:block;
@@ -66,15 +49,10 @@
           content: '\e656';
           display:block;
           position:absolute;
-          // padding-top: 0.1em;
           left:0;
           top:0;
           color:#048cf9;
-          // -webkit-transform:scale(0);
-          // -moz-transform:scale(0);
           transform: scale(0);
-          // -webkit-transition:-webkit-transform .2s;
-          // -moz-transition:-moz-transform .2s;
           transition: transform .2s
         }
       }
@@ -88,15 +66,17 @@
 }
 
 .checkboxGroup{
-  font-size: 16px;
-  display:flex;
+  display-flex(row, flex-start)
+  flex-wrap: wrap;
+  position: relative;
+  padding-left: 6.34em;
+  line-height: 25px;
   .checkboxItem{
     width: 100%;
     position: relative;
     display:flex;
     margin-right:1em;
     align-items: center;
-    // box-align:center;
   }
   input{
     position: absolute;
@@ -164,7 +144,6 @@
 
   span{
     display: inline-block;
-    font-size: .875em;
 
     /* = fkp-title */
     &:first-child{
@@ -177,8 +156,6 @@
     }
     &.fkp-checkbox-box{
       position: relative;
-      font-family: iconfont!important;
-      font-size: 2em;
       &:after{
         content: '\e6d5';
         display:block;
@@ -206,5 +183,10 @@
   }
   .fkp-desc{
 
+  }
+  >.fkp-title{
+    position: absolute;
+    top: 0;
+    left: 0;
   }
 }

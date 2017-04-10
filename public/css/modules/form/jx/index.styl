@@ -1,63 +1,106 @@
-@import "../../input/index";
-@import "../../radio/index";
-@import "../../button/index";
+@import "../../input/_common/index"
+@import "../../radio/index"
+@import "../../button/_jx/index"
+@import "../../dropdown/_common/index"
 
+fontSize14 =  {
+  font-size: 14px
+}
+fontSize16 =  {
+  font-size: 16px
+}
+.radioGroup
+  margin-bottom: 24px
 .inputGroup
+  {fontSize14}
+  inputgroup()
+  fkp-dd()
   .none
     display: none
   lable,.inputItem
-    padding: 0 0 1em 0;
-  .fkp-input-error
-    position: absolute;
-    bottom: 4px;
-    left: 8em;
-    // border: 1px solid #f1e4ac;
-    // background: #fef6d4;
-    // display: block;
-    // margin-left: 0;
-    // padding: 0.4em 0.8em;
-    // min-width: 200px;
-    // &:before
-    //   content: '\e60e'
-    //   margin-right: 6px;
+    // padding: 0
+    margin-bottom: 24px
+    &.radioItem
+      margin-bottom: 0
+
+  input
+    width: 18em
+    border-radius: 4px
+    box-shadow: inset 0 0px 1px rgba(0,0,0,.0.9)
+    padding: 6px 10px
+    &[type='select']
+      border-radius: 1px
+    &[type="submit"],&[type="button"]
+      width: auto
+      margin-top: 28px
+      @extend .btn-fab427
+  span
+    {fontSize14}
+  .fkp-input-required             //require 必填项目，如果有 .fkp-input-required ,会在 fkp-titile:before 添加 *
+    +.fkp-title
+      &:before
+        content: '*'
+        color: red
 
   .code-input        //图片验证码
     input
-      width: 12em
+      width: 8.6em
   .fkp-desc
-    width: 7em
-    text-align: right;
+    min-width: 7em
+    text-align: right
     img
-      width: 56%
-      vertical-align: middle;
-      display: inline-block;
+      // width: 56%
+      vertical-align: middle
+      display: inline-block
     a
       // color: #999
-      display: inline-block;
-      text-decoration: none
+      display: inline-block
+      // text-decoration: none
+  .fkp-dd
+    width: 100px;
+    height: 34px;
+    min-height: 33px        //如果有需要类似 margin-top:1px的效果  这里可以定位 min-height, 下面 dropdown-ul(@min-height)
+    ul
+      dropdown-ul(@min-height)
+  //     border-left: 1px solid #2585cf
+  //     border-right: 1px solid #2585cf
+  //     border-bottom: 1px solid #2585cf
+  //     box-shadow: initial
+  //     border-radius: 0 0 1px 1px
+  //     top: 2em
+  //     padding-top: 4px
+  //     li, .fkp-dd-option{
+  //       height: 30px
+  //       line-height: 30px
+  //       &:hover{
+  //         cursor: pointer
+  //         background: #329EF1
+  //         color: #fff
+  //       }
+  //     }
 
 .form-submit
-  width: 100%;
+  width: 100%
   margin: 1em 0
-  font-size: 16px;
+  {fontSize16}
 
 .item-other-login-list
-  margin-top: 10px;
+  margin-top: 10px
   li
-    display: inline-block;
-    margin-right: 10px;
+    display: inline-block
+    margin-right: 10px
     transition: all 1s ease-in-out
     &:hover
-      transform: translate(0,-3px);
+      transform: translate(0,-3px)
   a
-    color: inherit;
-    text-decoration: none;
+    color: inherit
+    text-decoration: none
 
 .qrcode
-  text-align: center;
-  margin-top: 60px;
-  margin-bottom: 22px;
-  font-size: 16px;
+  {fontSize16}
+  text-align: center
+  margin-top: 60px
+  margin-bottom: 22px
   color: #666
   .qrcode-wz
     margin-top: 28px
@@ -67,4 +110,23 @@
   img
     width: 160px
   a
-    text-align: right;
+    text-align: right
+
+
+.itemError
+  .form_control
+    border-color: #fc1616
+    box-shadow: inset 0 0px 1px rgba(0,0,0,.075),0 0 3px rgba(252, 22, 22, 0.6)
+  .fkp-input-error
+    position: absolute
+    bottom: 4px
+    left: 8em
+    border: 1px solid #f1e4ac
+    background: #fef6d4
+    display: block
+    margin-left: 0
+    padding: 0.4em 0.8em
+    min-width: 200px
+    &:before
+      content: '\e60e'
+      margin-right: 6px

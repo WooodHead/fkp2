@@ -43,8 +43,6 @@ function subTree(item, dataAry, deep){
 		son.itemClass = son.itemClass&&son.itemClass.indexOf('level'+deep)==-1 ? son.itemClass +' level'+deep : 'level'+deep
 		// son.itemClass = son.itemClass ? son.itemClass +' level'+deep : 'level'+deep
 		if (son.idf && idrecode.indexOf(son.idf) == -1) {
-			console.log(son.idf);
-			console.log(deep);
 			idrecode.push(son.idf)
 			nsons = nsons.concat([subTree(son, dataAry, ++deep)])
 			--deep

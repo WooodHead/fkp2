@@ -11,7 +11,8 @@ class thumbUp extends React.Component {
   constructor(props){
     super(props)
     this.state = {
-      data: []  // item => {id: file.id, name: file.name, src: imgurl, progress: 0, stat: 'success/faild'}
+      data: [],  // item => {id: file.id, name: file.name, src: imgurl, progress: 0, stat: 'success/faild'}
+      preview: this.props.preview
     }
   }
   render(){
@@ -25,20 +26,21 @@ class thumbUp extends React.Component {
         </li>
       )
     })
-    return (
-      <div className='uploader-wrap'>
+
+    const title = this.props.title || '上传文件'
+    return this.state.preview
+    ? ( <div className='uploader-wrap'>
         <div className='uploader-list'>
           { imglist.length ? <ul> {imglist} </ul> : '' }
         </div>
-        <div ref={'upBtn'} className='uploader-button'>上传文件</div>
-      </div>
-    )
+        <div ref={'upBtn'} className='uploader-button'>{title}</div>
+      </div> )
+    : <div ref={'upBtn'} className='uploader-button'>{title}</div>
   }
 }
 
 const Actions = {
   APPEND: function(state, options){
-    // this.curState.data = this.curState.data.push(options)
     this.curState.data.push(options)
     return this.curState
   },
@@ -66,18 +68,54 @@ const Actions = {
   }
 }
 
+function uploaderEvent(){
+  const that = this
+  const uploader = this.uploader
+  uploader.on('beforeFileQueued', function( file ){ })
+  uploader.on('fileQueued', function( file ) {
+    uploader.makeThumb( file, function( error, src ) {
+      // that.append(file, src)
+      that.dispatch('APPEND', {id: file.id, name: file.name, src: src, progress: 0})
+    }, thumbnailWidth, thumbnailHeight );
+  })
+
+  uploader.on('startUpload', function(){})
+  uploader.on('fileDequeued', function(file){})
+  uploader.on('uploadFinished', function(){})  // 当所有文件上传结束时触发
+  uploader.on('uploadComplete', function(file){})  // 不管成功或者失败，文件上传完成时触发
+
+  uploader.on( 'uploadProgress', function( file, percentage ) {
+    // that.progress(file, percentage)
+    that.dispatch('PROGRESS', {id: file.id, name: file.name, progress: percentage})
+  });
+
+  uploader.on( 'uploadSuccess', function( file, ret ) {
+    // that.stat(file, 'success')
+    that.dispatch('STAT', {id: file.id, name: file.name, stat: 'success'})
+    if (typeof that.config.success == 'function') {
+      that.config.success(file, ret)
+    }
+  });
+
+  uploader.on( 'uploadError', function( file, reason ) {
+    // that.stat(file, 'faild')
+    that.dispatch('STAT', {id: file.id, name: file.name, stat: 'faild'})
+    if (typeof that.config.faild == 'function') {
+      that.config.faild(file, reason)
+    }
+  });
+}
 
 function idfMethod(context){
   const app = context
   return function(dom, intent){
     const self = this
-    app.on('DefaultMethod', function(){
-      const uploader = context.uploader
-      const btn = self.refs['upBtn']
-      uploader.addButton({
-        id:  btn
-        // innerHTML: '选择文件'
-      })
+    uploaderEvent.call(app)
+    const uploader = app.uploader
+    const btn = self.refs['upBtn']
+    uploader.addButton({
+      id:  btn,
+      multiple: app.config.multiple
     })
   }
 }
@@ -92,6 +130,8 @@ class App extends BaseX {
       this.config.props['itemDefaultMethod'] = idfMethod(this)
     } else {
       this.config.props = {
+        preview: this.config.preview,
+        title: this.config.title,
         itemDefaultMethod: idfMethod(this)
       }
     }
@@ -102,57 +142,94 @@ class App extends BaseX {
     const that = this
     inject().js('/js/t/webuploader.js', ()=>{
       this.uploader = WebUploader.create(this.config.uploaderConfig)
-      const uploader = this.uploader
-      uploader.on('beforeFileQueued', function( file ){ })
-      uploader.on('fileQueued', function( file ) {
-        uploader.makeThumb( file, function( error, src ) {
-          that.append(file, src)
-        }, thumbnailWidth, thumbnailHeight );
-      })
-
-      uploader.on( 'uploadProgress', function( file, percentage ) {
-        that.progress(file, percentage)
-      });
-
-      uploader.on( 'uploadSuccess', function( file, ret ) {
-        that.stat(file, 'success')
-        if (typeof that.config.success == 'function') {
-          that.config.success(file, ret)
-        }
-      });
-
-      uploader.on( 'uploadError', function( file, reason ) {
-        that.stat(file, 'faild')
-        if (typeof that.config.faild == 'function') {
-          that.config.faild(file, reason)
-        }
-      });
-      that.roll('DefaultMethod', {})
     })
   }
 
-  stat(file, ret){
-    if (ret == 'success') this.dispatch('STAT', {id: file.id, name: file.name, stat: 'success'})
-    this.dispatch('STAT', {id: file.id, name: file.name, stat: 'faild'})
+  addButton(id, title, opts={}){
+    const uploader = this.uploader
+    uploader.addButton({
+      id:  id,
+      innerHTML: title,
+      ...opts
+    })
   }
 
-  append(file, imgurl){
-    this.dispatch('APPEND', {id: file.id, name: file.name, src: imgurl, progress: 0})
+  upload(){
+    const uploader = this.uploader
+    uploader.upload()
   }
 
-  progress(file, percentage){
-    this.dispatch('PROGRESS', {id: file.id, name: file.name, progress: percentage})
-  }
+  // stat(file, ret){
+  //   if (ret == 'success') this.dispatch('STAT', {id: file.id, name: file.name, stat: 'success'})
+  //   this.dispatch('STAT', {id: file.id, name: file.name, stat: 'faild'})
+  // }
+  //
+  // append(file, imgurl){
+  //   this.dispatch('APPEND', {id: file.id, name: file.name, src: imgurl, progress: 0})
+  // }
+  //
+  // progress(file, percentage){
+  //   this.dispatch('PROGRESS', {id: file.id, name: file.name, progress: percentage})
+  // }
 
 }
 
 
-function upld(opts){
+export default function(opts){
   let dft = {
-    props: false,
     success: function(){},
     faild: function(){},
+    preview: true,
+    title: '上传文件',
+    props: false,
+    multiple: false,
     uploaderConfig: {
+      dnd: undefined,
+      chunked: false,
+      fileNumLimit: undefined,
+      fileSizeLimit: undefined,
+      fileSingleSizeLimit: undefined,
+      duplicate: undefined,
+      // thumb: {
+      //   width: 110,
+      //   height: 110,
+      //
+      //   // 图片质量，只有type为`image/jpeg`的时候才有效。
+      //   quality: 70,
+      //
+      //   // 是否允许放大，如果想要生成小图的时候不失真，此选项应该设置为false.
+      //   allowMagnify: true,
+      //
+      //   // 是否允许裁剪。
+      //   crop: true,
+      //
+      //   // 为空的话则保留原有图片格式。
+      //   // 否则强制转换成指定的类型。
+      //   type: 'image/jpeg'
+      // },
+      // compress: {
+      //   width: 1600,
+      //   height: 1600,
+      //
+      //   // 图片质量，只有type为`image/jpeg`的时候才有效。
+      //   quality: 90,
+      //
+      //   // 是否允许放大，如果想要生成小图的时候不失真，此选项应该设置为false.
+      //   allowMagnify: false,
+      //
+      //   // 是否允许裁剪。
+      //   crop: false,
+      //
+      //   // 是否保留头部meta信息。
+      //   preserveHeaders: true,
+      //
+      //   // 如果发现压缩后文件大小比原来还大，则使用原来图片
+      //   // 此属性可能会影响图片自动纠正功能
+      //   noCompressIfLarger: false,
+      //
+      //   // 单位字节，如果图片大小小于此值，不会采用压缩。
+      //   compressSize: 0
+      // }
       // 自动上传。
       auto: true,
 
@@ -177,9 +254,3 @@ function upld(opts){
 
   return new App(dft)
 }
-
-module.exports = {
-  // button: button,
-  // custom: custom
-  thumb: upld
-};

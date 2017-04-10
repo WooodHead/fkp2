@@ -1,4 +1,5 @@
-import {objtypeof, msgtips, urlparse} from 'libs'
+import {objtypeof, urlparse} from 'libs'
+import {tips as msgtips} from 'component/client'
 var src = "/";
 
 function req( api, param, cb, method ){

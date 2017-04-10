@@ -1,0 +1,97 @@
+// @import "../dropdown/index";
+// @import "../button/index";
+@import "../../_common/index"
+
+tap-highlight-color(n)
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: n
+  -moz-tap-highlight-color: n
+  -ms-tap-highlight-color: n
+  -o-tap-highlight-color: n
+  tap-highlight-color n
+
+
+/* input的默认样式，来自bootstrap */
+form_control()
+  height: 34px;
+  padding: 6px 12px;
+  line-height: 1.42857143;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+  &:focus
+    border-color: #66afe9;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+
+input,button,select,textarea
+  outline:none
+
+inputgroup()
+  lable, .inputItem
+    position: relative;
+    margin-bottom: 10px
+    display-flex(row, flex-start)
+    align-items: center;
+  .inputMultiply
+    lable
+      margin-left: 0.3em;
+      display-flex(row, flex-start)
+    .inputItem
+      padding: 0.2em;
+    .checkboxGroup
+      // display: inline-block;
+
+  input, .fkp-dd-input
+    tap-highlight-color: #000;
+    form_control()
+    &[type=button]
+      // border: none;
+      background-color: #fff;
+
+  span
+    position: relative;
+    vertical-align: middle;
+    // font-size: 0.9em;
+    // &:first-child
+    //   margin-right: 0.6em;
+    // &:last-child
+    //   margin-left: 0.6em;
+    // &.fkp-input-box
+    //   margin-left: 0;
+  .fkp-title
+    min-width: 6em;
+    text-align: right;
+    white-space: nowrap;
+    margin-right: 0.6em;
+  .fkp-desc
+    margin-left: 0.6em;
+  // 用作其他用途
+  // 比如在inpunt上加一个小图标
+  .fkp-input-box
+    position: relative;
+    margin-left: 0;
+    &:after
+      content: '\e60c';
+      display:block;
+      color:#d6d6d6;
+      padding-top: 0.1em;
+      position:absolute;
+      font-size: 0.4em;
+      right:0.7em;
+      top:-0.8em;
+      color: red;
+
+
+
+
+.itemError
+  .form_control
+    border-color: #e96767;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(233, 103, 103, 0.6);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(233, 103, 103, 0.6);
