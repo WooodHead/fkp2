@@ -114,13 +114,13 @@ function getDiff(diff){
 function timeDiff(dif, dif2){
   var orientation = 'after',
       _diff = dif-dif2;
-      if (_diff<0) {
-        orientation: 'before'
-      }
+
+  if (_diff<0) {
+    orientation: 'before'
+  }
   var diff = Math.abs(_diff)
   const $diff = timeDiff.getDiff(diff)
-  var _time = {
-    differ: diff,
+  return {
     orientation: orientation,
     diff:{...$diff},
     ...$diff
@@ -128,6 +128,7 @@ function timeDiff(dif, dif2){
 }
 
 timeDiff.getDiff = function(diff){
+  console.log(diff);
   var _seconds = _.ceil(diff/1000, 2),
       _minute = _.ceil(_seconds/60, 2),
       _hour = _.ceil(_seconds/3600, 2),
@@ -136,6 +137,7 @@ timeDiff.getDiff = function(diff){
       _year = _.ceil(_seconds/(3600*24*30*12), 2);
 
   return {
+    differ: diff,
     seconds: _seconds,
     minute: _minute,
     hour: _hour,
@@ -171,7 +173,7 @@ timeDiff.will = function(dif){
 timeDiff.add = function(seconds){
   var date = new Date().Format("yyyy-MM-dd hh:mm:ss")
   var now = convTimestamp(date)
-  var will = now+seconds
+  var will = now+(seconds*1000)
   return timeDiff(now, will)
 }
 
@@ -191,7 +193,7 @@ timeDiff.add = function(seconds){
 //       if (_diff<0) {
 //         orientation: 'before'
 //       }
-  
+
 //   var diff = Math.abs(_diff)
 //   const $diff = getDiff(diff)
 //   var _time = {
@@ -259,7 +261,7 @@ function timeAgo(ago, cb){
     _date = parseFloat(ago)
   } else {
     _date = parseFloat(ago)
-    
+
   }
 
   // 用户自行处理时间数据

@@ -2,7 +2,40 @@ import {inject} from 'libs'
 import {wrapItem, countdown} from 'component/client'
 const Cd = countdown()
 function index(router){
-  return <Cd.x cd={60}  title={'发送验证码'} />
+  const Cdbtn = wrapItem(
+    <button className="btn">开始倒计时</button>
+    , function(dom){
+      $(dom).click(function(){
+        Cd.start()
+      })
+    }
+  )
+  function sendCode(dom){
+    $(dom).click(function(){
+      Cd.start()
+    })
+  }
+
+  function cding(count){
+    return <span>{count} second</span>
+  }
+
+  function cdafter(count) {
+    const Re = wrapItem(
+      <span>重新发送</span>
+      , function(dom){
+        $(dom).click(()=>{
+          Cd.restart()
+        })
+      }
+    )
+    return <Re />
+  }
+  return (
+    <div className='testCd'>
+      <Cd.x cd={10} title={'发送验证码'} itemMethod={sendCode} cding={cding} cdafter={cdafter}/>
+    </div>
+  )
 }
 
 
