@@ -4,6 +4,7 @@ var timer = require('./_component/time')
 var forapp = require('./_component/forapp')
 // var base_tips = require('./_component/tips')
 
+
 module.exports = {
     guid:           base.guid,           //生成随机名字
     $class:         base.$class,          //创建类，并执行this.init方法
