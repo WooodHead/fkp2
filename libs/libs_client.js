@@ -44,6 +44,7 @@ module.exports = {
 
     countDown:      timer.countDown,    //倒计时
     timeAgo:        timer.timeAgo,      //时间过去了多久
+    timeDiff:       timer.timeDiff,      //时间过去了多久
     getTs:          forapp.getTs,        // "2010-03-15 10:30:00"转时间戳
 
     // msgtips:        require('component/modules/msgtips'),

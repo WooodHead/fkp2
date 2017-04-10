@@ -3,6 +3,7 @@ import modal from './modules/modal'
 import sticky from './modules/sticky'
 import slip from './modules/slip'
 import router from './modules/router'
+import countdown from './modules/countdown'
 import * as uploader from './modules/upload'
 
 // import itemHlc from './mixins/itemhlc'
@@ -24,5 +25,6 @@ module.exports = {
   wrapItem,
   combineX,
   uploader,
+  countdown,
   ...Sync
 }
