@@ -12,6 +12,7 @@ class CountDown extends React.Component {
     const tdiff = timeDiff.add(_cd)
     this.differ = tdiff.differ/1000
     this.state = {
+      restart: false,
       cd: _cd,
       timeDiff: tdiff
     }
@@ -25,9 +26,10 @@ class CountDown extends React.Component {
   }
 
   render(){
+    const title = this.props.title ? <span>{this.props.title}</span> : ''
     let t = this.state.timeDiff
     delete t.diff
-    
+
     const tObj = {
       seconds: t.seconds,
       minute: t.minute,
@@ -35,39 +37,36 @@ class CountDown extends React.Component {
       day: t.day,
       month: t.month
     }
-    
-    const _cd = t.$seconds
-    let _cder = <span>{_cd+'秒'}</span>
+
+    let _cd = t.$seconds
+    if (_cd && _cd <10) _cd = '0' + _cd
+    let _cder = <ul><li className='cding'>{_cd+'秒'}</li></ul>
     let ary = []
     if (this.differ<121) {
       if (typeof this.props.cding == 'function') _cder = this.props.cding(_cd) || _cder
-    } else {
+      if (this.differ == (t.differ/1000) && !this.state.restart) _cder = title
+    }
+    else {
       for (let x in tObj) {
         if (tObj[x]) ary.unshift(tObj[x])
       }
 
       const tmp_cder = ary.map( (item, ii) => {
-        let _item = item
-        if (ii<(ary.length-1)) {
-          _item = _item+':'
-        }
-        return <li key={'timer_'+ii}>{_item}</li> 
+        if (ii<(ary.length-1)) item = item+':'
+        return <li className="cding" key={'timer_'+ii}>{item}</li>
       })
+
       _cder = <ul>{tmp_cder}</ul>
-      
-      if (typeof this.props.cding == 'function') {
-        _cder = this.props.cding(ary) || _cder
-      }
+      if (typeof this.props.cding == 'function') _cder = this.props.cding(ary) || _cder
     }
 
     if (_cd == 0 && typeof this.props.cdafter == 'function') {
-      _cder = this.props.cdafter()
+      _cder = this.props.cdafter() || <ul><li className='cdafter'>重新发送</li></ul>
     }
 
-    const title = this.props.title ? <span>{this.props.title}</span> : ''
     return (
       <div className="cd_wrap">
-        {title}
+        {this.differ<121 ? '' : title}
         {_cder}
       </div>
     )
@@ -84,10 +83,11 @@ const Actions = {
     const _diff = timeDiff.getDiff((differ-1000))
     pageCount = _diff.$seconds
     cur.timeDiff = _diff
+    cur.restart = false
     return cur
   },
   RESTART: function(state, props){
-    console.log(state);
+    state.restart = true
     return state
   }
 }

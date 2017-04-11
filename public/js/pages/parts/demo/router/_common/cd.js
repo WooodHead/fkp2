@@ -17,14 +17,19 @@ function index(router){
   }
 
   function cding(count){
-    console.log(count)
-    return <span>{count} second</span>
-    // return <span>{count} second</span>
+    if (typeof count == 'object') {
+      const lis = count.map( (item, ii) => {
+        if (ii<count.length-1) item += ':'
+        return <li className='cding' key={"cding_"+ii}>{item}</li>
+      })
+      return <ul>{lis}</ul>
+    }
+    return <ul><li className="cding">{count+'second'}</li></ul>
   }
 
   function cdafter(count) {
     const Re = wrapItem(
-      <span>重新发送</span>
+      <ul><li className="cdafter">重新发送</li></ul>
       , function(dom){
         $(dom).click(()=>{
           Cd.restart()
@@ -35,7 +40,7 @@ function index(router){
   }
   return (
     <div className='testCd'>
-      <Cd.x cd={10} title={'剩余时间:'} itemMethod={sendCode} cding={cding} cdafter={cdafter}/>
+      <Cd.x cd={10} title={'发送验证码'} itemMethod={sendCode}  cdafter={cdafter}/>
     </div>
   )
 }
