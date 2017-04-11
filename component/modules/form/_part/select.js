@@ -11,6 +11,7 @@ let dpickerAssets = {
 
 function select(_intent, ctx){
   const intent = ctx.actions.data.intent
+  
   const allocation = ctx.allocation // 配置文件, 每一个有id的表单的配置文件都在这个对象下
   const elements = ctx.elements('all')
   let isSelect = {}   // 注册所有的select到这个对象下
@@ -255,6 +256,12 @@ function select(_intent, ctx){
           else {
             ctx.values(targetValue)
           }
+        }
+      }
+
+      if (isSelect[target_id]) {
+        xctx.options = function(val, text){
+          options(val, text)
         }
       }
 

@@ -181,7 +181,8 @@ function mk_element(item, _i){
   _desc = P.profile.desc || P.attr.desc || ''
   _class = P.attr.itemClass
   _union = P.profile.union||P.attr.union
-  if (_union && !tmp_P[P.id]) {
+  // if (_union && !tmp_P[P.id]) {
+  if (_union) {
     tmp_P[P.id] = 'true'
     _union.target = {
       id: P.id,
@@ -245,6 +246,7 @@ class Input extends React.Component {
 
   render(){
     let fill = this._preRender()
+    
     let _cls = 'inputGroup'
     if (this.props.listClass) _cls = 'inputGroup '+this.props.listClass
     return (
