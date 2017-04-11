@@ -182,6 +182,7 @@ class FormInput extends BaseClass{
               elements(item).value = data[item]
               allocation[item].value = data[item]
             }else if(allocation[item].type == 'select'){
+              form[item] = ''
               elements(item).value = ''
               allocation[item].value = ''           
             }

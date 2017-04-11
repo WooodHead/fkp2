@@ -162,8 +162,8 @@ function select(_intent, ctx){
 
         $(elements[item.id]).on('toggledd', function(){
           if (isFunction(itMtd)) {
-              const willToggle = itMtd.call(_ctx, elements['+'+item.id])
-              if (willToggle) $(ddMenu).toggle()
+            const willToggle = itMtd.call(_ctx, elements['+'+item.id])
+            if (willToggle) $(ddMenu).toggle()
           } else {
             $(ddMenu).toggle()
           }
