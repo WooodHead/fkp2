@@ -125,6 +125,7 @@ class FormInput extends BaseClass{
     super(config)
     this.form = {}
     this.elements
+    this.timmer
     this.allocation = this::createAllocation(config.data)
 
     this.values = this::this.values
@@ -165,14 +166,17 @@ class FormInput extends BaseClass{
     if (!data) return this.form
     if (typeof data == 'string') return this.form[data]
     if (typeof data == 'object') {
-      let allocation = this.allocation
-      , elements = this.elements
-      , form = this.form
-      Object.keys(data).forEach( item => {
-        this.form[item] = data[item]
-        elements(item).value = data[item]
-        allocation[item].value = data[item]
-      })
+      clearTimeout(this.timmer)
+      this.timmer = setTimeout(()=>{
+        let allocation = this.allocation
+        , elements = this.elements
+        , form = this.form
+        Object.keys(data).forEach( item => {
+          this.form[item] = data[item]
+          elements(item).value = data[item]
+          allocation[item].value = data[item]
+        })
+      }, 500)
     }
   }
 
