@@ -8,8 +8,9 @@ const isClient = (() => typeof window !== 'undefined')()
 class CountDown extends React.Component {
   constructor(props){
     super(props)
-    const _cd = this.props.cd ? (this.props.cd+1) : 61
+    const _cd = this.props.cd ? (this.props.cd) : 60
     const tdiff = timeDiff.add(_cd)
+    this.differ = tdiff.differ/1000
     this.state = {
       cd: _cd,
       timeDiff: tdiff
@@ -24,30 +25,50 @@ class CountDown extends React.Component {
   }
 
   render(){
-    const itemClassName = this.props.itemClass
-    const listClassName = this.props.listClass
+    let t = this.state.timeDiff
+    delete t.diff
+    
+    const tObj = {
+      seconds: t.seconds,
+      minute: t.minute,
+      hour: t.hour,
+      day: t.day,
+      month: t.month
+    }
+    
+    const _cd = t.$seconds
+    let _cder = <span>{_cd+'秒'}</span>
+    let ary = []
+    if (this.differ<121) {
+      if (typeof this.props.cding == 'function') _cder = this.props.cding(_cd) || _cder
+    } else {
+      for (let x in tObj) {
+        if (tObj[x]) ary.unshift(tObj[x])
+      }
 
-    const t = this.state.timeDiff
-    const _cd = t.seconds
-    let _cder = _cd+'秒'
-
-    if (typeof this.props.cding == 'function') {
-      _cder = this.props.cding(_cd) || _cder
+      const tmp_cder = ary.map( (item, ii) => {
+        let _item = item
+        if (ii<(ary.length-1)) {
+          _item = _item+':'
+        }
+        return <li key={'timer_'+ii}>{_item}</li> 
+      })
+      _cder = <ul>{tmp_cder}</ul>
+      
+      if (typeof this.props.cding == 'function') {
+        _cder = this.props.cding(ary) || _cder
+      }
     }
 
     if (_cd == 0 && typeof this.props.cdafter == 'function') {
       _cder = this.props.cdafter()
     }
 
-    // console.log(_cder);
-
     const title = this.props.title ? <span>{this.props.title}</span> : ''
     return (
       <div className="cd_wrap">
         {title}
-        <ul>
-          <li>{_cder}</li>
-        </ul>
+        {_cder}
       </div>
     )
   }
@@ -61,7 +82,7 @@ const Actions = {
     const cur = this.curState
     let differ = cur.timeDiff.differ
     const _diff = timeDiff.getDiff((differ-1000))
-    pageCount = _diff.seconds
+    pageCount = _diff.$seconds
     cur.timeDiff = _diff
     return cur
   },

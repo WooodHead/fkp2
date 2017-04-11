@@ -17,7 +17,9 @@ function index(router){
   }
 
   function cding(count){
+    console.log(count)
     return <span>{count} second</span>
+    // return <span>{count} second</span>
   }
 
   function cdafter(count) {
@@ -33,7 +35,7 @@ function index(router){
   }
   return (
     <div className='testCd'>
-      <Cd.x cd={10} title={'发送验证码'} itemMethod={sendCode} cding={cding} cdafter={cdafter}/>
+      <Cd.x cd={10} title={'剩余时间:'} itemMethod={sendCode} cding={cding} cdafter={cdafter}/>
     </div>
   )
 }
