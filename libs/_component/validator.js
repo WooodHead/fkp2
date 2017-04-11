@@ -174,8 +174,10 @@ function form_valide(opts) {
   function validator(value, reg, cb){
     if (!arguments.length) {
       ii = 0
+      query = { stat: true }
       return ckstat
     }
+
     if (typeof value == 'function') {
       ii = 0
       ckstat = true
@@ -191,7 +193,9 @@ function form_valide(opts) {
         }
       })
       query.stat = ckstat;
-      return _fun(query, _errs)
+      const $query = JSON.parse(JSON.stringify(query))
+      query = { stat: true }
+      return _fun($query, _errs)
     }
 
     if (!reg || !nblock[reg]) {

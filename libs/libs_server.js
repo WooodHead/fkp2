@@ -26,6 +26,7 @@ var co_parse = function(ctx){
     return parse( ctx, opts )
 }
 
+
 module.exports = {
   objtypeof: base.objtypeof,
   inherits: base.inherits,
@@ -35,5 +36,6 @@ module.exports = {
   guid: guid,
   smd:            require('./_component/simplemd'),   //简单markdown
   timeAgo:   timer.timeAgo,      //时间过去了多久
+  timeDiff:       timer.timeDiff,      //时间过去了多久
   validator:     require('./_component/validator')        //校验基础方法
 }

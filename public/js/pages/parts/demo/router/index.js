@@ -11,6 +11,7 @@ import page6 from './_common/page6'
 import page7 from './_common/page7'
 import page8 from './_common/page8'
 import page9 from './_common/page9'
+import cd from './_common/cd'
 // const  Page4 = wrapItem( <div>我才是最后一页</div>, function(dom){ $(dom).click(function(){alert(1)}) } )
 
 
@@ -76,7 +77,8 @@ if ($('#side-content').length) {
       {title: 'Badge 徽标数', content: page6, path: 'page6', parent: 'ui'},
       {title: 'Side 侧边栏', content: page7, path: 'page7', parent: 'ui'},
       {title: 'Dropdown 下拉菜单', content: page8, path: 'page8', parent: 'ui'},
-      {title: 'Button 按钮', content: page9, path: 'page9', parent: 'button'},
+      {title: 'Button 按钮', content: page9, path: 'page9', parent: 'ui'},
+      {title: '倒计时', content: cd, path: 'cd', parent: 'ui'},
 
       {title: <span className="caption"><i className='icon-circle'></i>Forms 表单<i className="icon-arrow_down right-icon"></i></span>, content: page1, path: 'a1', idf: 'forms'},
       {title: <span className="caption"><i className='icon-recordfill'></i>Tables 表格<i className="icon-arrow_down right-icon"></i></span>, content: page1, path: 'a2', idf: 'tables'},
