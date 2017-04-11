@@ -161,8 +161,8 @@ class FormInput extends BaseClass{
     )
   }
 
-  // 获取所有元素的即时值
-  values(data){
+  // 获取所有元素的即时值  asm（assignment-->判断是否是赋值过程）
+  values(data,asm){
     if (!data) return this.form
     if (typeof data == 'string') return this.form[data]
     if (typeof data == 'object') {
@@ -172,9 +172,17 @@ class FormInput extends BaseClass{
         , elements = this.elements
         , form = this.form
         Object.keys(data).forEach( item => {
-          this.form[item] = data[item]
-          elements(item).value = data[item]
-          allocation[item].value = data[item]
+          if(asm == undefined){
+            this.form[item] = data[item]
+            elements(item).value = data[item]
+            allocation[item].value = data[item]
+          }else{
+            if(allocation[item].type == 'text'){
+              this.form[item] = data[item]
+              elements(item).value = data[item]
+              allocation[item].value = data[item]
+            }
+          }
         })
       }, 500)
     }
