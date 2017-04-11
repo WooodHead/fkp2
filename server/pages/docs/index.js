@@ -76,7 +76,7 @@ function docs(oridata) {
         }
 
         let fdocs = await ctx.fkp.docs(_path, docsConfig)
-        oridata.docs = _.extend({}, fdocs)
+        oridata.docs = _.merge({}, fdocs)
         if (oridata.docs.params) {
           oridata.docs.params.js && oridata.docs.params.js.length
           ? oridata.docs.params.js = '/js/parts/tree,'+oridata.docs.params.js
@@ -91,7 +91,7 @@ function docs(oridata) {
           if (id) mdpath = path.join(cat+'/'+title +'/'+id, (p1||''), (p2||''), (p3||''))
           let mdfile = await ctx.fkp.docs('fdocs/'+mdpath+'.md')
           if (mdfile) {
-            oridata.docs = _.extend(oridata.docs, mdfile)
+            oridata.docs = _.merge(oridata.docs, mdfile)
           } else {
             return ctx.redirect('/404')
           }
