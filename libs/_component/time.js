@@ -133,17 +133,23 @@ timeDiff.getDiff = function(diff){
   const __hour = 3600
   const __day = 3600*24
   const __month = 3600*24*30
-  
+
+  let $month, $day, $hour, $min, xsecond
+
   let yushu = 0
-  const $month = (()=>{
+  $month = (()=>{
     if (__second/__month >= 1) {
       yushu = __second%__month
       return _.floor(__second/__month)
     }
     else { yushu = __second%__month }
   })()
+  if ($month && $month<10) $month = '0'+$month
+  if (yushu == 0) {
+    $day='00'; $hour='00'; $min='00';
+  }
 
-  const $day = (()=>{
+  $day = (()=>{
     if (yushu && yushu/__day >= 1) {
       const day = _.floor(yushu/__day)
       yushu = yushu%__day
@@ -151,8 +157,12 @@ timeDiff.getDiff = function(diff){
     }
     else { yushu = yushu%__day }
   })()
+  if ($day && $day<10) $day = '0'+$day
+  if (yushu == 0) {
+    $hour='00'; $min='00';
+  }
 
-  const $hour = (()=>{
+  $hour = (()=>{
     if (yushu && yushu/__hour >= 1) {
       const hour = _.floor(yushu/__hour)
       yushu = yushu%__hour
@@ -160,8 +170,12 @@ timeDiff.getDiff = function(diff){
     }
     else { yushu = yushu%__hour }
   })()
+  if ($hour && $hour<10) $hour = '0'+$hour
+  if (yushu == 0) {
+    $min='00';
+  }
 
-  const $min = (()=>{
+  $min = (()=>{
     if (yushu && yushu/__min >= 1) {
       const min = _.floor(yushu/__min)
       yushu = yushu%__min
@@ -169,14 +183,19 @@ timeDiff.getDiff = function(diff){
     }
     else { yushu = yushu%__min }
   })()
+  if ($min && $min<10) $min = '0'+$min
+  if (yushu == 0) {
+    yushu='00';
+  }
 
-  const $second = yushu
+  xsecond = yushu
+  if (xsecond && xsecond<10 && xsecond!='00') xsecond = '0'+xsecond
   const _second = __second
 
   return {
     differ: diff,
     $seconds: _second,
-    seconds: $second,
+    seconds: xsecond,
     minute: $min,
     hour: $hour,
     day: $day,
