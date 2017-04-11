@@ -93,23 +93,23 @@ function countDown(ele, cd, cb){
 var day31 = [1,3,5,7,8,10,12]
 var day30 = [4,6,9,11]
 
-function getDiff(diff){
-  var _seconds = _.ceil(diff/1000, 2),
-      _minute = _.ceil(_seconds/60, 2),
-      _hour = _.ceil(_seconds/3600, 2),
-      _day = _.ceil(_seconds/(3600*24), 2),
-      _month = _.ceil(_seconds/(3600*24*30), 2),
-      _year = _.ceil(_seconds/(3600*24*30*12), 2);
+// function getDiff(diff){
+//   var _seconds = _.ceil(diff/1000, 2),
+//       _minute = _.ceil(_seconds/60, 2),
+//       _hour = _.ceil(_seconds/3600, 2),
+//       _day = _.ceil(_seconds/(3600*24), 2),
+//       _month = _.ceil(_seconds/(3600*24*30), 2),
+//       _year = _.ceil(_seconds/(3600*24*30*12), 2);
 
-  return {
-    seconds: _seconds,
-    minute: _minute,
-    hour: _hour,
-    day: _day,
-    month: _month,
-    year: _year
-  }
-}
+//   return {
+//     seconds: _seconds,
+//     minute: _minute,
+//     hour: _hour,
+//     day: _day,
+//     month: _month,
+//     year: _year
+//   }
+// }
 
 function timeDiff(dif, dif2){
   var orientation = 'after',
@@ -128,22 +128,60 @@ function timeDiff(dif, dif2){
 }
 
 timeDiff.getDiff = function(diff){
-  console.log(diff);
-  var _seconds = _.ceil(diff/1000, 2),
-      _minute = _.ceil(_seconds/60, 2),
-      _hour = _.ceil(_seconds/3600, 2),
-      _day = _.ceil(_seconds/(3600*24), 2),
-      _month = _.ceil(_seconds/(3600*24*30), 2),
-      _year = _.ceil(_seconds/(3600*24*30*12), 2);
+  const __second = _.ceil(diff/1000)
+  const __min = 60
+  const __hour = 3600
+  const __day = 3600*24
+  const __month = 3600*24*30
+  
+  let yushu = 0
+  const $month = (()=>{
+    if (__second/__month >= 1) {
+      yushu = __second%__month
+      return _.floor(__second/__month)
+    }
+    else { yushu = __second%__month }
+  })()
+
+  const $day = (()=>{
+    if (yushu && yushu/__day >= 1) {
+      const day = _.floor(yushu/__day)
+      yushu = yushu%__day
+      return day
+    }
+    else { yushu = yushu%__day }
+  })()
+
+  const $hour = (()=>{
+    if (yushu && yushu/__hour >= 1) {
+      const hour = _.floor(yushu/__hour)
+      yushu = yushu%__hour
+      return hour
+    }
+    else { yushu = yushu%__hour }
+  })()
+
+  const $min = (()=>{
+    if (yushu && yushu/__min >= 1) {
+      const min = _.floor(yushu/__min)
+      yushu = yushu%__min
+      return min
+    }
+    else { yushu = yushu%__min }
+  })()
+
+  const $second = yushu
+  const _second = __second
 
   return {
     differ: diff,
-    seconds: _seconds,
-    minute: _minute,
-    hour: _hour,
-    day: _day,
-    month: _month,
-    year: _year
+    $seconds: _second,
+    seconds: $second,
+    minute: $min,
+    hour: $hour,
+    day: $day,
+    month: $month,
+    year: ''
   }
 }
 
