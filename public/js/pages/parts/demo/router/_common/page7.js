@@ -30,7 +30,6 @@ function index(router){
     {title: '当季热门推荐', url:'javascript:;', parent: 'd'},
   ]
   const sidetree = tree(result)
-  console.log(sidetree);
   const sidelist = list({
     data: sidetree
   })
