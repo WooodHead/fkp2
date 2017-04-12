@@ -12,6 +12,7 @@ function tabsDid(dom, select, itemFun){
   menusBody.find('li').each(function(ii, item){
     that.items.push(item)
     if ($(item).hasClass('itemroot')) {
+      item.itemroot = true
       if (config.fold) $(item).find('.itemCategory ul').addClass('none')
     }
     if (typeof itemFun == 'function') {
