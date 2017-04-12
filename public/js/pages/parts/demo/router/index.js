@@ -13,7 +13,7 @@ import page8 from './_common/page8'
 import page9 from './_common/page9'
 import cd from './_common/cd'
 import page10 from './_common/tabs'
-import page11 from './_common/tabs-height'
+import page11 from './_common/tabsheight'
 // import page12 from './_common/city'
 // const  Page4 = wrapItem( <div>我才是最后一页</div>, function(dom){ $(dom).click(function(){alert(1)}) } )
 
