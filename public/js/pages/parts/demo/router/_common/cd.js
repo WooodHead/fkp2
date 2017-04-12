@@ -1,5 +1,16 @@
 import {inject} from 'libs'
 import {wrapItem, countdown} from 'component/client'
+
+inject().css('/css/m/countdown')
+.css(
+  `
+  .testCd{
+    margin:40px auto;
+    width: 400px
+  }
+  `
+)
+
 const Cd = countdown()
 function index(router){
   const Cdbtn = wrapItem(
@@ -20,16 +31,16 @@ function index(router){
     if (typeof count == 'object') {
       const lis = count.map( (item, ii) => {
         if (ii<count.length-1) item += ':'
-        return <li className='cding' key={"cding_"+ii}>{item}</li>
+        return <li className='cding' key={"cding_"+ii}>{item+'秒后重新获取'}</li>
       })
       return <ul>{lis}</ul>
     }
-    return <ul><li className="cding">{count+'second'}</li></ul>
+    return <ul><li className="cding">{count+'秒后重新获取'}</li></ul>
   }
 
   function cdafter(count) {
     const Re = wrapItem(
-      <ul><li className="cdafter">重新发送</li></ul>
+      <ul className="cdafter"><li>重新发送</li></ul>
       , function(dom){
         $(dom).click(()=>{
           Cd.restart()
@@ -40,7 +51,7 @@ function index(router){
   }
   return (
     <div className='testCd'>
-      <Cd.x cd={10} title={'发送验证码'} itemMethod={sendCode}  cdafter={cdafter}/>
+      <Cd.x cd={10} title={'获取验证码'} itemMethod={sendCode}  cdafter={cdafter} cding={cding}/>
     </div>
   )
 }
