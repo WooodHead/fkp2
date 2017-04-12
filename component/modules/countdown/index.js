@@ -26,7 +26,11 @@ class CountDown extends React.Component {
   }
 
   render(){
-    const title = this.props.title ? <span>{this.props.title}</span> : ''
+    const title = this.props.title 
+    ? typeof this.props.title == 'string' 
+      ? <span>{this.props.title}</span> 
+      : this.props.title
+    : ''
     let t = this.state.timeDiff
     delete t.diff
 
@@ -107,6 +111,7 @@ class App extends BaseX {
         this.start()
       }
       else {
+        pageCount = 1
         clearTimeout(this.timmer)
       }
     }, 1000)
@@ -115,6 +120,9 @@ class App extends BaseX {
     pageCount = 1
     this.dispatch('RESTART', {})
     this.start()
+  }
+  stop(){
+    clearTimeout(this.timmer)
   }
   pause(){
     clearTimeout(this.timmer)

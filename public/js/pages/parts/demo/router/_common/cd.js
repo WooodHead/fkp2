@@ -57,6 +57,7 @@ export default function(router){
     },
 
     leave: function(){
+      Cd.stop()
     },
 
     loaded: function(dom){
