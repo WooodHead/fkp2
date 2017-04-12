@@ -1,0 +1,101 @@
+@import "../_common/index"
+
+// boxColor($color = #000, $bcolor = #e3e3e3, $borderRadius = 0 5px 5px 0, $background = #fff)
+
+$mainColor = #FF6537
+$thenColor = #F94A14
+$colorFF905B = #FF905B
+/**
+ * sidenav() 是tabsMenus的样式,对应的tabsBoxes是
+ * @type {[type]}
+ */
+tabsMenus()
+  boxColor(#fff, $mainColor, 0, $mainColor)
+  background-image: linear-gradient(-45deg,#ff5000,#ff6f06);
+  .tabs-menu-body
+    overflow: hidden;
+    {fontSize14}
+    >li
+      iconTriangle(14px, $colorfff, $colorfff, 0px, 10px)
+      iconlist(14px, $colorFF905B, $colorfff)
+      cursor: pointer;
+      padding: 0 10px;
+      position: relative;
+      line-height: 30px
+      &.active
+        i
+          color: $colorfff
+      i
+        margin-right: 6px
+        vertical-align: middle;
+      a
+        display: block;
+        span
+          vertical-align: top;
+      &:hover,&.active
+        background: $thenColor
+
+/**
+ * 以下是 tabsBoxes的内容三种样式 .side-content .side-content-row .side-content-row-b
+ * @type {[type]}
+ */
+
+sideContent()
+  boxColor(#999, $mainColor, 0, $colorfff)
+  height: 100%
+  {fontSize12}
+  display-flex(row,flex-start)
+  >.hlist
+    flex: auto
+    margin: 15px 10px 15px 18px
+    >li
+      margin-top: 10px
+      margin-bottom: @margin-top
+      >.itemCategory
+        .title-more
+          {fontSize14}
+          {$color666}
+          height: 28px;
+          line-height: @height
+          position: relative;
+          a
+            vertical-align: top;
+        ul
+          margin: 6px 0
+          line-height: 24px
+          sideUl(12px)
+
+tabsBoxes()
+  /**
+   * 二层结构 hlist->li->a、ul（左右）
+   * @type {[type]}
+   */
+  .side-content
+    sideContent()
+    &.side-content-flex
+      >.hlist
+        >li
+          margin-top: 0
+          margin-bottom: 0
+          >.itemCategory
+            display-flex(row,flex-start,center,center)
+            >ul
+              margin-left: 16px
+    >.hlist
+      .title-more
+        text-align: left;
+        display: block;
+        border-bottom: 1px solid $borderColor
+        iconlist(14px, $colo666, $colo666)
+        i
+          margin-right: 8px
+        .more
+          mores()
+          {fontSize12}
+    .advertising
+      width: 35%
+      background: #f4f4f4
+      padding: 30px 10px
+      ul
+        ul
+          picUl(space-between,46%,18px)

@@ -1,0 +1,133 @@
+@import "../_common/index"
+
+$mainColor = #3585cf
+$thenColor = #C1D8F9
+
+/**
+ * sidenav() 是tabsMenus的样式,对应的tabsBoxes是
+ * @type {[type]}
+ */
+tabsMenus()
+  boxColor(#333, $mainColor, 2px, $colorfff)
+  .tabs-menu-body
+    overflow: hidden;
+    >li
+      iconTriangle(30px, $thenColor, $mainColor)
+      iconlist2(30px, $mainColor)
+      padding: 0 20px;
+      position: relative;
+      border-top: 1px solid $colorfff
+      border-bottom: 1px solid $colorfff
+      cursor: pointer;
+      &:hover,&.active
+        border-top-color: $borderColor
+        border-bottom-color:$borderColor
+        box-shadow: -5px 1px 3px rgba(0,0,0,0.3)
+        position: relative;
+        z-index: 2
+      &:last-child
+        .itemCategory
+          border-bottom: none
+    .itemCategory
+      border-bottom: 1px solid $borderColor;
+      padding: 10px 0 10px 12%;
+      margin-bottom: -1px;
+    .none
+      display-flex(row,flex-start)
+      flex-wrap: wrap;
+      font-size: 12px
+      margin-top: 4px;
+      flex-wrap: wrap;
+      width: 96%;
+      li
+        margin-right: 6px
+
+/**
+ * 以下是 tabsBoxes的内容三种样式 .side-content .side-content-row .side-content-row-b
+ * @type {[type]}
+ */
+
+sideContent()
+  boxColor(#666, $colorfff, 0 2px 2px 0, $colorfff)
+  box-shadow: -1px 1px 3px rgba(0,0,0,0.3);
+  padding: 20px
+  {fontSize14}
+  .hlist
+    >li
+      margin-bottom: 20px
+
+tabsBoxes()
+  /**
+   * 二层结构 hlist->li->a、ul（左右）
+   * @type {[type]}
+   */
+  .side-content
+    sideContent()
+    .hlist
+      >li
+        >.itemCategory
+          display-flex(row, flex-start)
+          >a
+            min-width: 80px;
+            text-align: right;
+            {color333}
+          >ul
+            sidesmallUl()
+  /**
+   *  二层结构 hlist->li（左右）
+   * @type {[type]}
+   */
+  .side-content-row
+    sideContent()
+    .hlist
+      display-flex(row, flex-start)
+      flex-wrap: wrap;
+      >li
+        width: 50%
+        >.itemCategory
+          display-flex(row, flex-start)
+          >a
+            min-width: 60px;
+            text-align: right;
+            {color333}
+          >ul
+            sidesmallUl()
+  /**
+   *  三层结构
+   * @type {[type]}
+   */
+  .side-content-row-b
+    sideContent()
+    .hlist
+      display-flex(row,space-around)
+      >li
+        width: 46%
+        overflow: hidden;
+        >.itemCategory
+          >a
+            min-width: 60px;
+            text-align: left;
+            {color333}
+            display: block;
+            position: relative;
+            padding-bottom: 6px;
+            &:after
+              content: ""
+              border-bottom: 2px solid $mainColor;
+              position: absolute;
+              bottom: 0;
+              left: 0;
+              height: 2px;
+              width: 9%;
+          >ul
+            border-top: 1px solid $borderColor;
+            padding: 10px 0
+            width: 98%;
+            .itemCategory
+              margin-bottom: 10px
+              >a
+                {color333}
+              ul
+                sidesmallUl()
+                width: 100%
+                margin-left: -8px;
