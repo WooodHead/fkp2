@@ -6,8 +6,10 @@ import pages2 from './_common/pages2'
 import pages3 from './_common/pages3'
 
 inject().css(`
-  .tabsGroup{
-    margin: 30px 0 0 50px
+  .tabs-content-height{
+    .tabsGroup{
+      margin: 30px 0 0 50px
+    }
   }
 `)
 const result = [

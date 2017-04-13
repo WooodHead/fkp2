@@ -6,8 +6,10 @@ import pages2 from './_common/pages2'
 import pages3 from './_common/pages3'
 
 inject().css(`
-  .tabsGroup{
-    margin: 30px 0 0 50px
+  .tabs-content{
+    .tabsGroup{
+      margin: 30px 0 0 50px
+    }
   }
 `)
 
@@ -47,19 +49,20 @@ const tabsxx = Tabs({
   data: result,
   theme: 'tabs/tabsnav',
   itemMethod: function(dom, index){
-    console.log($(dom));
     if (dom.itemroot){
       $(dom).hover( (e) =>{
-        $('.tabsBoxes').css({'display': 'block','top': e.currentTarget.offsetTop})
         $(dom).addClass('active').siblings().removeClass('active')
+        $(dom).parents('.tabsGroup').find('.tabsBoxes').css({'opacity': '1','display':'block'})
         e.stopPropagation()
         this.select(index)
       })
-      // ,() =>{
-      //   $('.tabsBoxes').css({'display': 'none'})
-      //   $(dom).removeClass('active')
-      // }
     }
+    $(dom).parents('.tabsGroup').mouseleave(()=>{
+      $('.tabsBoxes').css({'opacity': '0','display':'none'})
+      if (dom.itemroot){
+        $(dom).removeClass('active')
+      }
+    })
   }
 })
 
