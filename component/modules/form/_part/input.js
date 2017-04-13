@@ -198,6 +198,7 @@ function mk_element(item, _i){
     const resault = rcbox(P)
     return (
       <div ref={resault.superID} key={"lable"+_i} className={resault.groupClass}>
+        {P.profile.required ? <span className="fkp-input-required" /> : ''}
         {resault.title ? <span className="fkp-title">{resault.title}</span> : ''}
         {resault.fill}
         {resault.desc ? <span className="fkp-desc">{resault.desc}</span> : ''}

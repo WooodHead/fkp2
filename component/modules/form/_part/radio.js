@@ -75,7 +75,6 @@ function rcbox(pdata, opts){
 
     return (
        <lable key={'rcbox'+ii} className={ lableClass }>
-        {pdata.attr.required ? <span className="fkp-input-required" /> : ''}
         {resault.title ? <span className="fkp-title">{resault.title}</span> : ''}
         {
           checked
