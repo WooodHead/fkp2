@@ -16,19 +16,21 @@
           </div>
           </div>
         {{else}}
-          <div class="docs-container">
-            <input type="checkbox" class="docs-trigger"/>
-            <div class="docs-tree">
-              {{{docs.menutree}}}
-            </div>
-            <div class="docs-body">
-              <div class="markdown-body u-clearfix">
-                {{# if docs.home}}
+          <div class="docs-content">
+            <div class="docs-container">
+              <input type="checkbox" class="docs-trigger"/>
+              <div class="docs-tree">
+                {{{docs.menutree}}}
+              </div>
+              <div class="docs-body">
+                <div class="markdown-body u-clearfix">
+                  {{# if docs.home}}
                   {{{docs.home.cnt}}}
-                {{/if}}
-                {{# if docs.mdcontent}}
+                  {{/if}}
+                  {{# if docs.mdcontent}}
                   {{{docs.mdcontent.cnt}}}
-                {{/if}}
+                  {{/if}}
+                </div>
               </div>
             </div>
           </div>
