@@ -157,7 +157,11 @@ function dealWithData(state){
          k4, v4 = data.content
 
        if (data.url) {
-         k2 = <a href={v1} target="_blank">{k2}</a>
+        //  k2 = <a href={v1} target="_blank">{k2}</a>
+        k2 = <a href={v1}>{k2}</a>
+        if (data.target) {
+          k2 = <a href={v1} target="_blank">{k2}</a>
+        }
        }
 
        if(data.li){
