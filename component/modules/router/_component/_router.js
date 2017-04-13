@@ -346,7 +346,7 @@ class TapsApp extends React.Component {
 			pre = _leftStack.length ? _leftStack[_leftStack.length-1] : '';
 		}
 
-		if (pre) {
+		if (pre && pre.id !== id) {
 			this.prePageContent = pre
 			preContent = this.enterContent(pre.content)
 			prePage = <div key={_.uniqueId('Router_Mulitple_')} className={boxCls+animateout}>{preContent}</div>
@@ -381,7 +381,7 @@ class TapsApp extends React.Component {
 			pre = _leftStack.length ? _leftStack[_leftStack.length-1] : '';
 		}
 
-		if (pre) {
+		if (pre && pre.id !== id) {
 			this.prePageContent = pre
 			preContent = this.enterContent(pre.content)
 		}
