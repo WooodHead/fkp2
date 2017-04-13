@@ -62,7 +62,7 @@ function select(_intent, ctx){
         })
         ctx.form[_name] = cbVal;
       } else {
-        ctx.form[_name] = this.value;
+        ctx.form[_name] = [this.value];
       }
       const itMtd = item.itemMethod || item.attr.itemMethod
       if (typeof itMtd == 'function') {
