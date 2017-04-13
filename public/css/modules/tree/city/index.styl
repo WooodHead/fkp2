@@ -1,0 +1,120 @@
+@import "../../_common/index"
+/**
+ * 城市列表的几种表现显示，这里的样式，需要搭配 tabs组件来调用，点击切换
+ *
+ */
+
+listUl($marginLeft= 6px)
+  display-flex(row,flex-start,center,center)
+  flex-wrap: wrap;
+  margin-left: - $marginLeft
+  li
+    margin-left: $marginLeft
+
+/**
+ * 城市列表1   类型携程的点击地区 出现的城市列表
+ * @type {[type]}
+ */
+tabsMenus()
+  .tabs-menu-body
+    listUl(4px)
+    {fontSize12}
+    margin-bottom: 10px
+    .level0
+      padding: 4px 10px
+      &.selected,&:hover
+        background: $color2577e3
+        a
+          color: #fff
+      a
+        color: #333
+        text-decoration: none;
+        &:hover
+          text-decoration: underline;
+
+tabsBoxes()
+  .level0
+    border-top: 1px dotted #EAEAEA;
+    line-height: 30px
+    &:first-child
+      border-top: none
+    a
+      text-decoration: none;
+      &:hover
+        text-decoration: underline;
+    .itemCategory
+      display-flex(row,flex-start,flex-start)
+      >a
+        {fontSize14}
+        color: $color2577e3
+        font-weight: bold;
+        min-width: 30px;
+        &:hover
+          color: @color
+    ul
+      listUl(15px)
+      flex-wrap: wrap;
+      {fontSize12}
+      a
+        color: #333
+        &:hover
+          color: $color2577e3
+
+
+
+
+
+/**
+ * 城市列表 2  点击 input 出现的弹出层   类似携程的选择出发城市
+ */
+$color5d9de5 = #5d9de5
+$colorFFB000 = #FFB000
+cityboxMenus()
+  .tabs-menu-body
+    listUl(0)
+    {fontSize12}
+    border-bottom: 2px solid $borderColor
+    margin-bottom: 10px
+    line-height: 14px
+    .level0
+      position: relative;
+      &.selected
+        &:after
+          content: ''
+          height: 2px
+          width: 100%;
+          border-bottom: 2px solid $color2577e3
+          position: absolute;
+          bottom: -2px;
+          left: 0;
+        a
+          color: $color2577e3
+      a
+        padding: 8px
+        color: $color5d9de5
+        text-decoration: none;
+
+
+cityboxBoxes()
+  .level0
+    line-height: 30px
+    a
+      text-decoration: none;
+    .itemCategory
+      display-flex(row,flex-start,flex-start)
+      >a
+        {fontSize14}
+        color: $colorFFB000
+        min-width: 30px;
+        text-align: center;
+        &:hover
+          color: @color
+    ul
+      listUl(20px)
+      flex-wrap: wrap;
+      {fontSize12}
+      a
+        color: #333
+        &:hover
+          background: $color2577e3
+          color: $colorfff

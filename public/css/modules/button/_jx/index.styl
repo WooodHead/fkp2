@@ -7,19 +7,18 @@
   border: 1px solid transparent;
   border-radius: 2px;
   text-decoration: none;
-
+  &:hover
+    opacity: 0.9;
+    background-color: @background-color
+  &:active
+    opacity: 0.8;
+    background-color: @background-color
 + prefix-classes('btn-')
   .fab427
     @extends .btn
     color: #fff;
     background-color: #fab427;
     border-color: @background-color
-    &:hover
-      opacity: 0.9;
-      background-color: @background-color
-    &:active
-      opacity: 0.8;
-      background-color: @background-color
 
   .disabled
     @extends .btn
