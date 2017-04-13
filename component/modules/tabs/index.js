@@ -91,7 +91,7 @@ export function tabs(opts){
 }
 
 export function htabs(opts) {
-  opts.cls = 'tabsGroupY'
+  opts.cls = opts.cls || 'tabsGroupY'
   return tabs(opts)
 }
 
