@@ -228,7 +228,7 @@ class FormInput extends BaseClass{
           $(lable).find('.fkp-input-error').removeClass('warning').addClass('success').html(message)
         }
       } else {
-        $(theInput).addClass('itemError')
+        $(theInput).removeClass('itemError').next().removeClass('warning').addClass('success')
         $(lable).find('.fkp-input-error').empty()
       }
     }
