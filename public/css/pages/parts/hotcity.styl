@@ -1,0 +1,29 @@
+@import "../_common/display-flex"
+@import "../_common/color"
+
+/**
+ * 热门城市  用了 list组件
+ */
+hot()
+  .hlist
+    padding: 6px 0
+    font-size: 12px
+    .hheader
+      color: $color999
+      margin-bottom: 4px
+    .hbody
+      ul
+        listUl(8px)
+        line-height: 22px;
+        a
+          color: $color666
+          text-decoration: none;
+          &:hover
+            text-decoration: underline;
+
+/**
+ * 热门城市列表
+ * @type {[type]}
+ */
+.city-hot
+  hot()

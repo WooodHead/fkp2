@@ -12,6 +12,7 @@ function tabsDid(dom, select, itemFun){
   menusBody.find('li').each(function(ii, item){
     that.items.push(item)
     if ($(item).hasClass('itemroot')) {
+      item.itemroot = true
       if (config.fold) $(item).find('.itemCategory ul').addClass('none')
     }
     if (typeof itemFun == 'function') {
@@ -78,6 +79,7 @@ export function tabs(opts){
     globalName: _.uniqueId('Tabs_'),   // TabsModule
     theme: 'tabs', // = /css/m/tabs
     cls: 'tabsGroupX',
+    tabClass: 'tabsGroupX',
     itemMethod: noop,
     listMethod: noop,
     tabsDidMethod: noop,
@@ -90,7 +92,7 @@ export function tabs(opts){
 }
 
 export function htabs(opts) {
-  opts.cls = 'tabsGroupY'
+  opts.cls = opts.cls || 'tabsGroupY'
   return tabs(opts)
 }
 

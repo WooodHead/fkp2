@@ -1,0 +1,21 @@
+@import "../../_common/index"
+@import "../../side/liketb/index"
+
+#tabs-content-height
+  .tabsGroup
+    position: relative;
+    .tabsMenus
+      tabsMenus()
+      width: 190px
+    .tabsBoxes
+      tabsBoxes()
+      height: 100%
+      width: 710px;
+      margin-left: 190px
+      position: absolute;
+      top: 0;
+      left: 0;
+      // display: none
+      opacity: 0
+      transform: translateZ(0px);
+      transition: opacity 0.3s linear 0s

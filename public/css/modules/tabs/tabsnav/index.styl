@@ -1,0 +1,18 @@
+@import "../../_common/index"
+@import "../../side/sidenav/index"
+
+#tabs-content
+  .tabsGroup
+    position: relative;
+    .tabsMenus
+      width: 32%;
+      tabsMenus()
+    .tabsBoxes
+      position: absolute;
+      top: 0;
+      left: -4px;
+      margin-left: 32%
+      width: 68%;
+      opacity: 0
+      display: none
+      tabsBoxes()

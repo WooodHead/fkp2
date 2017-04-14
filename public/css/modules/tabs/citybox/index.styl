@@ -1,0 +1,44 @@
+@import "../../tree/city"
+
+/**
+ * 城市列表   类似选择出发城市
+ * @type {[type]}
+ */
+.control-city
+  .fkp-desc
+    background: #fff
+    border: 1px solid #e3e3e3;
+    position: absolute;
+    top: 32px;
+    left: 84px;
+    width: 400px;
+    padding: 10px;
+    display: none
+
+.citybigbox-head
+  position: relative;
+  line-height: 30px
+  {fontSize12}
+  text-align: left;
+  p
+    color: $color999
+
+.city-box
+  .tabsMenus
+    cityboxMenus()
+  .tabsBoxes
+    cityboxBoxes()
+  .city-hot-title   //这个class 是在数据上添加的 热门出现的列表不需要出现热门两字
+    .itemCategory
+      >a
+        display: none;
+
+.cloneicon
+  position: absolute;
+  top: 0
+  right 0;
+  width: 14px
+  &:before
+    content: "\e653"
+    font-size: 10px;
+    color: $color999

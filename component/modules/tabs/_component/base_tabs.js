@@ -41,13 +41,9 @@ class TapsApp extends React.Component {
 			select: 0
 		}
 
-		if (this.props.opts) {
-			let opts = _.merge({}, this.state, this.props.opts)
-			this.state = opts
-			this.state.data = this.props.opts.data
-			this.state.menus = this.props.opts.data.map( item => item.title )
-			// this.state.select = 0
-		}
+		let opts = _.merge({}, this.state, this.props.opts)
+		this.state = opts
+		this.state.menus = this.props.opts.data.map( item => item.title )
 
 		this.select = this::this.select
 		this._menus = this::this._menus
@@ -132,7 +128,8 @@ class TapsApp extends React.Component {
 		const content = this.getContent()
 
 		// className
-		const cls = !opts.cls ? 'tabsGroup ' : 'tabsGroup ' + opts.cls
+		// const cls = !opts.cls ? 'tabsGroup ' : 'tabsGroup ' + opts.cls
+		const cls = !opts.tabClass ? 'tabsGroup ' : 'tabsGroup ' + opts.tabClass
     const boxes_cls = !opts.mulitple ? 'tabsBoxes' : 'tabsBoxes mulitple'
 
 		const treeHeader = this.props.opts.treeHeader

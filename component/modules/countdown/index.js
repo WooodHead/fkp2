@@ -26,7 +26,11 @@ class CountDown extends React.Component {
   }
 
   render(){
-    const title = this.props.title ? <span>{this.props.title}</span> : ''
+    const title = this.props.title
+    ? typeof this.props.title == 'string'
+      ? <span>{this.props.title}</span>
+      : this.props.title
+    : ''
     let t = this.state.timeDiff
     delete t.diff
 
@@ -38,9 +42,13 @@ class CountDown extends React.Component {
       month: t.month
     }
 
+    const _cdCls = this.props.cdClass ? this.props.cdClass:''
+    const _cdingCls = this.props.cdingClass ? this.props.cdingClass :''
+    let _cdClass
+
     let _cd = t.$seconds
     if (_cd && _cd <10) _cd = '0' + _cd
-    let _cder = <ul><li className='cding'>{_cd+'秒'}</li></ul>
+    let _cder = <span><i>{_cd+'秒'}</i></span>
     let ary = []
     if (this.differ<121) {
       if (typeof this.props.cding == 'function') _cder = this.props.cding(_cd) || _cder
@@ -53,19 +61,25 @@ class CountDown extends React.Component {
 
       const tmp_cder = ary.map( (item, ii) => {
         if (ii<(ary.length-1)) item = item+':'
-        return <li className="cding" key={'timer_'+ii}>{item}</li>
+        return <i key={'timer_'+ii}>{item}</i>
       })
 
-      _cder = <ul>{tmp_cder}</ul>
+      _cder = <span>{tmp_cder}</span>
       if (typeof this.props.cding == 'function') _cder = this.props.cding(ary) || _cder
     }
-
     if (_cd == 0 && typeof this.props.cdafter == 'function') {
-      _cder = this.props.cdafter() || <ul><li className='cdafter'>重新发送</li></ul>
+      _cder = this.props.cdafter() || <span><i>重新发送</i></span>
+      _cdClass = _cdCls
+    }
+    if(this.differ == _cd || _cd == 0){
+      _cdClass = _cdCls
+    }
+    else{
+      _cdClass = _cdingCls
     }
 
     return (
-      <div className="cd_wrap">
+      <div className={"cd_wrap " + (_cdClass?_cdClass:'')} >
         {this.differ<121 ? '' : title}
         {_cder}
       </div>
@@ -87,6 +101,10 @@ const Actions = {
     return cur
   },
   RESTART: function(state, props){
+    let differ = state.timeDiff.differ
+    const _diff = timeDiff.getDiff((differ-1000))
+    pageCount = _diff.$seconds
+    state.timeDiff = _diff
     state.restart = true
     return state
   }
@@ -107,14 +125,21 @@ class App extends BaseX {
         this.start()
       }
       else {
+        pageCount = 1
         clearTimeout(this.timmer)
       }
     }, 1000)
   }
   restart(){
     pageCount = 1
-    this.dispatch('RESTART', {})
-    this.start()
+    setTimeout(()=>{
+      this.dispatch('RESTART', {})
+      this.start()
+    },1000)
+
+  }
+  stop(){
+    clearTimeout(this.timmer)
   }
   pause(){
     clearTimeout(this.timmer)

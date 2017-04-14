@@ -1,5 +1,17 @@
 import {queryString} from 'libs'
+import {sticky} from 'component/client'
 import iscrollHlc from 'component/mixins/iscrollhlc'
+
+const nevTop = (
+  <div className='navtop'>
+    <div style={{width: '1050px',margin:'0 auto', height: '100%'}}>
+      <a href="/docs">
+        <img src="/images/logo118.png" style={{height: '100%',width:'auto'}}/>
+      </a>
+    </div>
+  </div>
+)
+const StickyTBox = sticky(nevTop, {autoinject: false})
 
 let query = queryString()
 

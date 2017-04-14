@@ -1,16 +1,17 @@
+@import "../_common/index"
+.itemrootCkb
+  display: none
 .side
-  border: 1px solid #ddd
+  border: 1px solid $borderColor
   width: 300px
   min-height: 400px
-  .itemrootCkb
-    display: none
   &.side-left
     float: left
     margin-right: 20px
   .hlist
     margin: 0 8px 10px 8px
     >li
-      border-bottom: 1px dashed #ddd
+      border-bottom: 1px dashed $borderColor
       padding: 10px 0
       .itemCategory
         >a,span
@@ -19,11 +20,10 @@
           margin-bottom: 8px
           display: block
         ul
-          font-size: 0
           margin-left: -5px
+          display-flex(row, flex-start)
+          {fontSize12}
         li
-          font-size: 12px
-          display: inline-block
           margin-left: 5px
   a
     &:hover

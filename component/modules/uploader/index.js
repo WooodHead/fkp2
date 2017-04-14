@@ -45,6 +45,11 @@ const Actions = {
     return this.curState
   },
 
+  UPDATE: function(state, options){
+    this.curState.data = [options]
+    return this.curState
+  },
+
   PROGRESS: function(state, options){
     const data = this.curState.data
     const targetIndex = _.findIndex(data, function(o) { return o.id == options.id });
@@ -75,7 +80,7 @@ function uploaderEvent(){
   uploader.on('fileQueued', function( file ) {
     uploader.makeThumb( file, function( error, src ) {
       // that.append(file, src)
-      that.dispatch('APPEND', {id: file.id, name: file.name, src: src, progress: 0})
+      that.dispatch(that.config.solitary ? 'UPDATE' : 'APPEND', {id: file.id, name: file.name, src: src, progress: 0})
     }, thumbnailWidth, thumbnailHeight );
   })
 
@@ -183,6 +188,7 @@ export default function(opts){
     title: '上传文件',
     props: false,
     multiple: false,
+    solitary: true,
     uploaderConfig: {
       dnd: undefined,
       chunked: false,

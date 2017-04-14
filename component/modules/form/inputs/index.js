@@ -185,6 +185,11 @@ class FormInput extends BaseClass{
               form[item] = ''
               elements(item).value = ''
               allocation[item].value = ''           
+            }else if(allocation[item].type == 'checkbox' || allocation[item].type == 'radio'){
+              data[item].map((cb)=>{
+                const xxx = elements(item+'-'+(parseInt(cb)-1))
+                xxx.checked = true
+              })
             }
           }
         })

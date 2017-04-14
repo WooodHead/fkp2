@@ -1,5 +1,17 @@
 import {inject} from 'libs'
 import {wrapItem, countdown} from 'component/client'
+
+inject().css('/css/m/form/jx')
+inject().css('/css/m/countdown')
+.css(
+  `
+  .testCd{
+    margin:40px auto;
+    width: 400px
+  }
+  `
+)
+
 const Cd = countdown()
 function index(router){
   const Cdbtn = wrapItem(
@@ -18,18 +30,19 @@ function index(router){
 
   function cding(count){
     if (typeof count == 'object') {
+      console.log('====');
       const lis = count.map( (item, ii) => {
         if (ii<count.length-1) item += ':'
-        return <li className='cding' key={"cding_"+ii}>{item}</li>
+        return <i  key={"cding_"+ii}>{item+'秒后重新获取'}</i>
       })
-      return <ul>{lis}</ul>
+      return <span className='cding'>{lis}</span>
     }
-    return <ul><li className="cding">{count+'second'}</li></ul>
+    return <span className='cding'><i className="cding">{count+'秒后重新获取'}</i></span>
   }
 
   function cdafter(count) {
     const Re = wrapItem(
-      <ul><li className="cdafter">重新发送</li></ul>
+      <span className="cdafter"><i>重新发送</i></span>
       , function(dom){
         $(dom).click(()=>{
           Cd.restart()
@@ -40,7 +53,7 @@ function index(router){
   }
   return (
     <div className='testCd'>
-      <Cd.x cd={10} title={'发送验证码'} itemMethod={sendCode}  cdafter={cdafter}/>
+      <Cd.x cd={3} title={'获取验证码'} itemMethod={sendCode} cdClass='btn-fab427' cdingClass='btn-disabled' cdafter={cdafter} cding={cding}/>
     </div>
   )
 }
@@ -57,6 +70,7 @@ export default function(router){
     },
 
     leave: function(){
+      Cd.stop()
     },
 
     loaded: function(dom){
