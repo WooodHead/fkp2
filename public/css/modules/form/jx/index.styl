@@ -22,7 +22,19 @@ fontSize16 =  {
     margin-bottom: 24px
     &.radioItem
       margin-bottom: 0
-
+  .warning
+    padding: 0.4em 0.8em
+    min-width: 200px
+    color: red
+    &:before
+      content: '\e60e'
+      margin-right: 6px
+  .succcess
+    padding: 0.4em 0.8em
+    min-width: 200px
+    &:before
+      content: '\e654'
+      margin-right: 6px
   input
     width: 18em
     border-radius: 4px
@@ -34,6 +46,9 @@ fontSize16 =  {
       width: auto
       margin-top: 28px
       @extend .btn-fab427
+    &.itemError
+      border-color: #fc1616
+      box-shadow: inset 0 0px 1px rgba(0,0,0,.075),0 0 3px rgba(252, 22, 22, 0.6)
   span
     {fontSize14}
   .fkp-input-required             //require 必填项目，如果有 .fkp-input-required ,会在 fkp-titile:before 添加 *
@@ -113,20 +128,5 @@ fontSize16 =  {
     text-align: right
 
 
-.itemError
-  .form_control
-    border-color: #fc1616
-    box-shadow: inset 0 0px 1px rgba(0,0,0,.075),0 0 3px rgba(252, 22, 22, 0.6)
-  .fkp-input-error
-    position: absolute
-    bottom: 4px
-    left: 8em
-    border: 1px solid #f1e4ac
-    background: #fef6d4
-    display: block
-    margin-left: 0
-    padding: 0.4em 0.8em
-    min-width: 200px
-    &:before
-      content: '\e60e'
-      margin-right: 6px
+
+ 
