@@ -6,7 +6,7 @@ const nevTop = (
   <div className='navtop'>
     <div className='flex-row' style={{height: '100%',width: 'auto'}}>
       <a href="/docs">
-        <img src="/images/logo118.png"/>
+        <img src="/images/logo118-1.png"/>
       </a>
       <a href='https://github.com/webkixi/fkp2'>
         <img src='/docs/images/github.png'/>
