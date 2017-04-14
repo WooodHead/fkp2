@@ -17,6 +17,10 @@ dropdown-ul($top=2.8em)
   left: 0;
   width: 100%;
   z-index: 999;
+  //固定个高度，数据过多时会出现滚动条
+  height: 160px;
+  overflow-y: auto;
+
   li, .fkp-dd-option
     padding: 0 0.5em;
     line-height: 2em;
