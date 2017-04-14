@@ -4,9 +4,12 @@ import iscrollHlc from 'component/mixins/iscrollhlc'
 
 const nevTop = (
   <div className='navtop'>
-    <div style={{width: '1050px',margin:'0 auto', height: '100%'}}>
+    <div className='flex-row' style={{height: '100%',width: 'auto'}}>
       <a href="/docs">
-        <img src="/images/logo118.png" style={{height: '100%',width:'auto'}}/>
+        <img src="/images/logo118.png"/>
+      </a>
+      <a href='https://github.com/webkixi/fkp2'>
+        <img src='/docs/images/github.png'/>
       </a>
     </div>
   </div>
