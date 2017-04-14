@@ -40,3 +40,28 @@ img
     display: table-row
   .boxer-footer
     display: table-row
+
+
+
+//适用于类似简单的浮动，.flex-start>div(li/p....)是垂直居中的
+//<div class="flex-row">
+//<div></div><span></span><a></a>
+//</div>
+display-flex($flex-direction = row, $justify-content = flex-start, $align-items = initial, $align-content = initial)
+  display: flex
+  flex-direction: $flex-direction
+  justify-content: $justify-content
+  if($align-items != initial)
+    align-items: $align-items
+  if($align-content != initial)
+    align-content: $align-content
+
+.flex-row
+  display-flex(row,flex-start,center,center)
+
+.flex-row-wrap
+  @extends .flex-row
+  flex-wrap: wrap;
+
+.flex-cloumn
+  display-flex(column,flex-start,center,center)
