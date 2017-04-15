@@ -1,5 +1,6 @@
 import {inject} from 'libs'
 import list from 'component/modules/list/_component/loadlist'
+import combinex from '../mixins/combinex'
 
 
 function delay(cb, timer){
@@ -61,7 +62,6 @@ export default class {
       delay(()=>{
         this.componentDid()
         if (typeof this.rendered == 'function') {
-          // this.rendered()
           rendered(this.rendered)
         }
       }, 17)
@@ -84,11 +84,16 @@ export default class {
       id = undefined
     }
     let container = id || this.config.container
-    this.sequentialRun()
 
     if (!container) {
       this.stat = 'done'
-      return this.eles
+      const Elements = combinex(this.eles, this.rendered)
+      delay(()=>{
+        this.componentDid()
+      }, 300)
+      return <Elements />
+    } else {
+      this.sequentialRun()
     }
 
     container = typeof container == 'string'
