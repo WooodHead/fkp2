@@ -78,6 +78,17 @@ export default class {
     this._componentDid()
   }
 
+  sequentialElementRun(){
+    if (this.stat != 'finish') {
+      this.inject()
+      this.componentWill()
+      this.stat = 'firstrun'
+    }
+    delay(()=>{
+      this.componentDid()
+    }, 300)
+  }
+
   render(id){
     if (typeof id == 'function') {
       this.rendered = id
@@ -86,11 +97,9 @@ export default class {
     let container = id || this.config.container
 
     if (!container) {
+      this.sequentialElementRun()
       this.stat = 'done'
       const Elements = combinex(this.eles, this.rendered)
-      delay(()=>{
-        this.componentDid()
-      }, 300)
       return <Elements />
     } else {
       this.sequentialRun()
