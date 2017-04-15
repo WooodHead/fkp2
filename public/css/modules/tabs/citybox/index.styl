@@ -7,14 +7,19 @@
 .control-city
   .fkp-desc
     background: #fff
-    border: 1px solid #e3e3e3;
     position: absolute;
     top: 32px;
     left: 84px;
-    width: 400px;
-    padding: 10px;
     display: none
-
+    .citybigbox
+      border: 1px solid $borderColor;
+      width: 400px;
+      padding: 10px;
+    .citybox-search
+      width: 100%
+      border: 1px solid $borderColor;
+      // citybox-search($width = 100%, $lineHeight = 30px, $borderBottom = 1px solid transparent, $padding = 0 6px, $color =  $color666, $background =  $color2577e3, $color2 = $colorfff)
+      citybox-search(254px, 30px, 1px solid $borderColor, 0 6px, $color666, $color2577e3, $colorfff)
 .citybigbox-head
   position: relative;
   line-height: 30px

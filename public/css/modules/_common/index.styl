@@ -92,11 +92,26 @@ $color999 = #999
 $colorfff = #fff
 $color2577e3 = #2577e3
 
-successIcon()
+successIcon($fontSize =  20px, $marginRight = 20px, $color = #666)
   &:before
     content: '\e620'
-    font-size: 20px
-    margin-right: 20px
+    color: $color
+    font-size: $fontSize
+    margin-right: $marginRight
+
+problemIcon($fontSize =  20px, $marginRight = 20px, $color = #666)
+  &:before
+    content: '\e629'
+    color: $color
+    font-size: $fontSize
+    margin-right: $marginRight
+
+failIcon($fontSize =  20px, $marginRight = 20px, $color = #666)
+  &:before
+    content: '\e621'
+    color: $color
+    font-size: $fontSize
+    margin-right: $marginRight
 
 modal-bg($background-color = rgba(236, 247, 254, 0.7))
   z-index:10020

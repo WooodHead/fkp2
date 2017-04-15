@@ -4,59 +4,6 @@ import PopClass from 'component/class/poper'
 inject().css([
   `/css/t/animate.css`
 ])
-.css([ `
-  /* === component/modal === */
-  .modal-bg{
-    z-Index:10020;
-    background-color:rgba(236, 247, 254, 0.7);
-    position:fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    overflow: auto;
-  }
-  .modal-container{
-    width: 70%;
-    min-height: 200px;
-    background-color:#fff;
-    margin: 0 auto;
-    margin-top: 50px;
-    margin-bottom: 50px;
-    padding: 32px;
-    border-radius: 6px;
-    outline: none;
-    border: 1px solid rgba(0, 0, 0, 0.3);
-    -webkit-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
-    -moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
-    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
-    -webkit-background-clip: padding-box;
-    -moz-background-clip: padding-box;
-    background-clip: padding-box;
-  }
-  .modal-p30{
-    width: 30%;
-  }
-  .modal-p40{
-    width: 40%;
-  }
-  .modal-p50{
-    width: 50%;
-  }
-  .modal-p60{
-    width: 60%;
-  }
-  .modal-p70{
-    width: 70%;
-  }
-  .modal-p80{
-    width: 80%;
-  }
-  .modal-p90{
-    width: 90%;
-  }
-  `
-])
 
 function DocmentView(){
   var doch = window.innerHeight||document.documentElement.offsetHeight||document.body.clientHieght;

@@ -14,10 +14,22 @@
     opacity: 0.8;
     background-color: @background-color
 + prefix-classes('btn-')
+  .default
+    @extends .btn
+    color: #999
+    background-color: #e6e6e6
+    border-color: @background-color
+
   .fab427
     @extends .btn
     color: #fff;
     background-color: #fab427;
+    border-color: @background-color
+
+  .f15d3b
+    @extends .btn
+    color: #fff
+    background-color: #f15d3b
     border-color: @background-color
 
   .disabled

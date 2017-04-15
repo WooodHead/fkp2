@@ -1,0 +1,46 @@
+@import "../../_common/index"
+
+for i in range(30, 90, 10)
+  .modal-p{i}
+    width: (i)%
+
+// modal-bg($background-color = rgba(236, 247, 254, 0.7))
+// modal-container($border-radius = 6px, $border-color = 1px solid rgba(0, 0, 0, 0.3), $box-shadow= 0 3px 7px rgba(0, 0, 0, 0.3))
+.modal-bg
+  modal-bg()
+.modal-container
+  modal-container(4px,1px solid $borderColor ,initial)
+
+.modal-body
+  min-height: 50px
+  padding: 20px
+  {fontSize14}
+  .modal-title
+    display-flex(row,center,center,center)
+    text-align: center;
+    min-height: 56px
+    line-height: @min-height
+  .modal-success
+    successIcon(30px, 20px, #6bc839)
+  .modal-problem
+    problemIcon(30px, 20px, #fab427)
+  .modal-fail
+    failIcon(30px, 20px, #ed4119)
+  .modal-center
+    text-align: center
+.modal-foot
+  border-top: 1px solid $borderColor
+  height: 50px;
+  // line-height: 50px
+  display-flex(row, space-between, center,center)
+  button
+    {fontSize16}
+    border: none
+    background: none;
+    color: #999
+    margin: 0 auto;
+    width: 50%
+    border-right: 1px solid $borderColor
+    &:last-child
+      color: #2585cf
+      border-right: none
