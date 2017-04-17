@@ -2,40 +2,29 @@ import { inject, objtypeof } from 'libs'
 import itemHlc from 'component/mixins/itemhlc'
 import Base from 'component/class/base'
 
-const iject = inject();
-let loaded = false;
-let bsCount = 0;
-
-iject
-.css('/css/t/bootstrap_table.css')
-.js('/js/t/bootstrap_table.js', () => {
-  iject.js('/js/t/bootstrap_table_zh_CN.js', ()=>{
-    loaded = true
-  })
-})
+let bsCount = 0
+let loaded = false
+const ij = inject()
 
 function itemDefaultMethod(element, intent){
   let dft = this.config
-  if (loaded) {
-    $(element).bootstrapTable(dft.bstable);
-    this.table = $(element)  //这个是获取整个 table的结构 ，可以通过这个去调用 bootstrap的一些方法，在业务的页面上  如：(bt).elt.bootstrap('getData')
-  }
-
-  // iject
-  // .css('/css/t/bootstrap_table.css')
-  // .js('/js/t/bootstrap_table.js', () => {
-  //   iject.js('/js/t/bootstrap_table_zh_CN.js', ()=>{
-  //     $(element).bootstrapTable(bsConfig);
-  //     this.table = $(element) //这个是获取整个 table的结构 ，可以通过这个去调用 bootstrap的一些方法，在业务的页面上  如：(bt).elt.bootstrap('getData')
-  //   })
-  // })
+  const bsConfig = dft.bstable
+  ij
+  .css('/css/t/bootstrap_table.css')
+  .js('/js/t/bootstrap_table.js', () => {
+    ij.js('/js/t/bootstrap_table_zh_CN.js', ()=>{
+      $(element).bootstrapTable(bsConfig);
+      this.elt = $(element) //这个是获取整个 table的结构 ，可以通过这个去调用 bootstrap的一些方法，在业务的页面上  如：(bt).elt.bootstrap('getData')
+    })
+  })
 }
 
 class _BoostrapTbale extends Base {
   constructor(config){
+    config.listClass = `bt-table-${bsCount}`
     super(config)
-    this.table
-    // this.table
+    this.elt = ''
+
     itemDefaultMethod = this::itemDefaultMethod
     bsCount++
   }
@@ -49,7 +38,6 @@ class _BoostrapTbale extends Base {
 export function BTable(opts){
   let dft = {
     container: '',
-    theme: '',
     bstable:{
       classes: 'table table-hover',     //设置 table的类
       method: 'post',
@@ -187,6 +175,7 @@ export function BTable(opts){
       formatter: function(){},
       columns: [],
     }
+
   }
 
   if (objtypeof(opts) == 'object') dft = _.merge(dft, opts)
