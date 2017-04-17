@@ -4,26 +4,41 @@ import Base from 'component/class/base'
 
 let bsCount = 0
 let loaded = false
+let loadedFun = []
 const ij = inject()
-
+ij
+.css('/css/t/bootstrap_table.css')
+.js('/js/t/bootstrap_table.js', () => {
+  ij.js('/js/t/bootstrap_table_zh_CN.js', ()=>{
+    loaded = true
+    if (loadedFun.length) {
+      for (let ii=0; ii<loadedFun.length; ii++) {
+        if (typeof loadedFun[ii] == 'function') {
+          loadedFun[ii]()
+        }
+      }
+    }
+  })
+})
 function itemDefaultMethod(element, intent){
   let dft = this.config
   const bsConfig = dft.bstable
-  ij
-  .css('/css/t/bootstrap_table.css')
-  .js('/js/t/bootstrap_table.js', () => {
-    ij.js('/js/t/bootstrap_table_zh_CN.js', ()=>{
+  if (loaded) {
+    $(element).bootstrapTable(bsConfig);
+    this.table = $(element) //这个是获取整个 table的结构 ，可以通过这个去调用 bootstrap的一些方法，在业务的页面上  如：(bt).table.bootstrap('getData')
+  } else {
+    loadedFun.push(function(){
       $(element).bootstrapTable(bsConfig);
-      this.elt = $(element) //这个是获取整个 table的结构 ，可以通过这个去调用 bootstrap的一些方法，在业务的页面上  如：(bt).elt.bootstrap('getData')
+      this.table = $(element) //这个是获取整个 table的结构 ，可以通过这个去调用 bootstrap的一些方法，在业务的页面上  如：(bt).table.bootstrap('getData')
     })
-  })
+  }
 }
 
 class _BoostrapTbale extends Base {
   constructor(config){
     config.listClass = `bt-table-${bsCount}`
     super(config)
-    this.elt = ''
+    this.table = ''
 
     itemDefaultMethod = this::itemDefaultMethod
     bsCount++
