@@ -102,7 +102,7 @@ const Actions = {
   },
   RESTART: function(state, props){
     let differ = state.timeDiff.differ
-    const _diff = timeDiff.getDiff((differ-1000))
+    const _diff = timeDiff.getDiff((differ))
     pageCount = _diff.$seconds
     state.timeDiff = _diff
     state.restart = true
@@ -115,28 +115,33 @@ class App extends BaseX {
   constructor(config) {
     super(config)
     this.timmer
+    this.disable = false
     this.combinex(CountDown, Actions)
   }
-  start(){
-    clearTimeout(this.timmer)
+  _start(){
     this.timmer = setTimeout(()=>{
       if (pageCount != 0) {
         this.dispatch('COUNTDOWN', {})
-        this.start()
+        this._start()
       }
       else {
         pageCount = 1
+        this.disable = false
         clearTimeout(this.timmer)
       }
     }, 1000)
   }
-  restart(){
-    pageCount = 1
-    setTimeout(()=>{
-      this.dispatch('RESTART', {})
-      this.start()
-    },1000)
+  start(){
+    if (this.disable) return
+    this.disable = true
+    this._start()
 
+  }
+  restart(){
+    console.log('======= 7777')
+    pageCount = 1
+    this.dispatch('RESTART', {})
+    this.start()
   }
   stop(){
     clearTimeout(this.timmer)
