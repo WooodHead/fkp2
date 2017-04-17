@@ -93,34 +93,19 @@ function countDown(ele, cd, cb){
 var day31 = [1,3,5,7,8,10,12]
 var day30 = [4,6,9,11]
 
-// function getDiff(diff){
-//   var _seconds = _.ceil(diff/1000, 2),
-//       _minute = _.ceil(_seconds/60, 2),
-//       _hour = _.ceil(_seconds/3600, 2),
-//       _day = _.ceil(_seconds/(3600*24), 2),
-//       _month = _.ceil(_seconds/(3600*24*30), 2),
-//       _year = _.ceil(_seconds/(3600*24*30*12), 2);
-
-//   return {
-//     seconds: _seconds,
-//     minute: _minute,
-//     hour: _hour,
-//     day: _day,
-//     month: _month,
-//     year: _year
-//   }
-// }
 
 function timeDiff(dif, dif2){
-  var orientation = 'after',
+  var orientation = 'before',
       _diff = dif-dif2;
 
   if (_diff<0) {
-    orientation: 'before'
+    orientation: 'future'
   }
   var diff = Math.abs(_diff)
   const $diff = timeDiff.getDiff(diff)
   return {
+    now: dif,
+    target: dif2,
     orientation: orientation,
     diff:{...$diff},
     ...$diff
@@ -133,10 +118,23 @@ timeDiff.getDiff = function(diff){
   const __hour = 3600
   const __day = 3600*24
   const __month = 3600*24*30
+  const __year = 3600*24*30*12
 
-  let $month, $day, $hour, $min, xsecond
+  let $year, $month, $day, $hour, $min, xsecond
 
   let yushu = 0
+  $year = (()=>{
+    if (__second/__year >= 1) {
+      yushu = __second%__year
+      return _.floor(__second/__year)
+    }
+    else { yushu = __second%__year }
+  })()
+  if ($year && $year<10) $year = '0'+$year
+  if (yushu == 0) {
+    $month='00'; $day='00'; $hour='00'; $min='00';
+  }
+
   $month = (()=>{
     if (__second/__month >= 1) {
       yushu = __second%__month
@@ -234,135 +232,61 @@ timeDiff.add = function(seconds){
   return timeDiff(now, will)
 }
 
-// function timeDiff(dif){
-//   if (typeof dif === 'string'){
-//     if (dif.indexOf('-')>-1 && dif.indexOf(':')>-1 ) dif = convTimestamp(dif);
-//     dif = parseFloat(dif)
-//   }
-
-//   var date = new Date(),
-//       difdate = new Date(dif),
-//       _date = difdate;
-
-//   var now = Date.parse(date),
-//       orientation = 'after',
-//       _diff = now-dif;
-//       if (_diff<0) {
-//         orientation: 'before'
-//       }
-
-//   var diff = Math.abs(_diff)
-//   const $diff = getDiff(diff)
-//   var _time = {
-//     differ: diff,
-//     orientation: orientation,
-//     diff:{...$diff},
-//     ...$diff
-//   }
-// }
-
 /*
  * 返回和现在时间的时间差
  * ago {String}  timestamp 必须为时间戳
  * cb {function}  回调函数，用户自定义返回值
  */
 function timeAgo(ago, cb){
-  // if (typeof ago === 'string'){
-  //   if (ago.indexOf('-')>-1 && ago.indexOf(':')>-1 ) ago = convTimestamp(ago);
-  //   ago = parseFloat(ago)
-  // }
-  // var day31 = [1,3,5,7,8,10,12]
-  // var day30 = [4,6,9,11]
-  //
-  // var date = new Date(),
-  //     agodate = new Date(ago),
-  //     _date = agodate;
-  //
-  // var $day = date.getDate(),
-  //     $ago = agodate.getDate(),
-  //     $hour = date.getHours(),
-  //     $agoHour = agodate.getHours(),
-  //     $month = date.getMonth(),
-  //     $agoMonth = agodate.getMonth(),
-  //     $year = date.getFullYear(),
-  //     $agoYear = agodate.getFullYear();
-  //
-  //
-  // var now = Date.parse(date),
-  //     diff = now-ago,
-  //     _seconds = _.ceil(diff/1000, 2),
-  //     _minute = _.ceil(_seconds/60, 2),
-  //     _hour = _.ceil(_seconds/3600, 2),
-  //     _day = _.ceil(_seconds/(3600*24), 2),
-  //     _month = _.ceil(_seconds/(3600*24*30), 2),
-  //     _year = _.ceil(_seconds/(3600*24*30*12), 2);
-  //
-  // var t_day = (_hour - $hour)/24;
-  // var _time = {
-  //     day: t_day,
-  //     diff:{
-  //         seconds: _seconds,
-  //         minute: _minute,
-  //         hour: _hour,
-  //         day: _day,
-  //         month: _month,
-  //         year: _year
-  //     }
-  // }
-
-  // var _time = timeDiff(ago)
   var _time = timeDiff.ago(ago)
-  var _date
-  if (typeof ago === 'string'){
-    if (ago.indexOf('-')>-1 && ago.indexOf(':')>-1 ) ago = convTimestamp(ago);
-    _date = parseFloat(ago)
-  } else {
-    _date = parseFloat(ago)
-
-  }
+  var _date = new Date(_time.target)
+  var _now = new Date(_time.now)
 
   // 用户自行处理时间数据
   if (cb && typeof cb==='function'){
       return cb(_time)
   }
 
-  var t = _time;
-  if (t.diff.year>=1){
-      return _date.Format("yyyy-MM-dd")
+  var diff = _time.diff
+  diff.seconds = parseInt(diff.seconds)
+  diff.minute = parseInt(diff.minute)
+  diff.hour = parseInt(diff.hour)
+  diff.month = parseInt(diff.month)
+  diff.year = parseInt(diff.year)
+
+  if (diff.year >=1) {
+    return _date.Format("yyyy-MM-dd")
   }
 
-  else if (t.diff.month>=1 && t.diff.month<12){
-      return _date.Format("yyyy-MM-dd")
+  if (diff.month>=1){
+    return _date.Format("yyyy-MM-dd")
   }
 
-  else if (t.diff.day>=0 && t.diff.day<30){
-      if (t.diff.day>=0&&t.diff.day<1){
-          var _time = _date.Format("hh:mm")
-          return '昨天 '+_time
-      }
-
-      else if (t.day>=1&&t.day<=2){
-          var _time = _date.Format("hh:mm")
-          return '前天 ' + _time
-      }
-
-      else{
-        return _date.Format("yyyy-MM-dd hh:mm")
-      }
+  if (diff.seconds>=1 && diff.seconds<60){
+    var _time = _date.Format("ss")
+    return _time+'秒前'
   }
 
-  else if (t.diff.hour>=1 && t.diff.hour<24){
-      if (t.day<0){
-          return _date.Format("hh:mm")
-      }
+  if (diff.minute>=1 && diff.minute<60){
+    var _time = _date.Format("mm")
+    return _time+'分钟前'
   }
 
-  else if (t.diff.minute>=1 && t.diff.minute<60){
-      return _date.Format("hh:mm")
+  if (diff.hour>=1 && diff.hour<12){
+    var _time = _date.Format("mm")
+    return _time+'小时前'
   }
 
-  else if (t.diff.seconds>=1 && t.diff.seconds<60){
-      return _date.Format("hh:mm")
+  if (diff.$seconds < (24*3600)) {
+    var _curHour = parseInt(_now.Format('h'))
+    var _time = _date.Format("hh:mm")
+    if (diff.hour > _curHour) return '昨天 '+_time
+    return '今天'+_time
+  }
+
+  if (diff.$seconds > (24*3600) && diff.$seconds < (2*24*3600)) {
+    var _time = _date.Format("hh:mm")
+    return '前天 ' + _time
   }
 }
 
